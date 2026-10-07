@@ -64,8 +64,6 @@ Dự án tập trung vào các mục tiêu chính:
 | Chính quyền địa phương | Nhận báo cáo nhân khẩu, tạm trú, tạm vắng |
 | Tổ dân phố | Phối hợp trong các khoản đóng góp |
 
-> Theo tài liệu gốc, các vai trò Thủ quỹ, Cư dân và Nhân viên thu phí là các giả định cần được xác nhận.
-
 ---
 
 # 4. Client's Wish List
@@ -344,16 +342,7 @@ QuanLyChungCu/
 
 ---
 
-# 16. Ràng buộc kỹ thuật
-
-Theo tài liệu gốc:
-
-- **Java** – ứng dụng desktop
-- **MySQL Server** – lưu trữ dữ liệu tập trung
-
----
-
-# 17. Phạm vi phiên bản
+# 16. Phạm vi phiên bản
 
 ## Version 1.0
 
@@ -382,7 +371,7 @@ Các nội dung được định hướng mở rộng:
 
 ---
 
-# 18. Trạng thái dự án
+# 17. Trạng thái dự án
 
 **Status:** Requirement Elicitation / Analysis
 
@@ -392,9 +381,5 @@ Tài liệu hiện tập trung vào **phân tích và khai phá yêu cầu**, ch
 
 ## Nhóm thực hiện
 
-| Thông tin | Nội dung |
-|---|---|
-| Nhóm / Sinh viên | Cập nhật |
-| Mã nhóm / MSSV | Cập nhật |
-| Lớp / Học phần | Cập nhật |
-| Ngày nộp | Cập nhật |
+| Nhóm | 16 |
+
