@@ -380,6 +380,5 @@ Tài liệu hiện tập trung vào **phân tích và khai phá yêu cầu**, ch
 ---
 
 ## Nhóm thực hiện
-
-| Nhóm | 16 |
+Nhóm 16 
 
