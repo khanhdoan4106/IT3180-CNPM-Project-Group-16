@@ -1,7 +1,4 @@
-# BlueMoon -- Sản phẩm giao nộp
-
-> Chuyển đổi toàn bộ nội dung từ file
-> `BlueMoon_San_pham_giao_nop (2).xlsx` sang Markdown.
+# BlueMoon -- Khai phá yêu cầu
 
 ---
 
