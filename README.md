@@ -417,3 +417,42 @@ Trong tương lai, hệ thống có thể được mở rộng thành nền tả
 **BlueMoon Apartment Management System**
 
 Dự án được thực hiện nhằm phục vụ mục đích học tập và nghiên cứu, đồng thời mô phỏng quá trình phân tích, thiết kế và xây dựng một hệ thống quản lý thu phí thực tế cho chung cư.
+
+
+## 14. Công nghệ
+
+| Tầng | Công nghệ |
+|---|---|
+| Frontend | React 18 + Vite |
+| Backend | Spring Boot 3 (Java 21), Spring Data JPA |
+| Database | MySQL 8 |
+| Build | Maven (backend), npm (frontend) |
+
+## Cấu trúc thư mục
+
+```
+├── backend/     Spring Boot (Maven)
+├── frontend/    React + Vite
+├── database/    schema.sql, seed.sql
+├── docs/        Tài liệu yêu cầu, thiết kế, biên bản họp
+└── .github/     Issue/PR template, CI
+```
+
+## Yêu cầu môi trường
+
+Cả nhóm dùng cùng phiên bản để tránh lỗi "máy tôi chạy được":
+
+- JDK 21
+- Maven 3.9+ (hoặc dùng Maven có sẵn trong IntelliJ IDEA)
+- Node.js 20 LTS
+- MySQL 8
+
+
+## Quy trình làm việc
+
+- Nhánh `main`: ổn định, chỉ merge qua Pull Request và có ít nhất 1 người review.
+- Nhánh `develop`: tích hợp.
+- Nhánh làm việc: `feature/<ten-chuc-nang>`, `fix/<ten-loi>`.
+- Commit theo Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
+- Mỗi User Story là một Issue, gắn label MoSCoW (`must`, `should`, `could`, `wont`).
+
