@@ -27,32 +27,47 @@ Ghi chép thô các buổi phỏng vấn, họp với khách hàng và quan sát
 2. Anh/chị muốn biết thông tin gì về khoản phí của hộ mình (số tiền, hạn nộp, lịch sử)?
 3. Anh/chị muốn nhận thông báo qua kênh nào?
 
-## 2. Danh sách buổi làm việc
+## 2. Danh sách 
 
-| Buổi | Ngày | Hình thức | Người tham gia (ẩn danh) | Người ghi chép | Trạng thái |
-|---|---|---|---|---|---|
-| 1 | dd/mm/yyyy | Phỏng vấn trực tiếp | | | Chưa thực hiện |
-| 2 | dd/mm/yyyy | | | | Chưa thực hiện |
-
-## 3. Mẫu ghi chép một buổi
-
-Sao chép phần dưới cho mỗi buổi.
-
-### Buổi N – dd/mm/yyyy
-
-- **Hình thức:** phỏng vấn trực tiếp / họp trực tuyến / quan sát
-- **Địa điểm / thời lượng:**
-- **Người tham gia:** (ẩn danh: Tổ trưởng A, Kế toán B...)
-- **Người ghi chép:**
-- **Mục tiêu buổi làm việc:**
-
-**Ghi chép nguyên văn (câu hỏi và câu trả lời):**
-
-- Hỏi:
-- Trả lời:
-
-**Quan sát thêm** (tài liệu, biểu mẫu, sổ sách nhìn thấy):
-
-**Mong muốn mới phát hiện** (thêm vào `01-wish-list.md`, ghi mã W-xx):
-
-**Điểm cần xác nhận lại / câu hỏi còn mở:**
+| ID | Nội dung | Nguồn |
+|---|---|---|
+| RAW-001 | Thêm mới thông tin hộ gia đình và diện tích căn hộ | Ban quản trị |
+| RAW-002 | Lưu thông tin cơ bản từ sổ hộ khẩu | Sổ hộ khẩu |
+| RAW-003 | Quản lý thành viên từng hộ | Ban quản trị |
+| RAW-004 | Ghi nhận tạm trú, tạm vắng | Ban quản trị |
+| RAW-005 | Lưu ngày bắt đầu và kết thúc | Ban quản trị |
+| RAW-006 | Xuất danh sách nhân khẩu tạm vắng | Ban quản trị |
+| RAW-007 | Tự tính phí dịch vụ | Thủ quỹ |
+| RAW-008 | Tự tính phí quản lý | Thủ quỹ |
+| RAW-009 | Tạo khoản thu tự nguyện | Ban quản trị |
+| RAW-010 | Ghi nhận đóng góp tự nguyện | Thủ quỹ |
+| RAW-011 | Tự tạo danh sách công nợ | Thủ quỹ |
+| RAW-012 | Sửa khoản thu trước khi thanh toán | Thủ quỹ |
+| RAW-013 | Tra cứu phí chưa đóng | Thủ quỹ |
+| RAW-014 | Thu tất cả khoản của hộ | Thủ quỹ |
+| RAW-015 | Chọn phương thức thanh toán | Thủ quỹ |
+| RAW-016 | In biên lai | Thủ quỹ |
+| RAW-017 | Lưu người thu | Thủ quỹ |
+| RAW-018 | Tự cộng tổng tiền | Thủ quỹ |
+| RAW-019 | Hủy phiếu thu | Thủ quỹ |
+| RAW-020 | Xem tổng thu tháng | Ban quản trị |
+| RAW-021 | Lọc nợ quá hạn | Ban quản trị |
+| RAW-022 | Xuất báo cáo Excel | Thủ quỹ |
+| RAW-023 | Thống kê theo khoản thu | Ban quản trị |
+| RAW-024 | Java Desktop + MySQL | Ban quản trị |
+| RAW-025 | Đăng nhập | Ban quản trị |
+| RAW-026 | Đổi mật khẩu | Người dùng |
+| RAW-027 | Phân quyền | Quản trị viên |
+| RAW-028 | Tra cứu công nợ | Thủ quỹ |
+| RAW-029 | Quản lý phí gửi xe | Ban quản trị |
+| RAW-030 | Thu hộ điện, nước, internet | Ban quản trị |
+| RAW-031 | Ghi nhận đóng góp 0 đồng | Thủ quỹ |
+| RAW-032 | In biên lai | Thủ quỹ |
+| RAW-033 | Nhật ký thao tác | Quản trị viên |
+| RAW-034 | Sao lưu dữ liệu | Quản trị viên |
+| RAW-035 | Bảo mật dữ liệu cư dân | Quản trị viên |
+| RAW-036 | Xuất danh sách tạm vắng | Ban quản trị |
+| RAW-037 | Giao diện thân thiện | Người dùng |
+| RAW-038 | Thông báo thu phí | Ban quản trị |
+| RAW-039 | Đăng ký tài khoản | Ban quản trị |
+| RAW-040 | Cập nhật thông tin cá nhân | Người dùng |
