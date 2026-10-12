@@ -1,7 +1,5 @@
 # 11. Chốt xác nhận và giả định của nhóm
 
-> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `Chot_va_Gia_dinh`.
-
 ## Xác nhận với các bên liên quan
 
 Cột "Ngày" và "Phản hồi" còn trống, nhóm điền sau khi xác nhận.
