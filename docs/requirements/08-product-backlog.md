@@ -1,57 +1,104 @@
 # 08. Product Backlog (MoSCoW)
 
-> **Trạng thái:** bản nháp. Ước lượng (story point, thang Fibonacci) và sprint đề xuất mang tính sơ bộ, nhóm điều chỉnh theo lịch môn học và năng lực thực tế. Thứ tự ưu tiên cuối cùng cần khách hàng xác nhận.
+> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `9_Backlog`. Ưu tiên theo MoSCoW, sprint dự kiến và ước lượng sơ bộ (story point).
+>
+> Ước lượng và phân sprint là **sơ bộ**, nhóm cần chốt lại bằng họp ước lượng (Planning Poker), xem [11-chot-va-gia-dinh.md](11-chot-va-gia-dinh.md).
 
-## 1. Tổng quan
+## Tổng hợp
 
-| Ưu tiên | Số story | Tổng điểm |
-|---|---|---|
-| Must | 15 | 62 |
-| Should | 8 | 35 |
-| Could | 3 | 18 |
-| Won't (v1.0) | 2 epic | — |
+**Theo MoSCoW** (tính trên 29 mục US và TS):
 
-## 2. Backlog
+| Ưu tiên | Số mục |
+|---|---|
+| Must | 13 |
+| Should | 12 |
+| Could | 2 |
+| Won't | 2 |
 
-| Thứ tự | Ưu tiên | Story | Tên | Feature | Điểm | Phụ thuộc | Sprint đề xuất |
-|---|---|---|---|---|---|---|---|
-| 1 | Must | US-01 | Đăng nhập | F-22 | 3 | — | 1 |
-| 2 | Must | US-02 | Đăng xuất | F-22 | 1 | US-01 | 1 |
-| 3 | Must | US-03 | Đổi mật khẩu | F-23 | 3 | US-01 | 1 |
-| 4 | Must | US-04 | Thêm hộ mới | F-01 | 5 | US-01 | 1 |
-| 5 | Must | US-06 | Xem danh sách và chi tiết hộ | F-03 | 3 | US-04 | 1 |
-| 6 | Must | US-05 | Cập nhật thông tin hộ | F-02 | 3 | US-04 | 1 |
-| 7 | Must | US-07 | Thêm nhân khẩu vào hộ | F-07 | 5 | US-04 | 2 |
-| 8 | Must | US-08 | Cập nhật thông tin nhân khẩu | F-08 | 3 | US-07 | 2 |
-| 9 | Must | US-14 | Tạo khoản phí | F-11 | 5 | US-01 | 2 |
-| 10 | Must | US-15 | Sửa hoặc ngừng áp dụng khoản phí | F-11 | 3 | US-14 | 2 |
-| 11 | Must | US-21 | Tra cứu hộ và nhân khẩu | F-17 | 5 | US-07 | 2 |
-| 12 | Must | US-16 | Tạo đợt thu và tính phí tự động | F-12 | 8 | US-14, US-04 | 3 |
-| 13 | Must | US-18 | Ghi nhận nộp phí | F-14 | 5 | US-16 | 3 |
-| 14 | Must | US-19 | Theo dõi công nợ | F-15 | 5 | US-18 | 3 |
-| 15 | Must | US-23 | Thống kê thu phí | F-19 | 5 | US-18 | 3 |
-| 16 | Should | US-09 | Khai báo chuyển đi hoặc qua đời | F-09 | 5 | US-07 | 4 |
-| 17 | Should | US-10 | Khai báo tạm trú, tạm vắng | F-10 | 5 | US-07 | 4 |
-| 18 | Should | US-11 | Đổi chủ hộ | F-04 | 3 | US-07 | 4 |
-| 19 | Should | US-13 | Ngừng quản lý hộ đã chuyển đi | F-06 | 3 | US-04 | 4 |
-| 20 | Should | US-20 | In biên lai | F-16 | 3 | US-18 | 4 |
-| 21 | Should | US-22 | Tra cứu khoản thu | F-18 | 3 | US-18 | 5 |
-| 22 | Should | US-24 | Thống kê nhân khẩu | F-20 | 5 | US-07 | 5 |
-| 23 | Should | US-26 | Quản lý tài khoản và phân quyền | F-24 | 8 | US-01 | 5 |
-| 24 | Could | US-17 | Miễn giảm phí cho hộ | F-13 | 5 | US-16 | 5 hoặc sau |
-| 25 | Could | US-25 | Xuất báo cáo | F-21 | 5 | US-23, US-24 | 5 hoặc sau |
-| 26 | Could | US-12 | Tách hộ | F-05 | 8 | US-07, US-11 | Sau |
+**Theo sprint:**
 
-## 3. Won't have (trong v1.0)
+| Sprint | Tổng SP |
+|---|---|
+| Sprint 1 | 24 |
+| Sprint 2 | 24 |
+| Sprint 3 | 28 |
+| Sprint 4 | 28 |
+| **Tổng** | **104** |
 
-| Hạng mục | Lý do | Phiên bản dự kiến |
-|---|---|---|
-| E7 / F-25 Quản lý phí gửi xe | Nằm ngoài phạm vi v1.0 theo đề bài | v2.0 |
-| E8 / F-26 Thu tiền điện, nước | Nằm ngoài phạm vi v1.0 theo đề bài | v2.0 |
-| Cổng tra cứu cho cư dân, thanh toán trực tuyến, thông báo tự động | Chưa nằm trong yêu cầu; cần bàn lại với khách hàng | Sau v2.0 |
+## EPIC-01: Quản lý hộ gia đình và nhân khẩu
 
-## 4. Ghi chú
+Ưu tiên epic: **Must** · Sprint: **Sprint 1–3**
 
-- **Tiêu chí phân loại:** Must là chức năng thiếu thì hệ thống không thay thế được sổ sách (đăng nhập, hộ, nhân khẩu, khoản phí, đợt thu, ghi nhận nộp, công nợ, thống kê thu, tra cứu). Should giúp nghiệp vụ đầy đủ hơn nhưng có thể tạm làm tay. Could là tiện ích có thể hoãn.
-- **Quản lý khoản phí và đợt thu** (US-14, US-15, US-16) là nhóm có độ rủi ro cao nhất về nghiệp vụ (cách tính phí), nên cần chốt với khách hàng sớm.
-- **US-12 (Tách hộ)** có điểm cao nhưng giá trị thấp, nên để cuối.
+| ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
+|---|---|---|---|---|---|
+| US-001 | Thêm thông tin hộ gia đình và diện tích căn hộ khi cư dân mới chuyển đến | Must | Sprint 1 | Chưa bắt đầu | 3 |
+| US-002 | Lưu thông tin nhân khẩu và quan hệ với chủ hộ | Must | Sprint 1 | Chưa bắt đầu | 5 |
+| US-003 | Ghi nhận tạm trú, tạm vắng kèm ngày bắt đầu và kết thúc | Must | Sprint 1 | Chưa bắt đầu | 5 |
+| US-004 | Xuất danh sách nhân khẩu tạm vắng | Should | Sprint 3 | Chưa bắt đầu | 3 |
+
+## EPIC-02: Quản lý danh mục và khoản thu
+
+Ưu tiên epic: **Must** · Sprint: **Sprint 2–3**
+
+| ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
+|---|---|---|---|---|---|
+| US-005 | Hệ thống tự tính phí dịch vụ và phí quản lý theo diện tích × đơn giá | Must | Sprint 2 | Chưa bắt đầu | 5 |
+| US-006 | Tự tạo khoản thu tự nguyện mới theo từng đợt (VD Quỹ vì người nghèo) | Must | Sprint 2 | Chưa bắt đầu | 3 |
+| US-007 | Ghi nhận số tiền đóng góp tùy ý (kể cả 0đ) cho nhiều quỹ của một hộ | Must | Sprint 3 | Chưa bắt đầu | 5 |
+| US-008 | Cập nhật lại giá trị khoản thu của một hộ trước khi hộ đóng | Should | Sprint 2 | Chưa bắt đầu | 3 |
+| US-009 | Hệ thống tự tạo danh sách công nợ cho tất cả các phòng vào đầu mỗi tháng | Must | Sprint 2 | Chưa bắt đầu | 5 |
+
+## EPIC-03: Thu phí và thanh toán
+
+Ưu tiên epic: **Must** · Sprint: **Sprint 3**
+
+| ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
+|---|---|---|---|---|---|
+| US-010 | Nhập mã phòng để xem ngay các khoản chưa đóng | Must | Sprint 3 | Chưa bắt đầu | 3 |
+| US-011 | Thu tất cả các khoản của hộ bằng một nút và hệ thống tự cộng tổng | Must | Sprint 3 | Chưa bắt đầu | 5 |
+| US-012 | Chọn tiền mặt hoặc chuyển khoản và hệ thống tự lưu người thu | Must | Sprint 3 | Chưa bắt đầu | 3 |
+| US-013 | In biên lai từ phần mềm sau khi thu | Should | Sprint 3 | Chưa bắt đầu | 3 |
+| US-014 | Hủy phiếu thu nhầm trong ngày | Should | Sprint 3 | Chưa bắt đầu | 3 |
+| US-015 | In thông báo các khoản phí hàng tháng cho từng hộ | Should | Sprint 3 | Chưa bắt đầu | 3 |
+
+## EPIC-04: Thống kê và báo cáo
+
+Ưu tiên epic: **Should** · Sprint: **Sprint 4**
+
+| ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
+|---|---|---|---|---|---|
+| US-016 | Xem tổng tiền đã thu trong tháng ngay trên màn hình chính | Should | Sprint 4 | Chưa bắt đầu | 5 |
+| US-017 | Lọc danh sách hộ nợ phí quá 3 tháng | Should | Sprint 4 | Chưa bắt đầu | 3 |
+| US-018 | Xuất báo cáo thu tiền ra Excel theo mẫu thủ công cũ | Could | Sprint 4 | Chưa bắt đầu | 5 |
+| US-019 | Xem tổng thu của từng khoản/quỹ theo đợt | Should | Sprint 4 | Chưa bắt đầu | 3 |
+
+## EPIC-05: Tài khoản, bảo mật và nền tảng hệ thống
+
+Ưu tiên epic: **Must** · Sprint: **Sprint 1–4**
+
+| ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
+|---|---|---|---|---|---|
+| US-020 | Đăng ký tài khoản đăng nhập | Must | Sprint 1 | Chưa bắt đầu | 3 |
+| US-021 | Đăng nhập bằng tên đăng nhập và mật khẩu | Must | Sprint 1 | Chưa bắt đầu | 3 |
+| US-022 | Phân quyền Quản trị viên và Nhân viên thu phí | Should | Sprint 2 | Chưa bắt đầu | 5 |
+| US-023 | Đổi mật khẩu và cập nhật thông tin cá nhân | Should | Sprint 2 | Chưa bắt đầu | 3 |
+| TS-001 | Sao lưu dữ liệu MySQL định kỳ (hàng ngày/tuần) để tránh mất dữ liệu. | Should | Sprint 4 | Chưa bắt đầu | 5 |
+| TS-002 | Ghi nhật ký mọi thao tác thay đổi dữ liệu quan trọng. | Should | Sprint 4 | Chưa bắt đầu | 5 |
+| TS-003 | Thiết lập ứng dụng Java máy tính để bàn kết nối CSDL MySQL tập trung. | Must | Sprint 1 | Chưa bắt đầu | 5 |
+| TS-004 | Rà soát giao diện dễ dùng cho người lớn tuổi (chữ rõ, ít bước thao tác). | Could | Sprint 4 | Chưa bắt đầu | 2 |
+
+## EPIC-06: Phí gửi xe (v2.0, chưa làm ở v1.0)
+
+Ưu tiên epic: **Won't** · Sprint: **Chưa xếp (v2.0)**
+
+| ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
+|---|---|---|---|---|---|
+| US-024 | Quản lý biển số và tự tính phí gửi xe (70.000 đ/xe máy, 1.200.000 đ/ô tô) | Won't | Chưa xếp (v2.0) | Chưa bắt đầu | 0 |
+
+## EPIC-07: Thu hộ điện, nước, internet (v2.0, chưa làm ở v1.0)
+
+Ưu tiên epic: **Won't** · Sprint: **Chưa xếp (v2.0)**
+
+| ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
+|---|---|---|---|---|---|
+| US-025 | Import file thông báo từ điện lực, nhà mạng | Won't | Chưa xếp (v2.0) | Chưa bắt đầu | 0 |
