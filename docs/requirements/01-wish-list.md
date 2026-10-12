@@ -1,9 +1,5 @@
 # 01. Client's Wish List
 
-> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `1_Wish_List`. 40 mong muốn thô (RAW-001 đến RAW-040), ghi nguyên văn, chưa lọc.
->
-> Các phát biểu của Ban quản trị, Thủ quỹ, Cư dân, Chính quyền là **mô phỏng phỏng vấn** (chưa phỏng vấn thật), xem [11-chot-va-gia-dinh.md](11-chot-va-gia-dinh.md).
-
 | ID | Nguồn | Mong muốn thô (nguyên văn) | Ghi chú |
 |---|---|---|---|
 | RAW-001 | Ban quản trị | Tôi muốn thêm mới thông tin một hộ gia đình và diện tích căn hộ khi họ bắt đầu chuyển đến. | Cốt lõi để tính phí sau này |
