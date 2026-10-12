@@ -414,41 +414,55 @@ Trong tương lai, hệ thống có thể được mở rộng thành nền tả
 
 ## 13. Tác giả
 
-**BlueMoon Apartment Management System**
+### **BlueMoon Apartment Management System**
 
 Dự án được thực hiện nhằm phục vụ mục đích học tập và nghiên cứu, đồng thời mô phỏng quá trình phân tích, thiết kế và xây dựng một hệ thống quản lý thu phí thực tế cho chung cư.
 
+### Thành viên
+
+| Họ tên | MSSV | Vai trò |
+|---|---|---|
+| Đoàn Khánh | ... | ... |
+| ... | ... | ... |
+| ... | ... | ... |
+| ... | ... | ... |
+| ... | ... | ... |
 
 ## 14. Công nghệ
 
-| Tầng | Công nghệ |
+| Thành phần | Công nghệ |
 |---|---|
-| Frontend | React 18 + Vite |
-| Backend | Spring Boot 3 (Java 21), Spring Data JPA |
-| Database | MySQL 8 |
-| Build | Maven (backend), npm (frontend) |
+| Ngôn ngữ | Java 21 |
+| Giao diện | JavaFX 21 (FXML, CSS), thiết kế trên Figma |
+| Cơ sở dữ liệu | MySQL 8 (JDBC) |
+| Build, test | Maven, JUnit 5 |
+| Bảo mật | Mật khẩu băm BCrypt |
 
-## Cấu trúc thư mục
+Kiến trúc: View (FXML) - Controller - Service - DAO - MySQL. Chi tiết ở [docs/design/architecture.md](docs/design/architecture.md).
+
+### Chạy thử
+
+1. Cài JDK 21, Maven, MySQL 8 (xem [docs/setup.md](docs/setup.md)).
+2. Chạy `database/schema.sql` rồi `database/seed.sql` trong MySQL Workbench.
+3. Sao chép `config/db.properties.example` thành `config/db.properties` và điền thông tin kết nối.
+4. Chạy `mvn javafx:run`. Tài khoản thử: `admin` / `Admin@123`.
+
+Chạy test: `mvn test`.
+
+### Cấu trúc thư mục
 
 ```
-├── backend/     Spring Boot (Maven)
-├── frontend/    React + Vite
-├── database/    schema.sql, seed.sql
-├── docs/        Tài liệu yêu cầu, thiết kế, biên bản họp
-└── .github/     Issue/PR template, CI
+src/main/java/com/bluemoon/   mã nguồn (model, dao, service, controller, util)
+src/main/resources/           FXML và CSS
+src/test/java/                test
+database/                     schema.sql, seed.sql
+config/                       mẫu cấu hình kết nối
+docs/requirements/            tài liệu khai phá yêu cầu
+docs/design/                  kiến trúc, quy ước mã, thiết kế giao diện
+.github/                      template Issue, Pull Request và CI
 ```
 
-## Yêu cầu môi trường
-
-Cả nhóm dùng cùng phiên bản để tránh lỗi "máy tôi chạy được":
-
-- JDK 21
-- Maven 3.9+ (hoặc dùng Maven có sẵn trong IntelliJ IDEA)
-- Node.js 20 LTS
-- MySQL 8
-
-
-## Quy trình làm việc
+### Quy trình làm việc
 
 - Nhánh `main`: ổn định, chỉ merge qua Pull Request và có ít nhất 1 người review.
 - Nhánh `develop`: tích hợp.
@@ -456,3 +470,6 @@ Cả nhóm dùng cùng phiên bản để tránh lỗi "máy tôi chạy đượ
 - Commit theo Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
 - Mỗi User Story là một Issue, gắn label MoSCoW (`must`, `should`, `could`, `wont`).
 
+### Tài liệu
+
+Yêu cầu: Ưish list, kịch bản As-is và Visionary, NFR, raw log, epic/feature, user story, product backlog, traceability matrix, definition of done và các điểm cần chốt.
