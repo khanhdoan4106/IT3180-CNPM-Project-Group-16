@@ -1,62 +1,48 @@
 # 01. Client's Wish List
 
-> **Trạng thái:** bản nháp đầu tiên, suy ra từ phạm vi BlueMoon v1.0 trong đề bài. Các chi tiết có dấu `(*)` là **giả định của nhóm**, cần xác nhận lại với khách hàng trong buổi phỏng vấn. Cột "Xác nhận" để `Chưa` cho đến khi có ghi chép tương ứng trong `05-raw-log.md`.
+> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `1_Wish_List`. 40 mong muốn thô (RAW-001 đến RAW-040), ghi nguyên văn, chưa lọc.
+>
+> Các phát biểu của Ban quản trị, Thủ quỹ, Cư dân, Chính quyền là **mô phỏng phỏng vấn** (chưa phỏng vấn thật), xem [11-chot-va-gia-dinh.md](11-chot-va-gia-dinh.md).
 
-**Khách hàng:** Ban quản lý chung cư BlueMoon (Tổ trưởng, Kế toán).
-
-**Mục tiêu chung:** thay sổ sách và file Excel rời rạc bằng một hệ thống tập trung để quản lý hộ gia đình, nhân khẩu và thu phí.
-
-## Danh sách mong muốn
-
-| ID | Nguồn | Mong muốn thô | Ghi chú |
+| ID | Nguồn | Mong muốn thô (nguyên văn) | Ghi chú |
 |---|---|---|---|
 | RAW-001 | Ban quản trị | Tôi muốn thêm mới thông tin một hộ gia đình và diện tích căn hộ khi họ bắt đầu chuyển đến. | Cốt lõi để tính phí sau này |
-| RAW-002 | Sổ hộ khẩu (tài liệu) | Cần lưu trữ các thông tin cơ bản từ sổ hộ khẩu. | Cấu trúc dữ liệu từ sổ hộ khẩu |
-| RAW-003 | Ban quản trị | Tôi muốn quản lý thông tin các thành viên trong từng hộ gia đình. | Theo từng căn hộ |
-| RAW-004 | Ban quản trị | Tôi muốn ghi nhận thông tin tạm trú, tạm vắng của cư dân. | Theo dõi biến động nhân khẩu |
-| RAW-005 | Ban quản trị | Tôi muốn lưu ngày bắt đầu và ngày kết thúc tạm trú, tạm vắng. | Phục vụ tra cứu |
-| RAW-006 | Ban quản trị | Tôi muốn xuất danh sách cư dân tạm vắng để cung cấp cho công an phường khi cần. | Báo cáo nhân khẩu |
-| RAW-007 | Thủ quỹ | Tôi muốn hệ thống tự tính phí dịch vụ theo diện tích căn hộ. | Giảm tính toán thủ công |
-| RAW-008 | Thủ quỹ | Tôi muốn hệ thống tự tính phí quản lý theo diện tích và đơn giá. | Hạn chế sai sót |
-| RAW-009 | Ban quản trị | Tôi muốn tạo các khoản thu tự nguyện theo từng đợt. | Ví dụ: Quỹ vì người nghèo |
-| RAW-010 | Thủ quỹ | Tôi muốn ghi nhận số tiền đóng góp tự nguyện của từng hộ. | Có thể bằng 0 đồng |
-| RAW-011 | Thủ quỹ | Tôi muốn hệ thống tự tạo danh sách công nợ đầu mỗi tháng. | Hỗ trợ đi thu |
-| RAW-012 | Thủ quỹ | Tôi muốn cập nhật khoản thu trước khi hộ thanh toán. | Sửa sai khi nhập |
-| RAW-013 | Thủ quỹ | Tôi muốn nhập mã phòng để xem ngay các khoản chưa đóng. | Tra cứu nhanh |
-| RAW-014 | Thủ quỹ | Tôi muốn thu tất cả các khoản của một hộ bằng một thao tác. | Tự động cộng tổng |
-| RAW-015 | Thủ quỹ | Tôi muốn lựa chọn hình thức thanh toán tiền mặt hoặc chuyển khoản. | Phục vụ đối soát |
-| RAW-016 | Thủ quỹ | Tôi muốn in biên lai sau khi thu tiền. | Cung cấp chứng từ |
-| RAW-017 | Thủ quỹ | Tôi muốn hệ thống lưu người thực hiện thu tiền. | Truy vết trách nhiệm |
-| RAW-018 | Thủ quỹ | Tôi muốn hệ thống tự cộng tổng số tiền phải thu. | Tránh cộng nhầm |
-| RAW-019 | Thủ quỹ | Tôi muốn hủy phiếu thu nhầm trong ngày. | Vẫn phải truy vết được |
-| RAW-020 | Ban quản trị | Tôi muốn xem tổng số tiền đã thu trong tháng. | Theo dõi tình hình thu |
-| RAW-021 | Ban quản trị | Tôi muốn lọc danh sách các hộ nợ phí quá 3 tháng. | Hỗ trợ nhắc nợ |
-| RAW-022 | Thủ quỹ | Tôi muốn xuất báo cáo thu tiền ra Excel. | Theo mẫu cũ |
-| RAW-023 | Ban quản trị | Tôi muốn xem tổng thu của từng khoản/quỹ theo từng đợt. | Phục vụ báo cáo |
-| RAW-024 | Ban quản trị | Hệ thống sử dụng Java máy tính để bàn kết nối MySQL. | Yêu cầu kỹ thuật |
-| RAW-025 | Ban quản trị | Tôi muốn đăng nhập bằng tài khoản và mật khẩu. | Kiểm soát truy cập |
-| RAW-026 | Người dùng | Tôi muốn đổi mật khẩu và cập nhật thông tin cá nhân. | Bảo mật tài khoản |
-| RAW-027 | Quản trị viên | Tôi muốn phân quyền người dùng. | Quản trị viên / nhân viên thu phí |
-| RAW-028 | Thủ quỹ | Tôi muốn tra cứu các khoản chưa đóng của một căn hộ. | Hỗ trợ thu phí |
-| RAW-029 | Ban quản trị | Tôi muốn quản lý phí gửi xe. | Định hướng v2.0 |
-| RAW-030 | Ban quản trị | Tôi muốn thu hộ tiền điện, nước và internet. | Định hướng v2.0 |
-| RAW-031 | Thủ quỹ | Tôi muốn ghi nhận khoản đóng góp tự nguyện bằng 0 đồng. | Phân biệt với chưa thu |
-| RAW-032 | Thủ quỹ | Tôi muốn in biên lai cho cư dân. | Chứng từ thanh toán |
-| RAW-033 | Quản trị viên | Tôi muốn ghi nhật ký các thao tác quan trọng. | Audit log |
-| RAW-034 | Quản trị viên | Tôi muốn sao lưu dữ liệu định kỳ. | Hạn chế mất dữ liệu |
-| RAW-035 | Quản trị viên | Tôi muốn dữ liệu cư dân không bị lộ cho người không có quyền. | Bảo mật |
-| RAW-036 | Ban quản trị | Tôi muốn xuất danh sách nhân khẩu tạm vắng. | Cung cấp cho cơ quan chức năng |
-| RAW-037 | Người dùng | Tôi muốn giao diện dễ sử dụng, chữ rõ ràng và ít bước thao tác. | Phù hợp người lớn tuổi |
-| RAW-038 | Ban quản trị | Tôi muốn in thông báo các khoản phí hàng tháng cho từng hộ. | Thông báo thu phí |
-| RAW-039 | Ban quản trị | Tôi muốn đăng ký tài khoản đăng nhập. | Người có quyền mới được sử dụng |
-| RAW-040 | Người dùng | Tôi muốn cập nhật thông tin cá nhân. | Quản lý tài khoản |
-
-## Câu hỏi còn mở (cần hỏi khách hàng)
-
-1. Phí tính theo diện tích căn hộ, theo số nhân khẩu hay mức cố định cho mỗi hộ? Mỗi khoản phí một cách tính hay dùng chung?
-2. Hộ có được nộp một phần, nộp trước nhiều kỳ không? Có tính phạt chậm nộp không?
-3. Một hộ có thể sở hữu nhiều căn hộ không? Một căn hộ có thể có nhiều hộ thuê lại không?
-4. Ai được xem CCCD và thông tin cá nhân đầy đủ? Cư dân có được tự tra cứu khoản phí của mình không (để dành v2.0)?
-5. Biên lai in giấy hay chỉ cần xác nhận điện tử? Có mẫu biên lai có sẵn không?
-6. Dữ liệu hiện có đang ở đâu (sổ giấy, Excel) và cần nhập ban đầu như thế nào?
-7. Khoản đóng góp tự nguyện có cần đối chiếu với tổng quỹ không?
+| RAW-002 | Sổ hộ khẩu (tài liệu) | Cần lưu trữ các thông tin cơ bản của nhân khẩu: Họ tên, Ngày sinh, Giới tính, Số CCCD. | Cấu trúc dữ liệu từ sổ hộ khẩu |
+| RAW-003 | Ban quản trị | Khi khai báo nhân khẩu, phải ghi rõ người này là chủ hộ, hay là vợ/chồng/con của chủ hộ. | Cần danh sách chọn có sẵn |
+| RAW-004 | Ban quản trị | Khi có người thân lên chơi vài ngày, tôi cần ghi nhận tạm trú cho họ trên hệ thống. | Yêu cầu chức năng |
+| RAW-005 | Quy định địa phương | Ngày bắt đầu và ngày kết thúc tạm trú/tạm vắng bắt buộc phải có, không được để trống. | Kiểm tra dữ liệu đầu vào |
+| RAW-006 | Ban quản trị | Tôi cần xuất danh sách những người đang tạm vắng để nộp cho công an phường kiểm tra định kỳ. | Yêu cầu từ cơ quan chức năng |
+| RAW-007 | Quy định BQT | Phí dịch vụ phải tự động tính bằng cách lấy diện tích căn hộ nhân với đơn giá (từ 2.500đ đến 16.500đ/m²). | Tránh tính tay sai sót |
+| RAW-008 | Quy định BQT | Phí quản lý chung cư thì cứ lấy diện tích nhân mặc định với 7.000đ/m². | Yêu cầu chức năng |
+| RAW-009 | Ban quản trị | Mỗi đợt lễ tết, tôi muốn tự tạo một khoản thu tự nguyện mới như "Quỹ vì người nghèo", "Quỹ Trung thu". | Danh mục động |
+| RAW-010 | Sổ quỹ (tài liệu) | Các quỹ tự nguyện thì không ép buộc số tiền, cư dân đóng bao nhiêu ghi bấy nhiêu, có người đóng 0đ. | Xử lý số tiền linh hoạt |
+| RAW-011 | Thủ quỹ | Đầu mỗi tháng, phần mềm phải tự động tạo danh sách công nợ cho tất cả các phòng để tôi đi thu. | Yêu cầu chức năng |
+| RAW-012 | Thủ quỹ | Nếu tôi lỡ nhập sai giá trị quỹ của một nhà, tôi phải có quyền cập nhật lại trước khi cư dân đóng. | Yêu cầu chức năng |
+| RAW-013 | Thủ quỹ | Chỉ cần gõ mã phòng (VD: 1205) là phải hiện ra ngay danh sách các loại phí nhà đó chưa đóng. | Tối ưu thời gian thu |
+| RAW-014 | Quan sát thủ quỹ | Giao diện thu tiền cần có nút "Thu tất cả" thay vì phải tick chọn từng khoản nhỏ lắt nhắt. | Trải nghiệm thao tác |
+| RAW-015 | Thủ quỹ | Cư dân chuyển khoản rất nhiều, nên tôi cần chọn hình thức đóng là "Tiền mặt" hoặc "Chuyển khoản". | Phục vụ đối soát |
+| RAW-016 | Cư dân | Đóng tiền xong thủ quỹ phải in cho tôi cái biên lai từ phần mềm để mang về đối chiếu. | Yêu cầu chức năng |
+| RAW-017 | Ban quản trị | Hệ thống phải tự động lưu lại tên của người thu ngân (tài khoản đăng nhập) đã thực hiện giao dịch thu tiền. | Truy vết trách nhiệm |
+| RAW-018 | File Excel (As-Is) | Dùng Excel hay bị cộng nhầm, phần mềm phải tự cộng tổng tiền chính xác 100% ra màn hình. | Giải quyết điểm đau |
+| RAW-019 | Thủ quỹ | Nếu tôi ấn thu tiền nhầm nhà bên cạnh, tôi phải hủy được phiếu thu đó ngay trong ngày. | Yêu cầu chức năng |
+| RAW-020 | Ban quản trị | Tôi muốn xem ngay trên màn hình chính tháng này tổng cộng cả chung cư thu được bao nhiêu tiền rồi. | Yêu cầu chức năng |
+| RAW-021 | Ban quản trị | Cần lọc ra danh sách những nhà nào nợ phí quá 3 tháng để Ban quản trị đi gõ cửa nhắc nhở. | Yêu cầu chức năng |
+| RAW-022 | Thủ quỹ | Tôi muốn xuất báo cáo danh sách thu tiền ra file Excel giống y hệt mẫu thủ công cũ để lưu trữ. | Khớp với quy trình cũ |
+| RAW-023 | Ban quản trị | Tôi muốn tra cứu xem riêng một quỹ như "Quỹ vì biển đảo" đợt này thu được tổng cộng bao nhiêu. | Yêu cầu chức năng |
+| RAW-024 | Ban quản trị | Phần mềm phải là ứng dụng máy tính để bàn viết bằng Java, dữ liệu lưu tập trung trên MySQL Server. | Ràng buộc kỹ thuật |
+| RAW-025 | Ban quản trị | Chỉ Ban quản trị có tài khoản (tên đăng nhập/mật khẩu) mới đăng nhập được vào hệ thống để xem dữ liệu. | Yêu cầu bảo mật cơ bản |
+| RAW-026 | Ban quản trị | Tôi cần tự đổi mật khẩu định kỳ để đảm bảo an toàn. | Yêu cầu chức năng |
+| RAW-027 | Cư dân | Thông tin nhân khẩu và tiền nợ của nhà tôi không được để nhà khác xem được. | Phân quyền, quyền riêng tư |
+| RAW-028 | Quan sát thủ quỹ | Lúc nhập mã phòng tìm kiếm thì phải hiện kết quả ngay lập tức (dưới 3 giây), chờ lâu cư dân phàn nàn. | Yêu cầu hiệu năng |
+| RAW-029 | Ban quản trị | Sang năm sẽ thu phí gửi xe, phần mềm cần quản lý biển số và tính tự động 70k/xe máy, 1,2 triệu/ô tô. | Lộ trình v2.0 |
+| RAW-030 | Ban quản trị | Tương lai cần có chức năng nhập file thông báo từ điện lực/nhà mạng để chung cư thu hộ điện nước luôn. | Lộ trình v2.0 |
+| RAW-031 | Sổ thu (phân tích tài liệu) | Một hộ đóng nhiều quỹ trên cùng một dòng (người nghèo, biển đảo VN, lễ Đình Giùng, quỹ tổ DP, trẻ thơ, nhân đạo từ thiện, tình nghĩa, khuyến học, người cao tuổi); mức tiền mỗi quỹ không đồng nhất. | Phân tích ảnh sổ thu |
+| RAW-032 | Sổ thu (phân tích tài liệu) | Sổ thu viết tay không có ngày thu hay số biên lai; chữ viết tay dễ nhầm số, khó tổng hợp. | Điểm đau từ sổ thu |
+| RAW-033 | Sổ thu (phân tích tài liệu) | Sổ thu không có lịch sử chỉnh sửa, không biết ai sửa gì lúc nào. | Nhu cầu ẩn: nhật ký thay đổi |
+| RAW-034 | Ban quản trị | Dữ liệu thu phí và nhân khẩu cần được sao lưu thường xuyên để tránh mất mát. | Yêu cầu phi chức năng |
+| RAW-035 | Ban quản trị | Cần phân quyền rõ ràng giữa quản trị viên và nhân viên thu phí. | Yêu cầu phi chức năng |
+| RAW-036 | Chính quyền địa phương | Việc báo cáo nhân khẩu, tạm trú, tạm vắng phải đúng quy định pháp luật hiện hành. | Yêu cầu pháp lý |
+| RAW-037 | Cư dân | Giao diện cần dễ dùng, chữ rõ ràng, người lớn tuổi cũng thao tác được. | Khả dụng |
+| RAW-038 | Ban quản trị | Hàng tháng chúng tôi phải lập danh sách các khoản phí cần đóng cho từng hộ rồi gửi thông báo thu tiền. | Quy trình hiện tại |
+| RAW-039 | Ban quản trị | Người dùng cần đăng ký tài khoản trước khi sử dụng hệ thống. | Luồng nghiệp vụ 1 |
+| RAW-040 | Ban quản trị | Tôi muốn cập nhật thông tin cá nhân của tài khoản (họ tên, số điện thoại). | Yêu cầu chức năng |

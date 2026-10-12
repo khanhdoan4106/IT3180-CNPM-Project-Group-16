@@ -1,67 +1,46 @@
 # 09. Traceability Matrix
 
-Truy vết từ mong muốn của khách hàng (`01-wish-list.md`) tới Epic/Feature (`06-epic-feature-list.md`), User Story (`07-user-stories.md`) và NFR (`04-nfr.md`). Ưu tiên lấy từ `08-product-backlog.md`.
+> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `10_Traceability`. Truy vết RAW, Epic, Feature, User Story và Acceptance Criteria cho 40 yêu cầu thô (100% đã truy vết).
 
-> **Trạng thái:** bản nháp, cần cập nhật mỗi khi Wish List, Feature hoặc User Story thay đổi.
-
-## 1. Ma trận chính
-
-| Mong muốn | Epic | Feature | User Story | NFR liên quan | Ưu tiên cao nhất | Phiên bản |
-|---|---|---|---|---|---|---|
-| W-01 Quản lý hộ | E1 | F-01, F-02, F-03 | US-04, US-05, US-06 | NFR-01, NFR-06, NFR-11 | Must | v1.0 |
-| W-02 Quản lý nhân khẩu | E2 | F-07, F-08 | US-07, US-08 | NFR-06, NFR-11 | Must | v1.0 |
-| W-03 Biến động nhân khẩu | E2 | F-09, F-10 | US-09, US-10 | NFR-06, NFR-08 | Should | v1.0 |
-| W-04 Đổi chủ hộ, tách hộ, ngừng quản lý | E1 | F-04, F-05, F-06 | US-11, US-12, US-13 | NFR-06, NFR-08 | Should | v1.0 |
-| W-05 Tra cứu hộ, nhân khẩu | E5 | F-17 | US-21 | NFR-01 | Must | v1.0 |
-| W-06 Danh mục khoản phí | E3 | F-11 | US-14, US-15 | NFR-06, NFR-13, NFR-14 | Must | v1.0 |
-| W-07 Đợt thu, tính phí, miễn giảm | E3 | F-12, F-13 | US-16, US-17 | NFR-08, NFR-14 | Must | v1.0 |
-| W-08 Ghi nhận thu phí | E4 | F-14 | US-18 | NFR-08, NFR-14 | Must | v1.0 |
-| W-09 Theo dõi công nợ | E4 | F-15 | US-19 | NFR-01 | Must | v1.0 |
-| W-10 In biên lai | E4 | F-16 | US-20 | NFR-10 | Should | v1.0 |
-| W-11 Thống kê | E5 | F-18, F-19, F-20 | US-22, US-23, US-24 | NFR-02 | Must | v1.0 |
-| W-12 Xuất báo cáo | E5 | F-21 | US-25 | NFR-02 | Could | v1.0 |
-| W-13 Đăng nhập, đăng xuất | E6 | F-22 | US-01, US-02 | NFR-03, NFR-05 | Must | v1.0 |
-| W-14 Đổi mật khẩu | E6 | F-23 | US-03 | NFR-03 | Must | v1.0 |
-| W-15 Phân quyền | E6 | F-24 | US-26 | NFR-04 | Should | v1.0 |
-| W-16 Lịch sử thay đổi | E6 | (đáp ứng bằng NFR-08, ghi trong US-05, US-08, US-17) | — | NFR-08 | Should (xuyên suốt) | v1.0 |
-| W-17 Phí gửi xe | E7 | F-25 | (v2.0, chưa viết story) | NFR-13 | Won't (v1.0) | v2.0 |
-| W-18 Điện, nước | E8 | F-26 | (v2.0, chưa viết story) | NFR-13 | Won't (v1.0) | v2.0 |
-
-## 2. Truy vết ngược: User Story tới Feature và mong muốn
-
-| User Story | Feature | Mong muốn |
-|---|---|---|
-| US-01 | F-22 | W-13 |
-| US-02 | F-22 | W-13 |
-| US-03 | F-23 | W-14 |
-| US-04 | F-01 | W-01 |
-| US-05 | F-02 | W-01, W-16 |
-| US-06 | F-03 | W-01 |
-| US-07 | F-07 | W-02 |
-| US-08 | F-08 | W-02, W-16 |
-| US-09 | F-09 | W-03 |
-| US-10 | F-10 | W-03 |
-| US-11 | F-04 | W-04 |
-| US-12 | F-05 | W-04 |
-| US-13 | F-06 | W-04 |
-| US-14 | F-11 | W-06 |
-| US-15 | F-11 | W-06 |
-| US-16 | F-12 | W-07 |
-| US-17 | F-13 | W-07, W-16 |
-| US-18 | F-14 | W-08, W-16 |
-| US-19 | F-15 | W-09 |
-| US-20 | F-16 | W-10 |
-| US-21 | F-17 | W-05 |
-| US-22 | F-18 | W-11 |
-| US-23 | F-19 | W-11 |
-| US-24 | F-20 | W-11 |
-| US-25 | F-21 | W-12 |
-| US-26 | F-24 | W-15 |
-
-## 3. Kiểm tra độ phủ
-
-- Mọi mong muốn W-01 đến W-16 có ít nhất một Feature và User Story (W-16 được đáp ứng bằng NFR-08 và ghi trong các story có thao tác ghi dữ liệu).
-- Mọi Feature F-01 đến F-24 có ít nhất một User Story.
-- Mọi User Story truy về ít nhất một mong muốn.
-- W-17, W-18 (v2.0) chỉ có Feature, chưa có User Story vì ngoài phạm vi v1.0.
-- Các NFR còn lại xuất hiện ít nhất một lần trong ma trận chính. Riêng NFR-07 (sao lưu), NFR-09 (khả dụng) và NFR-12 (bảo trì) là yêu cầu chung của toàn hệ thống nên không gắn với một mong muốn cụ thể.
+| RAW | Epic | Feature | User Story | Acceptance Criteria | Ghi chú |
+|---|---|---|---|---|---|
+| RAW-001 | EPIC-01 | F-01 | US-001 | AC-001–004 | Cốt lõi để tính phí sau này |
+| RAW-002 | EPIC-01 | F-02 | US-002 | AC-005–008 | Cấu trúc dữ liệu từ sổ hộ khẩu |
+| RAW-003 | EPIC-01 | F-02 | US-002 | AC-005–008 | Cần danh sách chọn có sẵn |
+| RAW-004 | EPIC-01 | F-03 | US-003 | AC-009–011 |  |
+| RAW-005 | EPIC-01 | F-03 | US-003 | AC-009–011 | Kiểm tra dữ liệu đầu vào |
+| RAW-006 | EPIC-01 | F-04 | US-004 | AC-012–014 | Yêu cầu từ cơ quan chức năng |
+| RAW-007 | EPIC-02 | F-05 | US-005 | AC-015–018 | Tránh tính tay sai sót |
+| RAW-008 | EPIC-02 | F-05 | US-005 | AC-015–018 |  |
+| RAW-009 | EPIC-02 | F-06 | US-006 | AC-019–021 | Danh mục động |
+| RAW-010 | EPIC-02 | F-06 | US-007 | AC-022–024 | Xử lý số tiền linh hoạt |
+| RAW-011 | EPIC-02 | F-07 | US-009 | AC-027–029 |  |
+| RAW-012 | EPIC-02 | F-06 | US-008 | AC-025–026 |  |
+| RAW-013 | EPIC-03 | F-08 | US-010 | AC-030–032 | Tối ưu thời gian thu |
+| RAW-014 | EPIC-03 | F-09 | US-011 | AC-033–035 | Trải nghiệm thao tác |
+| RAW-015 | EPIC-03 | F-09 | US-012 | AC-036–038 | Phục vụ đối soát |
+| RAW-016 | EPIC-03 | F-10 | US-013 | AC-039–040 |  |
+| RAW-017 | EPIC-03, EPIC-05 | F-09, F-21 | US-012, TS-002 | AC-036–038; AC-068–069 | Truy vết trách nhiệm |
+| RAW-018 | EPIC-03 | F-09 | US-011 | AC-033–035 | Giải quyết điểm đau |
+| RAW-019 | EPIC-03 | F-10 | US-014 | AC-041–043 |  |
+| RAW-020 | EPIC-04 | F-12 | US-016 | AC-046–047 |  |
+| RAW-021 | EPIC-04 | F-13 | US-017 | AC-048–049 |  |
+| RAW-022 | EPIC-04 | F-14 | US-018 | AC-050–051 | Khớp với quy trình cũ |
+| RAW-023 | EPIC-04 | F-15 | US-019 | AC-052–053 |  |
+| RAW-024 | EPIC-05 | F-21 | TS-003 | AC-070–071 | Ràng buộc kỹ thuật |
+| RAW-025 | EPIC-05 | F-17 | US-021 | AC-057–059 | Yêu cầu bảo mật cơ bản |
+| RAW-026 | EPIC-05 | F-18 | US-023 | AC-063–065 |  |
+| RAW-027 | EPIC-05 | F-17 | US-022 | AC-060–062 | Phân quyền, quyền riêng tư |
+| RAW-028 | EPIC-03 | F-08 | US-010 | AC-030–032 | Yêu cầu hiệu năng |
+| RAW-029 | EPIC-06 | F-19 | US-024 | US-024: chưa viết (v2.0) | Lộ trình v2.0 |
+| RAW-030 | EPIC-07 | F-20 | US-025 | US-025: chưa viết (v2.0) | Lộ trình v2.0 |
+| RAW-031 | EPIC-02 | F-06 | US-007 | AC-022–024 | Phân tích ảnh sổ thu |
+| RAW-032 | EPIC-03 | F-10 | US-013 | AC-039–040 | Điểm đau từ sổ thu |
+| RAW-033 | EPIC-05 | F-21 | TS-002 | AC-068–069 | Nhu cầu ẩn: nhật ký thay đổi |
+| RAW-034 | EPIC-05 | F-21 | TS-001 | AC-066–067 |  |
+| RAW-035 | EPIC-05 | F-17 | US-022 | AC-060–062 |  |
+| RAW-036 | EPIC-01 | F-04 | US-004 | AC-012–014 | Yêu cầu pháp lý |
+| RAW-037 | EPIC-05 | F-21 | TS-004 | AC-072 | Khả dụng |
+| RAW-038 | EPIC-03 | F-11 | US-015 | AC-044–045 | Quy trình hiện tại |
+| RAW-039 | EPIC-05 | F-16 | US-020 | AC-054–056 | Luồng nghiệp vụ 1 |
+| RAW-040 | EPIC-05 | F-18 | US-023 | AC-063–065 |  |
