@@ -1,6 +1,6 @@
 # 10. Definition of Done
 
-> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `11_DoD`. Tiêu chí hoàn thành chung cho mọi story.
+> Tiêu chí hoàn thành chung cho mọi story.
 
 | # | Tiêu chí hoàn thành (Definition of Done) | Áp dụng cho |
 |---|---|---|
