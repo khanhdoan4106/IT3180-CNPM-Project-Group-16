@@ -1,269 +1,466 @@
-# 07. User Stories
+# 07. User Stories và Acceptance Criteria
 
-> **Trạng thái:** bản nháp. Mỗi story theo mẫu "Là... tôi muốn... để...", đáp ứng tiêu chí **INVEST** (Independent, Negotiable, Valuable, Estimable, Small, Testable) và có Acceptance Criteria dạng **Given-When-Then**. Chi tiết có dấu `(*)` là giả định, cần xác nhận. Điểm ước lượng (story point, thang Fibonacci) là sơ bộ.
+> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `7_User_Story và 8_AC`. 25 User Story (US) và 4 câu chuyện kỹ thuật (TS), kèm 72 Acceptance Criteria dạng Given-When-Then (Giả sử, Khi, Thì).
+>
+> Ước lượng (SP) lấy từ [08-product-backlog.md](08-product-backlog.md). Vì sheet gốc đặt AC riêng, mỗi AC ở đây vẫn giữ nguyên mã `AC-xxx` để khớp với [ma trận truy vết](09-traceability-matrix.md).
 
-## Vai trò
+## EPIC-01: Quản lý hộ gia đình và nhân khẩu
 
-| Vai trò | Mô tả |
-|---|---|
-| Cán bộ quản lý | Tổ trưởng hoặc thành viên Ban quản lý, phụ trách hộ, nhân khẩu, khoản phí |
-| Kế toán | Phụ trách đợt thu, ghi nhận nộp phí, công nợ |
-| Quản trị hệ thống (*) | Quản lý tài khoản và phân quyền |
-| Người dùng | Bất kỳ vai trò nào đã có tài khoản |
+### US-001: Quản lý hộ gia đình
 
----
+Là Ban quản trị, tôi muốn thêm thông tin hộ gia đình và diện tích căn hộ khi cư dân mới chuyển đến, để quản lý cư dân và làm cơ sở tính phí.
 
-## E6. Tài khoản và bảo mật
+- **Epic / Feature:** EPIC-01 / F-01
+- **Nguồn:** RAW-001
+- **Ưu tiên:** Must
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** TS-003
 
-### US-01: Đăng nhập
-**Là** người dùng, **tôi muốn** đăng nhập bằng tên đăng nhập và mật khẩu, **để** chỉ người được phép mới truy cập dữ liệu cư dân và thu phí.
+**Acceptance Criteria**
 
-**Feature:** F-22 · **Ưu tiên:** Must · **Ước lượng:** 3
+- **AC-001:** **Giả sử** BQT đã đăng nhập, **khi** nhập đầy đủ mã căn hộ, tên chủ hộ, diện tích rồi lưu, **thì** hệ thống tạo hộ gia đình mới và hiển thị trong danh sách.
+- **AC-002:** **Giả sử** đang nhập thông tin căn hộ, **khi** nhập diện tích căn hộ (m²), **thì** hệ thống lưu đúng giá trị diện tích đã nhập.
+- **AC-003:** **Giả sử** thiếu thông tin bắt buộc, **khi** nhấn lưu, **thì** hệ thống báo các trường còn thiếu và không lưu.
+- **AC-004:** **Giả sử** mã căn hộ đã tồn tại, **khi** thêm hộ trùng mã căn hộ, **thì** hệ thống báo trùng và không lưu.
 
-- **Given** tài khoản đang hoạt động, **When** nhập đúng tên đăng nhập và mật khẩu, **Then** hệ thống vào trang chủ và chỉ hiển thị chức năng đúng vai trò.
-- **Given** màn hình đăng nhập, **When** nhập sai tên đăng nhập hoặc mật khẩu, **Then** hiển thị thông báo chung "Tên đăng nhập hoặc mật khẩu không đúng" và không cho vào.
-- **Given** một tài khoản, **When** nhập sai 5 lần liên tiếp (*), **Then** khoá đăng nhập tạm thời 15 phút (*).
+### US-002: Quản lý nhân khẩu
 
-### US-02: Đăng xuất
-**Là** người dùng, **tôi muốn** đăng xuất, **để** người khác không dùng nhầm tài khoản của tôi trên máy dùng chung.
+Là Ban quản trị, tôi muốn lưu thông tin nhân khẩu và quan hệ với chủ hộ, để quản lý chính xác thành viên từng hộ.
 
-**Feature:** F-22 · **Ưu tiên:** Must · **Ước lượng:** 1
+- **Epic / Feature:** EPIC-01 / F-02
+- **Nguồn:** RAW-002, RAW-003
+- **Ưu tiên:** Must
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** US-001
 
-- **Given** đang đăng nhập, **When** bấm Đăng xuất, **Then** phiên bị huỷ và quay về màn hình đăng nhập.
-- **Given** đã đăng xuất, **When** bấm nút Quay lại của trình duyệt, **Then** không xem được dữ liệu trang trước mà bị chuyển về đăng nhập.
+**Acceptance Criteria**
 
-### US-03: Đổi mật khẩu
-**Là** người dùng, **tôi muốn** đổi mật khẩu của mình, **để** bảo vệ tài khoản.
+- **AC-005:** **Giả sử** hộ đã tồn tại, **khi** thêm nhân khẩu với họ tên, ngày sinh, giới tính, số CCCD, **thì** hệ thống lưu nhân khẩu vào hộ và cập nhật số thành viên.
+- **AC-006:** **Giả sử** đang khai báo nhân khẩu, **khi** chọn quan hệ với chủ hộ (chủ hộ, vợ/chồng, con, khác), **thì** hệ thống lưu quan hệ đã chọn.
+- **AC-007:** **Giả sử** hộ đã có chủ hộ, **khi** khai báo thêm một chủ hộ thứ hai, **thì** hệ thống từ chối và báo mỗi hộ chỉ có một chủ hộ.
+- **AC-008:** **Giả sử** số CCCD đã tồn tại, **khi** lưu nhân khẩu mới, **thì** hệ thống cảnh báo trùng số CCCD.
 
-**Feature:** F-23 · **Ưu tiên:** Must · **Ước lượng:** 3
+### US-003: Tạm trú, tạm vắng
 
-- **Given** đang đăng nhập, **When** nhập đúng mật khẩu hiện tại và mật khẩu mới hợp lệ (tối thiểu 8 ký tự), **Then** mật khẩu được đổi và hiển thị thông báo thành công.
-- **Given** màn hình đổi mật khẩu, **When** nhập sai mật khẩu hiện tại, **Then** không đổi và báo lỗi.
-- **Given** màn hình đổi mật khẩu, **When** mật khẩu mới trùng mật khẩu cũ hoặc xác nhận không khớp, **Then** báo lỗi cụ thể và không đổi.
+Là Ban quản trị, tôi muốn ghi nhận tạm trú, tạm vắng kèm ngày bắt đầu và kết thúc, để theo dõi biến động nhân khẩu.
 
-### US-26: Quản lý tài khoản và phân quyền
-**Là** quản trị hệ thống, **tôi muốn** tạo tài khoản, gán vai trò và khoá hoặc mở tài khoản, **để** mỗi người chỉ dùng đúng chức năng của mình.
+- **Epic / Feature:** EPIC-01 / F-03
+- **Nguồn:** RAW-004, RAW-005
+- **Ưu tiên:** Must
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** US-002
 
-**Feature:** F-24 · **Ưu tiên:** Should · **Ước lượng:** 8
+**Acceptance Criteria**
 
-- **Given** quản trị hệ thống đang đăng nhập, **When** tạo tài khoản mới với tên đăng nhập chưa tồn tại và chọn vai trò, **Then** tài khoản được tạo và đăng nhập được.
-- **Given** một tài khoản đang hoạt động, **When** quản trị hệ thống khoá nó, **Then** người đó không đăng nhập được nữa.
-- **Given** người dùng vai trò Kế toán, **When** truy cập chức năng quản lý tài khoản, **Then** hệ thống từ chối (403).
+- **AC-009:** **Giả sử** nhân khẩu thuộc một hộ, **khi** ghi nhận tạm trú hoặc tạm vắng với ngày bắt đầu và ngày kết thúc, **thì** hệ thống lưu và cập nhật trạng thái cư trú.
+- **AC-010:** **Giả sử** đang ghi nhận tạm trú/tạm vắng, **khi** để trống ngày bắt đầu hoặc ngày kết thúc, **thì** hệ thống báo lỗi và không lưu.
+- **AC-011:** **Giả sử** ngày kết thúc trước ngày bắt đầu, **khi** lưu, **thì** hệ thống từ chối.
 
----
+### US-004: Báo cáo nhân khẩu
 
-## E1. Quản lý hộ gia đình
+Là Ban quản trị, tôi muốn xuất danh sách nhân khẩu tạm vắng, để cung cấp cho công an phường và cơ quan chức năng khi được yêu cầu.
 
-### US-04: Thêm hộ mới
-**Là** cán bộ quản lý, **tôi muốn** thêm một hộ mới với thông tin chủ hộ và căn hộ, **để** hộ đó được quản lý trong hệ thống.
+- **Epic / Feature:** EPIC-01 / F-04
+- **Nguồn:** RAW-006, RAW-036
+- **Ưu tiên:** Should
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** US-003
 
-**Feature:** F-01 · **Ưu tiên:** Must · **Ước lượng:** 5
+**Acceptance Criteria**
 
-- **Given** form thêm hộ, **When** nhập đủ thông tin bắt buộc và lưu, **Then** hệ thống tạo hộ với mã hộ tự sinh, duy nhất.
-- **Given** form thêm hộ, **When** bỏ trống trường bắt buộc, **Then** hiển thị lỗi ngay tại trường đó và không lưu.
-- **Given** số căn hộ đã có hộ đang quản lý, **When** lưu hộ mới cùng số căn hộ, **Then** hệ thống cảnh báo trùng và không lưu (*).
+- **AC-012:** **Giả sử** có nhân khẩu đang tạm vắng, **khi** BQT chọn xuất danh sách tạm vắng, **thì** hệ thống tạo danh sách gồm họ tên, căn hộ, thời gian tạm vắng.
+- **AC-013:** **Giả sử** không có nhân khẩu tạm vắng, **khi** xuất danh sách, **thì** hệ thống thông báo không có dữ liệu.
+- **AC-014:** **Giả sử** danh sách đã tạo, **khi** chọn xuất file, **thì** hệ thống tạo file Excel/PDF đủ các trường theo quy định báo cáo.
 
-### US-05: Cập nhật thông tin hộ
-**Là** cán bộ quản lý, **tôi muốn** sửa thông tin của hộ, **để** dữ liệu luôn đúng thực tế.
+## EPIC-02: Quản lý danh mục và khoản thu
 
-**Feature:** F-02 · **Ưu tiên:** Must · **Ước lượng:** 3
+### US-005: Tính phí tự động
 
-- **Given** một hộ đang được quản lý, **When** sửa thông tin hợp lệ và lưu, **Then** thông tin mới hiển thị ngay và thao tác được ghi vào nhật ký.
-- **Given** form sửa hộ, **When** để trống trường bắt buộc, **Then** báo lỗi và không lưu.
-- **Given** một hộ, **When** sửa mã hộ, **Then** hệ thống không cho phép (mã hộ cố định).
+Là Thủ quỹ, tôi muốn hệ thống tự tính phí dịch vụ và phí quản lý theo diện tích × đơn giá, để tránh tính tay sai sót.
 
-### US-06: Xem danh sách và chi tiết hộ
-**Là** cán bộ quản lý, **tôi muốn** xem danh sách hộ và chi tiết từng hộ kèm các thành viên, **để** nắm tình hình cư dân.
+- **Epic / Feature:** EPIC-02 / F-05
+- **Nguồn:** RAW-007, RAW-008
+- **Ưu tiên:** Must
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** US-001
 
-**Feature:** F-03 · **Ưu tiên:** Must · **Ước lượng:** 3
+**Acceptance Criteria**
 
-- **Given** có nhiều hộ, **When** mở danh sách, **Then** hiển thị phân trang kèm mã hộ, chủ hộ, số căn hộ, trạng thái.
-- **Given** danh sách hộ, **When** chọn một hộ, **Then** hiển thị chi tiết hộ và danh sách thành viên.
-- **Given** chưa có hộ nào, **When** mở danh sách, **Then** hiển thị thông báo "Chưa có hộ nào" thay vì lỗi.
+- **AC-015:** **Giả sử** căn hộ có diện tích và đơn giá phí dịch vụ trong khoảng 2.500–16.500 đ/m², **khi** hệ thống tính phí, **thì** phí dịch vụ = diện tích × đơn giá.
+- **AC-016:** **Giả sử** căn hộ có diện tích, **khi** tính phí quản lý, **thì** hệ thống dùng đơn giá mặc định 7.000 đ/m² (BQT có thể thay đổi).
+- **AC-017:** **Giả sử** đơn giá phí dịch vụ nằm ngoài khoảng 2.500–16.500 đ/m², **khi** lưu cấu hình, **thì** hệ thống cảnh báo.
+- **AC-018:** **Giả sử** dữ liệu tính phí hợp lệ, **khi** xem khoản phí, **thì** tổng tiền hiển thị chính xác.
 
-### US-13: Ngừng quản lý hộ đã chuyển đi
-**Là** cán bộ quản lý, **tôi muốn** đánh dấu một hộ đã chuyển đi, **để** hộ đó không còn bị tính vào các đợt thu mới nhưng lịch sử vẫn còn.
+### US-006: Tạo khoản thu tự nguyện
 
-**Feature:** F-06 · **Ưu tiên:** Should · **Ước lượng:** 3
+Là Ban quản trị, tôi muốn tự tạo khoản thu tự nguyện mới theo từng đợt (VD Quỹ vì người nghèo), để quản lý linh hoạt các quỹ phát sinh.
 
-- **Given** một hộ đang quản lý, **When** đánh dấu đã chuyển đi và ghi ngày, **Then** trạng thái hộ đổi thành "Đã chuyển đi" và các nhân khẩu trong hộ cũng đổi trạng thái tương ứng.
-- **Given** một hộ đã chuyển đi, **When** tạo đợt thu mới, **Then** hộ này không nằm trong danh sách tính phí.
-- **Given** một hộ còn công nợ, **When** đánh dấu đã chuyển đi, **Then** hệ thống cảnh báo còn nợ và yêu cầu xác nhận (*).
+- **Epic / Feature:** EPIC-02 / F-06
+- **Nguồn:** RAW-009
+- **Ưu tiên:** Must
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** (không)
 
-### US-11: Đổi chủ hộ
-**Là** cán bộ quản lý, **tôi muốn** chuyển vai trò chủ hộ sang một thành viên khác trong hộ, **để** hộ luôn có người đại diện đúng thực tế.
+**Acceptance Criteria**
 
-**Feature:** F-04 · **Ưu tiên:** Should · **Ước lượng:** 3
+- **AC-019:** **Giả sử** BQT ở màn hình quản lý khoản thu, **khi** tạo khoản thu tự nguyện mới (tên, thời gian), **thì** khoản thu xuất hiện trong danh mục.
+- **AC-020:** **Giả sử** tên khoản thu đã tồn tại trong cùng đợt, **khi** lưu, **thì** hệ thống báo trùng.
+- **AC-021:** **Giả sử** tạo khoản thu tự nguyện, **khi** không nhập số tiền cố định, **thì** hệ thống vẫn cho lưu.
 
-- **Given** hộ có từ 2 thành viên, **When** chọn thành viên khác làm chủ hộ, **Then** chủ hộ mới được cập nhật và chủ hộ cũ đổi quan hệ theo lựa chọn.
-- **Given** hộ chỉ có một thành viên, **When** thực hiện đổi chủ hộ, **Then** hệ thống từ chối và giải thích.
-- **Given** sau khi đổi, **When** xem hộ, **Then** hộ chỉ có đúng một chủ hộ.
+### US-007: Ghi nhận đóng góp tự nguyện
 
-### US-12: Tách hộ
-**Là** cán bộ quản lý, **tôi muốn** tách một số thành viên thành hộ mới, **để** phản ánh việc các thành viên ở riêng.
+Là Thủ quỹ, tôi muốn ghi nhận số tiền đóng góp tùy ý (kể cả 0đ) cho nhiều quỹ của một hộ, để phản ánh đúng tinh thần tự nguyện.
 
-**Feature:** F-05 · **Ưu tiên:** Could · **Ước lượng:** 8
+- **Epic / Feature:** EPIC-02 / F-06
+- **Nguồn:** RAW-010, RAW-031
+- **Ưu tiên:** Must
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** US-006
 
-- **Given** hộ có từ 2 thành viên, **When** chọn một số thành viên (không phải tất cả) và nhập thông tin hộ mới, **Then** hệ thống tạo hộ mới chứa các thành viên đã chọn và chọn một người làm chủ hộ.
-- **Given** thao tác tách hộ, **When** chọn tất cả thành viên, **Then** hệ thống từ chối vì hộ cũ sẽ không còn ai.
-- **Given** việc tách hộ thành công, **When** xem hộ cũ, **Then** các thành viên đã tách không còn xuất hiện ở hộ cũ.
+**Acceptance Criteria**
 
----
+- **AC-022:** **Giả sử** khoản thu tự nguyện đang mở, **khi** ghi nhận hộ đóng số tiền bất kỳ, **thì** hệ thống lưu đúng số tiền.
+- **AC-023:** **Giả sử** hộ không đóng quỹ, **khi** ghi nhận 0đ, **thì** hệ thống lưu trạng thái "không đóng", khác "chưa thu".
+- **AC-024:** **Giả sử** hộ đóng nhiều quỹ, **khi** nhập các khoản trên cùng màn hình, **thì** hệ thống lưu riêng từng khoản cho từng quỹ.
 
-## E2. Quản lý nhân khẩu
+### US-008: Sửa khoản thu
 
-### US-07: Thêm nhân khẩu vào hộ
-**Là** cán bộ quản lý, **tôi muốn** thêm thành viên vào một hộ, **để** có đầy đủ thông tin nhân khẩu.
+Là Thủ quỹ, tôi muốn cập nhật lại giá trị khoản thu của một hộ trước khi hộ đóng, để sửa kịp thời khi nhập sai.
 
-**Feature:** F-07 · **Ưu tiên:** Must · **Ước lượng:** 5
+- **Epic / Feature:** EPIC-02 / F-06
+- **Nguồn:** RAW-012
+- **Ưu tiên:** Should
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** US-006
 
-- **Given** form thêm nhân khẩu của một hộ, **When** nhập đủ thông tin hợp lệ (họ tên, ngày sinh, giới tính, quan hệ với chủ hộ) và lưu, **Then** nhân khẩu xuất hiện trong danh sách thành viên của hộ.
-- **Given** CCCD đã có ở nhân khẩu khác, **When** lưu, **Then** báo lỗi trùng CCCD và không lưu.
-- **Given** hộ chưa có chủ hộ, **When** thêm nhân khẩu đầu tiên, **Then** hệ thống yêu cầu đặt người đó là chủ hộ.
+**Acceptance Criteria**
 
-### US-08: Cập nhật thông tin nhân khẩu
-**Là** cán bộ quản lý, **tôi muốn** sửa thông tin nhân khẩu, **để** sửa sai sót hoặc cập nhật thay đổi.
+- **AC-025:** **Giả sử** khoản thu của hộ chưa có thanh toán, **khi** thủ quỹ cập nhật giá trị, **thì** hệ thống lưu giá trị mới.
+- **AC-026:** **Giả sử** khoản thu đã có thanh toán, **khi** cố sửa giá trị, **thì** hệ thống từ chối và yêu cầu hủy phiếu thu trước.
 
-**Feature:** F-08 · **Ưu tiên:** Must · **Ước lượng:** 3
+### US-009: Chốt công nợ
 
-- **Given** một nhân khẩu, **When** sửa thông tin hợp lệ và lưu, **Then** thay đổi hiển thị ngay và được ghi vào nhật ký.
-- **Given** form sửa, **When** nhập ngày sinh ở tương lai, **Then** báo lỗi và không lưu.
-- **Given** form sửa, **When** đổi CCCD thành số đã tồn tại, **Then** báo lỗi trùng.
+Là Thủ quỹ, tôi muốn hệ thống tự tạo danh sách công nợ cho tất cả các phòng vào đầu mỗi tháng, để có danh sách đi thu mà không phải lập tay.
 
-### US-09: Khai báo chuyển đi hoặc qua đời
-**Là** cán bộ quản lý, **tôi muốn** ghi nhận nhân khẩu chuyển đi hoặc qua đời kèm ngày và lý do, **để** số liệu cư trú luôn đúng.
+- **Epic / Feature:** EPIC-02 / F-07
+- **Nguồn:** RAW-011
+- **Ưu tiên:** Must
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** US-005, US-006
 
-**Feature:** F-09 · **Ưu tiên:** Should · **Ước lượng:** 5
+**Acceptance Criteria**
 
-- **Given** một nhân khẩu đang cư trú, **When** khai chuyển đi hoặc qua đời với ngày hợp lệ, **Then** trạng thái đổi tương ứng và nhân khẩu không còn tính vào thống kê cư trú hiện tại.
-- **Given** nhân khẩu là chủ hộ, **When** khai chuyển đi hoặc qua đời, **Then** hệ thống yêu cầu chọn chủ hộ mới trước (nếu hộ còn thành viên).
-- **Given** ngày khai sớm hơn ngày sinh, **When** lưu, **Then** báo lỗi.
+- **AC-027:** **Giả sử** đầu tháng và đã có danh mục phí, **khi** hệ thống chốt công nợ, **thì** tạo danh sách khoản phải thu cho tất cả các phòng.
+- **AC-028:** **Giả sử** công nợ tháng đã được tạo, **khi** chốt lại cùng tháng, **thì** hệ thống không tạo trùng.
+- **AC-029:** **Giả sử** hộ chưa có diện tích, **khi** chốt công nợ, **thì** hệ thống cảnh báo và bỏ qua hộ đó.
 
-### US-10: Khai báo tạm trú, tạm vắng
-**Là** cán bộ quản lý, **tôi muốn** ghi nhận tạm trú, tạm vắng với khoảng thời gian, **để** biết số người thực tế ở chung cư.
+## EPIC-03: Thu phí và thanh toán
 
-**Feature:** F-10 · **Ưu tiên:** Should · **Ước lượng:** 5
+### US-010: Tra cứu phí
 
-- **Given** một nhân khẩu, **When** khai tạm vắng với ngày bắt đầu và ngày kết thúc dự kiến, **Then** hệ thống ghi nhận và hiển thị trạng thái "Tạm vắng" trong khoảng thời gian đó.
-- **Given** ngày kết thúc sớm hơn ngày bắt đầu, **When** lưu, **Then** báo lỗi.
-- **Given** đã quá ngày kết thúc dự kiến, **When** xem nhân khẩu, **Then** hệ thống gắn cờ để cán bộ xác nhận lại (*).
+Là Thủ quỹ, tôi muốn nhập mã phòng để xem ngay các khoản chưa đóng, để thu tiền nhanh khi cư dân đến đóng.
 
----
+- **Epic / Feature:** EPIC-03 / F-08
+- **Nguồn:** RAW-013, RAW-028
+- **Ưu tiên:** Must
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** US-001, US-009
 
-## E3. Quản lý khoản phí
+**Acceptance Criteria**
 
-### US-14: Tạo khoản phí
-**Là** cán bộ quản lý, **tôi muốn** tạo khoản phí mới với loại, đơn giá và cách tính, **để** dùng cho các đợt thu.
+- **AC-030:** **Giả sử** mã phòng tồn tại, **khi** thủ quỹ nhập mã phòng, **thì** hệ thống hiển thị thông tin hộ và các khoản chưa đóng.
+- **AC-031:** **Giả sử** mã phòng không tồn tại, **khi** tìm kiếm, **thì** hệ thống báo "Không tìm thấy phòng".
+- **AC-032:** **Giả sử** dữ liệu bình thường, **khi** tìm kiếm theo mã phòng, **thì** kết quả hiển thị trong dưới 3 giây.
 
-**Feature:** F-11 · **Ưu tiên:** Must · **Ước lượng:** 5
+### US-011: Thu tất cả các khoản
 
-- **Given** form khoản phí, **When** nhập tên, loại (bắt buộc hoặc tự nguyện), cách tính, đơn giá hợp lệ và lưu, **Then** khoản phí xuất hiện trong danh mục.
-- **Given** tên khoản phí đã tồn tại, **When** lưu, **Then** báo trùng và không lưu.
-- **Given** đơn giá âm hoặc bằng 0 với khoản bắt buộc, **When** lưu, **Then** báo lỗi.
+Là Thủ quỹ, tôi muốn thu tất cả các khoản của hộ bằng một nút và hệ thống tự cộng tổng, để thu nhanh và không cộng nhầm.
 
-### US-15: Sửa hoặc ngừng áp dụng khoản phí
-**Là** cán bộ quản lý, **tôi muốn** sửa hoặc ngừng áp dụng khoản phí, **để** danh mục phản ánh quy định hiện hành mà không mất dữ liệu cũ.
+- **Epic / Feature:** EPIC-03 / F-09
+- **Nguồn:** RAW-014, RAW-018
+- **Ưu tiên:** Must
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** US-010
 
-**Feature:** F-11 · **Ưu tiên:** Must · **Ước lượng:** 3
+**Acceptance Criteria**
 
-- **Given** một khoản phí chưa dùng, **When** sửa thông tin và lưu, **Then** thay đổi áp dụng cho các đợt thu tạo sau.
-- **Given** một khoản phí đã có đợt thu, **When** sửa đơn giá, **Then** các đợt thu cũ vẫn giữ đơn giá cũ.
-- **Given** một khoản phí đã có đợt thu, **When** xoá, **Then** hệ thống không xoá mà chuyển sang trạng thái ngừng áp dụng.
+- **AC-033:** **Giả sử** hộ có nhiều khoản chưa đóng, **khi** thủ quỹ nhấn "Thu tất cả", **thì** hệ thống ghi nhận thu toàn bộ các khoản và công nợ về 0.
+- **AC-034:** **Giả sử** thủ quỹ chỉ chọn một số khoản, **khi** xác nhận thu, **thì** hệ thống chỉ ghi nhận các khoản được chọn.
+- **AC-035:** **Giả sử** giao dịch đã ghi nhận, **khi** xem tổng tiền, **thì** tổng tự cộng chính xác theo các khoản và có ngày thu.
 
-### US-16: Tạo đợt thu và tính phí tự động
-**Là** kế toán, **tôi muốn** tạo đợt thu cho một khoản phí và để hệ thống tự tính số tiền từng hộ, **để** khỏi tính tay.
+### US-012: Hình thức thanh toán và người thu
 
-**Feature:** F-12 · **Ưu tiên:** Must · **Ước lượng:** 8
+Là Thủ quỹ, tôi muốn chọn tiền mặt hoặc chuyển khoản và hệ thống tự lưu người thu, để đối soát và truy vết trách nhiệm.
 
-- **Given** một khoản phí đang áp dụng, **When** tạo đợt thu với kỳ thu và hạn nộp hợp lệ, **Then** hệ thống tính số tiền phải nộp cho mọi hộ đang cư trú theo cách tính của khoản phí.
-- **Given** đợt thu đã tạo, **When** xem chi tiết, **Then** thấy danh sách hộ kèm số tiền phải nộp và tổng phải thu khớp với tổng từng hộ.
-- **Given** một khoản phí đã có đợt thu cùng kỳ, **When** tạo thêm đợt thu trùng kỳ, **Then** hệ thống cảnh báo trùng và yêu cầu xác nhận (*).
+- **Epic / Feature:** EPIC-03 / F-09
+- **Nguồn:** RAW-015, RAW-017
+- **Ưu tiên:** Must
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** US-011
 
-### US-17: Miễn giảm phí cho hộ
-**Là** kế toán, **tôi muốn** miễn hoặc giảm phí cho một hộ trong đợt thu kèm lý do, **để** xử lý các trường hợp đặc biệt.
+**Acceptance Criteria**
 
-**Feature:** F-13 · **Ưu tiên:** Could · **Ước lượng:** 5
+- **AC-036:** **Giả sử** đang thu tiền, **khi** chọn "Tiền mặt" hoặc "Chuyển khoản", **thì** hệ thống lưu hình thức thanh toán.
+- **AC-037:** **Giả sử** giao dịch được xác nhận, **khi** lưu, **thì** hệ thống tự động lưu tên tài khoản thu ngân và thời điểm.
+- **AC-038:** **Giả sử** chưa chọn hình thức thanh toán, **khi** xác nhận, **thì** hệ thống báo lỗi.
 
-- **Given** một hộ trong đợt thu, **When** nhập số tiền giảm hợp lệ (không vượt số phải nộp) và lý do, **Then** số phải nộp được cập nhật và thao tác được ghi vào nhật ký.
-- **Given** nhập số tiền giảm lớn hơn số phải nộp, **When** lưu, **Then** báo lỗi.
-- **Given** hộ đã nộp đủ, **When** miễn giảm, **Then** hệ thống từ chối hoặc yêu cầu xử lý hoàn tiền riêng (*).
+### US-013: In biên lai
 
----
+Là Thủ quỹ, tôi muốn in biên lai từ phần mềm sau khi thu, để cư dân có chứng từ đối chiếu.
 
-## E4. Thu phí
+- **Epic / Feature:** EPIC-03 / F-10
+- **Nguồn:** RAW-016, RAW-032
+- **Ưu tiên:** Should
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** US-011
 
-### US-18: Ghi nhận nộp phí
-**Là** kế toán, **tôi muốn** ghi nhận một lần nộp tiền của hộ, **để** theo dõi chính xác đã thu những gì.
+**Acceptance Criteria**
 
-**Feature:** F-14 · **Ưu tiên:** Must · **Ước lượng:** 5
+- **AC-039:** **Giả sử** giao dịch thu đã ghi nhận, **khi** thủ quỹ chọn in biên lai, **thì** hệ thống tạo biên lai gồm mã biên lai, hộ, khoản, số tiền, ngày thu, người thu.
+- **AC-040:** **Giả sử** biên lai đã in, **khi** in lại, **thì** hệ thống ghi rõ "bản in lại".
 
-- **Given** một hộ còn phải nộp trong đợt thu, **When** nhập số tiền, ngày nộp, hình thức và lưu, **Then** hệ thống ghi nhận và cập nhật số còn nợ của hộ.
-- **Given** số tiền nộp bằng số còn nợ, **When** lưu, **Then** trạng thái của hộ trong đợt đó chuyển thành "Đã nộp đủ".
-- **Given** số tiền nộp lớn hơn số còn nợ, **When** lưu, **Then** hệ thống cảnh báo và không cho lưu (*).
+### US-014: Hủy phiếu thu
 
-### US-19: Theo dõi công nợ
-**Là** kế toán, **tôi muốn** xem danh sách hộ chưa nộp hoặc còn nợ theo đợt thu, **để** nhắc nhở đúng người.
+Là Thủ quỹ, tôi muốn hủy phiếu thu nhầm trong ngày, để sửa sai mà vẫn truy vết được.
 
-**Feature:** F-15 · **Ưu tiên:** Must · **Ước lượng:** 5
+- **Epic / Feature:** EPIC-03 / F-10
+- **Nguồn:** RAW-019
+- **Ưu tiên:** Should
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** US-011
 
-- **Given** một đợt thu, **When** mở công nợ, **Then** hiển thị các hộ chưa nộp hoặc nộp thiếu, kèm số còn nợ và tổng nợ.
-- **Given** màn hình công nợ, **When** lọc theo đợt thu hoặc khoản phí, **Then** danh sách và tổng nợ cập nhật đúng theo bộ lọc.
-- **Given** mọi hộ đã nộp đủ, **When** mở công nợ, **Then** hiển thị "Không còn hộ nào nợ".
+**Acceptance Criteria**
 
-### US-20: In biên lai
-**Là** kế toán, **tôi muốn** in biên lai cho mỗi lần nộp, **để** cư dân có chứng từ.
+- **AC-041:** **Giả sử** giao dịch được tạo trong ngày, **khi** thủ quỹ hủy phiếu thu và nhập lý do, **thì** hệ thống hủy giao dịch và khôi phục công nợ.
+- **AC-042:** **Giả sử** giao dịch của ngày trước, **khi** cố hủy, **thì** hệ thống từ chối.
+- **AC-043:** **Giả sử** phiếu đã hủy, **khi** xem lịch sử, **thì** hệ thống vẫn lưu vết phiếu hủy kèm người hủy.
 
-**Feature:** F-16 · **Ưu tiên:** Should · **Ước lượng:** 3
+### US-015: Thông báo thu phí
 
-- **Given** một lần nộp đã ghi nhận, **When** chọn In biên lai, **Then** hiển thị biên lai có mã số, tên hộ, khoản phí, số tiền, ngày, người thu.
-- **Given** một biên lai đã in, **When** in lại, **Then** biên lai giữ nguyên mã số và ghi chú "Bản in lại" (*).
-- **Given** lần nộp đã bị huỷ, **When** chọn In biên lai, **Then** hệ thống từ chối.
+Là Ban quản trị, tôi muốn in thông báo các khoản phí hàng tháng cho từng hộ, để cư dân biết rõ khoản phải đóng.
 
----
+- **Epic / Feature:** EPIC-03 / F-11
+- **Nguồn:** RAW-038
+- **Ưu tiên:** Should
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** US-009
 
-## E5. Tra cứu và thống kê
+**Acceptance Criteria**
 
-### US-21: Tra cứu hộ và nhân khẩu
-**Là** cán bộ quản lý, **tôi muốn** tìm hộ hoặc nhân khẩu theo tên, số căn hộ, CCCD, trạng thái, **để** tìm nhanh khi cần.
+- **AC-044:** **Giả sử** công nợ tháng đã chốt, **khi** chọn in thông báo cho hộ, **thì** hệ thống tạo thông báo liệt kê các khoản và số tiền cần đóng.
+- **AC-045:** **Giả sử** hộ không có khoản phải đóng, **khi** in thông báo, **thì** hệ thống báo không có khoản cần đóng.
 
-**Feature:** F-17 · **Ưu tiên:** Must · **Ước lượng:** 5
+## EPIC-04: Thống kê và báo cáo
 
-- **Given** có dữ liệu, **When** nhập một phần tên hoặc số căn hộ, **Then** trả về các kết quả phù hợp trong chưa tới 2 giây.
-- **Given** kết quả tìm kiếm, **When** chọn một kết quả, **Then** mở đúng trang chi tiết hộ hoặc nhân khẩu.
-- **Given** không có kết quả phù hợp, **When** tìm kiếm, **Then** hiển thị "Không tìm thấy kết quả".
+### US-016: Tổng thu tháng
 
-### US-22: Tra cứu khoản thu
-**Là** kế toán, **tôi muốn** xem lịch sử các lần nộp theo hộ, theo đợt hoặc theo khoản phí, **để** đối chiếu khi cần.
+Là Ban quản trị, tôi muốn xem tổng tiền đã thu trong tháng ngay trên màn hình chính, để nắm nhanh tình hình thu.
 
-**Feature:** F-18 · **Ưu tiên:** Should · **Ước lượng:** 3
+- **Epic / Feature:** EPIC-04 / F-12
+- **Nguồn:** RAW-020
+- **Ưu tiên:** Should
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** US-011
 
-- **Given** một hộ đã nộp nhiều lần, **When** mở lịch sử nộp của hộ, **Then** hiển thị đầy đủ các lần nộp theo thứ tự thời gian.
-- **Given** màn hình tra cứu khoản thu, **When** lọc theo khoảng ngày, **Then** chỉ hiển thị các lần nộp trong khoảng đó.
-- **Given** không có giao dịch phù hợp, **When** lọc, **Then** hiển thị "Không có dữ liệu".
+**Acceptance Criteria**
 
-### US-23: Thống kê thu phí
-**Là** kế toán, **tôi muốn** xem tổng thu và số hộ đã hoặc chưa nộp theo đợt thu và theo khoản phí, **để** nắm tiến độ thu.
+- **AC-046:** **Giả sử** có dữ liệu thu của tháng, **khi** BQT mở màn hình chính, **thì** hệ thống hiển thị tổng số tiền đã thu trong tháng.
+- **AC-047:** **Giả sử** tháng chưa có giao dịch, **khi** mở màn hình chính, **thì** tổng thu hiển thị 0.
 
-**Feature:** F-19 · **Ưu tiên:** Must · **Ước lượng:** 5
+### US-017: Lọc nợ đọng
 
-- **Given** một đợt thu, **When** mở thống kê, **Then** hiển thị tổng phải thu, tổng đã thu, tổng còn nợ, số hộ đã nộp đủ và chưa nộp đủ.
-- **Given** thống kê, **When** đối chiếu với tổng các lần nộp ở tra cứu khoản thu, **Then** hai con số khớp nhau.
-- **Given** đợt thu chưa có lần nộp nào, **When** mở thống kê, **Then** tổng đã thu bằng 0 và không báo lỗi.
+Là Ban quản trị, tôi muốn lọc danh sách hộ nợ phí quá 3 tháng, để nhắc nhở kịp thời.
 
-### US-24: Thống kê nhân khẩu
-**Là** cán bộ quản lý, **tôi muốn** thống kê nhân khẩu theo nhóm tuổi, giới tính và trạng thái cư trú, **để** làm báo cáo cho cấp trên.
+- **Epic / Feature:** EPIC-04 / F-13
+- **Nguồn:** RAW-021
+- **Ưu tiên:** Should
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** US-009, US-011
 
-**Feature:** F-20 · **Ưu tiên:** Should · **Ước lượng:** 5
+**Acceptance Criteria**
 
-- **Given** có dữ liệu nhân khẩu, **When** mở thống kê, **Then** hiển thị số lượng theo nhóm tuổi, giới tính và trạng thái cư trú.
-- **Given** tổng các nhóm trong thống kê, **When** cộng lại, **Then** bằng tổng số nhân khẩu đang tính.
-- **Given** nhân khẩu đã chuyển đi hoặc qua đời, **When** xem thống kê cư trú hiện tại, **Then** không tính các nhân khẩu này.
+- **AC-048:** **Giả sử** có hộ nợ phí, **khi** BQT lọc "nợ quá 3 tháng", **thì** hệ thống chỉ hiển thị các hộ nợ từ 3 tháng trở lên.
+- **AC-049:** **Giả sử** danh sách đã lọc, **khi** xem danh sách, **thì** hiển thị mã phòng, chủ hộ, số tháng nợ, tổng tiền nợ.
 
-### US-25: Xuất báo cáo
-**Là** cán bộ quản lý hoặc kế toán, **tôi muốn** xuất thống kê ra Excel hoặc PDF, **để** nộp cho cấp trên.
+### US-018: Xuất báo cáo Excel
 
-**Feature:** F-21 · **Ưu tiên:** Could · **Ước lượng:** 5
+Là Thủ quỹ, tôi muốn xuất báo cáo thu tiền ra Excel theo mẫu thủ công cũ, để lưu trữ và đối chiếu với quy trình cũ.
 
-- **Given** một màn hình thống kê, **When** chọn Xuất Excel, **Then** tải về file có số liệu khớp màn hình.
-- **Given** một màn hình thống kê, **When** chọn Xuất PDF, **Then** tải về file PDF dễ in, hiển thị đúng tiếng Việt.
-- **Given** thống kê không có dữ liệu, **When** xuất, **Then** file vẫn hợp lệ và ghi rõ không có dữ liệu.
+- **Epic / Feature:** EPIC-04 / F-14
+- **Nguồn:** RAW-022
+- **Ưu tiên:** Could
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** US-011
+
+**Acceptance Criteria**
+
+- **AC-050:** **Giả sử** có dữ liệu thu, **khi** thủ quỹ chọn xuất Excel, **thì** hệ thống tạo file có các cột giống mẫu thủ công cũ.
+- **AC-051:** **Giả sử** kỳ chưa có giao dịch, **khi** xuất báo cáo, **thì** hệ thống thông báo không có dữ liệu.
+
+### US-019: Thống kê theo khoản thu
+
+Là Ban quản trị, tôi muốn xem tổng thu của từng khoản/quỹ theo đợt, để báo cáo kết quả từng quỹ.
+
+- **Epic / Feature:** EPIC-04 / F-15
+- **Nguồn:** RAW-023
+- **Ưu tiên:** Should
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** US-007, US-011
+
+**Acceptance Criteria**
+
+- **AC-052:** **Giả sử** có nhiều khoản thu, **khi** BQT chọn một khoản (VD quỹ vì biển đảo) và đợt thu, **thì** hệ thống hiển thị tổng thu của khoản đó.
+- **AC-053:** **Giả sử** khoản thu chưa có giao dịch, **khi** thống kê, **thì** tổng thu bằng 0.
+
+## EPIC-05: Tài khoản, bảo mật và nền tảng hệ thống
+
+### US-020: Đăng ký tài khoản
+
+Là Ban quản trị, tôi muốn đăng ký tài khoản đăng nhập, để người có quyền được dùng hệ thống.
+
+- **Epic / Feature:** EPIC-05 / F-16
+- **Nguồn:** RAW-039
+- **Ưu tiên:** Must
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** TS-003
+
+**Acceptance Criteria**
+
+- **AC-054:** **Giả sử** thông tin đăng ký hợp lệ (tên đăng nhập, mật khẩu), **khi** đăng ký, **thì** hệ thống tạo tài khoản.
+- **AC-055:** **Giả sử** tên đăng nhập đã tồn tại, **khi** đăng ký, **thì** hệ thống báo trùng.
+- **AC-056:** **Giả sử** mật khẩu không đạt độ dài tối thiểu, **khi** đăng ký, **thì** hệ thống báo lỗi.
+
+### US-021: Đăng nhập
+
+Là Ban quản trị, tôi muốn đăng nhập bằng tên đăng nhập và mật khẩu, để chỉ người có tài khoản truy cập được dữ liệu.
+
+- **Epic / Feature:** EPIC-05 / F-17
+- **Nguồn:** RAW-025
+- **Ưu tiên:** Must
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** US-020
+
+**Acceptance Criteria**
+
+- **AC-057:** **Giả sử** tài khoản hợp lệ, **khi** nhập đúng tên đăng nhập và mật khẩu, **thì** vào được hệ thống.
+- **AC-058:** **Giả sử** sai mật khẩu, **khi** đăng nhập, **thì** hệ thống từ chối, không truy cập được dữ liệu.
+- **AC-059:** **Giả sử** chưa đăng nhập, **khi** truy cập chức năng quản lý, **thì** hệ thống yêu cầu đăng nhập.
+
+### US-022: Phân quyền
+
+Là Quản trị viên, tôi muốn phân quyền Quản trị viên và Nhân viên thu phí, để mỗi người chỉ dùng chức năng được giao và thông tin cư dân không bị lộ.
+
+- **Epic / Feature:** EPIC-05 / F-17
+- **Nguồn:** RAW-027, RAW-035
+- **Ưu tiên:** Should
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** US-021
+
+**Acceptance Criteria**
+
+- **AC-060:** **Giả sử** tài khoản vai trò Nhân viên thu phí, **khi** đăng nhập, **thì** chỉ dùng được chức năng thu phí và tra cứu.
+- **AC-061:** **Giả sử** tài khoản Quản trị viên, **khi** đăng nhập, **thì** dùng được mọi chức năng gồm quản lý tài khoản.
+- **AC-062:** **Giả sử** thông tin nhân khẩu và công nợ của một hộ, **khi** người không có quyền truy cập, **thì** hệ thống không hiển thị dữ liệu.
+
+### US-023: Quản lý tài khoản
+
+Là Người dùng, tôi muốn đổi mật khẩu và cập nhật thông tin cá nhân, để giữ an toàn tài khoản.
+
+- **Epic / Feature:** EPIC-05 / F-18
+- **Nguồn:** RAW-026, RAW-040
+- **Ưu tiên:** Should
+- **Ước lượng:** 3 SP
+- **Phụ thuộc:** US-021
+
+**Acceptance Criteria**
+
+- **AC-063:** **Giả sử** đã đăng nhập, **khi** nhập mật khẩu cũ đúng và mật khẩu mới hợp lệ, **thì** đổi mật khẩu thành công.
+- **AC-064:** **Giả sử** mật khẩu cũ sai, **khi** đổi mật khẩu, **thì** hệ thống từ chối.
+- **AC-065:** **Giả sử** đã đăng nhập, **khi** sửa thông tin cá nhân và lưu, **thì** hệ thống cập nhật thông tin.
+
+### TS-001: Sao lưu dữ liệu
+
+Câu chuyện kỹ thuật: sao lưu dữ liệu MySQL định kỳ (hàng ngày/tuần) để tránh mất dữ liệu.
+
+- **Epic / Feature:** EPIC-05 / F-21
+- **Nguồn:** RAW-034
+- **Ưu tiên:** Should
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** TS-003
+
+**Acceptance Criteria**
+
+- **AC-066:** **Giả sử** MySQL đang hoạt động, **khi** đến lịch sao lưu định kỳ, **thì** hệ thống tạo bản sao lưu và ghi nhận thời điểm.
+- **AC-067:** **Giả sử** có bản sao lưu, **khi** khôi phục thử, **thì** dữ liệu thu phí và nhân khẩu phục hồi đầy đủ.
+
+### TS-002: Nhật ký thao tác
+
+Câu chuyện kỹ thuật: ghi nhật ký mọi thao tác thay đổi dữ liệu quan trọng.
+
+- **Epic / Feature:** EPIC-05 / F-21
+- **Nguồn:** RAW-033, RAW-017
+- **Ưu tiên:** Should
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** TS-003
+
+**Acceptance Criteria**
+
+- **AC-068:** **Giả sử** người dùng sửa dữ liệu quan trọng, **khi** lưu, **thì** hệ thống ghi nhật ký gồm người sửa, nội dung sửa, thời điểm.
+- **AC-069:** **Giả sử** nhật ký đã có dữ liệu, **khi** BQT xem nhật ký, **thì** hiển thị theo thời gian và không cho sửa/xóa.
+
+### TS-003: Nền tảng Java máy tính để bàn + MySQL
+
+Câu chuyện kỹ thuật: thiết lập ứng dụng Java máy tính để bàn kết nối CSDL MySQL tập trung.
+
+- **Epic / Feature:** EPIC-05 / F-21
+- **Nguồn:** RAW-024
+- **Ưu tiên:** Must
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** (không)
+
+**Acceptance Criteria**
+
+- **AC-070:** **Giả sử** máy chủ MySQL đang chạy, **khi** ứng dụng Java máy tính để bàn khởi động, **thì** ứng dụng kết nối tới CSDL tập trung.
+- **AC-071:** **Giả sử** hai máy cùng dùng ứng dụng, **khi** một máy ghi dữ liệu, **thì** máy còn lại thấy cùng dữ liệu.
+
+### TS-004: Giao diện thân thiện
+
+Câu chuyện kỹ thuật: rà soát giao diện dễ dùng cho người lớn tuổi (chữ rõ, ít bước thao tác).
+
+- **Epic / Feature:** EPIC-05 / F-21
+- **Nguồn:** RAW-037
+- **Ưu tiên:** Could
+- **Ước lượng:** 2 SP
+- **Phụ thuộc:** (không)
+
+**Acceptance Criteria**
+
+- **AC-072:** **Giả sử** giao diện thu phí, **khi** người lớn tuổi thao tác thử thu một hộ, **thì** hoàn thành trong tối đa 5 bước, chữ đọc rõ.
+
+## EPIC-06: Phí gửi xe (v2.0, chưa làm ở v1.0)
+
+### US-024: Phí gửi xe (v2.0)
+
+Là Ban quản trị, tôi muốn quản lý biển số và tự tính phí gửi xe (70.000 đ/xe máy, 1.200.000 đ/ô tô), để thu đúng theo phương tiện (v2.0).
+
+- **Epic / Feature:** EPIC-06 / F-19
+- **Nguồn:** RAW-029
+- **Ưu tiên:** Won't
+- **Ước lượng:** 0 SP
+- **Phụ thuộc:** US-001
+
+_Chưa viết Acceptance Criteria (thuộc v2.0)._
+
+## EPIC-07: Thu hộ điện, nước, internet (v2.0, chưa làm ở v1.0)
+
+### US-025: Thu hộ điện nước internet (v2.0)
+
+Là Ban quản trị, tôi muốn nhập file thông báo từ điện lực, nhà mạng, để thu hộ điện, nước, internet (v2.0).
+
+- **Epic / Feature:** EPIC-07 / F-20
+- **Nguồn:** RAW-030
+- **Ưu tiên:** Won't
+- **Ước lượng:** 0 SP
+- **Phụ thuộc:** US-009
+
+_Chưa viết Acceptance Criteria (thuộc v2.0)._
