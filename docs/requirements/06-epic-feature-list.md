@@ -1,7 +1,5 @@
 # 06. Epic / Feature List
 
-> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `6a_Epic và 6b_Feature`. 7 Epic và 21 Feature. EPIC-06 và EPIC-07 thuộc v2.0, chưa làm ở v1.0.
-
 ## Epic
 
 | Epic ID | Tên Epic | Mô tả ngắn | Số Feature |
