@@ -1,9 +1,5 @@
 # 08. Product Backlog (MoSCoW)
 
-> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `9_Backlog`. Ưu tiên theo MoSCoW, sprint dự kiến và ước lượng sơ bộ (story point).
->
-> Ước lượng và phân sprint là **sơ bộ**, nhóm cần chốt lại bằng họp ước lượng (Planning Poker), xem [11-chot-va-gia-dinh.md](11-chot-va-gia-dinh.md).
-
 ## Tổng hợp
 
 **Theo MoSCoW** (tính trên 29 mục US và TS):
