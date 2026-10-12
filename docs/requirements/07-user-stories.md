@@ -1,9 +1,5 @@
 # 07. User Stories và Acceptance Criteria
 
-> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `7_User_Story và 8_AC`. 25 User Story (US) và 4 câu chuyện kỹ thuật (TS), kèm 72 Acceptance Criteria dạng Given-When-Then (Giả sử, Khi, Thì).
->
-> Ước lượng (SP) lấy từ [08-product-backlog.md](08-product-backlog.md). Vì sheet gốc đặt AC riêng, mỗi AC ở đây vẫn giữ nguyên mã `AC-xxx` để khớp với [ma trận truy vết](09-traceability-matrix.md).
-
 ## EPIC-01: Quản lý hộ gia đình và nhân khẩu
 
 ### US-001: Quản lý hộ gia đình
