@@ -1,7 +1,5 @@
 # 04. Non-Functional Requirements (NFR)
 
-> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `4_NFR`. 9 NFR thô, mỗi NFR trỏ về RAW nguồn.
-
 | ID (NFR-xxx) | Mô tả yêu cầu phi chức năng | Nguồn | Loại NFR | Ghi chú (RAW nguồn) |
 |---|---|---|---|---|
 | NFR-001 | Hệ thống phải xác thực người dùng trước khi truy cập | Ban quản trị | Bảo mật | RAW-025 |
