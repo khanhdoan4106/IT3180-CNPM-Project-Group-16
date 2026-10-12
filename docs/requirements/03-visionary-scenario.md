@@ -1,7 +1,5 @@
 # 03. Visionary Scenario (viễn cảnh kỳ vọng)
 
-> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `3_Visionary`. Kịch bản tương lai cho v1.0; bước 9 và 10 là gợi mở v2.0.
-
 | Bước quy trình tương lai | Ai thực hiện | Hệ thống hỗ trợ gì | Lợi ích mong muốn |
 |---|---|---|---|
 | 1. Đăng ký tài khoản và đăng nhập | Ban quản trị, Thủ quỹ | Tạo tài khoản, xác thực, phân quyền Quản trị viên / Nhân viên thu phí | Bảo mật, đúng người đúng quyền |
