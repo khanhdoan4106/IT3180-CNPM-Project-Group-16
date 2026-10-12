@@ -1,9 +1,5 @@
 # 05. Raw Log
 
-> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `5_Raw_Log`. Toàn bộ 40 phát hiện thô, phân loại FR/NFR và chỉ ra artefact sẽ chuẩn hóa thành.
->
-> Các phát biểu của Ban quản trị, Thủ quỹ, Cư dân, Chính quyền là **mô phỏng phỏng vấn** (chưa phỏng vấn thật), xem [11-chot-va-gia-dinh.md](11-chot-va-gia-dinh.md).
-
 ## I. Cư dân và nhân khẩu
 
 | ID | Nguồn | Nội dung thô | Loại | Chuẩn hóa thành | Ghi chú |
