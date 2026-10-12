@@ -1,6 +1,5 @@
 # 02. As-Is Scenario (hiện trạng)
 
-> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `2_As_Is`. 9 bước quy trình hiện tại và điểm đau. Số trong ngoặc là mã RAW nguồn.
 
 ## 1. Quản lý hộ gia đình và nhân khẩu
 
