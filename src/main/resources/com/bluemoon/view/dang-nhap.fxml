@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml" styleClass="nen"
+           fx:controller="com.bluemoon.controller.DangNhapController">
+    <VBox styleClass="the" maxWidth="380" maxHeight="400" spacing="12">
+        <Label text="BlueMoon" styleClass="tieu-de"/>
+        <Label text="Dang nhap he thong quan ly chung cu"
+               styleClass="phu-de"/>
+        <Label text="Ten dang nhap"/>
+        <TextField fx:id="tenDangNhapField" promptText="vd: admin"/>
+        <Label text="Mat khau"/>
+        <PasswordField fx:id="matKhauField" onAction="#onDangNhap"/>
+        <Label fx:id="thongBaoLabel" styleClass="loi" wrapText="true"/>
+        <Button text="Dang nhap" defaultButton="true" maxWidth="Infinity"
+                styleClass="nut-chinh" onAction="#onDangNhap"/>
+    </VBox>
+</StackPane>
