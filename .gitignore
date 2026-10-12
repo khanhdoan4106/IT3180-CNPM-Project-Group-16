@@ -1,31 +1,17 @@
-# ---- Java / Maven ----
+# Maven
 target/
-build/
-*.class
-*.jar
-*.war
-hs_err_pid*
-
-# ---- Node / React ----
-node_modules/
-dist/
-.vite/
-npm-debug.log*
-
-# ---- IDE ----
+# IDE
 .idea/
 *.iml
 .vscode/
 .classpath
 .project
 .settings/
-*.swp
-
-# ---- OS ----
+nbproject/
+# OS
 .DS_Store
 Thumbs.db
-
-# ---- Secrets / local config (KHÔNG commit) ----
+# Cấu hình cục bộ (chứa mật khẩu DB)
+config/db.properties
 .env
-backend/src/main/resources/application.properties
-backend/src/main/resources/application-local.properties
+*.log

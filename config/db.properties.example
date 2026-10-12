@@ -1,0 +1,4 @@
+# Sao chep file nay thanh config/db.properties (file that bi .gitignore).
+url=jdbc:mysql://localhost:3306/bluemoon?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh&characterEncoding=UTF-8
+user=bluemoon
+password=doi_mat_khau_nay
