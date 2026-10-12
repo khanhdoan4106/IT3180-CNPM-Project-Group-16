@@ -1,7 +1,5 @@
 # 09. Traceability Matrix
 
-> Nguồn: `BlueMoon_San_pham_giao_nop_2.xlsx`, sheet `10_Traceability`. Truy vết RAW, Epic, Feature, User Story và Acceptance Criteria cho 40 yêu cầu thô (100% đã truy vết).
-
 | RAW | Epic | Feature | User Story | Acceptance Criteria | Ghi chú |
 |---|---|---|---|---|---|
 | RAW-001 | EPIC-01 | F-01 | US-001 | AC-001–004 | Cốt lõi để tính phí sau này |
