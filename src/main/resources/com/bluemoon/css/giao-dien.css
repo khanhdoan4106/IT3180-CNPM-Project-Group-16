@@ -1,0 +1,63 @@
+/* Bang mau tam thoi - thay bang palette chot tren Figma (docs/design). */
+.root {
+    -mau-chinh: #2563eb;
+    -mau-chinh-dam: #1d4ed8;
+    -mau-nen: #f1f5f9;
+    -mau-chu: #0f172a;
+    -mau-loi: #dc2626;
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-size: 14px;
+    -fx-text-fill: -mau-chu;
+}
+
+.nen {
+    -fx-background-color: -mau-nen;
+}
+
+.the {
+    -fx-background-color: white;
+    -fx-padding: 28;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 16, 0, 0, 4);
+}
+
+.tieu-de {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -mau-chinh;
+}
+
+.phu-de {
+    -fx-text-fill: #64748b;
+}
+
+.loi {
+    -fx-text-fill: -mau-loi;
+}
+
+.nut-chinh {
+    -fx-background-color: -mau-chinh;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16 8 16;
+}
+
+.nut-chinh:hover {
+    -fx-background-color: -mau-chinh-dam;
+}
+
+.thanh-dau {
+    -fx-background-color: -mau-chinh;
+    -fx-padding: 12 20 12 20;
+    -fx-alignment: center-left;
+}
+
+.thanh-dau .logo {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.thanh-dau .chao {
+    -fx-text-fill: white;
+}
