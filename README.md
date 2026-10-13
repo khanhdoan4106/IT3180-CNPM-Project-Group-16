@@ -472,4 +472,4 @@ docs/design/                  kiến trúc, quy ước mã, thiết kế giao di
 
 ### Tài liệu
 
-Yêu cầu: Ưish list, kịch bản As-is và Visionary, NFR, raw log, epic/feature, user story, product backlog, traceability matrix, definition of done và các điểm cần chốt.
+Yêu cầu: Wish list, kịch bản As-is và Visionary, NFR, raw log, epic/feature, user story, product backlog, traceability matrix, definition of done và các điểm cần chốt.
