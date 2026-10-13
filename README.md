@@ -149,10 +149,10 @@ Các chức năng sau được định hướng phát triển trong phiên bản
 
 Quản lý phương tiện đăng ký của từng hộ và tự động tính phí gửi xe.
 
-| Loại phương tiện | Mức phí |
-| ---------------- | ------- |
-| Xe máy | 70.000 đồng/xe/tháng |
-| Ô tô | 1.200.000 đồng/xe/tháng |
+| Loại phương tiện | Mức phí                 |
+| ---------------- | ----------------------- |
+| Xe máy           | 70.000 đồng/xe/tháng    |
+| Ô tô             | 1.200.000 đồng/xe/tháng |
 
 #### Thu hộ điện, nước, Internet
 
@@ -289,16 +289,21 @@ Dữ liệu được lưu trữ tập trung trên MySQL Server, giúp các máy 
 
 ## 8. Công nghệ sử dụng
 
-| Thành phần | Công nghệ |
-| ---------- | --------- |
-| Ngôn ngữ lập trình | Java |
-| Loại ứng dụng | Desktop Application |
-| Cơ sở dữ liệu | MySQL |
-| Kết nối CSDL | JDBC |
-| Quản lý mã nguồn | Git / GitHub |
-| Mô hình phát triển | Agile / Scrum |
-| Phân tích yêu cầu | Epic, Feature, User Story, Acceptance Criteria |
-| Quản lý yêu cầu | Product Backlog, Traceability Matrix |
+| Thành phần         | Công nghệ                                      |
+| ------------------ | ---------------------------------------------- |
+| Ngôn ngữ lập trình | Java 21                                        |
+| Loại ứng dụng      | Desktop Application                            |
+| Giao diện          | JavaFX 21 (FXML, CSS), thiết kế trên Figma     |
+| Cơ sở dữ liệu      | MySQL 8                                        |
+| Kết nối CSDL       | JDBC (PreparedStatement)                       |
+| Build, test        | Maven, JUnit 5                                 |
+| Bảo mật            | Mật khẩu băm BCrypt                            |
+| Quản lý mã nguồn   | Git / GitHub                                   |
+| Mô hình phát triển | Agile / Scrum                                  |
+| Phân tích yêu cầu  | Epic, Feature, User Story, Acceptance Criteria |
+| Quản lý yêu cầu    | Product Backlog, Traceability Matrix           |
+
+Kiến trúc phần mềm: View (FXML) - Controller - Service - DAO - MySQL. Chi tiết ở [docs/design/architecture.md](docs/design/architecture.md).
 
 ---
 
@@ -400,15 +405,15 @@ Trong tương lai, hệ thống có thể được mở rộng thành nền tả
 
 ## 12. Trạng thái dự án
 
-| Thông tin | Giá trị |
-| --------- | ------- |
-| Tên dự án | BlueMoon Apartment Management System |
-| Phiên bản | v1.0 |
-| Trạng thái | In Development |
-| Loại ứng dụng | Desktop Application |
-| Ngôn ngữ | Java |
-| Database | MySQL |
-| Phạm vi | Quản lý cư dân, thu phí, công nợ và báo cáo |
+| Thông tin     | Giá trị                                     |
+| ------------- | ------------------------------------------- |
+| Tên dự án     | BlueMoon Apartment Management System        |
+| Phiên bản     | v1.0                                        |
+| Trạng thái    | In Development                              |
+| Loại ứng dụng | Desktop Application                         |
+| Ngôn ngữ      | Java                                        |
+| Database      | MySQL                                       |
+| Phạm vi       | Quản lý cư dân, thu phí, công nợ và báo cáo |
 
 ---
 
@@ -420,38 +425,26 @@ Dự án được thực hiện nhằm phục vụ mục đích học tập và 
 
 ### Thành viên
 
-| Họ tên | MSSV | Vai trò |
-|---|---|---|
-| Đoàn Khánh | ... | ... |
-| ... | ... | ... |
-| ... | ... | ... |
-| ... | ... | ... |
-| ... | ... | ... |
+| Họ tên     | MSSV | Vai trò |
+| ---------- | ---- | ------- |
+| Đoàn Khánh | ...  | ...     |
+| ...        | ...  | ...     |
+| ...        | ...  | ...     |
+| ...        | ...  | ...     |
+| ...        | ...  | ...     |
 
-## 14. Công nghệ
+## 14. Chạy thử
 
-| Thành phần | Công nghệ |
-|---|---|
-| Ngôn ngữ | Java 21 |
-| Giao diện | JavaFX 21 (FXML, CSS), thiết kế trên Figma |
-| Cơ sở dữ liệu | MySQL 8 (JDBC) |
-| Build, test | Maven, JUnit 5 |
-| Bảo mật | Mật khẩu băm BCrypt |
-
-Kiến trúc: View (FXML) - Controller - Service - DAO - MySQL. Chi tiết ở [docs/design/architecture.md](docs/design/architecture.md).
-
-### Chạy thử
-
-1. Cài JDK 21, Maven, MySQL 8 (xem [docs/setup.md](docs/setup.md)).
-2. Chạy `database/schema.sql` rồi `database/seed.sql` trong MySQL Workbench.
+1. Cài IntelliJ IDEA, JDK 21 và MySQL 8 (xem [docs/setup.md](docs/setup.md)).
+2. Chạy `database/schema.sql` rồi `database/seed.sql` trong MySQL Workbench, tạo user `bluemoon` theo `docs/setup.md`.
 3. Sao chép `config/db.properties.example` thành `config/db.properties` và điền thông tin kết nối.
-4. Chạy `mvn javafx:run`. Tài khoản thử: `admin` / `Admin@123`.
+4. Mở dự án bằng IntelliJ, mở `src/main/java/com/bluemoon/Launcher.java` rồi bấm Run. Tài khoản thử: `admin` / `Admin@123`.
 
-Chạy test: `mvn test`.
+Chạy test: bảng Maven trong IntelliJ, bluemoon, Lifecycle, `test` (hoặc `mvn test` nếu đã cài Maven).
 
-### Cấu trúc thư mục
+## 15. Cấu trúc thư mục
 
-```
+```text
 src/main/java/com/bluemoon/   mã nguồn (model, dao, service, controller, util)
 src/main/resources/           FXML và CSS
 src/test/java/                test
@@ -462,14 +455,13 @@ docs/design/                  kiến trúc, quy ước mã, thiết kế giao di
 .github/                      template Issue, Pull Request và CI
 ```
 
-### Quy trình làm việc
+## 16. Quy trình làm việc
 
-- Nhánh `main`: ổn định, chỉ merge qua Pull Request và có ít nhất 1 người review.
-- Nhánh `develop`: tích hợp.
-- Nhánh làm việc: `feature/<ten-chuc-nang>`, `fix/<ten-loi>`.
+- Nhánh `main`: luôn chạy được, không push trực tiếp, chỉ merge qua Pull Request và có ít nhất 1 người review.
+- Nhánh làm việc tách từ `main`: `feature/<ten-chuc-nang>`, `fix/<ten-loi>`, `docs/<noi-dung>`.
 - Commit theo Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
 - Mỗi User Story là một Issue, gắn label MoSCoW (`must`, `should`, `could`, `wont`).
 
-### Tài liệu
+## 17. Tài liệu
 
-Yêu cầu: Wish list, kịch bản As-is và Visionary, NFR, raw log, epic/feature, user story, product backlog, traceability matrix, definition of done và các điểm cần chốt.
+Yêu cầu: [docs/requirements](docs/requirements) gồm Wish list, kịch bản As-is và Visionary, NFR, raw log, epic/feature, user story, product backlog, traceability matrix, definition of done và các điểm cần chốt.
