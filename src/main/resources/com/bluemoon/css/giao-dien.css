@@ -61,3 +61,35 @@
 .thanh-dau .chao {
     -fx-text-fill: white;
 }
+
+.thanh-cong {
+    -fx-text-fill: #15803d;
+}
+
+.tieu-de-trang {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.tieu-de-form {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.nut-phu {
+    -fx-background-color: transparent;
+    -fx-border-color: -mau-loi;
+    -fx-text-fill: -mau-loi;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.thanh-dau .nut-menu {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.thanh-dau .nut-menu:hover {
+    -fx-background-color: -mau-chinh-dam;
+}
