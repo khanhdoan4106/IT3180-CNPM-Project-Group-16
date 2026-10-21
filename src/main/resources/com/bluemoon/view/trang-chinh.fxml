@@ -12,14 +12,16 @@
     <top>
         <HBox styleClass="thanh-dau" spacing="12">
             <Label text="BlueMoon" styleClass="logo"/>
+            <Button text="Ho gia dinh" styleClass="nut-menu"
+                    onAction="#onMoHoGiaDinh"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="chaoLabel" styleClass="chao"/>
             <Button text="Dang xuat" onAction="#onDangXuat"/>
         </HBox>
     </top>
     <center>
-        <StackPane styleClass="nen">
-            <Label text="Khung man hinh chinh - them chuc nang theo sprint"
+        <StackPane fx:id="noiDung" styleClass="nen">
+            <Label text="Chon chuc nang tren thanh menu"
                    styleClass="phu-de"/>
         </StackPane>
     </center>
