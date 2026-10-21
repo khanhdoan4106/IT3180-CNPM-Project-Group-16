@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- US-001: Quan ly ho gia dinh. Trai: danh sach + tim kiem; phai: form. -->
+<BorderPane xmlns:fx="http://javafx.com/fxml" styleClass="nen"
+            fx:controller="com.bluemoon.controller.HoGiaDinhController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <top>
+        <VBox spacing="12">
+            <Label text="Quan ly ho gia dinh" styleClass="tieu-de-trang"/>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <TextField fx:id="timKiemField" prefWidth="320"
+                           promptText="Tim theo ma can ho hoac ten chu ho"/>
+                <CheckBox fx:id="gomChuyenDiCheck"
+                          text="Hien ca ho da chuyen di"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="soLuongLabel" styleClass="phu-de"/>
+            </HBox>
+            <BorderPane.margin>
+                <Insets bottom="12"/>
+            </BorderPane.margin>
+        </VBox>
+    </top>
+    <center>
+        <TableView fx:id="bangHo">
+            <columns>
+                <TableColumn fx:id="cotMa" text="Ma can ho" prefWidth="100"/>
+                <TableColumn fx:id="cotLoai" text="Loai" prefWidth="90"/>
+                <TableColumn fx:id="cotTang" text="Tang" prefWidth="60"/>
+                <TableColumn fx:id="cotDienTich" text="Dien tich (m2)"
+                             prefWidth="110"/>
+                <TableColumn fx:id="cotChuHo" text="Chu ho" prefWidth="200"/>
+                <TableColumn fx:id="cotSdt" text="Dien thoai"
+                             prefWidth="120"/>
+                <TableColumn fx:id="cotNgay" text="Ngay chuyen den"
+                             prefWidth="130"/>
+                <TableColumn fx:id="cotTrangThai" text="Trang thai"
+                             prefWidth="110"/>
+            </columns>
+            <placeholder>
+                <Label text="Chua co ho gia dinh nao"/>
+            </placeholder>
+        </TableView>
+    </center>
+    <right>
+        <VBox styleClass="the" spacing="10" prefWidth="380">
+            <BorderPane.margin>
+                <Insets left="20"/>
+            </BorderPane.margin>
+            <Label fx:id="tieuDeFormLabel" text="Them ho gia dinh"
+                   styleClass="tieu-de-form"/>
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="120"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+                <Label text="Ma can ho *" GridPane.rowIndex="0"/>
+                <TextField fx:id="maField" promptText="vd A0601"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <Label text="Loai can ho *" GridPane.rowIndex="1"/>
+                <ComboBox fx:id="loaiCombo" maxWidth="Infinity"
+                          GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                <Label text="Tang *" GridPane.rowIndex="2"/>
+                <TextField fx:id="tangField" promptText="1 - 30"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <Label text="Dien tich (m2) *" GridPane.rowIndex="3"/>
+                <TextField fx:id="dienTichField" promptText="vd 75.5"
+                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                <Label text="Ten chu ho *" GridPane.rowIndex="4"/>
+                <TextField fx:id="chuHoField" GridPane.rowIndex="4"
+                           GridPane.columnIndex="1"/>
+                <Label text="So dien thoai" GridPane.rowIndex="5"/>
+                <TextField fx:id="sdtField" promptText="10 chu so"
+                           GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                <Label text="Ngay chuyen den *" GridPane.rowIndex="6"/>
+                <DatePicker fx:id="ngayPicker" maxWidth="Infinity"
+                            GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+            </GridPane>
+            <Label fx:id="thongBaoLabel" wrapText="true"/>
+            <HBox spacing="10">
+                <Button fx:id="luuButton" text="Luu" defaultButton="true"
+                        styleClass="nut-chinh" onAction="#onLuu"/>
+                <Button text="Nhap moi" onAction="#onNhapMoi"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="chuyenDiButton" text="Danh dau chuyen di"
+                        styleClass="nut-phu" disable="true"
+                        onAction="#onChuyenDi"/>
+            </HBox>
+        </VBox>
+    </right>
+</BorderPane>

@@ -39,6 +39,22 @@ public final class DieuHuong {
         hien("trang-chinh.fxml", 1440, 1024, true);
     }
 
+    /**
+     * Tai mot man hinh con de dat vao vung noi dung cua man hinh chinh.
+     *
+     * @param tenFile ten file FXML trong resources/view
+     * @return goc cua man hinh da tai
+     */
+    public static Parent taiManHinh(String tenFile) {
+        try {
+            return FXMLLoader.load(
+                    DieuHuong.class.getResource(THU_MUC_VIEW + tenFile));
+        } catch (IOException e) {
+            throw new IllegalStateException(
+                    "Khong tai duoc man hinh " + tenFile, e);
+        }
+    }
+
     private static void hien(String tenFile, double rong, double cao,
             boolean phongTo) {
         try {
