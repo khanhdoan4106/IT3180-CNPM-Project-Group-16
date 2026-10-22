@@ -14,6 +14,8 @@
             <Label text="BlueMoon" styleClass="logo"/>
             <Button text="Ho gia dinh" styleClass="nut-menu"
                     onAction="#onMoHoGiaDinh"/>
+            <Button text="Nhan khau" styleClass="nut-menu"
+                    onAction="#onMoNhanKhau"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="chaoLabel" styleClass="chao"/>
             <Button text="Dang xuat" onAction="#onDangXuat"/>

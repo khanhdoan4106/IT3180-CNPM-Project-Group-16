@@ -3,15 +3,18 @@ package com.bluemoon.controller;
 import com.bluemoon.config.CauHinhException;
 import com.bluemoon.dao.DaoException;
 import com.bluemoon.dao.HoGiaDinhDaoImpl;
+import com.bluemoon.dao.NhanKhauDaoImpl;
+import com.bluemoon.model.GioiTinh;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiCanHo;
+import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiHo;
 import com.bluemoon.service.HoGiaDinhService;
 import com.bluemoon.service.NghiepVuException;
 import com.bluemoon.service.ThongTinHo;
+import com.bluemoon.service.ThongTinNhanKhau;
+import com.bluemoon.util.NgayUtil;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.function.Function;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -27,7 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.util.StringConverter;
+import javafx.scene.layout.VBox;
 
 /**
  * Man hinh quan ly ho gia dinh (US-001). Chi chuyen su kien cho service va
@@ -35,16 +38,14 @@ import javafx.util.StringConverter;
  */
 public class HoGiaDinhController {
 
-    private static final DateTimeFormatter DINH_DANG_NGAY =
-            DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final String LOI_CSDL =
             "Khong ket noi duoc co so du lieu. Xem docs/setup.md";
 
-    private final HoGiaDinhService service =
-            new HoGiaDinhService(new HoGiaDinhDaoImpl());
+    private final HoGiaDinhService service = new HoGiaDinhService(
+            new HoGiaDinhDaoImpl(), new NhanKhauDaoImpl());
 
     /** Ho dang sua; null khi dang them moi. */
-    private HoGiaDinh dangSua;
+    private TomTatHo dangSua;
 
     @FXML
     private TextField timKiemField;
@@ -53,23 +54,25 @@ public class HoGiaDinhController {
     @FXML
     private Label soLuongLabel;
     @FXML
-    private TableView<HoGiaDinh> bangHo;
+    private TableView<TomTatHo> bangHo;
     @FXML
-    private TableColumn<HoGiaDinh, String> cotMa;
+    private TableColumn<TomTatHo, String> cotMa;
     @FXML
-    private TableColumn<HoGiaDinh, String> cotLoai;
+    private TableColumn<TomTatHo, String> cotLoai;
     @FXML
-    private TableColumn<HoGiaDinh, Integer> cotTang;
+    private TableColumn<TomTatHo, Integer> cotTang;
     @FXML
-    private TableColumn<HoGiaDinh, String> cotDienTich;
+    private TableColumn<TomTatHo, String> cotDienTich;
     @FXML
-    private TableColumn<HoGiaDinh, String> cotChuHo;
+    private TableColumn<TomTatHo, String> cotChuHo;
     @FXML
-    private TableColumn<HoGiaDinh, String> cotSdt;
+    private TableColumn<TomTatHo, Integer> cotSoThanhVien;
     @FXML
-    private TableColumn<HoGiaDinh, String> cotNgay;
+    private TableColumn<TomTatHo, String> cotSdt;
     @FXML
-    private TableColumn<HoGiaDinh, String> cotTrangThai;
+    private TableColumn<TomTatHo, String> cotNgay;
+    @FXML
+    private TableColumn<TomTatHo, String> cotTrangThai;
     @FXML
     private Label tieuDeFormLabel;
     @FXML
@@ -81,11 +84,21 @@ public class HoGiaDinhController {
     @FXML
     private TextField dienTichField;
     @FXML
-    private TextField chuHoField;
-    @FXML
     private TextField sdtField;
     @FXML
     private DatePicker ngayPicker;
+    @FXML
+    private VBox chuHoBox;
+    @FXML
+    private TextField chuHoField;
+    @FXML
+    private DatePicker ngaySinhChuHoPicker;
+    @FXML
+    private ComboBox<GioiTinh> gioiTinhChuHoCombo;
+    @FXML
+    private TextField cccdChuHoField;
+    @FXML
+    private Label chuHoLabel;
     @FXML
     private Label thongBaoLabel;
     @FXML
@@ -93,21 +106,24 @@ public class HoGiaDinhController {
 
     @FXML
     private void initialize() {
-        ganCot(cotMa, HoGiaDinh::getMaCanHo);
-        ganCot(cotLoai, h -> h.getLoaiCanHo().getNhan());
-        ganCot(cotTang, HoGiaDinh::getTang);
-        ganCot(cotDienTich, h -> h.getDienTich().stripTrailingZeros()
+        ganCot(cotMa, t -> t.ho().getMaCanHo());
+        ganCot(cotLoai, t -> t.ho().getLoaiCanHo().getNhan());
+        ganCot(cotTang, t -> t.ho().getTang());
+        ganCot(cotDienTich, t -> t.ho().getDienTich().stripTrailingZeros()
                 .toPlainString());
-        ganCot(cotChuHo, HoGiaDinh::getTenChuHo);
-        ganCot(cotSdt, h -> h.getSoDienThoai() == null ? ""
-                : h.getSoDienThoai());
-        ganCot(cotNgay, h -> h.getNgayChuyenDen().format(DINH_DANG_NGAY));
-        ganCot(cotTrangThai, h -> h.getTrangThai().getNhan());
+        ganCot(cotChuHo, t -> t.tenChuHo() == null ? "" : t.tenChuHo());
+        ganCot(cotSoThanhVien, TomTatHo::soThanhVien);
+        ganCot(cotSdt, t -> t.ho().getSoDienThoai() == null ? ""
+                : t.ho().getSoDienThoai());
+        ganCot(cotNgay, t -> NgayUtil.hien(t.ho().getNgayChuyenDen()));
+        ganCot(cotTrangThai, t -> t.ho().getTrangThai().getNhan());
 
         loaiCombo.setItems(FXCollections.observableArrayList(
                 LoaiCanHo.values()));
-        ngayPicker.setConverter(new BoChuyenNgay());
-        ngayPicker.setPromptText("dd/mm/yyyy");
+        gioiTinhChuHoCombo.setItems(FXCollections.observableArrayList(
+                GioiTinh.values()));
+        NgayUtil.ganDinhDang(ngayPicker);
+        NgayUtil.ganDinhDang(ngaySinhChuHoPicker);
 
         timKiemField.textProperty().addListener((o, cu, moi) -> taiLai());
         gomChuyenDiCheck.selectedProperty().addListener(
@@ -120,17 +136,29 @@ public class HoGiaDinhController {
 
     @FXML
     private void onLuu() {
-        if (ngaySaiDinhDang()) {
+        if (NgayUtil.saiDinhDang(ngayPicker)) {
             baoLoi("Ngay chuyen den phai co dang dd/mm/yyyy");
+            return;
+        }
+        if (dangSua == null && NgayUtil.saiDinhDang(ngaySinhChuHoPicker)) {
+            baoLoi("Ngay sinh chu ho phai co dang dd/mm/yyyy");
             return;
         }
         ThongTinHo tt = new ThongTinHo(maField.getText(),
                 loaiCombo.getValue(), tangField.getText(),
-                dienTichField.getText(), chuHoField.getText(),
-                sdtField.getText(), docNgay());
+                dienTichField.getText(), sdtField.getText(),
+                NgayUtil.doc(ngayPicker));
         try {
-            HoGiaDinh ho = dangSua == null ? service.them(tt)
-                    : service.capNhat(dangSua.getId(), tt);
+            HoGiaDinh ho;
+            if (dangSua == null) {
+                ho = service.them(tt, new ThongTinNhanKhau(
+                        chuHoField.getText(),
+                        NgayUtil.doc(ngaySinhChuHoPicker),
+                        gioiTinhChuHoCombo.getValue(),
+                        cccdChuHoField.getText(), null));
+            } else {
+                ho = service.capNhat(dangSua.ho().getId(), tt);
+            }
             String viec = dangSua == null ? "Da them" : "Da cap nhat";
             taiLai();
             chonDong(ho.getId());
@@ -154,8 +182,7 @@ public class HoGiaDinhController {
             return;
         }
         Alert hoi = new Alert(Alert.AlertType.CONFIRMATION,
-                "Danh dau ho " + dangSua.getMaCanHo() + " ("
-                        + dangSua.getTenChuHo() + ") da chuyen di?"
+                "Danh dau ho " + dangSua + " da chuyen di?"
                         + "\nDu lieu cua ho van duoc giu lai.",
                 ButtonType.OK, ButtonType.CANCEL);
         hoi.setHeaderText(null);
@@ -163,8 +190,8 @@ public class HoGiaDinhController {
             return;
         }
         try {
-            String ma = dangSua.getMaCanHo();
-            service.danhDauChuyenDi(dangSua.getId());
+            String ma = dangSua.ho().getMaCanHo();
+            service.danhDauChuyenDi(dangSua.ho().getId());
             onNhapMoi();
             taiLai();
             baoThanhCong("Ho " + ma + " da duoc danh dau chuyen di");
@@ -188,20 +215,25 @@ public class HoGiaDinhController {
         }
     }
 
-    private void hienLenForm(HoGiaDinh ho) {
-        if (ho == null) {
+    private void hienLenForm(TomTatHo dong) {
+        if (dong == null) {
             return;
         }
-        dangSua = ho;
+        dangSua = dong;
+        HoGiaDinh ho = dong.ho();
         maField.setText(ho.getMaCanHo());
         loaiCombo.setValue(ho.getLoaiCanHo());
         tangField.setText(String.valueOf(ho.getTang()));
         dienTichField.setText(ho.getDienTich().stripTrailingZeros()
                 .toPlainString());
-        chuHoField.setText(ho.getTenChuHo());
         sdtField.setText(ho.getSoDienThoai() == null ? ""
                 : ho.getSoDienThoai());
         ngayPicker.setValue(ho.getNgayChuyenDen());
+        hienPhanChuHo(false);
+        chuHoLabel.setText("Chu ho: "
+                + (dong.tenChuHo() == null ? "(chua co)" : dong.tenChuHo())
+                + " - " + dong.soThanhVien() + " thanh vien."
+                + "\nSua chu ho va thanh vien o man hinh Nhan khau.");
         boolean dangO = ho.getTrangThai() == TrangThaiHo.DANG_O;
         tieuDeFormLabel.setText(dangO ? "Sua ho " + ho.getMaCanHo()
                 : "Ho " + ho.getMaCanHo() + " (da chuyen di)");
@@ -217,49 +249,41 @@ public class HoGiaDinhController {
         loaiCombo.setValue(LoaiCanHo.CAN_HO);
         tangField.clear();
         dienTichField.clear();
-        chuHoField.clear();
         sdtField.clear();
         ngayPicker.setValue(LocalDate.now());
+        chuHoField.clear();
+        ngaySinhChuHoPicker.setValue(null);
+        gioiTinhChuHoCombo.setValue(null);
+        cccdChuHoField.clear();
+        hienPhanChuHo(true);
         datChoPhepSua(true);
         chuyenDiButton.setDisable(true);
         thongBaoLabel.setText("");
         maField.requestFocus();
     }
 
+    /** Them moi: nhap chu ho tren form; sua: chi hien ten chu ho. */
+    private void hienPhanChuHo(boolean nhap) {
+        chuHoBox.setVisible(nhap);
+        chuHoBox.setManaged(nhap);
+        chuHoLabel.setVisible(!nhap);
+        chuHoLabel.setManaged(!nhap);
+    }
+
     private void datChoPhepSua(boolean choPhep) {
         for (TextField f : new TextField[] {maField, tangField,
-                dienTichField, chuHoField, sdtField}) {
+                dienTichField, sdtField}) {
             f.setEditable(choPhep);
         }
         loaiCombo.setDisable(!choPhep);
         ngayPicker.setDisable(!choPhep);
     }
 
-    /**
-     * Doc ngay tren DatePicker, ke ca khi nguoi dung go tay ma chua nhan
-     * Enter. Tra ve null neu de trong hoac sai dinh dang.
-     */
-    private LocalDate docNgay() {
-        String chu = ngayPicker.getEditor().getText();
-        if (chu == null || chu.isBlank()) {
-            return null;
-        }
-        LocalDate ngay = ngayPicker.getConverter().fromString(chu.strip());
-        ngayPicker.setValue(ngay);
-        return ngay;
-    }
-
-    private boolean ngaySaiDinhDang() {
-        String chu = ngayPicker.getEditor().getText();
-        return chu != null && !chu.isBlank()
-                && ngayPicker.getConverter().fromString(chu.strip()) == null;
-    }
-
     private void chonDong(int id) {
-        for (HoGiaDinh h : bangHo.getItems()) {
-            if (h.getId() == id) {
-                bangHo.getSelectionModel().select(h);
-                bangHo.scrollTo(h);
+        for (TomTatHo t : bangHo.getItems()) {
+            if (t.ho().getId() == id) {
+                bangHo.getSelectionModel().select(t);
+                bangHo.scrollTo(t);
                 return;
             }
         }
@@ -277,34 +301,12 @@ public class HoGiaDinhController {
         thongBaoLabel.setText(noiDung);
     }
 
-    private static <T> void ganCot(TableColumn<HoGiaDinh, T> cot,
-            Function<HoGiaDinh, T> lay) {
+    private static <T> void ganCot(TableColumn<TomTatHo, T> cot,
+            Function<TomTatHo, T> lay) {
         cot.setCellValueFactory(o -> giaTri(lay.apply(o.getValue())));
     }
 
     private static <T> ObservableValue<T> giaTri(T v) {
         return new SimpleObjectProperty<>(v);
-    }
-
-    /** Chuyen doi ngay theo dinh dang dd/MM/yyyy; chuoi sai tra ve null. */
-    private static final class BoChuyenNgay
-            extends StringConverter<LocalDate> {
-
-        @Override
-        public String toString(LocalDate ngay) {
-            return ngay == null ? "" : ngay.format(DINH_DANG_NGAY);
-        }
-
-        @Override
-        public LocalDate fromString(String chu) {
-            if (chu == null || chu.isBlank()) {
-                return null;
-            }
-            try {
-                return LocalDate.parse(chu.strip(), DINH_DANG_NGAY);
-            } catch (DateTimeParseException e) {
-                return null;
-            }
-        }
     }
 }

@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS ho_gia_dinh (
     loai_can_ho     ENUM('CAN_HO', 'KIOT', 'PENTHOUSE') NOT NULL,
     tang            TINYINT       NOT NULL,
     dien_tich       DECIMAL(6, 2) NOT NULL,
-    ten_chu_ho      VARCHAR(100)  NOT NULL,
     so_dien_thoai   VARCHAR(15)   NULL,
     ngay_chuyen_den DATE          NOT NULL,
     trang_thai      ENUM('DANG_O', 'DA_CHUYEN_DI') NOT NULL DEFAULT 'DANG_O',
@@ -33,11 +32,30 @@ CREATE TABLE IF NOT EXISTS ho_gia_dinh (
     CONSTRAINT uq_ho_ma_dang_o UNIQUE (ma_dang_o),
     CONSTRAINT chk_ho_dien_tich CHECK (dien_tich > 0),
     CONSTRAINT chk_ho_tang CHECK (tang BETWEEN 1 AND 30),
-    INDEX idx_ho_ma_can_ho (ma_can_ho),
-    INDEX idx_ho_ten_chu_ho (ten_chu_ho)
+    INDEX idx_ho_ma_can_ho (ma_can_ho)
 );
 
--- TODO (Sprint 1): nhan_khau, tam_tru_tam_vang (US-002, US-003)
+-- US-002: nhan khau (RAW-002, RAW-003). Chu ho la nhan khau co quan_he
+-- CHU_HO; cot sinh chu_ho_cua chi co gia tri o dong chu ho nen UNIQUE dam
+-- bao moi ho toi da mot chu ho, ung dung them ho cung chu ho trong mot giao
+-- dich nen moi ho co dung mot chu ho. so_cccd NULL khi chua co (tre em).
+CREATE TABLE IF NOT EXISTS nhan_khau (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    ho_id      INT          NOT NULL,
+    ho_ten     VARCHAR(100) NOT NULL,
+    ngay_sinh  DATE         NOT NULL,
+    gioi_tinh  ENUM('NAM', 'NU') NOT NULL,
+    so_cccd    CHAR(12)     NULL,
+    quan_he    ENUM('CHU_HO', 'VO_CHONG', 'CON', 'KHAC') NOT NULL,
+    ngay_tao   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    chu_ho_cua INT AS (IF(quan_he = 'CHU_HO', ho_id, NULL)) STORED,
+    CONSTRAINT fk_nk_ho FOREIGN KEY (ho_id) REFERENCES ho_gia_dinh (id),
+    CONSTRAINT uq_nk_cccd UNIQUE (so_cccd),
+    CONSTRAINT uq_nk_chu_ho UNIQUE (chu_ho_cua),
+    INDEX idx_nk_ho_ten (ho_ten)
+);
+
+-- TODO (Sprint 1): tam_tru_tam_vang (US-003)
 -- TODO (Sprint 2): khoan_phi
 -- TODO (Sprint 3): dot_thu, phai_nop, phieu_thu
 -- Quy ước: không dùng ON DELETE CASCADE; hộ ngừng quản lý chỉ đổi trạng thái.
