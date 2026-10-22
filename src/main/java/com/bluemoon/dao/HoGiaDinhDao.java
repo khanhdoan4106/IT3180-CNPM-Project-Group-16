@@ -1,5 +1,6 @@
 package com.bluemoon.dao;
 
+import com.bluemoon.model.DotCuTru;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.TomTatHo;
@@ -12,14 +13,15 @@ import java.util.Optional;
 public interface HoGiaDinhDao {
 
     /**
-     * Them ho gia dinh moi cung chu ho trong mot giao dich, de ho luon co
-     * dung mot chu ho.
+     * Them ho gia dinh moi cung chu ho (va dot tam tru dau tien neu chu ho
+     * la nguoi tam tru) trong mot giao dich, de ho luon co dung mot chu ho.
      *
      * @param ho ho gia dinh chua co id
      * @param chuHo nhan khau chu ho, chua co id va hoId
+     * @param dotTamTru dot tam tru dau tien cua chu ho, null neu thuong tru
      * @return khoa chinh cua ho vua sinh
      */
-    int them(HoGiaDinh ho, NhanKhau chuHo);
+    int them(HoGiaDinh ho, NhanKhau chuHo, DotCuTru dotTamTru);
 
     /**
      * Cap nhat thong tin ho (theo id).

@@ -16,6 +16,8 @@ public class NhanKhau {
     private final String soCccd;
     private final QuanHeChuHo quanHe;
     private final TrangThaiNhanKhau trangThai;
+    private final LoaiCuTru loaiCuTru;
+    private final String noiThuongTru;
 
     /**
      * Tao nhan khau.
@@ -28,10 +30,13 @@ public class NhanKhau {
      * @param soCccd so CCCD 12 chu so, null neu chua co (duoi 14 tuoi)
      * @param quanHe quan he voi chu ho
      * @param trangThai trang thai cu tru
+     * @param loaiCuTru loai dang ky cu tru (US-003)
+     * @param noiThuongTru noi thuong tru, null voi nguoi thuong tru
      */
     public NhanKhau(int id, int hoId, String hoTen, LocalDate ngaySinh,
             GioiTinh gioiTinh, String soCccd, QuanHeChuHo quanHe,
-            TrangThaiNhanKhau trangThai) {
+            TrangThaiNhanKhau trangThai, LoaiCuTru loaiCuTru,
+            String noiThuongTru) {
         this.id = id;
         this.hoId = hoId;
         this.hoTen = hoTen;
@@ -40,6 +45,8 @@ public class NhanKhau {
         this.soCccd = soCccd;
         this.quanHe = quanHe;
         this.trangThai = trangThai;
+        this.loaiCuTru = loaiCuTru;
+        this.noiThuongTru = noiThuongTru;
     }
 
     /**
@@ -50,7 +57,7 @@ public class NhanKhau {
      */
     public NhanKhau voiId(int idMoi) {
         return new NhanKhau(idMoi, hoId, hoTen, ngaySinh, gioiTinh, soCccd,
-                quanHe, trangThai);
+                quanHe, trangThai, loaiCuTru, noiThuongTru);
     }
 
     /**
@@ -61,7 +68,7 @@ public class NhanKhau {
      */
     public NhanKhau voiHoId(int hoIdMoi) {
         return new NhanKhau(id, hoIdMoi, hoTen, ngaySinh, gioiTinh, soCccd,
-                quanHe, trangThai);
+                quanHe, trangThai, loaiCuTru, noiThuongTru);
     }
 
     /**
@@ -72,7 +79,7 @@ public class NhanKhau {
      */
     public NhanKhau voiTrangThai(TrangThaiNhanKhau trangThaiMoi) {
         return new NhanKhau(id, hoId, hoTen, ngaySinh, gioiTinh, soCccd,
-                quanHe, trangThaiMoi);
+                quanHe, trangThaiMoi, loaiCuTru, noiThuongTru);
     }
 
     public int getId() {
@@ -105,5 +112,13 @@ public class NhanKhau {
 
     public TrangThaiNhanKhau getTrangThai() {
         return trangThai;
+    }
+
+    public LoaiCuTru getLoaiCuTru() {
+        return loaiCuTru;
+    }
+
+    public String getNoiThuongTru() {
+        return noiThuongTru;
     }
 }
