@@ -112,15 +112,16 @@ public class HoGiaDinhService {
     }
 
     /**
-     * Danh dau ho da chuyen di. Khong xoa du lieu de giu lich su; can ho
-     * co the nhan ho moi.
+     * Danh dau ho va moi thanh vien dang o la da chuyen di. Khong xoa du
+     * lieu de giu lich su; can ho co the nhan ho moi, CCCD cua cac thanh
+     * vien khai bao lai duoc o ho khac.
      *
      * @param id khoa chinh ho
      * @throws NghiepVuException neu khong tim thay hoac ho da chuyen di
      */
     public void danhDauChuyenDi(int id) {
         layDangO(id);
-        dao.capNhatTrangThai(id, TrangThaiHo.DA_CHUYEN_DI);
+        dao.danhDauChuyenDi(id);
     }
 
     /**

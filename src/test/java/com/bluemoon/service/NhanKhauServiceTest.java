@@ -10,6 +10,7 @@ import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiCanHo;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
+import com.bluemoon.model.TrangThaiNhanKhau;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -48,10 +49,16 @@ class NhanKhauServiceTest {
                         null));
     }
 
+    /** Con 11 tuoi: chua bat buoc co CCCD. */
     private static ThongTinNhanKhau con(String cccd) {
         return new ThongTinNhanKhau("Hoang Minh Chau",
-                LocalDate.of(2010, 5, 14), GioiTinh.NU, cccd,
+                LocalDate.of(2015, 5, 14), GioiTinh.NU, cccd,
                 QuanHeChuHo.CON);
+    }
+
+    private static ThongTinNhanKhau nguoiLon(String ten, String cccd) {
+        return new ThongTinNhanKhau(ten, LocalDate.of(1980, 1, 30),
+                GioiTinh.NAM, cccd, QuanHeChuHo.KHAC);
     }
 
     private NhanKhau chuHo() {
@@ -66,7 +73,7 @@ class NhanKhauServiceTest {
         assertTrue(nk.getId() > 0);
         assertEquals(ho.getId(), nk.getHoId());
         assertEquals("Hoang Minh Chau", nk.getHoTen());
-        assertEquals(LocalDate.of(2010, 5, 14), nk.getNgaySinh());
+        assertEquals(LocalDate.of(2015, 5, 14), nk.getNgaySinh());
         assertEquals(GioiTinh.NU, nk.getGioiTinh());
         assertEquals("001310002345", nk.getSoCccd());
         assertEquals(2, service.theoHo(ho.getId()).size());
@@ -90,7 +97,7 @@ class NhanKhauServiceTest {
     @Test
     void themChuHoThuHaiBiTuChoi() {
         ThongTinNhanKhau tt = new ThongTinNhanKhau("Hoang Van Nam",
-                LocalDate.of(1980, 1, 30), GioiTinh.NAM, "",
+                LocalDate.of(1980, 1, 30), GioiTinh.NAM, "001080007890",
                 QuanHeChuHo.CHU_HO);
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.them(ho.getId(), tt));
@@ -225,6 +232,62 @@ class NhanKhauServiceTest {
                 () -> service.capNhat(ch.getId(), new ThongTinNhanKhau(
                         "Ten Moi", ch.getNgaySinh(), ch.getGioiTinh(), "",
                         QuanHeChuHo.CHU_HO)));
+    }
+
+    @Test
+    void tuDu14TuoiBatBuocCoCccd() {
+        ThongTinNhanKhau du14 = new ThongTinNhanKhau("Tron 14",
+                HOM_NAY.minusYears(14), GioiTinh.NAM, "", QuanHeChuHo.CON);
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.them(ho.getId(), du14));
+        assertTrue(e.getMessage().contains("So CCCD"));
+        ThongTinNhanKhau chua14 = new ThongTinNhanKhau("Gan 14",
+                HOM_NAY.minusYears(14).plusDays(1), GioiTinh.NU, "",
+                QuanHeChuHo.CON);
+        assertNull(service.them(ho.getId(), chua14).getSoCccd());
+    }
+
+    @Test
+    void thanhVienChuyenDiKhongTinhVaoSoThanhVien() {
+        NhanKhau nk = service.them(ho.getId(),
+                nguoiLon("Hoang Van Nam", "001080007890"));
+        service.danhDauChuyenDi(nk.getId());
+        assertEquals(TrangThaiNhanKhau.DA_CHUYEN_DI,
+                kho.nhanKhau.get(nk.getId()).getTrangThai());
+        assertEquals(1, hoService.timKiem("A0601", false).get(0)
+                .soThanhVien());
+        assertEquals(2, service.theoHo(ho.getId()).size());
+    }
+
+    @Test
+    void nguoiChuyenDiKhaiBaoLaiDuocOHoKhacVoiCungCccd() {
+        NhanKhau nk = service.them(ho.getId(),
+                nguoiLon("Hoang Van Nam", "001080007890"));
+        HoGiaDinh moi = themHo("A0602", "001182009999");
+        assertThrows(NghiepVuException.class, () -> service.them(
+                moi.getId(), nguoiLon("Hoang Van Nam", "001080007890")));
+        service.danhDauChuyenDi(nk.getId());
+        NhanKhau lai = service.them(moi.getId(),
+                nguoiLon("Hoang Van Nam", "001080007890"));
+        assertEquals(moi.getId(), lai.getHoId());
+    }
+
+    @Test
+    void chuHoKhongChuyenDiRiengDuoc() {
+        NhanKhau ch = chuHo();
+        assertThrows(NghiepVuException.class,
+                () -> service.danhDauChuyenDi(ch.getId()));
+        assertEquals(TrangThaiNhanKhau.DANG_O, chuHo().getTrangThai());
+    }
+
+    @Test
+    void nguoiDaChuyenDiKhongSuaVaKhongChuyenDiLaiDuoc() {
+        NhanKhau nk = service.them(ho.getId(), con(""));
+        service.danhDauChuyenDi(nk.getId());
+        assertThrows(NghiepVuException.class,
+                () -> service.capNhat(nk.getId(), con("")));
+        assertThrows(NghiepVuException.class,
+                () -> service.danhDauChuyenDi(nk.getId()));
     }
 
     @Test

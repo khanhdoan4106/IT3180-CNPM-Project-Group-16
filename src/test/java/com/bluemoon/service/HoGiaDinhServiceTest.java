@@ -13,6 +13,7 @@ import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiHo;
+import com.bluemoon.model.TrangThaiNhanKhau;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -80,7 +81,8 @@ class HoGiaDinhServiceTest {
     @Test
     void quanHeNhapVaoBiBoQuaChuHoLuonLaChuHo() {
         ThongTinNhanKhau tt = new ThongTinNhanKhau("Le Van A",
-                LocalDate.of(1990, 1, 1), GioiTinh.NAM, "", QuanHeChuHo.CON);
+                LocalDate.of(1990, 1, 1), GioiTinh.NAM, "001090000001",
+                QuanHeChuHo.CON);
         HoGiaDinh ho = service.them(hopLe("A0601"), tt);
         assertEquals(QuanHeChuHo.CHU_HO,
                 kho.nhanKhauDao.theoHo(ho.getId()).get(0).getQuanHe());
@@ -134,6 +136,29 @@ class HoGiaDinhServiceTest {
         assertThrows(NghiepVuException.class,
                 () -> service.them(hopLe("A0601"), chuHo("12345")));
         assertTrue(kho.ho.isEmpty());
+    }
+
+    @Test
+    void chuHoTuDu14TuoiThieuCccdBiTuChoi() {
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.them(hopLe("A0601"), chuHo("")));
+        assertTrue(e.getMessage().contains("So CCCD chu ho"));
+        assertTrue(kho.ho.isEmpty());
+    }
+
+    @Test
+    void hoChuyenDiThiMoiThanhVienChuyenDiVaCccdDungLaiDuoc() {
+        HoGiaDinh cu = service.them(hopLe("A0601"), chuHo("001182000001"));
+        service.danhDauChuyenDi(cu.getId());
+        for (NhanKhau n : kho.nhanKhauDao.theoHo(cu.getId())) {
+            assertEquals(TrangThaiNhanKhau.DA_CHUYEN_DI, n.getTrangThai());
+        }
+        HoGiaDinh moi = service.them(hopLe("A0602"), chuHo("001182000001"));
+        assertEquals(1, service.timKiem("A0602", false).get(0)
+                .soThanhVien());
+        assertEquals(0, service.timKiem("A0601", true).get(0)
+                .soThanhVien());
+        assertTrue(moi.getId() > cu.getId());
     }
 
     @Test
@@ -241,7 +266,8 @@ class HoGiaDinhServiceTest {
     void timKiemTheoTenChuHo() {
         them(hopLe("A0601"));
         service.them(hopLe("A0602"), new ThongTinNhanKhau("Le Minh Quan",
-                LocalDate.of(1990, 11, 2), GioiTinh.NAM, "", null));
+                LocalDate.of(1990, 11, 2), GioiTinh.NAM, "001090005678",
+                null));
         List<TomTatHo> kq = service.timKiem("Minh Quan", false);
         assertEquals(1, kq.size());
         assertEquals("A0602", kq.get(0).ho().getMaCanHo());

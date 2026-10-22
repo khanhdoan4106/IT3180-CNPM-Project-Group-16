@@ -15,6 +15,7 @@ public class NhanKhau {
     private final GioiTinh gioiTinh;
     private final String soCccd;
     private final QuanHeChuHo quanHe;
+    private final TrangThaiNhanKhau trangThai;
 
     /**
      * Tao nhan khau.
@@ -24,11 +25,13 @@ public class NhanKhau {
      * @param hoTen ho ten
      * @param ngaySinh ngay sinh
      * @param gioiTinh gioi tinh
-     * @param soCccd so CCCD 12 chu so, null neu chua co (tre em)
+     * @param soCccd so CCCD 12 chu so, null neu chua co (duoi 14 tuoi)
      * @param quanHe quan he voi chu ho
+     * @param trangThai trang thai cu tru
      */
     public NhanKhau(int id, int hoId, String hoTen, LocalDate ngaySinh,
-            GioiTinh gioiTinh, String soCccd, QuanHeChuHo quanHe) {
+            GioiTinh gioiTinh, String soCccd, QuanHeChuHo quanHe,
+            TrangThaiNhanKhau trangThai) {
         this.id = id;
         this.hoId = hoId;
         this.hoTen = hoTen;
@@ -36,6 +39,7 @@ public class NhanKhau {
         this.gioiTinh = gioiTinh;
         this.soCccd = soCccd;
         this.quanHe = quanHe;
+        this.trangThai = trangThai;
     }
 
     /**
@@ -46,7 +50,7 @@ public class NhanKhau {
      */
     public NhanKhau voiId(int idMoi) {
         return new NhanKhau(idMoi, hoId, hoTen, ngaySinh, gioiTinh, soCccd,
-                quanHe);
+                quanHe, trangThai);
     }
 
     /**
@@ -57,7 +61,18 @@ public class NhanKhau {
      */
     public NhanKhau voiHoId(int hoIdMoi) {
         return new NhanKhau(id, hoIdMoi, hoTen, ngaySinh, gioiTinh, soCccd,
-                quanHe);
+                quanHe, trangThai);
+    }
+
+    /**
+     * Tao ban sao voi trang thai moi.
+     *
+     * @param trangThaiMoi trang thai
+     * @return nhan khau voi trang thai moi
+     */
+    public NhanKhau voiTrangThai(TrangThaiNhanKhau trangThaiMoi) {
+        return new NhanKhau(id, hoId, hoTen, ngaySinh, gioiTinh, soCccd,
+                quanHe, trangThaiMoi);
     }
 
     public int getId() {
@@ -86,5 +101,9 @@ public class NhanKhau {
 
     public QuanHeChuHo getQuanHe() {
         return quanHe;
+    }
+
+    public TrangThaiNhanKhau getTrangThai() {
+        return trangThai;
     }
 }

@@ -7,6 +7,7 @@ import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiHo;
+import com.bluemoon.model.TrangThaiNhanKhau;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,6 +32,10 @@ class KhoGia {
                 && n.getQuanHe() == QuanHeChuHo.CHU_HO).findFirst();
     }
 
+    private static boolean dangO(NhanKhau n) {
+        return n.getTrangThai() == TrangThaiNhanKhau.DANG_O;
+    }
+
     private class HoDao implements HoGiaDinhDao {
 
         @Override
@@ -47,8 +52,12 @@ class KhoGia {
         }
 
         @Override
-        public void capNhatTrangThai(int id, TrangThaiHo trangThai) {
-            ho.put(id, ho.get(id).voiTrangThai(trangThai));
+        public void danhDauChuyenDi(int id) {
+            ho.put(id, ho.get(id).voiTrangThai(TrangThaiHo.DA_CHUYEN_DI));
+            for (NhanKhau n : nhanKhauDao.theoHo(id)) {
+                nhanKhauDao.capNhatTrangThai(n.getId(),
+                        TrangThaiNhanKhau.DA_CHUYEN_DI);
+            }
         }
 
         @Override
@@ -73,7 +82,8 @@ class KhoGia {
                         || (ten != null && ten.contains(tuKhoa));
                 if (khop && (gomDaChuyenDi
                         || h.getTrangThai() == TrangThaiHo.DANG_O)) {
-                    int soThanhVien = nhanKhauDao.theoHo(h.getId()).size();
+                    int soThanhVien = (int) nhanKhauDao.theoHo(h.getId())
+                            .stream().filter(KhoGia::dangO).count();
                     kq.add(new TomTatHo(h, ten, soThanhVien));
                 }
             }
@@ -92,7 +102,13 @@ class KhoGia {
 
         @Override
         public void capNhat(NhanKhau nk) {
-            nhanKhau.put(nk.getId(), nk);
+            TrangThaiNhanKhau cu = nhanKhau.get(nk.getId()).getTrangThai();
+            nhanKhau.put(nk.getId(), nk.voiTrangThai(cu));
+        }
+
+        @Override
+        public void capNhatTrangThai(int id, TrangThaiNhanKhau trangThai) {
+            nhanKhau.put(id, nhanKhau.get(id).voiTrangThai(trangThai));
         }
 
         @Override
@@ -109,7 +125,8 @@ class KhoGia {
         @Override
         public boolean tonTaiCccd(String soCccd, int boQuaId) {
             return nhanKhau.values().stream().anyMatch(
-                    n -> n.getId() != boQuaId && soCccd.equals(n.getSoCccd()));
+                    n -> n.getId() != boQuaId && dangO(n)
+                            && soCccd.equals(n.getSoCccd()));
         }
 
         @Override

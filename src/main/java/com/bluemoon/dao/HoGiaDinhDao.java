@@ -3,7 +3,6 @@ package com.bluemoon.dao;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.TomTatHo;
-import com.bluemoon.model.TrangThaiHo;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,12 +29,12 @@ public interface HoGiaDinhDao {
     void capNhat(HoGiaDinh ho);
 
     /**
-     * Doi trang thai cu tru cua ho.
+     * Danh dau ho va moi thanh vien dang o cua ho la da chuyen di, trong
+     * mot giao dich.
      *
-     * @param id khoa chinh
-     * @param trangThai trang thai moi
+     * @param id khoa chinh ho
      */
-    void capNhatTrangThai(int id, TrangThaiHo trangThai);
+    void danhDauChuyenDi(int id);
 
     /**
      * Tim ho theo khoa chinh.

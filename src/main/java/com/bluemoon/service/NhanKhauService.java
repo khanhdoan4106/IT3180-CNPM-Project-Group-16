@@ -6,6 +6,7 @@ import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
 import com.bluemoon.model.TrangThaiHo;
+import com.bluemoon.model.TrangThaiNhanKhau;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -78,9 +79,7 @@ public class NhanKhauService {
      *         sai, doi vai tro chu ho hoac trung so CCCD
      */
     public NhanKhau capNhat(int id, ThongTinNhanKhau tt) {
-        NhanKhau cu = dao.timTheoId(id).orElseThrow(
-                () -> new NghiepVuException("Khong tim thay nhan khau"));
-        layHoDangO(cu.getHoId());
+        NhanKhau cu = layDangO(id);
         NhanKhau moi = kiemTra(tt, id, cu.getHoId());
         if (cu.getQuanHe() == QuanHeChuHo.CHU_HO
                 && moi.getQuanHe() != QuanHeChuHo.CHU_HO) {
@@ -97,13 +96,44 @@ public class NhanKhauService {
     }
 
     /**
-     * Lay cac thanh vien cua ho, chu ho dung dau.
+     * Danh dau mot thanh vien da roi ho (chuyen can khac, tach ho...). Khong
+     * xoa du lieu; so CCCD cua nguoi nay khai bao lai duoc o ho khac. Chu ho
+     * khong chuyen di rieng duoc vi ho phai luon co chu ho.
+     *
+     * @param id khoa chinh nhan khau
+     * @throws NghiepVuException neu khong tim thay, da chuyen di, ho da
+     *         chuyen di hoac la chu ho
+     */
+    public void danhDauChuyenDi(int id) {
+        NhanKhau nk = layDangO(id);
+        if (nk.getQuanHe() == QuanHeChuHo.CHU_HO) {
+            throw new NghiepVuException("Chu ho khong the chuyen di rieng."
+                    + " Neu ca ho chuyen di, danh dau o man hinh Ho gia dinh");
+        }
+        dao.capNhatTrangThai(id, TrangThaiNhanKhau.DA_CHUYEN_DI);
+    }
+
+    /**
+     * Lay cac thanh vien cua ho, ke ca nguoi da chuyen di; nguoi dang o
+     * truoc, chu ho dung dau.
      *
      * @param hoId id ho gia dinh
      * @return danh sach nhan khau
      */
     public List<NhanKhau> theoHo(int hoId) {
         return dao.theoHo(hoId);
+    }
+
+    /** Lay nhan khau dang o thuoc ho dang o; nguoc lai bao loi. */
+    private NhanKhau layDangO(int id) {
+        NhanKhau nk = dao.timTheoId(id).orElseThrow(
+                () -> new NghiepVuException("Khong tim thay nhan khau"));
+        layHoDangO(nk.getHoId());
+        if (nk.getTrangThai() != TrangThaiNhanKhau.DANG_O) {
+            throw new NghiepVuException(
+                    "Nhan khau da chuyen di, khong the thay doi");
+        }
+        return nk;
     }
 
     private void layHoDangO(int hoId) {
@@ -127,7 +157,10 @@ public class NhanKhauService {
         return nk;
     }
 
-    /** AC-008: so CCCD da thuoc nhan khau khac thi canh bao, khong luu. */
+    /**
+     * AC-008: so CCCD da thuoc nhan khau dang o khac thi bao trung va khong
+     * luu (chat hon "canh bao" trong AC, xem 11-chot-va-gia-dinh.md).
+     */
     private void kiemTraTrungCccd(NhanKhau nk) {
         if (nk.getSoCccd() != null
                 && dao.tonTaiCccd(nk.getSoCccd(), nk.getId())) {

@@ -38,20 +38,28 @@ CREATE TABLE IF NOT EXISTS ho_gia_dinh (
 -- US-002: nhan khau (RAW-002, RAW-003). Chu ho la nhan khau co quan_he
 -- CHU_HO; cot sinh chu_ho_cua chi co gia tri o dong chu ho nen UNIQUE dam
 -- bao moi ho toi da mot chu ho, ung dung them ho cung chu ho trong mot giao
--- dich nen moi ho co dung mot chu ho. so_cccd NULL khi chua co (tre em).
+-- dich nen moi ho co dung mot chu ho.
+-- so_cccd NULL chi khi duoi 14 tuoi (ung dung kiem tra). Nguoi roi ho chi
+-- doi trang_thai, khong xoa; CCCD chi duy nhat trong cac nhan khau DANG_O
+-- (cot sinh cccd_dang_o), nen nguoi chuyen can/tach ho khai bao lai duoc.
+-- Trang thai nam ngay trong nhan_khau vi cot sinh khong doc duoc bang ho.
 CREATE TABLE IF NOT EXISTS nhan_khau (
-    id         INT AUTO_INCREMENT PRIMARY KEY,
-    ho_id      INT          NOT NULL,
-    ho_ten     VARCHAR(100) NOT NULL,
-    ngay_sinh  DATE         NOT NULL,
-    gioi_tinh  ENUM('NAM', 'NU') NOT NULL,
-    so_cccd    CHAR(12)     NULL,
-    quan_he    ENUM('CHU_HO', 'VO_CHONG', 'CON', 'KHAC') NOT NULL,
-    ngay_tao   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    chu_ho_cua INT AS (IF(quan_he = 'CHU_HO', ho_id, NULL)) STORED,
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    ho_id       INT          NOT NULL,
+    ho_ten      VARCHAR(100) NOT NULL,
+    ngay_sinh   DATE         NOT NULL,
+    gioi_tinh   ENUM('NAM', 'NU') NOT NULL,
+    so_cccd     CHAR(12)     NULL,
+    quan_he     ENUM('CHU_HO', 'VO_CHONG', 'CON', 'KHAC') NOT NULL,
+    trang_thai  ENUM('DANG_O', 'DA_CHUYEN_DI') NOT NULL DEFAULT 'DANG_O',
+    ngay_tao    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    chu_ho_cua  INT AS (IF(quan_he = 'CHU_HO', ho_id, NULL)) STORED,
+    cccd_dang_o CHAR(12) AS
+        (IF(trang_thai = 'DANG_O', so_cccd, NULL)) STORED,
     CONSTRAINT fk_nk_ho FOREIGN KEY (ho_id) REFERENCES ho_gia_dinh (id),
-    CONSTRAINT uq_nk_cccd UNIQUE (so_cccd),
+    CONSTRAINT uq_nk_cccd_dang_o UNIQUE (cccd_dang_o),
     CONSTRAINT uq_nk_chu_ho UNIQUE (chu_ho_cua),
+    INDEX idx_nk_so_cccd (so_cccd),
     INDEX idx_nk_ho_ten (ho_ten)
 );
 

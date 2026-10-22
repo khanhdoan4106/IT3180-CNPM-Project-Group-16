@@ -48,6 +48,8 @@
                 <TableColumn fx:id="cotCccd" text="So CCCD" prefWidth="140"/>
                 <TableColumn fx:id="cotQuanHe" text="Quan he voi chu ho"
                              prefWidth="150"/>
+                <TableColumn fx:id="cotTrangThai" text="Trang thai"
+                             prefWidth="110"/>
             </columns>
             <placeholder>
                 <Label text="Chon mot ho de xem thanh vien"/>
@@ -76,7 +78,8 @@
                 <ComboBox fx:id="gioiTinhCombo" maxWidth="Infinity"
                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
                 <Label text="So CCCD" GridPane.rowIndex="3"/>
-                <TextField fx:id="cccdField" promptText="12 chu so"
+                <TextField fx:id="cccdField"
+                           promptText="12 chu so, bat buoc tu 14 tuoi"
                            GridPane.rowIndex="3" GridPane.columnIndex="1"/>
                 <Label text="Quan he *" GridPane.rowIndex="4"/>
                 <ComboBox fx:id="quanHeCombo" maxWidth="Infinity"
@@ -87,6 +90,10 @@
                 <Button fx:id="luuButton" text="Luu" defaultButton="true"
                         styleClass="nut-chinh" onAction="#onLuu"/>
                 <Button text="Nhap moi" onAction="#onNhapMoi"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="chuyenDiButton" text="Danh dau chuyen di"
+                        styleClass="nut-phu" disable="true"
+                        onAction="#onChuyenDi"/>
             </HBox>
         </VBox>
     </right>
