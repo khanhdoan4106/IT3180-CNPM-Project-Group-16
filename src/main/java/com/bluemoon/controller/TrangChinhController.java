@@ -32,6 +32,11 @@ public class TrangChinhController {
     }
 
     @FXML
+    private void onMoNhanKhau() {
+        noiDung.getChildren().setAll(DieuHuong.taiManHinh("nhan-khau.fxml"));
+    }
+
+    @FXML
     private void onDangXuat() {
         PhienLamViec.xoa();
         DieuHuong.hienDangNhap();
