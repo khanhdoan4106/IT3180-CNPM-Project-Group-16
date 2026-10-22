@@ -1,5 +1,6 @@
 package com.bluemoon.dao;
 
+import com.bluemoon.model.DotCuTru;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.TrangThaiNhanKhau;
 import java.util.List;
@@ -17,6 +18,16 @@ public interface NhanKhauDao {
      * @return khoa chinh vua sinh
      */
     int them(NhanKhau nk);
+
+    /**
+     * Them nguoi tam tru cung dot tam tru dau tien trong mot giao dich, de
+     * khong co nguoi tam tru nao khong co thoi han.
+     *
+     * @param nk nhan khau chua co id, da co hoId
+     * @param dot dot tam tru dau tien, chua co nhanKhauId
+     * @return khoa chinh cua nhan khau vua sinh
+     */
+    int themKemDot(NhanKhau nk, DotCuTru dot);
 
     /**
      * Cap nhat thong tin nhan khau (theo id). Khong doi ho.

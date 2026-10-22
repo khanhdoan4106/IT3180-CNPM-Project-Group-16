@@ -52,6 +52,10 @@ CREATE TABLE IF NOT EXISTS nhan_khau (
     so_cccd     CHAR(12)     NULL,
     quan_he     ENUM('CHU_HO', 'VO_CHONG', 'CON', 'KHAC') NOT NULL,
     trang_thai  ENUM('DANG_O', 'DA_CHUYEN_DI') NOT NULL DEFAULT 'DANG_O',
+    -- US-003: loai dang ky cu tru, khong doi theo ngay. noi_thuong_tru bat
+    -- buoc voi nguoi TAM_TRU (ung dung kiem tra).
+    loai_cu_tru ENUM('THUONG_TRU', 'TAM_TRU') NOT NULL DEFAULT 'THUONG_TRU',
+    noi_thuong_tru VARCHAR(200) NULL,
     ngay_tao    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     chu_ho_cua  INT AS (IF(quan_he = 'CHU_HO', ho_id, NULL)) STORED,
     cccd_dang_o CHAR(12) AS
@@ -63,7 +67,24 @@ CREATE TABLE IF NOT EXISTS nhan_khau (
     INDEX idx_nk_ho_ten (ho_ten)
 );
 
--- TODO (Sprint 1): tam_tru_tam_vang (US-003)
+-- US-003: cac dot tam tru, tam vang (RAW-004, RAW-005). Moi dot co ngay bat
+-- dau va ket thuc (AC-010, AC-011). "Dang tam tru/tam vang" tinh theo ngay
+-- hom nay, khong luu thanh cot. Ung dung chan cac dot cua cung mot nguoi
+-- chong ngay nhau (kiem tra trong giao dich co khoa dong nhan_khau).
+CREATE TABLE IF NOT EXISTS tam_tru_tam_vang (
+    id           INT AUTO_INCREMENT PRIMARY KEY,
+    nhan_khau_id INT          NOT NULL,
+    loai         ENUM('TAM_TRU', 'TAM_VANG') NOT NULL,
+    tu_ngay      DATE         NOT NULL,
+    den_ngay     DATE         NOT NULL,
+    ly_do        VARCHAR(200) NULL,
+    ngay_tao     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_ttv_nhan_khau FOREIGN KEY (nhan_khau_id)
+        REFERENCES nhan_khau (id),
+    CONSTRAINT chk_ttv_ngay CHECK (den_ngay >= tu_ngay),
+    INDEX idx_ttv_nhan_khau (nhan_khau_id, tu_ngay)
+);
+
 -- TODO (Sprint 2): khoan_phi
 -- TODO (Sprint 3): dot_thu, phai_nop, phieu_thu
 -- Quy ước: không dùng ON DELETE CASCADE; hộ ngừng quản lý chỉ đổi trạng thái.

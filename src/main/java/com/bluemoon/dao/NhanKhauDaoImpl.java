@@ -1,7 +1,9 @@
 package com.bluemoon.dao;
 
 import com.bluemoon.config.Database;
+import com.bluemoon.model.DotCuTru;
 import com.bluemoon.model.GioiTinh;
+import com.bluemoon.model.LoaiCuTru;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
 import com.bluemoon.model.TrangThaiNhanKhau;
@@ -23,14 +25,15 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
 
     private static final String COT =
             "id, ho_id, ho_ten, ngay_sinh, gioi_tinh, so_cccd, quan_he, "
-                    + "trang_thai";
+                    + "trang_thai, loai_cu_tru, noi_thuong_tru";
     private static final String SQL_THEM =
             "INSERT INTO nhan_khau (ho_ten, ngay_sinh, gioi_tinh, so_cccd, "
-                    + "quan_he, ho_id, trang_thai) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    + "quan_he, noi_thuong_tru, ho_id, trang_thai, "
+                    + "loai_cu_tru) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_SUA =
             "UPDATE nhan_khau SET ho_ten = ?, ngay_sinh = ?, gioi_tinh = ?, "
-                    + "so_cccd = ?, quan_he = ? WHERE id = ?";
+                    + "so_cccd = ?, quan_he = ?, noi_thuong_tru = ? "
+                    + "WHERE id = ?";
     private static final String SQL_DOI_TRANG_THAI =
             "UPDATE nhan_khau SET trang_thai = ? WHERE id = ?";
     private static final String SQL_TIM_ID =
@@ -55,16 +58,35 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
         }
     }
 
+    @Override
+    public int themKemDot(NhanKhau nk, DotCuTru dot) {
+        try (Connection conn = Database.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                int id = them(conn, nk);
+                DotCuTruDaoImpl.them(conn, dot.voiNhanKhauId(id));
+                conn.commit();
+                return id;
+            } catch (SQLException | RuntimeException e) {
+                conn.rollback();
+                throw e;
+            }
+        } catch (SQLException e) {
+            throw TrungKhoaException.boc("Loi them nhan khau tam tru", e);
+        }
+    }
+
     /**
      * Them nhan khau tren ket noi co san, de goi trong giao dich them ho
-     * cung chu ho.
+     * cung chu ho hoac them nguoi tam tru cung dot dau tien.
      */
     static int them(Connection conn, NhanKhau nk) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(SQL_THEM,
                 Statement.RETURN_GENERATED_KEYS)) {
             ganThongTin(ps, nk);
-            ps.setInt(6, nk.getHoId());
-            ps.setString(7, nk.getTrangThai().name());
+            ps.setInt(7, nk.getHoId());
+            ps.setString(8, nk.getTrangThai().name());
+            ps.setString(9, nk.getLoaiCuTru().name());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (!keys.next()) {
@@ -80,7 +102,7 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
         try (Connection conn = Database.getConnection();
                 PreparedStatement ps = conn.prepareStatement(SQL_SUA)) {
             ganThongTin(ps, nk);
-            ps.setInt(6, nk.getId());
+            ps.setInt(7, nk.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw TrungKhoaException.boc("Loi cap nhat nhan khau", e);
@@ -168,6 +190,11 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
             ps.setString(4, nk.getSoCccd());
         }
         ps.setString(5, nk.getQuanHe().name());
+        if (nk.getNoiThuongTru() == null) {
+            ps.setNull(6, Types.VARCHAR);
+        } else {
+            ps.setString(6, nk.getNoiThuongTru());
+        }
     }
 
     private static NhanKhau docDong(ResultSet rs) throws SQLException {
@@ -179,6 +206,8 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
                 GioiTinh.valueOf(rs.getString("gioi_tinh")),
                 rs.getString("so_cccd"),
                 QuanHeChuHo.valueOf(rs.getString("quan_he")),
-                TrangThaiNhanKhau.valueOf(rs.getString("trang_thai")));
+                TrangThaiNhanKhau.valueOf(rs.getString("trang_thai")),
+                LoaiCuTru.valueOf(rs.getString("loai_cu_tru")),
+                rs.getString("noi_thuong_tru"));
     }
 }

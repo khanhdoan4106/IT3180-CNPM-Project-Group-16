@@ -93,3 +93,9 @@
 .thanh-dau .nut-menu:hover {
     -fx-background-color: -mau-chinh-dam;
 }
+
+/* US-003: han tam tru da qua ma chua gia han. */
+.table-cell.qua-han {
+    -fx-text-fill: -mau-loi;
+    -fx-font-weight: bold;
+}

@@ -3,7 +3,9 @@ package com.bluemoon.service;
 import com.bluemoon.dao.HoGiaDinhDao;
 import com.bluemoon.dao.NhanKhauDao;
 import com.bluemoon.dao.TrungKhoaException;
+import com.bluemoon.model.DotCuTru;
 import com.bluemoon.model.HoGiaDinh;
+import com.bluemoon.model.LoaiCuTru;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
 import com.bluemoon.model.TrangThaiHo;
@@ -15,7 +17,8 @@ import java.util.List;
 
 /**
  * Nghiep vu quan ly nhan khau (US-002): them, sua nhan khau cua ho; moi ho
- * co dung mot chu ho, so CCCD khong trung.
+ * co dung mot chu ho, so CCCD khong trung. Nguoi tam tru (US-003) duoc them
+ * cung dot tam tru dau tien.
  */
 public class NhanKhauService {
 
@@ -51,7 +54,7 @@ public class NhanKhauService {
     }
 
     /**
-     * Them nhan khau vao ho dang o (AC-005 - AC-008).
+     * Them nhan khau thuong tru vao ho dang o (AC-005 - AC-008).
      *
      * @param hoId id ho gia dinh
      * @param tt du lieu tren form
@@ -60,14 +63,41 @@ public class NhanKhauService {
      *         da co chu ho hoac trung so CCCD
      */
     public NhanKhau them(int hoId, ThongTinNhanKhau tt) {
+        return them(hoId, tt, null);
+    }
+
+    /**
+     * Them nhan khau vao ho dang o. Nguoi dang ky tam tru duoc luu cung dot
+     * tam tru dau tien trong mot giao dich (US-003), de khong co nguoi tam
+     * tru nao khong co thoi han.
+     *
+     * @param hoId id ho gia dinh
+     * @param tt du lieu tren form
+     * @param dotTamTru dot tam tru dau tien (loai bi bo qua, luon la tam
+     *        tru); bat buoc voi nguoi tam tru, bo qua voi nguoi thuong tru
+     * @return nhan khau vua them, da co id
+     * @throws NghiepVuException neu ho khong hop le, thieu/sai du lieu, ho
+     *         da co chu ho hoac trung so CCCD
+     */
+    public NhanKhau them(int hoId, ThongTinNhanKhau tt,
+            ThongTinDot dotTamTru) {
         layHoDangO(hoId);
-        NhanKhau nk = kiemTra(tt, 0, hoId);
+        List<String> thieu = new ArrayList<>();
+        List<String> sai = new ArrayList<>();
+        NhanKhau nk = KiemTraNhanKhau.doc(tt, 0, hoId, LocalDate.now(dongHo),
+                "", thieu, sai);
+        DotCuTru dot = nk.getLoaiCuTru() == LoaiCuTru.TAM_TRU
+                ? KiemTraNhanKhau.docDotTamTruDauTien(dotTamTru, "", thieu,
+                        sai)
+                : null;
+        nemNeuLoi(thieu, sai);
         if (nk.getQuanHe() == QuanHeChuHo.CHU_HO && dao.coChuHo(hoId, 0)) {
             throw new NghiepVuException(LOI_HAI_CHU_HO);
         }
         kiemTraTrungCccd(nk);
         try {
-            return nk.voiId(dao.them(nk));
+            return nk.voiId(dot == null ? dao.them(nk)
+                    : dao.themKemDot(nk, dot));
         } catch (TrungKhoaException e) {
             throw LoiTrung.doi(e, null, nk.getSoCccd());
         }
@@ -75,7 +105,8 @@ public class NhanKhauService {
 
     /**
      * Sua thong tin nhan khau cua ho dang o. Chu ho phai giu quan he chu ho
-     * de ho luon co dung mot chu ho.
+     * de ho luon co dung mot chu ho. Loai cu tru khong doi o day (loai trong
+     * {@code tt} bi bo qua); nguoi tam tru sua duoc noi thuong tru.
      *
      * @param id khoa chinh nhan khau
      * @param tt du lieu tren form
@@ -85,7 +116,9 @@ public class NhanKhauService {
      */
     public NhanKhau capNhat(int id, ThongTinNhanKhau tt) {
         NhanKhau cu = layDangO(id);
-        NhanKhau moi = kiemTra(tt, id, cu.getHoId());
+        NhanKhau moi = kiemTra(new ThongTinNhanKhau(tt.hoTen(),
+                tt.ngaySinh(), tt.gioiTinh(), tt.soCccd(), tt.quanHe(),
+                cu.getLoaiCuTru(), tt.noiThuongTru()), id, cu.getHoId());
         if (cu.getQuanHe() == QuanHeChuHo.CHU_HO
                 && moi.getQuanHe() != QuanHeChuHo.CHU_HO) {
             throw new NghiepVuException(
@@ -159,11 +192,15 @@ public class NhanKhauService {
         List<String> sai = new ArrayList<>();
         NhanKhau nk = KiemTraNhanKhau.doc(tt, id, hoId,
                 LocalDate.now(dongHo), "", thieu, sai);
+        nemNeuLoi(thieu, sai);
+        return nk;
+    }
+
+    private static void nemNeuLoi(List<String> thieu, List<String> sai) {
         if (!thieu.isEmpty() || !sai.isEmpty()) {
             throw new NghiepVuException(
                     HoGiaDinhService.thongBao(thieu, sai));
         }
-        return nk;
     }
 
     /**

@@ -116,6 +116,29 @@
                                promptText="bat buoc tu 14 tuoi"
                                GridPane.rowIndex="3"
                                GridPane.columnIndex="1"/>
+                    <Label text="Cu tru *" GridPane.rowIndex="4"/>
+                    <ComboBox fx:id="loaiCuTruChuHoCombo"
+                              maxWidth="Infinity" GridPane.rowIndex="4"
+                              GridPane.columnIndex="1"/>
+                </GridPane>
+                <!-- US-003: chu ho tam tru (ho thue nha), kem dot dau. -->
+                <GridPane fx:id="tamTruChuHoGrid" hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="120"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+                    <Label text="Noi thuong tru *" GridPane.rowIndex="0"/>
+                    <TextField fx:id="noiThuongTruChuHoField"
+                               GridPane.rowIndex="0"
+                               GridPane.columnIndex="1"/>
+                    <Label text="Tam tru tu *" GridPane.rowIndex="1"/>
+                    <DatePicker fx:id="tamTruTuChuHoPicker"
+                                maxWidth="Infinity" GridPane.rowIndex="1"
+                                GridPane.columnIndex="1"/>
+                    <Label text="Tam tru den *" GridPane.rowIndex="2"/>
+                    <DatePicker fx:id="tamTruDenChuHoPicker"
+                                maxWidth="Infinity" GridPane.rowIndex="2"
+                                GridPane.columnIndex="1"/>
                 </GridPane>
             </VBox>
             <Label fx:id="chuHoLabel" wrapText="true" styleClass="phu-de"/>
