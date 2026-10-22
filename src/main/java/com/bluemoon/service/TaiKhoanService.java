@@ -5,7 +5,7 @@ import com.bluemoon.model.TaiKhoan;
 import com.bluemoon.util.MatKhauUtil;
 
 /**
- * Nghiep vu tai khoan: dang nhap (US-01) va doi mat khau (US-03).
+ * Nghiep vu tai khoan: dang nhap (US-021) va doi mat khau (US-023).
  */
 public class TaiKhoanService {
 
