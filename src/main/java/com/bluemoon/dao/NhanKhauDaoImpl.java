@@ -51,7 +51,7 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
         try (Connection conn = Database.getConnection()) {
             return them(conn, nk);
         } catch (SQLException e) {
-            throw new DaoException("Loi them nhan khau", e);
+            throw TrungKhoaException.boc("Loi them nhan khau", e);
         }
     }
 
@@ -83,7 +83,7 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
             ps.setInt(6, nk.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException("Loi cap nhat nhan khau", e);
+            throw TrungKhoaException.boc("Loi cap nhat nhan khau", e);
         }
     }
 
