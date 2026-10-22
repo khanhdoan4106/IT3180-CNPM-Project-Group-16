@@ -1,7 +1,8 @@
 package com.bluemoon.dao;
 
 import com.bluemoon.model.HoGiaDinh;
-import com.bluemoon.model.TrangThaiHo;
+import com.bluemoon.model.NhanKhau;
+import com.bluemoon.model.TomTatHo;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,12 +12,14 @@ import java.util.Optional;
 public interface HoGiaDinhDao {
 
     /**
-     * Them ho gia dinh moi.
+     * Them ho gia dinh moi cung chu ho trong mot giao dich, de ho luon co
+     * dung mot chu ho.
      *
      * @param ho ho gia dinh chua co id
-     * @return khoa chinh vua sinh
+     * @param chuHo nhan khau chu ho, chua co id va hoId
+     * @return khoa chinh cua ho vua sinh
      */
-    int them(HoGiaDinh ho);
+    int them(HoGiaDinh ho, NhanKhau chuHo);
 
     /**
      * Cap nhat thong tin ho (theo id).
@@ -26,12 +29,12 @@ public interface HoGiaDinhDao {
     void capNhat(HoGiaDinh ho);
 
     /**
-     * Doi trang thai cu tru cua ho.
+     * Danh dau ho va moi thanh vien dang o cua ho la da chuyen di, trong
+     * mot giao dich.
      *
-     * @param id khoa chinh
-     * @param trangThai trang thai moi
+     * @param id khoa chinh ho
      */
-    void capNhatTrangThai(int id, TrangThaiHo trangThai);
+    void danhDauChuyenDi(int id);
 
     /**
      * Tim ho theo khoa chinh.
@@ -56,7 +59,8 @@ public interface HoGiaDinhDao {
      *
      * @param tuKhoa tu khoa tim kiem
      * @param gomDaChuyenDi true de lay ca ho da chuyen di
-     * @return danh sach sap xep theo ma can ho
+     * @return danh sach kem ten chu ho va so thanh vien, sap xep theo ma
+     *         can ho
      */
-    List<HoGiaDinh> timKiem(String tuKhoa, boolean gomDaChuyenDi);
+    List<TomTatHo> timKiem(String tuKhoa, boolean gomDaChuyenDi);
 }
