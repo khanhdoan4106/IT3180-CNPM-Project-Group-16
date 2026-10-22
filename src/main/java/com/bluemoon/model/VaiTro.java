@@ -22,4 +22,9 @@ public enum VaiTro {
     public String getNhan() {
         return nhan;
     }
+
+    @Override
+    public String toString() {
+        return nhan;
+    }
 }

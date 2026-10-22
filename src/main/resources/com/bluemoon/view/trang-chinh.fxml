@@ -16,6 +16,8 @@
                     onAction="#onMoHoGiaDinh"/>
             <Button text="Nhan khau" styleClass="nut-menu"
                     onAction="#onMoNhanKhau"/>
+            <Button fx:id="taiKhoanButton" text="Tai khoan"
+                    styleClass="nut-menu" onAction="#onMoTaiKhoan"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="chaoLabel" styleClass="chao"/>
             <Button text="Dang xuat" onAction="#onDangXuat"/>
