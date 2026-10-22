@@ -16,6 +16,7 @@ import com.bluemoon.model.LoaiDotCuTru;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
 import com.bluemoon.model.TinhTrangCuTru;
+import com.bluemoon.model.TrangThaiHo;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -196,5 +197,28 @@ class DotCuTruServiceTest {
                         dot(LoaiDotCuTru.TAM_TRU, HOM_NAY.plusYears(1),
                                 HOM_NAY.plusYears(2))));
         assertFalse(tinhTrang(tamTru).quaHanTamTru());
+    }
+
+    @Test
+    void hoDaChuyenDiThiKhongGhiDuocChoThanhVienNao() {
+        hoService.danhDauChuyenDi(ho.getId());
+        assertThrows(NghiepVuException.class,
+                () -> service.ghiNhan(thuongTru.getId(),
+                        tamVang(HOM_NAY, HOM_NAY.plusDays(5))));
+        assertThrows(NghiepVuException.class,
+                () -> service.ghiNhan(tamTru.getId(),
+                        dot(LoaiDotCuTru.TAM_TRU, HOM_NAY.plusYears(1),
+                                HOM_NAY.plusYears(2))));
+        assertEquals(1, kho.dot.size());
+    }
+
+    @Test
+    void hoDaChuyenDiThiChanDuThanhVienConGhiDangO() {
+        kho.ho.put(ho.getId(), ho.voiTrangThai(TrangThaiHo.DA_CHUYEN_DI));
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.ghiNhan(thuongTru.getId(),
+                        tamVang(HOM_NAY, HOM_NAY.plusDays(5))));
+        assertTrue(e.getMessage().contains("da chuyen di"));
+        assertEquals(1, kho.dot.size());
     }
 }
