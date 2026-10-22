@@ -27,9 +27,9 @@
 
 | ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
 |---|---|---|---|---|---|
-| US-001 | Thêm thông tin hộ gia đình và diện tích căn hộ khi cư dân mới chuyển đến | Must | Sprint 1 | Chưa bắt đầu | 3 |
-| US-002 | Lưu thông tin nhân khẩu và quan hệ với chủ hộ | Must | Sprint 1 | Chưa bắt đầu | 5 |
-| US-003 | Ghi nhận tạm trú, tạm vắng kèm ngày bắt đầu và kết thúc | Must | Sprint 1 | Chưa bắt đầu | 5 |
+| US-001 | Thêm thông tin hộ gia đình và diện tích căn hộ khi cư dân mới chuyển đến | Must | Sprint 1 | Hoàn thành | 3 |
+| US-002 | Lưu thông tin nhân khẩu và quan hệ với chủ hộ | Must | Sprint 1 | Hoàn thành | 5 |
+| US-003 | Ghi nhận tạm trú, tạm vắng kèm ngày bắt đầu và kết thúc | Must | Sprint 1 | Hoàn thành | 5 |
 | US-004 | Xuất danh sách nhân khẩu tạm vắng | Should | Sprint 3 | Chưa bắt đầu | 3 |
 | US-026 | Đổi chủ hộ (chủ hộ mất, chuyển đi, tách hộ) | Should | Chưa xếp | Chưa bắt đầu | Chưa ước lượng |
 
@@ -75,8 +75,8 @@
 
 | ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
 |---|---|---|---|---|---|
-| US-020 | Đăng ký tài khoản đăng nhập | Must | Sprint 1 | Chưa bắt đầu | 3 |
-| US-021 | Đăng nhập bằng tên đăng nhập và mật khẩu | Must | Sprint 1 | Chưa bắt đầu | 3 |
+| US-020 | Đăng ký tài khoản đăng nhập | Must | Sprint 1 | Hoàn thành | 3 |
+| US-021 | Đăng nhập bằng tên đăng nhập và mật khẩu | Must | Sprint 1 | Hoàn thành | 3 |
 | US-022 | Phân quyền Quản trị viên và Nhân viên thu phí | Should | Sprint 2 | Chưa bắt đầu | 5 |
 | US-023 | Đổi mật khẩu và cập nhật thông tin cá nhân | Should | Sprint 2 | Chưa bắt đầu | 3 |
 | TS-001 | Sao lưu dữ liệu MySQL định kỳ (hàng ngày/tuần) để tránh mất dữ liệu. | Should | Sprint 4 | Chưa bắt đầu | 5 |
