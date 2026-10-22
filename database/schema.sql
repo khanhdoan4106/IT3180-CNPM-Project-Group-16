@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS bluemoon
     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE bluemoon;
 
--- US-01, US-03: đăng nhập, đổi mật khẩu
+-- US-020, US-021, US-023: đăng ký, đăng nhập, đổi mật khẩu
 CREATE TABLE IF NOT EXISTS tai_khoan (
     id            INT AUTO_INCREMENT PRIMARY KEY,
     ten_dang_nhap VARCHAR(50)  NOT NULL UNIQUE,
