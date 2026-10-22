@@ -1,6 +1,7 @@
 package com.bluemoon.dao;
 
 import com.bluemoon.config.Database;
+import com.bluemoon.model.DotCuTru;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiCanHo;
 import com.bluemoon.model.NhanKhau;
@@ -56,12 +57,16 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
                     + "ORDER BY h.ma_can_ho, h.ngay_chuyen_den DESC";
 
     @Override
-    public int them(HoGiaDinh ho, NhanKhau chuHo) {
+    public int them(HoGiaDinh ho, NhanKhau chuHo, DotCuTru dotTamTru) {
         try (Connection conn = Database.getConnection()) {
             conn.setAutoCommit(false);
             try {
                 int id = themHo(conn, ho);
-                NhanKhauDaoImpl.them(conn, chuHo.voiHoId(id));
+                int chuHoId = NhanKhauDaoImpl.them(conn, chuHo.voiHoId(id));
+                if (dotTamTru != null) {
+                    DotCuTruDaoImpl.them(conn,
+                            dotTamTru.voiNhanKhauId(chuHoId));
+                }
                 conn.commit();
                 return id;
             } catch (SQLException | RuntimeException e) {

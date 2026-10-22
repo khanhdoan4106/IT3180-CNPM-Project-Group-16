@@ -10,6 +10,8 @@ import com.bluemoon.dao.DaoException;
 import com.bluemoon.model.GioiTinh;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiCanHo;
+import com.bluemoon.model.LoaiCuTru;
+import com.bluemoon.model.LoaiDotCuTru;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
 import com.bluemoon.model.TomTatHo;
@@ -190,6 +192,37 @@ class HoGiaDinhServiceTest {
     void rangBuocKhacVanLaLoiCsdl() {
         kho.trungKhiGhi = "rang_buoc_la";
         assertThrows(DaoException.class, () -> them(hopLe("A0601")));
+    }
+
+    private static ThongTinNhanKhau chuHoTamTru(String noi) {
+        return new ThongTinNhanKhau("Tran Van Thue", LocalDate.of(1990, 5, 5),
+                GioiTinh.NAM, "036090003333", null, LoaiCuTru.TAM_TRU, noi);
+    }
+
+    @Test
+    void chuHoDuocLaNguoiTamTruVaLuuCungDotDauTien() {
+        HoGiaDinh ho = service.them(hopLe("A0601"), chuHoTamTru("Nam Dinh"),
+                new ThongTinDot(LoaiDotCuTru.TAM_VANG, HOM_NAY,
+                        HOM_NAY.plusYears(1), "Thue nha"));
+        NhanKhau ch = kho.nhanKhauDao.theoHo(ho.getId()).get(0);
+        assertEquals(QuanHeChuHo.CHU_HO, ch.getQuanHe());
+        assertEquals(LoaiCuTru.TAM_TRU, ch.getLoaiCuTru());
+        assertEquals(1, kho.dot.size());
+        assertEquals(LoaiDotCuTru.TAM_TRU,
+                kho.dot.values().iterator().next().getLoai());
+        assertEquals(ch.getId(),
+                kho.dot.values().iterator().next().getNhanKhauId());
+    }
+
+    @Test
+    void chuHoTamTruThieuDotThiKhongLuuHo() {
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.them(hopLe("A0601"), chuHoTamTru(""), null));
+        assertTrue(e.getMessage().contains("Noi thuong tru chu ho"));
+        assertTrue(e.getMessage().contains("Ngay bat dau tam tru chu ho"));
+        assertTrue(kho.ho.isEmpty());
+        assertTrue(kho.nhanKhau.isEmpty());
+        assertTrue(kho.dot.isEmpty());
     }
 
     @Test

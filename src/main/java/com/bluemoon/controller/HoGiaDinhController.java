@@ -7,10 +7,13 @@ import com.bluemoon.dao.NhanKhauDaoImpl;
 import com.bluemoon.model.GioiTinh;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiCanHo;
+import com.bluemoon.model.LoaiCuTru;
+import com.bluemoon.model.LoaiDotCuTru;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiHo;
 import com.bluemoon.service.HoGiaDinhService;
 import com.bluemoon.service.NghiepVuException;
+import com.bluemoon.service.ThongTinDot;
 import com.bluemoon.service.ThongTinHo;
 import com.bluemoon.service.ThongTinNhanKhau;
 import com.bluemoon.util.NgayUtil;
@@ -30,6 +33,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -98,6 +102,16 @@ public class HoGiaDinhController {
     @FXML
     private TextField cccdChuHoField;
     @FXML
+    private ComboBox<LoaiCuTru> loaiCuTruChuHoCombo;
+    @FXML
+    private GridPane tamTruChuHoGrid;
+    @FXML
+    private TextField noiThuongTruChuHoField;
+    @FXML
+    private DatePicker tamTruTuChuHoPicker;
+    @FXML
+    private DatePicker tamTruDenChuHoPicker;
+    @FXML
     private Label chuHoLabel;
     @FXML
     private Label thongBaoLabel;
@@ -122,8 +136,18 @@ public class HoGiaDinhController {
                 LoaiCanHo.values()));
         gioiTinhChuHoCombo.setItems(FXCollections.observableArrayList(
                 GioiTinh.values()));
-        NgayUtil.ganDinhDang(ngayPicker);
-        NgayUtil.ganDinhDang(ngaySinhChuHoPicker);
+        loaiCuTruChuHoCombo.setItems(FXCollections.observableArrayList(
+                LoaiCuTru.values()));
+        for (DatePicker p : new DatePicker[] {ngayPicker,
+                ngaySinhChuHoPicker, tamTruTuChuHoPicker,
+                tamTruDenChuHoPicker}) {
+            NgayUtil.ganDinhDang(p);
+        }
+        loaiCuTruChuHoCombo.valueProperty().addListener((o, cu, moi) -> {
+            boolean tamTru = moi == LoaiCuTru.TAM_TRU;
+            tamTruChuHoGrid.setVisible(tamTru);
+            tamTruChuHoGrid.setManaged(tamTru);
+        });
 
         timKiemField.textProperty().addListener((o, cu, moi) -> taiLai());
         gomChuyenDiCheck.selectedProperty().addListener(
@@ -140,9 +164,14 @@ public class HoGiaDinhController {
             baoLoi("Ngay chuyen den phai co dang dd/mm/yyyy");
             return;
         }
-        if (dangSua == null && NgayUtil.saiDinhDang(ngaySinhChuHoPicker)) {
-            baoLoi("Ngay sinh chu ho phai co dang dd/mm/yyyy");
-            return;
+        if (dangSua == null) {
+            for (DatePicker p : new DatePicker[] {ngaySinhChuHoPicker,
+                    tamTruTuChuHoPicker, tamTruDenChuHoPicker}) {
+                if (NgayUtil.saiDinhDang(p)) {
+                    baoLoi("Ngay phai co dang dd/mm/yyyy");
+                    return;
+                }
+            }
         }
         ThongTinHo tt = new ThongTinHo(maField.getText(),
                 loaiCombo.getValue(), tangField.getText(),
@@ -155,7 +184,12 @@ public class HoGiaDinhController {
                         chuHoField.getText(),
                         NgayUtil.doc(ngaySinhChuHoPicker),
                         gioiTinhChuHoCombo.getValue(),
-                        cccdChuHoField.getText(), null));
+                        cccdChuHoField.getText(), null,
+                        loaiCuTruChuHoCombo.getValue(),
+                        noiThuongTruChuHoField.getText()),
+                        new ThongTinDot(LoaiDotCuTru.TAM_TRU,
+                                NgayUtil.doc(tamTruTuChuHoPicker),
+                                NgayUtil.doc(tamTruDenChuHoPicker), null));
             } else {
                 ho = service.capNhat(dangSua.ho().getId(), tt);
             }
@@ -255,6 +289,10 @@ public class HoGiaDinhController {
         ngaySinhChuHoPicker.setValue(null);
         gioiTinhChuHoCombo.setValue(null);
         cccdChuHoField.clear();
+        loaiCuTruChuHoCombo.setValue(LoaiCuTru.THUONG_TRU);
+        noiThuongTruChuHoField.clear();
+        tamTruTuChuHoPicker.setValue(null);
+        tamTruDenChuHoPicker.setValue(null);
         hienPhanChuHo(true);
         datChoPhepSua(true);
         chuyenDiButton.setDisable(true);

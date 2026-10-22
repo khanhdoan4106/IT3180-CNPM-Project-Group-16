@@ -3,7 +3,9 @@ package com.bluemoon.service;
 import com.bluemoon.dao.HoGiaDinhDao;
 import com.bluemoon.dao.NhanKhauDao;
 import com.bluemoon.dao.TrungKhoaException;
+import com.bluemoon.model.DotCuTru;
 import com.bluemoon.model.HoGiaDinh;
+import com.bluemoon.model.LoaiCuTru;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
 import com.bluemoon.model.TomTatHo;
@@ -70,14 +72,36 @@ public class HoGiaDinhService {
      *         trung so CCCD chu ho
      */
     public HoGiaDinh them(ThongTinHo tt, ThongTinNhanKhau chuHo) {
+        return them(tt, chuHo, null);
+    }
+
+    /**
+     * Them ho gia dinh moi cung chu ho. Chu ho duoc la nguoi tam tru (ho thue
+     * nha, US-003); khi do dot tam tru dau tien cua chu ho luu cung giao
+     * dich.
+     *
+     * @param tt du lieu ho tren form
+     * @param chuHo du lieu chu ho tren form
+     * @param dotTamTru dot tam tru dau tien cua chu ho (loai bi bo qua); bat
+     *        buoc khi chu ho tam tru, bo qua khi chu ho thuong tru
+     * @return ho vua them, da co id
+     * @throws NghiepVuException neu thieu/sai du lieu, trung ma can ho hoac
+     *         trung so CCCD chu ho
+     */
+    public HoGiaDinh them(ThongTinHo tt, ThongTinNhanKhau chuHo,
+            ThongTinDot dotTamTru) {
         List<String> thieu = new ArrayList<>();
         List<String> sai = new ArrayList<>();
         HoGiaDinh ho = docHo(tt, 0, TrangThaiHo.DANG_O, thieu, sai);
         ThongTinNhanKhau ttChuHo = new ThongTinNhanKhau(chuHo.hoTen(),
                 chuHo.ngaySinh(), chuHo.gioiTinh(), chuHo.soCccd(),
-                QuanHeChuHo.CHU_HO);
+                QuanHeChuHo.CHU_HO, chuHo.loaiCuTru(), chuHo.noiThuongTru());
         NhanKhau nk = KiemTraNhanKhau.doc(ttChuHo, 0, 0,
                 LocalDate.now(dongHo), DUOI_CHU_HO, thieu, sai);
+        DotCuTru dot = nk.getLoaiCuTru() == LoaiCuTru.TAM_TRU
+                ? KiemTraNhanKhau.docDotTamTruDauTien(dotTamTru, DUOI_CHU_HO,
+                        thieu, sai)
+                : null;
         if (!thieu.isEmpty() || !sai.isEmpty()) {
             throw new NghiepVuException(thongBao(thieu, sai));
         }
@@ -88,7 +112,7 @@ public class HoGiaDinhService {
                     "So CCCD " + nk.getSoCccd() + " da ton tai");
         }
         try {
-            return ho.voiId(dao.them(ho, nk));
+            return ho.voiId(dao.them(ho, nk, dot));
         } catch (TrungKhoaException e) {
             throw LoiTrung.doi(e, ho.getMaCanHo(), nk.getSoCccd());
         }
