@@ -1,6 +1,7 @@
 package com.bluemoon.service;
 
 import com.bluemoon.model.NhanKhau;
+import com.bluemoon.model.TrangThaiNhanKhau;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -13,6 +14,8 @@ final class KiemTraNhanKhau {
 
     /** CCCD gom 12 chu so. */
     private static final Pattern MAU_CCCD = Pattern.compile("\\d{12}");
+    /** Luat Can cuoc 2023: tu du 14 tuoi bat buoc co the can cuoc. */
+    static final int TUOI_BAT_BUOC_CCCD = 14;
     private static final int TEN_TOI_DA = 100;
 
     private KiemTraNhanKhau() {
@@ -49,14 +52,22 @@ final class KiemTraNhanKhau {
             thieu.add("Gioi tinh" + duoi);
         }
         String cccd = chuanHoa(tt.soCccd()).replaceAll("[\\s.]", "");
-        if (!cccd.isEmpty() && !MAU_CCCD.matcher(cccd).matches()) {
+        if (cccd.isEmpty()) {
+            if (ngaySinh != null && !ngaySinh.isAfter(homNay)
+                    && !ngaySinh.plusYears(TUOI_BAT_BUOC_CCCD)
+                            .isAfter(homNay)) {
+                thieu.add("So CCCD" + duoi + " (bat buoc tu du "
+                        + TUOI_BAT_BUOC_CCCD + " tuoi)");
+            }
+        } else if (!MAU_CCCD.matcher(cccd).matches()) {
             sai.add("So CCCD" + duoi + " gom dung 12 chu so");
         }
         if (tt.quanHe() == null) {
             thieu.add("Quan he voi chu ho");
         }
         return new NhanKhau(id, hoId, ten, ngaySinh, tt.gioiTinh(),
-                cccd.isEmpty() ? null : cccd, tt.quanHe());
+                cccd.isEmpty() ? null : cccd, tt.quanHe(),
+                TrangThaiNhanKhau.DANG_O);
     }
 
     private static String chuanHoa(String s) {

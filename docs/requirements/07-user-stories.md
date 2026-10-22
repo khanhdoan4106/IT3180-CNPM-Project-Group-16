@@ -68,6 +68,18 @@ Là Ban quản trị, tôi muốn xuất danh sách nhân khẩu tạm vắng, �
 - **AC-013:** **Giả sử** không có nhân khẩu tạm vắng, **khi** xuất danh sách, **thì** hệ thống thông báo không có dữ liệu.
 - **AC-014:** **Giả sử** danh sách đã tạo, **khi** chọn xuất file, **thì** hệ thống tạo file Excel/PDF đủ các trường theo quy định báo cáo.
 
+### US-026: Đổi chủ hộ
+
+Là Ban quản trị, tôi muốn chuyển vai trò chủ hộ sang một thành viên khác của hộ, để cập nhật khi chủ hộ mất, chuyển đi hoặc tách hộ mà mỗi hộ vẫn có đúng một chủ hộ.
+
+- **Epic / Feature:** EPIC-01 / F-02
+- **Nguồn:** Rà soát US-002 (US-002 chưa cho đổi quan hệ của chủ hộ)
+- **Ưu tiên:** Should
+- **Ước lượng:** chưa ước lượng
+- **Phụ thuộc:** US-002
+
+_Chưa viết Acceptance Criteria._
+
 ## EPIC-02: Quản lý danh mục và khoản thu
 
 ### US-005: Tính phí tự động

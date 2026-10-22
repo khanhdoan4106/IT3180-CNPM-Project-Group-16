@@ -8,6 +8,7 @@ import com.bluemoon.model.GioiTinh;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
 import com.bluemoon.model.TomTatHo;
+import com.bluemoon.model.TrangThaiNhanKhau;
 import com.bluemoon.service.HoGiaDinhService;
 import com.bluemoon.service.NghiepVuException;
 import com.bluemoon.service.NhanKhauService;
@@ -18,7 +19,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -27,8 +30,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 /**
- * Man hinh quan ly nhan khau (US-002): chon ho dang o, xem thanh vien, them
- * va sua nhan khau. Chi chuyen su kien cho service va hien ket qua.
+ * Man hinh quan ly nhan khau (US-002): chon ho dang o, xem thanh vien, them,
+ * sua nhan khau va danh dau thanh vien chuyen di. Chi chuyen su kien cho
+ * service va hien ket qua.
  */
 public class NhanKhauController {
 
@@ -60,6 +64,8 @@ public class NhanKhauController {
     @FXML
     private TableColumn<NhanKhau, String> cotQuanHe;
     @FXML
+    private TableColumn<NhanKhau, String> cotTrangThai;
+    @FXML
     private Label tieuDeFormLabel;
     @FXML
     private TextField hoTenField;
@@ -75,6 +81,8 @@ public class NhanKhauController {
     private Label thongBaoLabel;
     @FXML
     private Button luuButton;
+    @FXML
+    private Button chuyenDiButton;
 
     @FXML
     private void initialize() {
@@ -83,6 +91,7 @@ public class NhanKhauController {
         ganCot(cotGioiTinh, n -> n.getGioiTinh().getNhan());
         ganCot(cotCccd, n -> n.getSoCccd() == null ? "" : n.getSoCccd());
         ganCot(cotQuanHe, n -> n.getQuanHe().getNhan());
+        ganCot(cotTrangThai, n -> n.getTrangThai().getNhan());
 
         gioiTinhCombo.setItems(FXCollections.observableArrayList(
                 GioiTinh.values()));
@@ -130,6 +139,32 @@ public class NhanKhauController {
     }
 
     @FXML
+    private void onChuyenDi() {
+        if (dangSua == null) {
+            return;
+        }
+        Alert hoi = new Alert(Alert.AlertType.CONFIRMATION,
+                "Danh dau " + dangSua.getHoTen() + " da roi ho?"
+                        + "\nDu lieu van duoc giu lai.",
+                ButtonType.OK, ButtonType.CANCEL);
+        hoi.setHeaderText(null);
+        if (hoi.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+            return;
+        }
+        try {
+            String ten = dangSua.getHoTen();
+            service.danhDauChuyenDi(dangSua.getId());
+            onNhapMoi();
+            taiThanhVien();
+            baoThanhCong(ten + " da duoc danh dau chuyen di");
+        } catch (NghiepVuException e) {
+            baoLoi(e.getMessage());
+        } catch (CauHinhException | DaoException e) {
+            baoLoi(LOI_CSDL);
+        }
+    }
+
+    @FXML
     private void onNhapMoi() {
         bangNhanKhau.getSelectionModel().clearSelection();
         nhapMoi();
@@ -145,7 +180,10 @@ public class NhanKhauController {
         }
     }
 
-    /** Tai lai thanh vien cua ho dang chon va cap nhat so thanh vien. */
+    /**
+     * Tai lai thanh vien cua ho dang chon; so thanh vien chi dem nguoi dang
+     * o (AC-005).
+     */
     private void taiThanhVien() {
         TomTatHo ho = hoCombo.getValue();
         if (ho == null) {
@@ -156,8 +194,10 @@ public class NhanKhauController {
         try {
             bangNhanKhau.setItems(FXCollections.observableArrayList(
                     service.theoHo(ho.ho().getId())));
-            soThanhVienLabel.setText(bangNhanKhau.getItems().size()
-                    + " thanh vien");
+            long dangO = bangNhanKhau.getItems().stream().filter(
+                    n -> n.getTrangThai() == TrangThaiNhanKhau.DANG_O)
+                    .count();
+            soThanhVienLabel.setText(dangO + " thanh vien dang o");
         } catch (CauHinhException | DaoException e) {
             bangNhanKhau.getItems().clear();
             soThanhVienLabel.setText("");
@@ -170,12 +210,17 @@ public class NhanKhauController {
             return;
         }
         dangSua = nk;
-        tieuDeFormLabel.setText("Sua nhan khau");
+        boolean dangO = nk.getTrangThai() == TrangThaiNhanKhau.DANG_O;
+        tieuDeFormLabel.setText(dangO ? "Sua nhan khau"
+                : "Nhan khau (da chuyen di)");
         hoTenField.setText(nk.getHoTen());
         ngaySinhPicker.setValue(nk.getNgaySinh());
         gioiTinhCombo.setValue(nk.getGioiTinh());
         cccdField.setText(nk.getSoCccd() == null ? "" : nk.getSoCccd());
         quanHeCombo.setValue(nk.getQuanHe());
+        datChoPhepSua(dangO);
+        chuyenDiButton.setDisable(!dangO
+                || nk.getQuanHe() == QuanHeChuHo.CHU_HO);
         thongBaoLabel.setText("");
     }
 
@@ -187,8 +232,19 @@ public class NhanKhauController {
         gioiTinhCombo.setValue(null);
         cccdField.clear();
         quanHeCombo.setValue(null);
+        datChoPhepSua(true);
         luuButton.setDisable(hoCombo.getValue() == null);
+        chuyenDiButton.setDisable(true);
         thongBaoLabel.setText("");
+    }
+
+    private void datChoPhepSua(boolean choPhep) {
+        hoTenField.setEditable(choPhep);
+        cccdField.setEditable(choPhep);
+        ngaySinhPicker.setDisable(!choPhep);
+        gioiTinhCombo.setDisable(!choPhep);
+        quanHeCombo.setDisable(!choPhep);
+        luuButton.setDisable(!choPhep);
     }
 
     private void chonDong(int id) {

@@ -1,6 +1,7 @@
 package com.bluemoon.dao;
 
 import com.bluemoon.model.NhanKhau;
+import com.bluemoon.model.TrangThaiNhanKhau;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,14 @@ public interface NhanKhauDao {
     void capNhat(NhanKhau nk);
 
     /**
+     * Doi trang thai cu tru cua mot nhan khau.
+     *
+     * @param id khoa chinh
+     * @param trangThai trang thai moi
+     */
+    void capNhatTrangThai(int id, TrangThaiNhanKhau trangThai);
+
+    /**
      * Tim nhan khau theo khoa chinh.
      *
      * @param id khoa chinh
@@ -33,7 +42,8 @@ public interface NhanKhauDao {
     Optional<NhanKhau> timTheoId(int id);
 
     /**
-     * Lay cac nhan khau cua mot ho, chu ho dung dau.
+     * Lay moi nhan khau cua mot ho (ca nguoi da chuyen di): nguoi dang o
+     * truoc, chu ho dung dau.
      *
      * @param hoId id ho gia dinh
      * @return danh sach nhan khau
@@ -41,11 +51,12 @@ public interface NhanKhauDao {
     List<NhanKhau> theoHo(int hoId);
 
     /**
-     * Kiem tra so CCCD da thuoc nhan khau khac chua.
+     * Kiem tra so CCCD da thuoc mot nhan khau dang o khac chua. Nguoi da
+     * chuyen di khong tinh, de khai bao lai duoc o ho moi.
      *
      * @param soCccd so CCCD da chuan hoa
      * @param boQuaId id nhan khau duoc bo qua (khi sua), 0 neu them moi
-     * @return true neu da co nhan khau khac mang so nay
+     * @return true neu da co nhan khau dang o khac mang so nay
      */
     boolean tonTaiCccd(String soCccd, int boQuaId);
 

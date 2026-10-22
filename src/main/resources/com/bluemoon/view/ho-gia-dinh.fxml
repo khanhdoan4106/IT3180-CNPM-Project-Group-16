@@ -112,7 +112,8 @@
                               GridPane.rowIndex="2"
                               GridPane.columnIndex="1"/>
                     <Label text="So CCCD" GridPane.rowIndex="3"/>
-                    <TextField fx:id="cccdChuHoField" promptText="12 chu so"
+                    <TextField fx:id="cccdChuHoField"
+                               promptText="bat buoc tu 14 tuoi"
                                GridPane.rowIndex="3"
                                GridPane.columnIndex="1"/>
                 </GridPane>

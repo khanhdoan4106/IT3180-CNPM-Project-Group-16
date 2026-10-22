@@ -4,6 +4,7 @@ import com.bluemoon.config.Database;
 import com.bluemoon.model.GioiTinh;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
+import com.bluemoon.model.TrangThaiNhanKhau;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -21,20 +22,26 @@ import java.util.Optional;
 public class NhanKhauDaoImpl implements NhanKhauDao {
 
     private static final String COT =
-            "id, ho_id, ho_ten, ngay_sinh, gioi_tinh, so_cccd, quan_he";
+            "id, ho_id, ho_ten, ngay_sinh, gioi_tinh, so_cccd, quan_he, "
+                    + "trang_thai";
     private static final String SQL_THEM =
             "INSERT INTO nhan_khau (ho_ten, ngay_sinh, gioi_tinh, so_cccd, "
-                    + "quan_he, ho_id) VALUES (?, ?, ?, ?, ?, ?)";
+                    + "quan_he, ho_id, trang_thai) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_SUA =
             "UPDATE nhan_khau SET ho_ten = ?, ngay_sinh = ?, gioi_tinh = ?, "
                     + "so_cccd = ?, quan_he = ? WHERE id = ?";
+    private static final String SQL_DOI_TRANG_THAI =
+            "UPDATE nhan_khau SET trang_thai = ? WHERE id = ?";
     private static final String SQL_TIM_ID =
             "SELECT " + COT + " FROM nhan_khau WHERE id = ?";
     private static final String SQL_THEO_HO =
             "SELECT " + COT + " FROM nhan_khau WHERE ho_id = ? "
-                    + "ORDER BY quan_he = 'CHU_HO' DESC, ngay_sinh, id";
+                    + "ORDER BY trang_thai = 'DANG_O' DESC, "
+                    + "quan_he = 'CHU_HO' DESC, ngay_sinh, id";
     private static final String SQL_TRUNG_CCCD =
-            "SELECT 1 FROM nhan_khau WHERE so_cccd = ? AND id <> ? LIMIT 1";
+            "SELECT 1 FROM nhan_khau WHERE so_cccd = ? "
+                    + "AND trang_thai = 'DANG_O' AND id <> ? LIMIT 1";
     private static final String SQL_CO_CHU_HO =
             "SELECT 1 FROM nhan_khau WHERE ho_id = ? AND quan_he = 'CHU_HO' "
                     + "AND id <> ? LIMIT 1";
@@ -57,6 +64,7 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
                 Statement.RETURN_GENERATED_KEYS)) {
             ganThongTin(ps, nk);
             ps.setInt(6, nk.getHoId());
+            ps.setString(7, nk.getTrangThai().name());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (!keys.next()) {
@@ -76,6 +84,19 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException("Loi cap nhat nhan khau", e);
+        }
+    }
+
+    @Override
+    public void capNhatTrangThai(int id, TrangThaiNhanKhau trangThai) {
+        try (Connection conn = Database.getConnection();
+                PreparedStatement ps =
+                        conn.prepareStatement(SQL_DOI_TRANG_THAI)) {
+            ps.setString(1, trangThai.name());
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Loi doi trang thai nhan khau", e);
         }
     }
 
@@ -157,6 +178,7 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
                 rs.getDate("ngay_sinh").toLocalDate(),
                 GioiTinh.valueOf(rs.getString("gioi_tinh")),
                 rs.getString("so_cccd"),
-                QuanHeChuHo.valueOf(rs.getString("quan_he")));
+                QuanHeChuHo.valueOf(rs.getString("quan_he")),
+                TrangThaiNhanKhau.valueOf(rs.getString("trang_thai")));
     }
 }

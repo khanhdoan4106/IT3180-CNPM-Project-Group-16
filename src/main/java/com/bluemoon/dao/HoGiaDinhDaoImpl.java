@@ -33,8 +33,11 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
             "UPDATE ho_gia_dinh SET ma_can_ho = ?, loai_can_ho = ?, "
                     + "tang = ?, dien_tich = ?, so_dien_thoai = ?, "
                     + "ngay_chuyen_den = ? WHERE id = ?";
-    private static final String SQL_DOI_TRANG_THAI =
-            "UPDATE ho_gia_dinh SET trang_thai = ? WHERE id = ?";
+    private static final String SQL_HO_CHUYEN_DI =
+            "UPDATE ho_gia_dinh SET trang_thai = 'DA_CHUYEN_DI' WHERE id = ?";
+    private static final String SQL_THANH_VIEN_CHUYEN_DI =
+            "UPDATE nhan_khau SET trang_thai = 'DA_CHUYEN_DI' "
+                    + "WHERE ho_id = ? AND trang_thai = 'DANG_O'";
     private static final String SQL_TIM_ID =
             "SELECT " + COT + " FROM ho_gia_dinh WHERE id = ?";
     private static final String SQL_TRUNG_MA =
@@ -44,7 +47,8 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
             "SELECT h.id, h.ma_can_ho, h.loai_can_ho, h.tang, h.dien_tich, "
                     + "h.so_dien_thoai, h.ngay_chuyen_den, h.trang_thai, "
                     + "c.ho_ten AS ten_chu_ho, (SELECT COUNT(*) FROM "
-                    + "nhan_khau n WHERE n.ho_id = h.id) AS so_thanh_vien "
+                    + "nhan_khau n WHERE n.ho_id = h.id "
+                    + "AND n.trang_thai = 'DANG_O') AS so_thanh_vien "
                     + "FROM ho_gia_dinh h LEFT JOIN nhan_khau c "
                     + "ON c.ho_id = h.id AND c.quan_he = 'CHU_HO' "
                     + "WHERE (h.ma_can_ho LIKE ? OR c.ho_ten LIKE ?) "
@@ -98,15 +102,24 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
     }
 
     @Override
-    public void capNhatTrangThai(int id, TrangThaiHo trangThai) {
-        try (Connection conn = Database.getConnection();
-                PreparedStatement ps =
-                        conn.prepareStatement(SQL_DOI_TRANG_THAI)) {
-            ps.setString(1, trangThai.name());
-            ps.setInt(2, id);
-            ps.executeUpdate();
+    public void danhDauChuyenDi(int id) {
+        try (Connection conn = Database.getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ho = conn.prepareStatement(
+                            SQL_HO_CHUYEN_DI);
+                    PreparedStatement tv = conn.prepareStatement(
+                            SQL_THANH_VIEN_CHUYEN_DI)) {
+                ho.setInt(1, id);
+                ho.executeUpdate();
+                tv.setInt(1, id);
+                tv.executeUpdate();
+                conn.commit();
+            } catch (SQLException | RuntimeException e) {
+                conn.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
-            throw new DaoException("Loi doi trang thai ho", e);
+            throw new DaoException("Loi danh dau ho chuyen di", e);
         }
     }
 

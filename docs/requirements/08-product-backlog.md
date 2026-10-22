@@ -2,12 +2,12 @@
 
 ## Tổng hợp
 
-**Theo MoSCoW** (tính trên 29 mục US và TS):
+**Theo MoSCoW** (tính trên 30 mục US và TS):
 
 | Ưu tiên | Số mục |
 |---|---|
 | Must | 13 |
-| Should | 12 |
+| Should | 13 |
 | Could | 2 |
 | Won't | 2 |
 
@@ -31,6 +31,7 @@
 | US-002 | Lưu thông tin nhân khẩu và quan hệ với chủ hộ | Must | Sprint 1 | Chưa bắt đầu | 5 |
 | US-003 | Ghi nhận tạm trú, tạm vắng kèm ngày bắt đầu và kết thúc | Must | Sprint 1 | Chưa bắt đầu | 5 |
 | US-004 | Xuất danh sách nhân khẩu tạm vắng | Should | Sprint 3 | Chưa bắt đầu | 3 |
+| US-026 | Đổi chủ hộ (chủ hộ mất, chuyển đi, tách hộ) | Should | Chưa xếp | Chưa bắt đầu | Chưa ước lượng |
 
 ## EPIC-02: Quản lý danh mục và khoản thu
 
