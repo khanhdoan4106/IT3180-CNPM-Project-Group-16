@@ -2,6 +2,7 @@ package com.bluemoon.service;
 
 import com.bluemoon.dao.HoGiaDinhDao;
 import com.bluemoon.dao.NhanKhauDao;
+import com.bluemoon.dao.TrungKhoaException;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
@@ -86,7 +87,11 @@ public class HoGiaDinhService {
             throw new NghiepVuException(
                     "So CCCD " + nk.getSoCccd() + " da ton tai");
         }
-        return ho.voiId(dao.them(ho, nk));
+        try {
+            return ho.voiId(dao.them(ho, nk));
+        } catch (TrungKhoaException e) {
+            throw LoiTrung.doi(e, ho.getMaCanHo(), nk.getSoCccd());
+        }
     }
 
     /**
@@ -107,7 +112,11 @@ public class HoGiaDinhService {
             throw new NghiepVuException(thongBao(thieu, sai));
         }
         kiemTraTrungMa(moi);
-        dao.capNhat(moi);
+        try {
+            dao.capNhat(moi);
+        } catch (TrungKhoaException e) {
+            throw LoiTrung.doi(e, moi.getMaCanHo(), null);
+        }
         return moi;
     }
 

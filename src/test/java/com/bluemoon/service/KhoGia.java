@@ -2,6 +2,7 @@ package com.bluemoon.service;
 
 import com.bluemoon.dao.HoGiaDinhDao;
 import com.bluemoon.dao.NhanKhauDao;
+import com.bluemoon.dao.TrungKhoaException;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
@@ -26,6 +27,17 @@ class KhoGia {
     final NhanKhauDao nhanKhauDao = new NkDao();
     private int idHo = 1;
     private int idNk = 1;
+    /**
+     * Gia lap may khac vua luu cung gia tri: lan ghi them/sua tiep theo bi
+     * CSDL tu choi voi rang buoc nay. Null la binh thuong.
+     */
+    String trungKhiGhi;
+
+    private void kiemTraTrung() {
+        if (trungKhiGhi != null) {
+            throw new TrungKhoaException(trungKhiGhi, null);
+        }
+    }
 
     private Optional<NhanKhau> chuHo(int hoId) {
         return nhanKhau.values().stream().filter(n -> n.getHoId() == hoId
@@ -40,6 +52,7 @@ class KhoGia {
 
         @Override
         public int them(HoGiaDinh h, NhanKhau chuHo) {
+            kiemTraTrung();
             int id = idHo++;
             ho.put(id, h.voiId(id));
             nhanKhauDao.them(chuHo.voiHoId(id));
@@ -48,6 +61,7 @@ class KhoGia {
 
         @Override
         public void capNhat(HoGiaDinh h) {
+            kiemTraTrung();
             ho.put(h.getId(), h);
         }
 
@@ -95,6 +109,7 @@ class KhoGia {
 
         @Override
         public int them(NhanKhau nk) {
+            kiemTraTrung();
             int id = idNk++;
             nhanKhau.put(id, nk.voiId(id));
             return id;
@@ -102,6 +117,7 @@ class KhoGia {
 
         @Override
         public void capNhat(NhanKhau nk) {
+            kiemTraTrung();
             TrangThaiNhanKhau cu = nhanKhau.get(nk.getId()).getTrangThai();
             nhanKhau.put(nk.getId(), nk.voiTrangThai(cu));
         }

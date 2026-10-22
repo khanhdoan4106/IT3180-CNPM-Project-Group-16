@@ -51,7 +51,7 @@ Cảnh báo `Unsupported JavaFX configuration: classes were loaded from
 
 ## Chạy test
 Trong IntelliJ: bảng **Maven** (bên phải) → bluemoon → Lifecycle → **test**
-(bấm đúp). Kết quả mong đợi: `BUILD SUCCESS`, 56 test pass. Test không cần
+(bấm đúp). Kết quả mong đợi: `BUILD SUCCESS`, 64 test pass. Test không cần
 MySQL (dùng DAO giả trong bộ nhớ).
 
 ## Dùng dòng lệnh (không bắt buộc)
