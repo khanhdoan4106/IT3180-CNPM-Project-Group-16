@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.bluemoon.dao.DaoException;
 import com.bluemoon.model.GioiTinh;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiCanHo;
@@ -159,6 +160,36 @@ class HoGiaDinhServiceTest {
         assertEquals(0, service.timKiem("A0601", true).get(0)
                 .soThanhVien());
         assertTrue(moi.getId() > cu.getId());
+    }
+
+    @Test
+    void haiMayCungThemMotMaCanHoThiBaoTrungChuKhongBaoLoiCsdl() {
+        kho.trungKhiGhi = "uq_ho_ma_dang_o";
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> them(hopLe("A0601")));
+        assertEquals("Ma can ho A0601 da co ho dang o", e.getMessage());
+    }
+
+    @Test
+    void haiMayCungDungMotCccdChuHoThiBaoTrungCccd() {
+        kho.trungKhiGhi = "uq_nk_cccd_dang_o";
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.them(hopLe("A0601"), chuHo("001182000001")));
+        assertEquals("So CCCD 001182000001 da ton tai", e.getMessage());
+    }
+
+    @Test
+    void haiMaySuaTrungMaCanHoThiBaoTrung() {
+        HoGiaDinh ho = them(hopLe("A0601"));
+        kho.trungKhiGhi = "uq_ho_ma_dang_o";
+        assertThrows(NghiepVuException.class,
+                () -> service.capNhat(ho.getId(), hopLe("A0602")));
+    }
+
+    @Test
+    void rangBuocKhacVanLaLoiCsdl() {
+        kho.trungKhiGhi = "rang_buoc_la";
+        assertThrows(DaoException.class, () -> them(hopLe("A0601")));
     }
 
     @Test

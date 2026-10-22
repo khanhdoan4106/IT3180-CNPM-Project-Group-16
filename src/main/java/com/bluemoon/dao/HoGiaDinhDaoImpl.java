@@ -69,7 +69,7 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
                 throw e;
             }
         } catch (SQLException e) {
-            throw new DaoException("Loi them ho gia dinh", e);
+            throw TrungKhoaException.boc("Loi them ho gia dinh", e);
         }
     }
 
@@ -97,7 +97,7 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
             ps.setInt(7, ho.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException("Loi cap nhat ho gia dinh", e);
+            throw TrungKhoaException.boc("Loi cap nhat ho gia dinh", e);
         }
     }
 

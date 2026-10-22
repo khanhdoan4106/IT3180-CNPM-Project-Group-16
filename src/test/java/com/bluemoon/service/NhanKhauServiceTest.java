@@ -291,6 +291,23 @@ class NhanKhauServiceTest {
     }
 
     @Test
+    void haiMayCungNhapMotCccdThiBaoTrungCccd() {
+        kho.trungKhiGhi = "uq_nk_cccd_dang_o";
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.them(ho.getId(), con("001310002345")));
+        assertEquals("So CCCD 001310002345 da ton tai", e.getMessage());
+    }
+
+    @Test
+    void haiMayCungThemChuHoThiBaoMotChuHo() {
+        NhanKhau nk = service.them(ho.getId(), con(""));
+        kho.trungKhiGhi = "uq_nk_chu_ho";
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.capNhat(nk.getId(), con("")));
+        assertEquals(NhanKhauService.LOI_HAI_CHU_HO, e.getMessage());
+    }
+
+    @Test
     void theoHoChiLayThanhVienCuaHoDo() {
         HoGiaDinh khac = themHo("A0602", "001182009999");
         service.them(khac.getId(), con(""));
