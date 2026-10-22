@@ -28,6 +28,12 @@
    và điền `user`, `password`. File này **không được commit** (đã có trong
    `.gitignore`).
 
+**Khi `schema.sql` đổi cấu trúc bảng đã có** (vd US-002 bỏ cột
+`ten_chu_ho` khỏi `ho_gia_dinh`), `CREATE TABLE IF NOT EXISTS` không sửa
+bảng cũ. Dữ liệu dev chỉ là dữ liệu mẫu nên dựng lại bằng tài khoản root:
+`DROP DATABASE bluemoon;` rồi chạy lại bước 3. Quyền `GRANT` ở bước 4 vẫn
+còn, không cần chạy lại.
+
 ## Mở dự án và chạy
 1. IntelliJ: **Open** → chọn thư mục repo (thư mục có `pom.xml`) →
    **Trust Project**. Chờ tải thư viện Maven xong (thanh tiến trình góc dưới
@@ -45,7 +51,7 @@ Cảnh báo `Unsupported JavaFX configuration: classes were loaded from
 
 ## Chạy test
 Trong IntelliJ: bảng **Maven** (bên phải) → bluemoon → Lifecycle → **test**
-(bấm đúp). Kết quả mong đợi: `BUILD SUCCESS`, 26 test pass. Test không cần
+(bấm đúp). Kết quả mong đợi: `BUILD SUCCESS`, 49 test pass. Test không cần
 MySQL (dùng DAO giả trong bộ nhớ).
 
 ## Dùng dòng lệnh (không bắt buộc)

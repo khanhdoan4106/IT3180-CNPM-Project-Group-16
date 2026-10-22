@@ -5,7 +5,8 @@ import java.time.LocalDate;
 
 /**
  * Ho gia dinh dang o (hoac da o) mot can ho. Dien tich la co so tinh phi
- * dich vu va phi quan ly (US-005). Lop mo hinh thuan, khong truy cap CSDL.
+ * dich vu va phi quan ly (US-005). Chu ho la mot {@link NhanKhau} cua ho
+ * (US-002). Lop mo hinh thuan, khong truy cap CSDL.
  */
 public class HoGiaDinh {
 
@@ -14,7 +15,6 @@ public class HoGiaDinh {
     private final LoaiCanHo loaiCanHo;
     private final int tang;
     private final BigDecimal dienTich;
-    private final String tenChuHo;
     private final String soDienThoai;
     private final LocalDate ngayChuyenDen;
     private final TrangThaiHo trangThai;
@@ -27,20 +27,18 @@ public class HoGiaDinh {
      * @param loaiCanHo loai can ho
      * @param tang so tang (1-30)
      * @param dienTich dien tich m2
-     * @param tenChuHo ho ten chu ho
      * @param soDienThoai so dien thoai lien he, co the null
      * @param ngayChuyenDen ngay ho chuyen den
      * @param trangThai trang thai cu tru
      */
     public HoGiaDinh(int id, String maCanHo, LoaiCanHo loaiCanHo, int tang,
-            BigDecimal dienTich, String tenChuHo, String soDienThoai,
-            LocalDate ngayChuyenDen, TrangThaiHo trangThai) {
+            BigDecimal dienTich, String soDienThoai, LocalDate ngayChuyenDen,
+            TrangThaiHo trangThai) {
         this.id = id;
         this.maCanHo = maCanHo;
         this.loaiCanHo = loaiCanHo;
         this.tang = tang;
         this.dienTich = dienTich;
-        this.tenChuHo = tenChuHo;
         this.soDienThoai = soDienThoai;
         this.ngayChuyenDen = ngayChuyenDen;
         this.trangThai = trangThai;
@@ -54,7 +52,7 @@ public class HoGiaDinh {
      */
     public HoGiaDinh voiId(int idMoi) {
         return new HoGiaDinh(idMoi, maCanHo, loaiCanHo, tang, dienTich,
-                tenChuHo, soDienThoai, ngayChuyenDen, trangThai);
+                soDienThoai, ngayChuyenDen, trangThai);
     }
 
     /**
@@ -65,7 +63,7 @@ public class HoGiaDinh {
      */
     public HoGiaDinh voiTrangThai(TrangThaiHo trangThaiMoi) {
         return new HoGiaDinh(id, maCanHo, loaiCanHo, tang, dienTich,
-                tenChuHo, soDienThoai, ngayChuyenDen, trangThaiMoi);
+                soDienThoai, ngayChuyenDen, trangThaiMoi);
     }
 
     public int getId() {
@@ -86,10 +84,6 @@ public class HoGiaDinh {
 
     public BigDecimal getDienTich() {
         return dienTich;
-    }
-
-    public String getTenChuHo() {
-        return tenChuHo;
     }
 
     public String getSoDienThoai() {

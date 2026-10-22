@@ -1,7 +1,11 @@
 package com.bluemoon.service;
 
 import com.bluemoon.dao.HoGiaDinhDao;
+import com.bluemoon.dao.NhanKhauDao;
 import com.bluemoon.model.HoGiaDinh;
+import com.bluemoon.model.NhanKhau;
+import com.bluemoon.model.QuanHeChuHo;
+import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiHo;
 import java.math.BigDecimal;
 import java.time.Clock;
@@ -12,7 +16,8 @@ import java.util.regex.Pattern;
 
 /**
  * Nghiep vu quan ly ho gia dinh (US-001): them, sua, tim kiem, danh dau ho
- * chuyen di.
+ * chuyen di. Ho moi duoc them cung chu ho de moi ho co dung mot chu ho
+ * (US-002).
  */
 public class HoGiaDinhService {
 
@@ -23,45 +28,69 @@ public class HoGiaDinhService {
 
     private static final Pattern MAU_MA = Pattern.compile("[A-Z0-9-]{1,20}");
     private static final Pattern MAU_SDT = Pattern.compile("0\\d{9}");
-    private static final int TEN_TOI_DA = 100;
+    private static final String DUOI_CHU_HO = " chu ho";
 
     private final HoGiaDinhDao dao;
+    private final NhanKhauDao nhanKhauDao;
     private final Clock dongHo;
 
     /**
      * Tao dich vu dung dong ho he thong.
      *
      * @param dao nguon du lieu ho gia dinh
+     * @param nhanKhauDao nguon du lieu nhan khau (kiem tra CCCD chu ho)
      */
-    public HoGiaDinhService(HoGiaDinhDao dao) {
-        this(dao, Clock.systemDefaultZone());
+    public HoGiaDinhService(HoGiaDinhDao dao, NhanKhauDao nhanKhauDao) {
+        this(dao, nhanKhauDao, Clock.systemDefaultZone());
     }
 
     /**
      * Tao dich vu voi dong ho chi dinh (de test ngay hien tai).
      *
      * @param dao nguon du lieu ho gia dinh
+     * @param nhanKhauDao nguon du lieu nhan khau (kiem tra CCCD chu ho)
      * @param dongHo dong ho dung de lay ngay hom nay
      */
-    public HoGiaDinhService(HoGiaDinhDao dao, Clock dongHo) {
+    public HoGiaDinhService(HoGiaDinhDao dao, NhanKhauDao nhanKhauDao,
+            Clock dongHo) {
         this.dao = dao;
+        this.nhanKhauDao = nhanKhauDao;
         this.dongHo = dongHo;
     }
 
     /**
-     * Them ho gia dinh moi (AC-001 - AC-004).
+     * Them ho gia dinh moi cung chu ho (AC-001 - AC-004). Quan he trong
+     * {@code chuHo} bi bo qua, luon luu la chu ho.
      *
-     * @param tt du lieu tren form
+     * @param tt du lieu ho tren form
+     * @param chuHo du lieu chu ho tren form
      * @return ho vua them, da co id
-     * @throws NghiepVuException neu thieu/sai du lieu hoac trung ma can ho
+     * @throws NghiepVuException neu thieu/sai du lieu, trung ma can ho hoac
+     *         trung so CCCD chu ho
      */
-    public HoGiaDinh them(ThongTinHo tt) {
-        HoGiaDinh ho = kiemTra(tt, 0, TrangThaiHo.DANG_O);
-        return ho.voiId(dao.them(ho));
+    public HoGiaDinh them(ThongTinHo tt, ThongTinNhanKhau chuHo) {
+        List<String> thieu = new ArrayList<>();
+        List<String> sai = new ArrayList<>();
+        HoGiaDinh ho = docHo(tt, 0, TrangThaiHo.DANG_O, thieu, sai);
+        ThongTinNhanKhau ttChuHo = new ThongTinNhanKhau(chuHo.hoTen(),
+                chuHo.ngaySinh(), chuHo.gioiTinh(), chuHo.soCccd(),
+                QuanHeChuHo.CHU_HO);
+        NhanKhau nk = KiemTraNhanKhau.doc(ttChuHo, 0, 0,
+                LocalDate.now(dongHo), DUOI_CHU_HO, thieu, sai);
+        if (!thieu.isEmpty() || !sai.isEmpty()) {
+            throw new NghiepVuException(thongBao(thieu, sai));
+        }
+        kiemTraTrungMa(ho);
+        if (nk.getSoCccd() != null
+                && nhanKhauDao.tonTaiCccd(nk.getSoCccd(), 0)) {
+            throw new NghiepVuException(
+                    "So CCCD " + nk.getSoCccd() + " da ton tai");
+        }
+        return ho.voiId(dao.them(ho, nk));
     }
 
     /**
-     * Sua thong tin ho dang o.
+     * Sua thong tin ho dang o. Chu ho sua o man hinh nhan khau.
      *
      * @param id khoa chinh ho can sua
      * @param tt du lieu tren form
@@ -71,7 +100,13 @@ public class HoGiaDinhService {
      */
     public HoGiaDinh capNhat(int id, ThongTinHo tt) {
         HoGiaDinh cu = layDangO(id);
-        HoGiaDinh moi = kiemTra(tt, id, cu.getTrangThai());
+        List<String> thieu = new ArrayList<>();
+        List<String> sai = new ArrayList<>();
+        HoGiaDinh moi = docHo(tt, id, cu.getTrangThai(), thieu, sai);
+        if (!thieu.isEmpty() || !sai.isEmpty()) {
+            throw new NghiepVuException(thongBao(thieu, sai));
+        }
+        kiemTraTrungMa(moi);
         dao.capNhat(moi);
         return moi;
     }
@@ -93,9 +128,9 @@ public class HoGiaDinhService {
      *
      * @param tuKhoa tu khoa, co the rong
      * @param gomDaChuyenDi true de lay ca ho da chuyen di
-     * @return danh sach ho
+     * @return danh sach ho kem ten chu ho va so thanh vien
      */
-    public List<HoGiaDinh> timKiem(String tuKhoa, boolean gomDaChuyenDi) {
+    public List<TomTatHo> timKiem(String tuKhoa, boolean gomDaChuyenDi) {
         return dao.timKiem(tuKhoa == null ? "" : tuKhoa.trim(),
                 gomDaChuyenDi);
     }
@@ -111,13 +146,11 @@ public class HoGiaDinhService {
     }
 
     /**
-     * Kiem tra toan bo form, gom moi loi thanh mot thong bao, roi kiem tra
-     * trung ma can ho.
+     * Doc va kiem tra form ho; loi duoc gom vao {@code thieu}/{@code sai}
+     * de bao mot lan cung cac loi cua chu ho.
      */
-    private HoGiaDinh kiemTra(ThongTinHo tt, int id, TrangThaiHo trangThai) {
-        List<String> thieu = new ArrayList<>();
-        List<String> sai = new ArrayList<>();
-
+    private HoGiaDinh docHo(ThongTinHo tt, int id, TrangThaiHo trangThai,
+            List<String> thieu, List<String> sai) {
         String ma = chuanHoa(tt.maCanHo()).toUpperCase();
         if (ma.isEmpty()) {
             thieu.add("Ma can ho");
@@ -129,12 +162,6 @@ public class HoGiaDinhService {
         }
         Integer tang = docTang(tt.tang(), thieu, sai);
         BigDecimal dienTich = docDienTich(tt.dienTich(), thieu, sai);
-        String ten = chuanHoa(tt.tenChuHo()).replaceAll("\\s+", " ");
-        if (ten.isEmpty()) {
-            thieu.add("Ten chu ho");
-        } else if (ten.length() > TEN_TOI_DA) {
-            sai.add("Ten chu ho toi da " + TEN_TOI_DA + " ky tu");
-        }
         String sdt = chuanHoa(tt.soDienThoai()).replaceAll("[\\s.]", "");
         if (!sdt.isEmpty() && !MAU_SDT.matcher(sdt).matches()) {
             sai.add("So dien thoai gom 10 chu so, bat dau bang 0");
@@ -145,16 +172,15 @@ public class HoGiaDinhService {
         } else if (ngay.isAfter(LocalDate.now(dongHo))) {
             sai.add("Ngay chuyen den khong duoc sau hom nay");
         }
+        return new HoGiaDinh(id, ma, tt.loaiCanHo(), tang == null ? 0 : tang,
+                dienTich, sdt.isEmpty() ? null : sdt, ngay, trangThai);
+    }
 
-        if (!thieu.isEmpty() || !sai.isEmpty()) {
-            throw new NghiepVuException(thongBao(thieu, sai));
-        }
-        if (dao.tonTaiMaDangO(ma, id)) {
+    private void kiemTraTrungMa(HoGiaDinh ho) {
+        if (dao.tonTaiMaDangO(ho.getMaCanHo(), ho.getId())) {
             throw new NghiepVuException(
-                    "Ma can ho " + ma + " da co ho dang o");
+                    "Ma can ho " + ho.getMaCanHo() + " da co ho dang o");
         }
-        return new HoGiaDinh(id, ma, tt.loaiCanHo(), tang, dienTich, ten,
-                sdt.isEmpty() ? null : sdt, ngay, trangThai);
     }
 
     private static Integer docTang(String giaTri, List<String> thieu,
@@ -202,7 +228,8 @@ public class HoGiaDinhService {
         }
     }
 
-    private static String thongBao(List<String> thieu, List<String> sai) {
+    /** Gom loi thanh mot thong bao: cac truong thieu, roi tung loi sai. */
+    static String thongBao(List<String> thieu, List<String> sai) {
         StringBuilder sb = new StringBuilder();
         if (!thieu.isEmpty()) {
             sb.append("Vui long nhap: ").append(String.join(", ", thieu));
