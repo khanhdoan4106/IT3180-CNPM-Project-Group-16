@@ -15,7 +15,8 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<!-- US-002: Quan ly nhan khau. Tren: chon ho; trai: thanh vien; phai: form.
+<!-- US-002, US-003: Quan ly nhan khau. Tren: chon ho; giua: thanh vien va
+     cac dot tam tru/tam vang cua nguoi dang chon; phai: form nhan khau.
      Danh sach ho chi gom ho dang o. -->
 <BorderPane xmlns:fx="http://javafx.com/fxml" styleClass="nen"
             fx:controller="com.bluemoon.controller.NhanKhauController">
@@ -38,23 +39,86 @@
         </VBox>
     </top>
     <center>
-        <TableView fx:id="bangNhanKhau">
-            <columns>
-                <TableColumn fx:id="cotHoTen" text="Ho ten" prefWidth="220"/>
-                <TableColumn fx:id="cotNgaySinh" text="Ngay sinh"
-                             prefWidth="110"/>
-                <TableColumn fx:id="cotGioiTinh" text="Gioi tinh"
-                             prefWidth="90"/>
-                <TableColumn fx:id="cotCccd" text="So CCCD" prefWidth="140"/>
-                <TableColumn fx:id="cotQuanHe" text="Quan he voi chu ho"
-                             prefWidth="150"/>
-                <TableColumn fx:id="cotTrangThai" text="Trang thai"
-                             prefWidth="110"/>
-            </columns>
-            <placeholder>
-                <Label text="Chon mot ho de xem thanh vien"/>
-            </placeholder>
-        </TableView>
+        <VBox spacing="16">
+            <TableView fx:id="bangNhanKhau" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="cotHoTen" text="Ho ten"
+                                 prefWidth="180"/>
+                    <TableColumn fx:id="cotNgaySinh" text="Ngay sinh"
+                                 prefWidth="95"/>
+                    <TableColumn fx:id="cotGioiTinh" text="Gioi tinh"
+                                 prefWidth="75"/>
+                    <TableColumn fx:id="cotCccd" text="So CCCD"
+                                 prefWidth="115"/>
+                    <TableColumn fx:id="cotQuanHe" text="Quan he"
+                                 prefWidth="85"/>
+                    <TableColumn fx:id="cotCuTru" text="Cu tru"
+                                 prefWidth="85"/>
+                    <TableColumn fx:id="cotHanTamTru" text="Han tam tru"
+                                 prefWidth="100"/>
+                    <TableColumn fx:id="cotTamVang" text="Tam vang den"
+                                 prefWidth="105"/>
+                    <TableColumn fx:id="cotTrangThai" text="Trang thai"
+                                 prefWidth="100"/>
+                </columns>
+                <placeholder>
+                    <Label text="Chon mot ho de xem thanh vien"/>
+                </placeholder>
+            </TableView>
+            <!-- US-003: cac dot cua nguoi dang chon va form ghi dot moi. -->
+            <VBox styleClass="the" spacing="10">
+                <Label fx:id="tieuDeDotLabel" text="Tam tru / tam vang"
+                       styleClass="tieu-de-form"/>
+                <HBox spacing="16">
+                    <TableView fx:id="bangDot" prefHeight="170"
+                               HBox.hgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="cotDotLoai" text="Loai"
+                                         prefWidth="85"/>
+                            <TableColumn fx:id="cotDotTu" text="Tu ngay"
+                                         prefWidth="95"/>
+                            <TableColumn fx:id="cotDotDen" text="Den ngay"
+                                         prefWidth="95"/>
+                            <TableColumn fx:id="cotDotLyDo" text="Ly do"
+                                         prefWidth="180"/>
+                        </columns>
+                        <placeholder>
+                            <Label text="Chua co dot nao"/>
+                        </placeholder>
+                    </TableView>
+                    <VBox spacing="8" prefWidth="330">
+                        <GridPane hgap="10" vgap="8">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="90"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+                            <Label text="Loai *" GridPane.rowIndex="0"/>
+                            <ComboBox fx:id="loaiDotCombo"
+                                      maxWidth="Infinity"
+                                      GridPane.rowIndex="0"
+                                      GridPane.columnIndex="1"/>
+                            <Label text="Tu ngay *" GridPane.rowIndex="1"/>
+                            <DatePicker fx:id="dotTuPicker"
+                                        maxWidth="Infinity"
+                                        GridPane.rowIndex="1"
+                                        GridPane.columnIndex="1"/>
+                            <Label text="Den ngay *" GridPane.rowIndex="2"/>
+                            <DatePicker fx:id="dotDenPicker"
+                                        maxWidth="Infinity"
+                                        GridPane.rowIndex="2"
+                                        GridPane.columnIndex="1"/>
+                            <Label text="Ly do" GridPane.rowIndex="3"/>
+                            <TextField fx:id="lyDoField" GridPane.rowIndex="3"
+                                       GridPane.columnIndex="1"/>
+                        </GridPane>
+                        <Label fx:id="thongBaoDotLabel" wrapText="true"/>
+                        <Button fx:id="ghiDotButton" text="Ghi nhan"
+                                styleClass="nut-chinh" disable="true"
+                                onAction="#onGhiDot"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </VBox>
     </center>
     <right>
         <VBox styleClass="the" spacing="10" prefWidth="380">
@@ -84,6 +148,27 @@
                 <Label text="Quan he *" GridPane.rowIndex="4"/>
                 <ComboBox fx:id="quanHeCombo" maxWidth="Infinity"
                           GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                <Label text="Cu tru *" GridPane.rowIndex="5"/>
+                <ComboBox fx:id="loaiCuTruCombo" maxWidth="Infinity"
+                          GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            </GridPane>
+            <!-- Chi hien voi nguoi tam tru; ngay tam tru chi khi them moi. -->
+            <GridPane fx:id="tamTruGrid" hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="120"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+                <Label text="Noi thuong tru *" GridPane.rowIndex="0"/>
+                <TextField fx:id="noiThuongTruField" GridPane.rowIndex="0"
+                           GridPane.columnIndex="1"/>
+                <Label fx:id="tamTruTuLabel" text="Tam tru tu *"
+                       GridPane.rowIndex="1"/>
+                <DatePicker fx:id="tamTruTuPicker" maxWidth="Infinity"
+                            GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                <Label fx:id="tamTruDenLabel" text="Tam tru den *"
+                       GridPane.rowIndex="2"/>
+                <DatePicker fx:id="tamTruDenPicker" maxWidth="Infinity"
+                            GridPane.rowIndex="2" GridPane.columnIndex="1"/>
             </GridPane>
             <Label fx:id="thongBaoLabel" wrapText="true"/>
             <HBox spacing="10">

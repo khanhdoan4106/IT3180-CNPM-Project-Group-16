@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.bluemoon.model.GioiTinh;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiCanHo;
+import com.bluemoon.model.LoaiCuTru;
+import com.bluemoon.model.LoaiDotCuTru;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
 import com.bluemoon.model.TrangThaiNhanKhau;
@@ -305,6 +307,78 @@ class NhanKhauServiceTest {
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.capNhat(nk.getId(), con("")));
         assertEquals(NhanKhauService.LOI_HAI_CHU_HO, e.getMessage());
+    }
+
+    private static ThongTinNhanKhau nguoiTamTru(String cccd, String noi) {
+        return new ThongTinNhanKhau("Tran Van Thue", LocalDate.of(1995, 3, 3),
+                GioiTinh.NAM, cccd, QuanHeChuHo.KHAC, LoaiCuTru.TAM_TRU, noi);
+    }
+
+    private static ThongTinDot dotTamTru(LocalDate tu, LocalDate den) {
+        return new ThongTinDot(null, tu, den, null);
+    }
+
+    @Test
+    void themNguoiTamTruLuuLuonDotTamTruDauTien() {
+        NhanKhau nk = service.them(ho.getId(),
+                nguoiTamTru("036095001111", " Hai Hau,  Nam Dinh "),
+                dotTamTru(HOM_NAY, HOM_NAY.plusMonths(6)));
+        assertEquals(LoaiCuTru.TAM_TRU, nk.getLoaiCuTru());
+        assertEquals("Hai Hau, Nam Dinh", nk.getNoiThuongTru());
+        assertEquals(1, kho.dot.size());
+        assertEquals(nk.getId(),
+                kho.dot.values().iterator().next().getNhanKhauId());
+        assertEquals(LoaiDotCuTru.TAM_TRU,
+                kho.dot.values().iterator().next().getLoai());
+    }
+
+    @Test
+    void nguoiTamTruThieuDotHoacNoiThuongTruThiKhongLuuGi() {
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.them(ho.getId(),
+                        nguoiTamTru("036095001111", ""), null));
+        assertTrue(e.getMessage().contains("Noi thuong tru"));
+        assertTrue(e.getMessage().contains("Ngay bat dau tam tru"));
+        assertTrue(e.getMessage().contains("Ngay ket thuc tam tru"));
+        assertThrows(NghiepVuException.class,
+                () -> service.them(ho.getId(),
+                        nguoiTamTru("036095001111", "Nam Dinh"),
+                        dotTamTru(HOM_NAY, HOM_NAY.minusDays(1))));
+        assertEquals(1, kho.nhanKhau.size());
+        assertTrue(kho.dot.isEmpty());
+    }
+
+    @Test
+    void nguoiTamTruTrungCccdThiKhongLuuDot() {
+        assertThrows(NghiepVuException.class,
+                () -> service.them(ho.getId(),
+                        nguoiTamTru(CCCD_CHU_HO, "Nam Dinh"),
+                        dotTamTru(HOM_NAY, HOM_NAY.plusMonths(6))));
+        assertTrue(kho.dot.isEmpty());
+    }
+
+    @Test
+    void nguoiThuongTruBoQuaDotTamTru() {
+        service.them(ho.getId(), con(""),
+                dotTamTru(HOM_NAY, HOM_NAY.plusMonths(6)));
+        assertTrue(kho.dot.isEmpty());
+    }
+
+    @Test
+    void suaKhongDoiLoaiCuTruNhungSuaDuocNoiThuongTru() {
+        NhanKhau nk = service.them(ho.getId(),
+                nguoiTamTru("036095001111", "Nam Dinh"),
+                dotTamTru(HOM_NAY, HOM_NAY.plusMonths(6)));
+        NhanKhau sua = service.capNhat(nk.getId(), new ThongTinNhanKhau(
+                nk.getHoTen(), nk.getNgaySinh(), nk.getGioiTinh(),
+                nk.getSoCccd(), nk.getQuanHe(), LoaiCuTru.THUONG_TRU,
+                "Thai Binh"));
+        assertEquals(LoaiCuTru.TAM_TRU, sua.getLoaiCuTru());
+        assertEquals("Thai Binh", kho.nhanKhau.get(nk.getId())
+                .getNoiThuongTru());
+        assertThrows(NghiepVuException.class,
+                () -> service.capNhat(nk.getId(), nguoiTamTru(
+                        "036095001111", " ")));
     }
 
     @Test

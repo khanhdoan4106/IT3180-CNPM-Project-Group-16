@@ -51,8 +51,24 @@ Cảnh báo `Unsupported JavaFX configuration: classes were loaded from
 
 ## Chạy test
 Trong IntelliJ: bảng **Maven** (bên phải) → bluemoon → Lifecycle → **test**
-(bấm đúp). Kết quả mong đợi: `BUILD SUCCESS`, 64 test pass. Test không cần
+(bấm đúp). Kết quả mong đợi: `BUILD SUCCESS`, 84 test pass. Test không cần
 MySQL (dùng DAO giả trong bộ nhớ).
+
+## Chuẩn bị demo
+Ngày của các đợt tạm trú/tạm vắng mẫu được tính **lúc chạy `seed.sql`**
+(theo `CURDATE()`), không phải lúc mở ứng dụng. Vì vậy, trong vòng vài
+ngày trước buổi demo:
+
+1. Đăng nhập MySQL bằng root, chạy `DROP DATABASE IF EXISTS bluemoon;`.
+2. Chạy lại `database/schema.sql`, rồi `database/seed.sql`.
+3. Chạy `Launcher`, đăng nhập `admin` / `Admin@123`, mở màn hình
+   **Nhân khẩu** và kiểm tra dữ liệu mẫu đúng như sau:
+   - Hộ **A0601**: Hoàng Văn Nam đang tạm vắng (cột "Tam vang den" có ngày).
+   - Hộ **K01**: Vũ Văn Toàn tạm trú còn hạn.
+   - Hộ **PH01**: Đỗ Thị Hoa tạm trú đã quá hạn (cột "Han tam tru" tô đỏ).
+
+Seed chạy cách buổi demo quá 25 ngày thì Hoàng Văn Nam sẽ hết tạm vắng;
+quá 120 ngày thì Vũ Văn Toàn cũng quá hạn tạm trú.
 
 ## Dùng dòng lệnh (không bắt buộc)
 Cần cài Maven 3.9+ và đặt trong PATH, `JAVA_HOME` trỏ tới JDK 21:

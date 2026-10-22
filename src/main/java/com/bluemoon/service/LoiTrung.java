@@ -1,5 +1,6 @@
 package com.bluemoon.service;
 
+import com.bluemoon.dao.DotCuTruDao;
 import com.bluemoon.dao.TrungKhoaException;
 
 /**
@@ -31,6 +32,8 @@ final class LoiTrung {
                         "So CCCD " + soCccd + " da ton tai");
             case "uq_nk_chu_ho":
                 return new NghiepVuException(NhanKhauService.LOI_HAI_CHU_HO);
+            case DotCuTruDao.CHONG_NGAY:
+                return new NghiepVuException(DotCuTruService.LOI_CHONG_NGAY);
             default:
                 throw e;
         }
