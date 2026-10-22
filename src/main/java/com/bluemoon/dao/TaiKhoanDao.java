@@ -23,4 +23,13 @@ public interface TaiKhoanDao {
      * @param matKhauBam mat khau moi da bam
      */
     void capNhatMatKhau(int id, String matKhauBam);
+
+    /**
+     * Them tai khoan moi.
+     *
+     * @param tk tai khoan can them (id bo qua), mat khau da bam
+     * @return id cua tai khoan vua them
+     * @throws TrungKhoaException neu ten dang nhap da ton tai
+     */
+    int them(TaiKhoan tk);
 }
