@@ -15,3 +15,5 @@ Thumbs.db
 config/db.properties
 .env
 *.log
+# Cấu hình công cụ cục bộ
+.claude/
