@@ -425,13 +425,17 @@ Dự án được thực hiện nhằm phục vụ mục đích học tập và 
 
 ### Thành viên
 
-| Họ tên     | MSSV | Vai trò |
-| ---------- | ---- | ------- |
-| Đoàn Khánh | ...  | ...     |
-| ...        | ...  | ...     |
-| ...        | ...  | ...     |
-| ...        | ...  | ...     |
-| ...        | ...  | ...     |
+Nhóm 16 – IT3180 Nhập môn Công nghệ phần mềm, Trường CNTT&TT, Đại học Bách khoa Hà Nội.
+
+| Mã | Họ tên | MSSV | Vai trò |
+| --- | --- | --- | --- |
+| TV1 | Đoàn Quốc Khánh | 202416243 | Quản lý dự án / Scrum Master |
+| TV2 | Nguyễn Đình Dũng | 202416173 | Phân tích yêu cầu, thiết kế giao diện |
+| TV3 | Đinh Phi Hùng | 202416215 | Lập trình CSDL và nghiệp vụ |
+| TV4 | Cao Thành Đạt | 202416152 | Lập trình giao diện JavaFX |
+| TV5 | Vũ Nhật Huy | 202416229 | Kiểm thử và tài liệu |
+
+Mã TV1–TV5 dùng thống nhất trong Project Charter, Timeline và kế hoạch quản lý rủi ro.
 
 ## 14. Chạy thử
 
@@ -451,17 +455,22 @@ src/test/java/                test
 database/                     schema.sql, seed.sql
 config/                       mẫu cấu hình kết nối
 docs/requirements/            tài liệu khai phá yêu cầu
-docs/design/                  kiến trúc, quy ước mã, thiết kế giao diện
+docs/design/                  kiến trúc, ERD, sơ đồ lớp, use case, quy ước mã
+docs/meeting-notes/           biên bản họp nhóm
 .github/                      template Issue, Pull Request và CI
 ```
 
 ## 16. Quy trình làm việc
 
 - Nhánh `main`: luôn chạy được, không push trực tiếp, chỉ merge qua Pull Request và có ít nhất 1 người review.
-- Nhánh làm việc tách từ `main`: `feature/<ten-chuc-nang>`, `fix/<ten-loi>`, `docs/<noi-dung>`.
-- Commit theo Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
-- Mỗi User Story là một Issue, gắn label MoSCoW (`must`, `should`, `could`, `wont`).
+- Nhánh làm việc tách từ `main`: `feature/US-xxx-<ten>`, `fix/<ten-loi>`, `docs/<noi-dung>`.
+- Commit theo Conventional Commits có mã story: `feat(US-005): ...`, `fix(US-002): ...`, `docs: ...`, `test: ...`.
+- Mỗi User Story là một Issue, giao cho đúng người phụ trách; người khác review Pull Request.
+
+Chi tiết: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 17. Tài liệu
 
-Yêu cầu: [docs/requirements](docs/requirements) gồm Wish list, kịch bản As-is và Visionary, NFR, raw log, epic/feature, user story, product backlog, traceability matrix, definition of done và các điểm cần chốt.
+- Yêu cầu: [docs/requirements](docs/requirements) gồm Wish list, kịch bản As-is và Visionary, NFR, raw log, epic/feature, user story, product backlog, traceability matrix, definition of done và các điểm cần chốt.
+- Thiết kế: [docs/design](docs/design) gồm kiến trúc, ERD, sơ đồ lớp, sơ đồ use case và quy ước mã.
+- Cài đặt và chạy: [docs/setup.md](docs/setup.md).
