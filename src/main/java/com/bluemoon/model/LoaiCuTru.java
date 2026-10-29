@@ -5,8 +5,8 @@ package com.bluemoon.model;
  * theo ngay: nguoi tam tru het han ma chua gia han van la TAM_TRU.
  */
 public enum LoaiCuTru {
-    THUONG_TRU("Thuong tru"),
-    TAM_TRU("Tam tru");
+    THUONG_TRU("Thường trú"),
+    TAM_TRU("Tạm trú");
 
     private final String nhan;
 

@@ -31,7 +31,7 @@ public class HoGiaDinhService {
 
     private static final Pattern MAU_MA = Pattern.compile("[A-Z0-9-]{1,20}");
     private static final Pattern MAU_SDT = Pattern.compile("0\\d{9}");
-    private static final String DUOI_CHU_HO = " chu ho";
+    private static final String DUOI_CHU_HO = " chủ hộ";
 
     private final HoGiaDinhDao dao;
     private final NhanKhauDao nhanKhauDao;
@@ -109,7 +109,7 @@ public class HoGiaDinhService {
         if (nk.getSoCccd() != null
                 && nhanKhauDao.tonTaiCccd(nk.getSoCccd(), 0)) {
             throw new NghiepVuException(
-                    "So CCCD " + nk.getSoCccd() + " da ton tai");
+                    "Số CCCD " + nk.getSoCccd() + " đã tồn tại");
         }
         try {
             return ho.voiId(dao.them(ho, nk, dot));
@@ -171,10 +171,10 @@ public class HoGiaDinhService {
 
     private HoGiaDinh layDangO(int id) {
         HoGiaDinh ho = dao.timTheoId(id).orElseThrow(
-                () -> new NghiepVuException("Khong tim thay ho gia dinh"));
+                () -> new NghiepVuException("Không tìm thấy hộ gia đình"));
         if (ho.getTrangThai() != TrangThaiHo.DANG_O) {
             throw new NghiepVuException(
-                    "Ho da chuyen di, khong the thay doi");
+                    "Hộ đã chuyển đi, không thể thay đổi");
         }
         return ho;
     }
@@ -187,24 +187,24 @@ public class HoGiaDinhService {
             List<String> thieu, List<String> sai) {
         String ma = chuanHoa(tt.maCanHo()).toUpperCase();
         if (ma.isEmpty()) {
-            thieu.add("Ma can ho");
+            thieu.add("Mã căn hộ");
         } else if (!MAU_MA.matcher(ma).matches()) {
-            sai.add("Ma can ho chi gom chu, so, dau '-' (toi da 20 ky tu)");
+            sai.add("Mã căn hộ chỉ gồm chữ, số, dấu '-' (tối đa 20 ký tự)");
         }
         if (tt.loaiCanHo() == null) {
-            thieu.add("Loai can ho");
+            thieu.add("Loại căn hộ");
         }
         Integer tang = docTang(tt.tang(), thieu, sai);
         BigDecimal dienTich = docDienTich(tt.dienTich(), thieu, sai);
         String sdt = chuanHoa(tt.soDienThoai()).replaceAll("[\\s.]", "");
         if (!sdt.isEmpty() && !MAU_SDT.matcher(sdt).matches()) {
-            sai.add("So dien thoai gom 10 chu so, bat dau bang 0");
+            sai.add("Số điện thoại gồm 10 chữ số, bắt đầu bằng 0");
         }
         LocalDate ngay = tt.ngayChuyenDen();
         if (ngay == null) {
-            thieu.add("Ngay chuyen den");
+            thieu.add("Ngày chuyển đến");
         } else if (ngay.isAfter(LocalDate.now(dongHo))) {
-            sai.add("Ngay chuyen den khong duoc sau hom nay");
+            sai.add("Ngày chuyển đến không được sau hôm nay");
         }
         return new HoGiaDinh(id, ma, tt.loaiCanHo(), tang == null ? 0 : tang,
                 dienTich, sdt.isEmpty() ? null : sdt, ngay, trangThai);
@@ -213,7 +213,7 @@ public class HoGiaDinhService {
     private void kiemTraTrungMa(HoGiaDinh ho) {
         if (dao.tonTaiMaDangO(ho.getMaCanHo(), ho.getId())) {
             throw new NghiepVuException(
-                    "Ma can ho " + ho.getMaCanHo() + " da co ho dang o");
+                    "Mã căn hộ " + ho.getMaCanHo() + " đã có hộ đang ở");
         }
     }
 
@@ -221,18 +221,18 @@ public class HoGiaDinhService {
             List<String> sai) {
         String s = chuanHoa(giaTri);
         if (s.isEmpty()) {
-            thieu.add("Tang");
+            thieu.add("Tầng");
             return null;
         }
         try {
             int tang = Integer.parseInt(s);
             if (tang < 1 || tang > SO_TANG) {
-                sai.add("Tang phai tu 1 den " + SO_TANG);
+                sai.add("Tầng phải từ 1 đến " + SO_TANG);
                 return null;
             }
             return tang;
         } catch (NumberFormatException e) {
-            sai.add("Tang phai la so nguyen");
+            sai.add("Tầng phải là số nguyên");
             return null;
         }
     }
@@ -241,23 +241,23 @@ public class HoGiaDinhService {
             List<String> sai) {
         String s = chuanHoa(giaTri).replace(',', '.');
         if (s.isEmpty()) {
-            thieu.add("Dien tich");
+            thieu.add("Diện tích");
             return null;
         }
         try {
             BigDecimal dt = new BigDecimal(s);
             if (dt.signum() <= 0 || dt.compareTo(DIEN_TICH_TOI_DA) > 0) {
-                sai.add("Dien tich phai lon hon 0 va khong qua "
-                        + DIEN_TICH_TOI_DA + " m2");
+                sai.add("Diện tích phải lớn hơn 0 và không quá "
+                        + DIEN_TICH_TOI_DA + " m²");
                 return null;
             }
             if (dt.stripTrailingZeros().scale() > 2) {
-                sai.add("Dien tich toi da 2 chu so thap phan");
+                sai.add("Diện tích tối đa 2 chữ số thập phân");
                 return null;
             }
             return dt;
         } catch (NumberFormatException e) {
-            sai.add("Dien tich phai la so (vd 75.5)");
+            sai.add("Diện tích phải là số (vd 75.5)");
             return null;
         }
     }
@@ -266,7 +266,7 @@ public class HoGiaDinhService {
     static String thongBao(List<String> thieu, List<String> sai) {
         StringBuilder sb = new StringBuilder();
         if (!thieu.isEmpty()) {
-            sb.append("Vui long nhap: ").append(String.join(", ", thieu));
+            sb.append("Vui lòng nhập: ").append(String.join(", ", thieu));
         }
         for (String loi : sai) {
             if (sb.length() > 0) {

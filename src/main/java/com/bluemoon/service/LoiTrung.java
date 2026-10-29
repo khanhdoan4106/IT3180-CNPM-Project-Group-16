@@ -26,10 +26,10 @@ final class LoiTrung {
         switch (e.getTenRangBuoc()) {
             case "uq_ho_ma_dang_o":
                 return new NghiepVuException(
-                        "Ma can ho " + maCanHo + " da co ho dang o");
+                        "Mã căn hộ " + maCanHo + " đã có hộ đang ở");
             case "uq_nk_cccd_dang_o":
                 return new NghiepVuException(
-                        "So CCCD " + soCccd + " da ton tai");
+                        "Số CCCD " + soCccd + " đã tồn tại");
             case "uq_nk_chu_ho":
                 return new NghiepVuException(NhanKhauService.LOI_HAI_CHU_HO);
             case DotCuTruDao.CHONG_NGAY:

@@ -5,8 +5,8 @@ package com.bluemoon.model;
  * thai, de giu lich su va cho phep khai bao lai o ho khac.
  */
 public enum TrangThaiNhanKhau {
-    DANG_O("Dang o"),
-    DA_CHUYEN_DI("Da chuyen di");
+    DANG_O("Đang ở"),
+    DA_CHUYEN_DI("Đã chuyển đi");
 
     private final String nhan;
 

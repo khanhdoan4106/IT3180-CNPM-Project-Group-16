@@ -5,10 +5,10 @@ package com.bluemoon.model;
  * nhan khau CHU_HO.
  */
 public enum QuanHeChuHo {
-    CHU_HO("Chu ho"),
-    VO_CHONG("Vo/chong"),
+    CHU_HO("Chủ hộ"),
+    VO_CHONG("Vợ/chồng"),
     CON("Con"),
-    KHAC("Khac");
+    KHAC("Khác");
 
     private final String nhan;
 

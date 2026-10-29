@@ -19,7 +19,7 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
     <top>
-        <Label text="Dang ky tai khoan" styleClass="tieu-de-trang">
+        <Label text="Đăng ký tài khoản" styleClass="tieu-de-trang">
             <BorderPane.margin>
                 <Insets bottom="12"/>
             </BorderPane.margin>
@@ -33,30 +33,30 @@
                     <ColumnConstraints minWidth="130"/>
                     <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
-                <Label text="Ten dang nhap *" GridPane.rowIndex="0"/>
+                <Label text="Tên đăng nhập *" GridPane.rowIndex="0"/>
                 <TextField fx:id="tenDangNhapField" promptText="vd ketoan01"
                            GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-                <Label text="Ho ten *" GridPane.rowIndex="1"/>
+                <Label text="Họ tên *" GridPane.rowIndex="1"/>
                 <TextField fx:id="hoTenField"
                            GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-                <Label text="Mat khau *" GridPane.rowIndex="2"/>
+                <Label text="Mật khẩu *" GridPane.rowIndex="2"/>
                 <PasswordField fx:id="matKhauField"
-                               promptText="it nhat 8 ky tu"
+                               promptText="ít nhất 8 ký tự"
                                GridPane.rowIndex="2"
                                GridPane.columnIndex="1"/>
-                <Label text="Nhap lai mat khau *" GridPane.rowIndex="3"/>
+                <Label text="Nhập lại mật khẩu *" GridPane.rowIndex="3"/>
                 <PasswordField fx:id="nhapLaiField"
                                GridPane.rowIndex="3"
                                GridPane.columnIndex="1"/>
-                <Label text="Vai tro *" GridPane.rowIndex="4"/>
+                <Label text="Vai trò *" GridPane.rowIndex="4"/>
                 <ComboBox fx:id="vaiTroCombo" maxWidth="Infinity"
                           GridPane.rowIndex="4" GridPane.columnIndex="1"/>
             </GridPane>
             <Label fx:id="thongBaoLabel" wrapText="true"/>
             <HBox spacing="10">
-                <Button text="Dang ky" defaultButton="true"
+                <Button text="Đăng ký" defaultButton="true"
                         styleClass="nut-chinh" onAction="#onDangKy"/>
-                <Button text="Nhap moi" onAction="#onNhapMoi"/>
+                <Button text="Nhập mới" onAction="#onNhapMoi"/>
             </HBox>
         </VBox>
     </left>

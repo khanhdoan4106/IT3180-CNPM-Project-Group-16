@@ -11,14 +11,14 @@
            fx:controller="com.bluemoon.controller.DangNhapController">
     <VBox styleClass="the" maxWidth="380" maxHeight="400" spacing="12">
         <Label text="BlueMoon" styleClass="tieu-de"/>
-        <Label text="Dang nhap he thong quan ly chung cu"
+        <Label text="Đăng nhập hệ thống quản lý chung cư"
                styleClass="phu-de"/>
-        <Label text="Ten dang nhap"/>
+        <Label text="Tên đăng nhập"/>
         <TextField fx:id="tenDangNhapField" promptText="vd: admin"/>
-        <Label text="Mat khau"/>
+        <Label text="Mật khẩu"/>
         <PasswordField fx:id="matKhauField" onAction="#onDangNhap"/>
         <Label fx:id="thongBaoLabel" styleClass="loi" wrapText="true"/>
-        <Button text="Dang nhap" defaultButton="true" maxWidth="Infinity"
+        <Button text="Đăng nhập" defaultButton="true" maxWidth="Infinity"
                 styleClass="nut-chinh" onAction="#onDangNhap"/>
     </VBox>
 </StackPane>

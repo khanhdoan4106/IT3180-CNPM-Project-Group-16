@@ -157,7 +157,7 @@ class TaiKhoanServiceTest {
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.dangKy(admin, "admin", "Nguoi khac",
                         "matkhau123", "matkhau123", VaiTro.QUAN_TRI));
-        assertTrue(e.getMessage().contains("da ton tai"));
+        assertTrue(e.getMessage().contains("đã tồn tại"));
     }
 
     @Test
@@ -166,7 +166,7 @@ class TaiKhoanServiceTest {
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.dangKy(admin, "ketoan01", "Nguyen Van A",
                         "matkhau123", "matkhau123", VaiTro.THU_QUY));
-        assertTrue(e.getMessage().contains("da ton tai"));
+        assertTrue(e.getMessage().contains("đã tồn tại"));
     }
 
     @Test
@@ -174,7 +174,7 @@ class TaiKhoanServiceTest {
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.dangKy(admin, "ketoan01", "Nguyen Van A",
                         "1234567", "1234567", VaiTro.THU_QUY));
-        assertTrue(e.getMessage().contains("it nhat "
+        assertTrue(e.getMessage().contains("ít nhất "
                 + TaiKhoanService.MAT_KHAU_TOI_THIEU));
         assertFalse(dao.theoTen.containsKey("ketoan01"));
     }

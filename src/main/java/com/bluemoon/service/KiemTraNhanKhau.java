@@ -43,44 +43,44 @@ final class KiemTraNhanKhau {
             List<String> sai) {
         String ten = chuanHoa(tt.hoTen()).replaceAll("\\s+", " ");
         if (ten.isEmpty()) {
-            thieu.add("Ho ten" + duoi);
+            thieu.add("Họ tên" + duoi);
         } else if (ten.length() > TEN_TOI_DA) {
-            sai.add("Ho ten" + duoi + " toi da " + TEN_TOI_DA + " ky tu");
+            sai.add("Họ tên" + duoi + " tối đa " + TEN_TOI_DA + " ký tự");
         }
         LocalDate ngaySinh = tt.ngaySinh();
         if (ngaySinh == null) {
-            thieu.add("Ngay sinh" + duoi);
+            thieu.add("Ngày sinh" + duoi);
         } else if (ngaySinh.isAfter(homNay)) {
-            sai.add("Ngay sinh" + duoi + " khong duoc sau hom nay");
+            sai.add("Ngày sinh" + duoi + " không được sau hôm nay");
         }
         if (tt.gioiTinh() == null) {
-            thieu.add("Gioi tinh" + duoi);
+            thieu.add("Giới tính" + duoi);
         }
         String cccd = chuanHoa(tt.soCccd()).replaceAll("[\\s.]", "");
         if (cccd.isEmpty()) {
             if (ngaySinh != null && !ngaySinh.isAfter(homNay)
                     && !ngaySinh.plusYears(TUOI_BAT_BUOC_CCCD)
                             .isAfter(homNay)) {
-                thieu.add("So CCCD" + duoi + " (bat buoc tu du "
-                        + TUOI_BAT_BUOC_CCCD + " tuoi)");
+                thieu.add("Số CCCD" + duoi + " (bắt buộc từ đủ "
+                        + TUOI_BAT_BUOC_CCCD + " tuổi)");
             }
         } else if (!MAU_CCCD.matcher(cccd).matches()) {
-            sai.add("So CCCD" + duoi + " gom dung 12 chu so");
+            sai.add("Số CCCD" + duoi + " gồm đúng 12 chữ số");
         }
         if (tt.quanHe() == null) {
-            thieu.add("Quan he voi chu ho");
+            thieu.add("Quan hệ với chủ hộ");
         }
         String noiThuongTru = null;
         if (tt.loaiCuTru() == null) {
-            thieu.add("Loai cu tru" + duoi);
+            thieu.add("Loại cư trú" + duoi);
         } else if (tt.loaiCuTru() == LoaiCuTru.TAM_TRU) {
             noiThuongTru = chuanHoa(tt.noiThuongTru())
                     .replaceAll("\\s+", " ");
             if (noiThuongTru.isEmpty()) {
-                thieu.add("Noi thuong tru" + duoi);
+                thieu.add("Nơi thường trú" + duoi);
             } else if (noiThuongTru.length() > DIA_CHI_TOI_DA) {
-                sai.add("Noi thuong tru" + duoi + " toi da " + DIA_CHI_TOI_DA
-                        + " ky tu");
+                sai.add("Nơi thường trú" + duoi + " tối đa " + DIA_CHI_TOI_DA
+                        + " ký tự");
             }
         }
         return new NhanKhau(id, hoId, ten, ngaySinh, tt.gioiTinh(),
@@ -102,22 +102,22 @@ final class KiemTraNhanKhau {
     static DotCuTru docDot(ThongTinDot tt, int nhanKhauId, String duoi,
             List<String> thieu, List<String> sai) {
         if (tt.loai() == null) {
-            thieu.add("Loai (tam tru/tam vang)");
+            thieu.add("Loại (tạm trú/tạm vắng)");
         }
         if (tt.tuNgay() == null) {
-            thieu.add("Ngay bat dau" + duoi);
+            thieu.add("Ngày bắt đầu" + duoi);
         }
         if (tt.denNgay() == null) {
-            thieu.add("Ngay ket thuc" + duoi);
+            thieu.add("Ngày kết thúc" + duoi);
         }
         if (tt.tuNgay() != null && tt.denNgay() != null
                 && tt.denNgay().isBefore(tt.tuNgay())) {
-            sai.add("Ngay ket thuc" + duoi
-                    + " khong duoc truoc ngay bat dau");
+            sai.add("Ngày kết thúc" + duoi
+                    + " không được trước ngày bắt đầu");
         }
         String lyDo = chuanHoa(tt.lyDo()).replaceAll("\\s+", " ");
         if (lyDo.length() > DIA_CHI_TOI_DA) {
-            sai.add("Ly do toi da " + DIA_CHI_TOI_DA + " ky tu");
+            sai.add("Lý do tối đa " + DIA_CHI_TOI_DA + " ký tự");
         }
         return new DotCuTru(0, nhanKhauId, tt.loai(), tt.tuNgay(),
                 tt.denNgay(), lyDo.isEmpty() ? null : lyDo);
@@ -139,7 +139,7 @@ final class KiemTraNhanKhau {
                 ? new ThongTinDot(LoaiDotCuTru.TAM_TRU, null, null, null)
                 : new ThongTinDot(LoaiDotCuTru.TAM_TRU, tt.tuNgay(),
                         tt.denNgay(), tt.lyDo());
-        return docDot(dot, 0, " tam tru" + duoi, thieu, sai);
+        return docDot(dot, 0, " tạm trú" + duoi, thieu, sai);
     }
 
     private static String chuanHoa(String s) {

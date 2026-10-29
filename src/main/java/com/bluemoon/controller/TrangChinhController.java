@@ -25,7 +25,7 @@ public class TrangChinhController {
     private void initialize() {
         TaiKhoan tk = PhienLamViec.hienTai();
         if (tk != null) {
-            chaoLabel.setText("Xin chao, " + tk.getHoTen() + " ("
+            chaoLabel.setText("Xin chào, " + tk.getHoTen() + " ("
                     + tk.getVaiTro().getNhan() + ")");
         }
         // US-020: chi Quan tri vien dang ky tai khoan; service cung kiem tra.

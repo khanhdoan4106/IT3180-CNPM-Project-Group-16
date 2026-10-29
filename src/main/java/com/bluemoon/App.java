@@ -9,7 +9,7 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
-    private static final String TIEU_DE = "BlueMoon - Quan ly chung cu";
+    private static final String TIEU_DE = "BlueMoon - Quản lý chung cư";
 
     @Override
     public void start(Stage stage) {

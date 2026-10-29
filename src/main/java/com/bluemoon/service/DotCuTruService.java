@@ -28,7 +28,7 @@ import java.util.Map;
 public class DotCuTruService {
 
     static final String LOI_CHONG_NGAY =
-            "Thoi gian bi chong voi mot dot tam tru/tam vang da ghi nhan";
+            "Thời gian bị chồng với một đợt tạm trú/tạm vắng đã ghi nhận";
 
     private static final DateTimeFormatter DINH_DANG =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -88,17 +88,17 @@ public class DotCuTruService {
         }
         if (dot.getLoai() == LoaiDotCuTru.TAM_TRU
                 && nk.getLoaiCuTru() != LoaiCuTru.TAM_TRU) {
-            throw new NghiepVuException("Chi ghi tam tru cho nguoi dang ky"
-                    + " tam tru. Nguoi thuong tru vang mat thi ghi tam vang");
+            throw new NghiepVuException("Chỉ ghi tạm trú cho người đăng ký"
+                    + " tạm trú. Người thường trú vắng mặt thì ghi tạm vắng");
         }
         if (dot.getLoai() == LoaiDotCuTru.TAM_VANG
                 && nk.getLoaiCuTru() != LoaiCuTru.THUONG_TRU) {
             throw new NghiepVuException(
-                    "Chi ghi tam vang cho nguoi thuong tru");
+                    "Chỉ ghi tạm vắng cho người thường trú");
         }
         for (DotCuTru cu : dao.theoNhanKhau(nhanKhauId)) {
             if (dot.chongNgay(cu)) {
-                throw new NghiepVuException("Thoi gian bi chong voi dot "
+                throw new NghiepVuException("Thời gian bị chồng với đợt "
                         + cu.getLoai().getNhan().toLowerCase() + " "
                         + cu.getTuNgay().format(DINH_DANG) + " - "
                         + cu.getDenNgay().format(DINH_DANG));
@@ -167,13 +167,13 @@ public class DotCuTruService {
 
     private NhanKhau layDangO(int nhanKhauId) {
         NhanKhau nk = nhanKhauDao.timTheoId(nhanKhauId).orElseThrow(
-                () -> new NghiepVuException("Khong tim thay nhan khau"));
+                () -> new NghiepVuException("Không tìm thấy nhân khẩu"));
         HoGiaDinh ho = hoDao.timTheoId(nk.getHoId()).orElseThrow(
-                () -> new NghiepVuException("Khong tim thay ho gia dinh"));
+                () -> new NghiepVuException("Không tìm thấy hộ gia đình"));
         if (ho.getTrangThai() != TrangThaiHo.DANG_O
                 || nk.getTrangThai() != TrangThaiNhanKhau.DANG_O) {
             throw new NghiepVuException(
-                    "Nhan khau da chuyen di, khong ghi tam tru/tam vang");
+                    "Nhân khẩu đã chuyển đi, không ghi tạm trú/tạm vắng");
         }
         return nk;
     }

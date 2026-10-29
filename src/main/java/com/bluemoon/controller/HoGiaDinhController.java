@@ -43,7 +43,7 @@ import javafx.scene.layout.VBox;
 public class HoGiaDinhController {
 
     private static final String LOI_CSDL =
-            "Khong ket noi duoc co so du lieu. Xem docs/setup.md";
+            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
 
     private final HoGiaDinhService service = new HoGiaDinhService(
             new HoGiaDinhDaoImpl(), new NhanKhauDaoImpl());
@@ -161,14 +161,14 @@ public class HoGiaDinhController {
     @FXML
     private void onLuu() {
         if (NgayUtil.saiDinhDang(ngayPicker)) {
-            baoLoi("Ngay chuyen den phai co dang dd/mm/yyyy");
+            baoLoi("Ngày chuyển đến phải có dạng dd/mm/yyyy");
             return;
         }
         if (dangSua == null) {
             for (DatePicker p : new DatePicker[] {ngaySinhChuHoPicker,
                     tamTruTuChuHoPicker, tamTruDenChuHoPicker}) {
                 if (NgayUtil.saiDinhDang(p)) {
-                    baoLoi("Ngay phai co dang dd/mm/yyyy");
+                    baoLoi("Ngày phải có dạng dd/mm/yyyy");
                     return;
                 }
             }
@@ -193,10 +193,10 @@ public class HoGiaDinhController {
             } else {
                 ho = service.capNhat(dangSua.ho().getId(), tt);
             }
-            String viec = dangSua == null ? "Da them" : "Da cap nhat";
+            String viec = dangSua == null ? "Đã thêm" : "Đã cập nhật";
             taiLai();
             chonDong(ho.getId());
-            baoThanhCong(viec + " ho " + ho.getMaCanHo());
+            baoThanhCong(viec + " hộ " + ho.getMaCanHo());
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -216,9 +216,10 @@ public class HoGiaDinhController {
             return;
         }
         Alert hoi = new Alert(Alert.AlertType.CONFIRMATION,
-                "Danh dau ho " + dangSua + " da chuyen di?"
-                        + "\nDu lieu cua ho van duoc giu lai.",
+                "Đánh dấu hộ " + dangSua + " đã chuyển đi?"
+                        + "\nDữ liệu của hộ vẫn được giữ lại.",
                 ButtonType.OK, ButtonType.CANCEL);
+        hoi.setTitle("Xác nhận");
         hoi.setHeaderText(null);
         if (hoi.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
             return;
@@ -228,7 +229,7 @@ public class HoGiaDinhController {
             service.danhDauChuyenDi(dangSua.ho().getId());
             onNhapMoi();
             taiLai();
-            baoThanhCong("Ho " + ma + " da duoc danh dau chuyen di");
+            baoThanhCong("Hộ " + ma + " đã được đánh dấu chuyển đi");
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -241,7 +242,7 @@ public class HoGiaDinhController {
             bangHo.setItems(FXCollections.observableArrayList(
                     service.timKiem(timKiemField.getText(),
                             gomChuyenDiCheck.isSelected())));
-            soLuongLabel.setText(bangHo.getItems().size() + " ho");
+            soLuongLabel.setText(bangHo.getItems().size() + " hộ");
         } catch (CauHinhException | DaoException e) {
             bangHo.getItems().clear();
             soLuongLabel.setText("");
@@ -264,13 +265,13 @@ public class HoGiaDinhController {
                 : ho.getSoDienThoai());
         ngayPicker.setValue(ho.getNgayChuyenDen());
         hienPhanChuHo(false);
-        chuHoLabel.setText("Chu ho: "
-                + (dong.tenChuHo() == null ? "(chua co)" : dong.tenChuHo())
-                + " - " + dong.soThanhVien() + " thanh vien."
-                + "\nSua chu ho va thanh vien o man hinh Nhan khau.");
+        chuHoLabel.setText("Chủ hộ: "
+                + (dong.tenChuHo() == null ? "(chưa có)" : dong.tenChuHo())
+                + " - " + dong.soThanhVien() + " thành viên."
+                + "\nSửa chủ hộ và thành viên ở màn hình Nhân khẩu.");
         boolean dangO = ho.getTrangThai() == TrangThaiHo.DANG_O;
-        tieuDeFormLabel.setText(dangO ? "Sua ho " + ho.getMaCanHo()
-                : "Ho " + ho.getMaCanHo() + " (da chuyen di)");
+        tieuDeFormLabel.setText(dangO ? "Sửa hộ " + ho.getMaCanHo()
+                : "Hộ " + ho.getMaCanHo() + " (đã chuyển đi)");
         datChoPhepSua(dangO);
         chuyenDiButton.setDisable(!dangO);
         thongBaoLabel.setText("");
@@ -278,7 +279,7 @@ public class HoGiaDinhController {
 
     private void nhapMoi() {
         dangSua = null;
-        tieuDeFormLabel.setText("Them ho gia dinh");
+        tieuDeFormLabel.setText("Thêm hộ gia đình");
         maField.clear();
         loaiCombo.setValue(LoaiCanHo.CAN_HO);
         tangField.clear();

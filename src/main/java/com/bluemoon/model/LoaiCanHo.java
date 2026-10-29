@@ -5,8 +5,8 @@ package com.bluemoon.model;
  * tang thuong (RAW-033).
  */
 public enum LoaiCanHo {
-    CAN_HO("Can ho"),
-    KIOT("Kiot"),
+    CAN_HO("Căn hộ"),
+    KIOT("Ki-ốt"),
     PENTHOUSE("Penthouse");
 
     private final String nhan;

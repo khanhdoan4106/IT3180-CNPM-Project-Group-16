@@ -51,7 +51,7 @@ public final class DieuHuong {
                     DieuHuong.class.getResource(THU_MUC_VIEW + tenFile));
         } catch (IOException e) {
             throw new IllegalStateException(
-                    "Khong tai duoc man hinh " + tenFile, e);
+                    "Không tải được màn hình " + tenFile, e);
         }
     }
 
@@ -68,7 +68,7 @@ public final class DieuHuong {
             stage.centerOnScreen();
         } catch (IOException e) {
             throw new IllegalStateException(
-                    "Khong tai duoc man hinh " + tenFile, e);
+                    "Không tải được màn hình " + tenFile, e);
         }
     }
 }

@@ -23,7 +23,7 @@ import java.util.List;
 public class NhanKhauService {
 
     static final String LOI_HAI_CHU_HO =
-            "Ho da co chu ho. Moi ho chi co mot chu ho";
+            "Hộ đã có chủ hộ. Mỗi hộ chỉ có một chủ hộ";
 
     private final NhanKhauDao dao;
     private final HoGiaDinhDao hoDao;
@@ -122,7 +122,7 @@ public class NhanKhauService {
         if (cu.getQuanHe() == QuanHeChuHo.CHU_HO
                 && moi.getQuanHe() != QuanHeChuHo.CHU_HO) {
             throw new NghiepVuException(
-                    "Moi ho phai co mot chu ho, khong doi quan he cua chu ho");
+                    "Mỗi hộ phải có một chủ hộ, không đổi quan hệ của chủ hộ");
         }
         if (moi.getQuanHe() == QuanHeChuHo.CHU_HO
                 && dao.coChuHo(cu.getHoId(), id)) {
@@ -149,8 +149,8 @@ public class NhanKhauService {
     public void danhDauChuyenDi(int id) {
         NhanKhau nk = layDangO(id);
         if (nk.getQuanHe() == QuanHeChuHo.CHU_HO) {
-            throw new NghiepVuException("Chu ho khong the chuyen di rieng."
-                    + " Neu ca ho chuyen di, danh dau o man hinh Ho gia dinh");
+            throw new NghiepVuException("Chủ hộ không thể chuyển đi riêng."
+                    + " Nếu cả hộ chuyển đi, đánh dấu ở màn hình Hộ gia đình");
         }
         dao.capNhatTrangThai(id, TrangThaiNhanKhau.DA_CHUYEN_DI);
     }
@@ -169,21 +169,21 @@ public class NhanKhauService {
     /** Lay nhan khau dang o thuoc ho dang o; nguoc lai bao loi. */
     private NhanKhau layDangO(int id) {
         NhanKhau nk = dao.timTheoId(id).orElseThrow(
-                () -> new NghiepVuException("Khong tim thay nhan khau"));
+                () -> new NghiepVuException("Không tìm thấy nhân khẩu"));
         layHoDangO(nk.getHoId());
         if (nk.getTrangThai() != TrangThaiNhanKhau.DANG_O) {
             throw new NghiepVuException(
-                    "Nhan khau da chuyen di, khong the thay doi");
+                    "Nhân khẩu đã chuyển đi, không thể thay đổi");
         }
         return nk;
     }
 
     private void layHoDangO(int hoId) {
         HoGiaDinh ho = hoDao.timTheoId(hoId).orElseThrow(
-                () -> new NghiepVuException("Khong tim thay ho gia dinh"));
+                () -> new NghiepVuException("Không tìm thấy hộ gia đình"));
         if (ho.getTrangThai() != TrangThaiHo.DANG_O) {
             throw new NghiepVuException(
-                    "Ho da chuyen di, khong the thay doi nhan khau");
+                    "Hộ đã chuyển đi, không thể thay đổi nhân khẩu");
         }
     }
 
@@ -211,7 +211,7 @@ public class NhanKhauService {
         if (nk.getSoCccd() != null
                 && dao.tonTaiCccd(nk.getSoCccd(), nk.getId())) {
             throw new NghiepVuException(
-                    "So CCCD " + nk.getSoCccd() + " da ton tai");
+                    "Số CCCD " + nk.getSoCccd() + " đã tồn tại");
         }
     }
 }

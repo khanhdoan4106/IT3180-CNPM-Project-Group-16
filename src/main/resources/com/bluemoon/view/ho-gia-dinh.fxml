@@ -24,12 +24,12 @@
     </padding>
     <top>
         <VBox spacing="12">
-            <Label text="Quan ly ho gia dinh" styleClass="tieu-de-trang"/>
+            <Label text="Quản lý hộ gia đình" styleClass="tieu-de-trang"/>
             <HBox spacing="12" alignment="CENTER_LEFT">
                 <TextField fx:id="timKiemField" prefWidth="320"
-                           promptText="Tim theo ma can ho hoac ten chu ho"/>
+                           promptText="Tìm theo mã căn hộ hoặc tên chủ hộ"/>
                 <CheckBox fx:id="gomChuyenDiCheck"
-                          text="Hien ca ho da chuyen di"/>
+                          text="Hiện cả hộ đã chuyển đi"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="soLuongLabel" styleClass="phu-de"/>
             </HBox>
@@ -41,23 +41,23 @@
     <center>
         <TableView fx:id="bangHo">
             <columns>
-                <TableColumn fx:id="cotMa" text="Ma can ho" prefWidth="100"/>
-                <TableColumn fx:id="cotLoai" text="Loai" prefWidth="90"/>
-                <TableColumn fx:id="cotTang" text="Tang" prefWidth="60"/>
-                <TableColumn fx:id="cotDienTich" text="Dien tich (m2)"
+                <TableColumn fx:id="cotMa" text="Mã căn hộ" prefWidth="100"/>
+                <TableColumn fx:id="cotLoai" text="Loại" prefWidth="90"/>
+                <TableColumn fx:id="cotTang" text="Tầng" prefWidth="60"/>
+                <TableColumn fx:id="cotDienTich" text="Diện tích (m²)"
                              prefWidth="110"/>
-                <TableColumn fx:id="cotChuHo" text="Chu ho" prefWidth="200"/>
-                <TableColumn fx:id="cotSoThanhVien" text="Thanh vien"
+                <TableColumn fx:id="cotChuHo" text="Chủ hộ" prefWidth="200"/>
+                <TableColumn fx:id="cotSoThanhVien" text="Thành viên"
                              prefWidth="90"/>
-                <TableColumn fx:id="cotSdt" text="Dien thoai"
+                <TableColumn fx:id="cotSdt" text="Điện thoại"
                              prefWidth="120"/>
-                <TableColumn fx:id="cotNgay" text="Ngay chuyen den"
+                <TableColumn fx:id="cotNgay" text="Ngày chuyển đến"
                              prefWidth="130"/>
-                <TableColumn fx:id="cotTrangThai" text="Trang thai"
+                <TableColumn fx:id="cotTrangThai" text="Trạng thái"
                              prefWidth="110"/>
             </columns>
             <placeholder>
-                <Label text="Chua co ho gia dinh nao"/>
+                <Label text="Chưa có hộ gia đình nào"/>
             </placeholder>
         </TableView>
     </center>
@@ -66,57 +66,57 @@
             <BorderPane.margin>
                 <Insets left="20"/>
             </BorderPane.margin>
-            <Label fx:id="tieuDeFormLabel" text="Them ho gia dinh"
+            <Label fx:id="tieuDeFormLabel" text="Thêm hộ gia đình"
                    styleClass="tieu-de-form"/>
             <GridPane hgap="10" vgap="10">
                 <columnConstraints>
                     <ColumnConstraints minWidth="120"/>
                     <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
-                <Label text="Ma can ho *" GridPane.rowIndex="0"/>
+                <Label text="Mã căn hộ *" GridPane.rowIndex="0"/>
                 <TextField fx:id="maField" promptText="vd A0601"
                            GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-                <Label text="Loai can ho *" GridPane.rowIndex="1"/>
+                <Label text="Loại căn hộ *" GridPane.rowIndex="1"/>
                 <ComboBox fx:id="loaiCombo" maxWidth="Infinity"
                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-                <Label text="Tang *" GridPane.rowIndex="2"/>
+                <Label text="Tầng *" GridPane.rowIndex="2"/>
                 <TextField fx:id="tangField" promptText="1 - 30"
                            GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-                <Label text="Dien tich (m2) *" GridPane.rowIndex="3"/>
+                <Label text="Diện tích (m²) *" GridPane.rowIndex="3"/>
                 <TextField fx:id="dienTichField" promptText="vd 75.5"
                            GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-                <Label text="So dien thoai" GridPane.rowIndex="4"/>
-                <TextField fx:id="sdtField" promptText="10 chu so"
+                <Label text="Số điện thoại" GridPane.rowIndex="4"/>
+                <TextField fx:id="sdtField" promptText="10 chữ số"
                            GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-                <Label text="Ngay chuyen den *" GridPane.rowIndex="5"/>
+                <Label text="Ngày chuyển đến *" GridPane.rowIndex="5"/>
                 <DatePicker fx:id="ngayPicker" maxWidth="Infinity"
                             GridPane.rowIndex="5" GridPane.columnIndex="1"/>
             </GridPane>
             <!-- Them moi: nhap chu ho (US-002). Sua: chi hien chuHoLabel. -->
             <VBox fx:id="chuHoBox" spacing="10">
-                <Label text="Chu ho" styleClass="tieu-de-form"/>
+                <Label text="Chủ hộ" styleClass="tieu-de-form"/>
                 <GridPane hgap="10" vgap="10">
                     <columnConstraints>
                         <ColumnConstraints minWidth="120"/>
                         <ColumnConstraints hgrow="ALWAYS"/>
                     </columnConstraints>
-                    <Label text="Ho ten *" GridPane.rowIndex="0"/>
+                    <Label text="Họ tên *" GridPane.rowIndex="0"/>
                     <TextField fx:id="chuHoField" GridPane.rowIndex="0"
                                GridPane.columnIndex="1"/>
-                    <Label text="Ngay sinh *" GridPane.rowIndex="1"/>
+                    <Label text="Ngày sinh *" GridPane.rowIndex="1"/>
                     <DatePicker fx:id="ngaySinhChuHoPicker"
                                 maxWidth="Infinity" GridPane.rowIndex="1"
                                 GridPane.columnIndex="1"/>
-                    <Label text="Gioi tinh *" GridPane.rowIndex="2"/>
+                    <Label text="Giới tính *" GridPane.rowIndex="2"/>
                     <ComboBox fx:id="gioiTinhChuHoCombo" maxWidth="Infinity"
                               GridPane.rowIndex="2"
                               GridPane.columnIndex="1"/>
-                    <Label text="So CCCD" GridPane.rowIndex="3"/>
+                    <Label text="Số CCCD" GridPane.rowIndex="3"/>
                     <TextField fx:id="cccdChuHoField"
-                               promptText="bat buoc tu 14 tuoi"
+                               promptText="bắt buộc từ 14 tuổi"
                                GridPane.rowIndex="3"
                                GridPane.columnIndex="1"/>
-                    <Label text="Cu tru *" GridPane.rowIndex="4"/>
+                    <Label text="Cư trú *" GridPane.rowIndex="4"/>
                     <ComboBox fx:id="loaiCuTruChuHoCombo"
                               maxWidth="Infinity" GridPane.rowIndex="4"
                               GridPane.columnIndex="1"/>
@@ -127,15 +127,15 @@
                         <ColumnConstraints minWidth="120"/>
                         <ColumnConstraints hgrow="ALWAYS"/>
                     </columnConstraints>
-                    <Label text="Noi thuong tru *" GridPane.rowIndex="0"/>
+                    <Label text="Nơi thường trú *" GridPane.rowIndex="0"/>
                     <TextField fx:id="noiThuongTruChuHoField"
                                GridPane.rowIndex="0"
                                GridPane.columnIndex="1"/>
-                    <Label text="Tam tru tu *" GridPane.rowIndex="1"/>
+                    <Label text="Tạm trú từ *" GridPane.rowIndex="1"/>
                     <DatePicker fx:id="tamTruTuChuHoPicker"
                                 maxWidth="Infinity" GridPane.rowIndex="1"
                                 GridPane.columnIndex="1"/>
-                    <Label text="Tam tru den *" GridPane.rowIndex="2"/>
+                    <Label text="Tạm trú đến *" GridPane.rowIndex="2"/>
                     <DatePicker fx:id="tamTruDenChuHoPicker"
                                 maxWidth="Infinity" GridPane.rowIndex="2"
                                 GridPane.columnIndex="1"/>
@@ -144,11 +144,11 @@
             <Label fx:id="chuHoLabel" wrapText="true" styleClass="phu-de"/>
             <Label fx:id="thongBaoLabel" wrapText="true"/>
             <HBox spacing="10">
-                <Button fx:id="luuButton" text="Luu" defaultButton="true"
+                <Button fx:id="luuButton" text="Lưu" defaultButton="true"
                         styleClass="nut-chinh" onAction="#onLuu"/>
-                <Button text="Nhap moi" onAction="#onNhapMoi"/>
+                <Button text="Nhập mới" onAction="#onNhapMoi"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="chuyenDiButton" text="Danh dau chuyen di"
+                <Button fx:id="chuyenDiButton" text="Đánh dấu chuyển đi"
                         styleClass="nut-phu" disable="true"
                         onAction="#onChuyenDi"/>
             </HBox>

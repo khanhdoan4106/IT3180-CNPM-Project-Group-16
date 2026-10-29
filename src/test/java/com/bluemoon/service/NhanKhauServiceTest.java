@@ -103,7 +103,7 @@ class NhanKhauServiceTest {
                 QuanHeChuHo.CHU_HO);
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.them(ho.getId(), tt));
-        assertTrue(e.getMessage().contains("mot chu ho"));
+        assertTrue(e.getMessage().contains("một chủ hộ"));
         assertEquals(1, service.theoHo(ho.getId()).size());
     }
 
@@ -114,7 +114,7 @@ class NhanKhauServiceTest {
                 nk.getNgaySinh(), nk.getGioiTinh(), "", QuanHeChuHo.CHU_HO);
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.capNhat(nk.getId(), tt));
-        assertTrue(e.getMessage().contains("mot chu ho"));
+        assertTrue(e.getMessage().contains("một chủ hộ"));
         assertEquals(QuanHeChuHo.CON,
                 kho.nhanKhau.get(nk.getId()).getQuanHe());
     }
@@ -207,8 +207,8 @@ class NhanKhauServiceTest {
                 null);
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.them(ho.getId(), tt));
-        for (String truong : List.of("Ho ten", "Ngay sinh", "Gioi tinh",
-                "Quan he voi chu ho")) {
+        for (String truong : List.of("Họ tên", "Ngày sinh", "Giới tính",
+                "Quan hệ với chủ hộ")) {
             assertTrue(e.getMessage().contains(truong), truong);
         }
         assertEquals(1, service.theoHo(ho.getId()).size());
@@ -242,7 +242,7 @@ class NhanKhauServiceTest {
                 HOM_NAY.minusYears(14), GioiTinh.NAM, "", QuanHeChuHo.CON);
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.them(ho.getId(), du14));
-        assertTrue(e.getMessage().contains("So CCCD"));
+        assertTrue(e.getMessage().contains("Số CCCD"));
         ThongTinNhanKhau chua14 = new ThongTinNhanKhau("Gan 14",
                 HOM_NAY.minusYears(14).plusDays(1), GioiTinh.NU, "",
                 QuanHeChuHo.CON);
@@ -297,7 +297,7 @@ class NhanKhauServiceTest {
         kho.trungKhiGhi = "uq_nk_cccd_dang_o";
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.them(ho.getId(), con("001310002345")));
-        assertEquals("So CCCD 001310002345 da ton tai", e.getMessage());
+        assertEquals("Số CCCD 001310002345 đã tồn tại", e.getMessage());
     }
 
     @Test
@@ -337,9 +337,9 @@ class NhanKhauServiceTest {
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.them(ho.getId(),
                         nguoiTamTru("036095001111", ""), null));
-        assertTrue(e.getMessage().contains("Noi thuong tru"));
-        assertTrue(e.getMessage().contains("Ngay bat dau tam tru"));
-        assertTrue(e.getMessage().contains("Ngay ket thuc tam tru"));
+        assertTrue(e.getMessage().contains("Nơi thường trú"));
+        assertTrue(e.getMessage().contains("Ngày bắt đầu tạm trú"));
+        assertTrue(e.getMessage().contains("Ngày kết thúc tạm trú"));
         assertThrows(NghiepVuException.class,
                 () -> service.them(ho.getId(),
                         nguoiTamTru("036095001111", "Nam Dinh"),
