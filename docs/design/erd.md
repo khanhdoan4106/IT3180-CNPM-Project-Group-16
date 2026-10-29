@@ -84,7 +84,3 @@ Theo `schema.sql` và Product Backlog; thiết kế chi tiết bổ sung khi b�
 | Sprint 2 | `khoan_phi` | US-005, US-006, US-008 (danh mục và đơn giá khoản thu) |
 | Sprint 2 | `dot_thu`, `phai_nop` | US-009 chốt công nợ đầu tháng |
 | Sprint 3 | `phieu_thu` | US-010 đến US-014 (thu phí, biên lai, hủy phiếu) |
-
-Lưu ý: chú thích TODO trong `schema.sql` đang ghi `dot_thu`, `phai_nop`
-thuộc Sprint 3, nhưng Product Backlog xếp US-009 (chốt công nợ, cần hai
-bảng này) vào Sprint 2. Cần sửa chú thích khi làm US-009.

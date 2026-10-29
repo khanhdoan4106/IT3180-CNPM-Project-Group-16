@@ -1,20 +1,23 @@
 ---
 name: User Story
 about: Một User Story trong Product Backlog
-title: "[US-xx] "
+title: "[US-xxx] "
 labels: ""
 ---
 
-## User Story
-
-**Là** <vai trò>, **tôi muốn** <mục tiêu>, **để** <giá trị>.
+**Story:** US-xxx – xem [07-user-stories.md](../blob/main/docs/requirements/07-user-stories.md)
+**Sprint:** · **Story Point:** · **Phụ trách:** · **Review:**
 
 ## Acceptance Criteria
 
-- [ ] **Given** ... **When** ... **Then** ...
+- [ ] AC-xxx:
+- [ ] AC-xxx:
 
-## Ưu tiên (MoSCoW)
+## Việc cần làm
 
-Must / Should / Could / Won't
+- [ ] Service + unit test
+- [ ] DAO + cập nhật `schema.sql`, ERD nếu đổi bảng
+- [ ] Controller + FXML
+- [ ] Cập nhật trạng thái trong Product Backlog
 
-## Ghi chú
+Hoàn thành khi đạt [Definition of Done](../blob/main/docs/requirements/10-definition-of-done.md).

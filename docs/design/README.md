@@ -12,7 +12,6 @@ Các sơ đồ viết bằng Mermaid, GitHub hiển thị trực tiếp khi mở
 code thay đổi (thêm bảng, thêm lớp) cập nhật tài liệu tương ứng trong cùng
 Pull Request.
 
-Cần bổ sung theo hướng dẫn giảng viên:
-- Link Figma (đăng nhập, tạo khoản phí, thu phí, màn hình chính)
-- Ít nhất 3 bảng màu đề xuất và bảng màu đã chọn
-- Bảng đặc tả giao diện cho từng màn hình
+Thiết kế giao diện trên Figma (đăng nhập, màn hình chính, tạo khoản phí,
+thu phí), 3 bảng màu đề xuất và bảng đặc tả màn hình: việc 2.3 trong
+Timeline, TV2 phụ trách, hạn 01/11/2026.

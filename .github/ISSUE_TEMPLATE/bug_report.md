@@ -19,4 +19,5 @@ labels: bug
 ## Môi trường
 
 - Hệ điều hành:
-- Trình duyệt / JDK / Node:
+- JDK, MySQL:
+- Commit hoặc phiên bản (vd `v0.1.0`):
