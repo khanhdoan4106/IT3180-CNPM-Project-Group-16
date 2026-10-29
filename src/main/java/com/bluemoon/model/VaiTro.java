@@ -5,8 +5,8 @@ package com.bluemoon.model;
  * (xem docs/requirements/11-chot-va-gia-dinh.md).
  */
 public enum VaiTro {
-    QUAN_TRI("Quan tri vien"),
-    THU_QUY("Thu quy");
+    QUAN_TRI("Quản trị viên"),
+    THU_QUY("Thủ quỹ");
 
     private final String nhan;
 

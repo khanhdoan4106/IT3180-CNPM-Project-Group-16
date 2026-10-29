@@ -45,7 +45,7 @@ public class TaiKhoanService {
         if (tenDangNhap == null || tenDangNhap.isBlank()
                 || matKhau == null || matKhau.isEmpty()) {
             throw new NghiepVuException(
-                    "Vui long nhap ten dang nhap va mat khau");
+                    "Vui lòng nhập tên đăng nhập và mật khẩu");
         }
         TaiKhoan tk = dao.timTheoTenDangNhap(tenDangNhap.trim())
                 .orElseThrow(TaiKhoanService::saiThongTin);
@@ -53,7 +53,7 @@ public class TaiKhoanService {
             throw saiThongTin();
         }
         if (!tk.isHoatDong()) {
-            throw new NghiepVuException("Tai khoan da bi khoa");
+            throw new NghiepVuException("Tài khoản đã bị khóa");
         }
         return tk;
     }
@@ -77,27 +77,27 @@ public class TaiKhoanService {
             String hoTen, String matKhau, String nhapLai, VaiTro vaiTro) {
         if (nguoiTao == null || nguoiTao.getVaiTro() != VaiTro.QUAN_TRI) {
             throw new NghiepVuException(
-                    "Chi Quan tri vien moi duoc dang ky tai khoan");
+                    "Chỉ Quản trị viên mới được đăng ký tài khoản");
         }
         String ten = tenDangNhap == null ? "" : tenDangNhap.trim();
         if (!TEN_HOP_LE.matcher(ten).matches()) {
-            throw new NghiepVuException("Ten dang nhap gom 3-50 ky tu: chu"
-                    + " khong dau, so, dau cham hoac gach duoi");
+            throw new NghiepVuException("Tên đăng nhập gồm 3-50 ký tự: chữ"
+                    + " không dấu, số, dấu chấm hoặc gạch dưới");
         }
         String hoTenSach = hoTen == null ? "" : hoTen.trim();
         if (hoTenSach.isEmpty()) {
-            throw new NghiepVuException("Vui long nhap ho ten");
+            throw new NghiepVuException("Vui lòng nhập họ tên");
         }
         if (hoTenSach.length() > HO_TEN_TOI_DA) {
-            throw new NghiepVuException("Ho ten toi da " + HO_TEN_TOI_DA
-                    + " ky tu");
+            throw new NghiepVuException("Họ tên tối đa " + HO_TEN_TOI_DA
+                    + " ký tự");
         }
         if (vaiTro == null) {
-            throw new NghiepVuException("Vui long chon vai tro");
+            throw new NghiepVuException("Vui lòng chọn vai trò");
         }
-        kiemTraMatKhauMoi(matKhau, "Mat khau");
+        kiemTraMatKhauMoi(matKhau, "Mật khẩu");
         if (!matKhau.equals(nhapLai)) {
-            throw new NghiepVuException("Mat khau nhap lai khong khop");
+            throw new NghiepVuException("Mật khẩu nhập lại không khớp");
         }
         if (dao.timTheoTenDangNhap(ten).isPresent()) {
             throw trungTen(ten);
@@ -125,28 +125,28 @@ public class TaiKhoanService {
     public void doiMatKhau(TaiKhoan tk, String matKhauCu,
             String matKhauMoi) {
         if (!MatKhauUtil.kiemTra(matKhauCu, tk.getMatKhauBam())) {
-            throw new NghiepVuException("Mat khau hien tai khong dung");
+            throw new NghiepVuException("Mật khẩu hiện tại không đúng");
         }
-        kiemTraMatKhauMoi(matKhauMoi, "Mat khau moi");
+        kiemTraMatKhauMoi(matKhauMoi, "Mật khẩu mới");
         dao.capNhatMatKhau(tk.getId(), MatKhauUtil.bam(matKhauMoi));
     }
 
     private static void kiemTraMatKhauMoi(String matKhau, String ten) {
         if (matKhau == null || matKhau.length() < MAT_KHAU_TOI_THIEU) {
-            throw new NghiepVuException(ten + " phai co it nhat "
-                    + MAT_KHAU_TOI_THIEU + " ky tu");
+            throw new NghiepVuException(ten + " phải có ít nhất "
+                    + MAT_KHAU_TOI_THIEU + " ký tự");
         }
         if (MatKhauUtil.quaDai(matKhau)) {
-            throw new NghiepVuException(ten + " qua dai");
+            throw new NghiepVuException(ten + " quá dài");
         }
     }
 
     private static NghiepVuException trungTen(String ten) {
-        return new NghiepVuException("Ten dang nhap " + ten
-                + " da ton tai");
+        return new NghiepVuException("Tên đăng nhập " + ten
+                + " đã tồn tại");
     }
 
     private static NghiepVuException saiThongTin() {
-        return new NghiepVuException("Sai ten dang nhap hoac mat khau");
+        return new NghiepVuException("Sai tên đăng nhập hoặc mật khẩu");
     }
 }

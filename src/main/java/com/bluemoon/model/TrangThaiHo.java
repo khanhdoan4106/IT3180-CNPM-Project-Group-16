@@ -5,8 +5,8 @@ package com.bluemoon.model;
  * phi.
  */
 public enum TrangThaiHo {
-    DANG_O("Dang o"),
-    DA_CHUYEN_DI("Da chuyen di");
+    DANG_O("Đang ở"),
+    DA_CHUYEN_DI("Đã chuyển đi");
 
     private final String nhan;
 

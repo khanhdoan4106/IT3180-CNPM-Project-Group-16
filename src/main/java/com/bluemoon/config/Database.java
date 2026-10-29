@@ -36,7 +36,7 @@ public final class Database {
                 props.load(in);
             } catch (IOException e) {
                 throw new CauHinhException(
-                        "Khong doc duoc " + FILE_CAU_HINH, e);
+                        "Không đọc được " + FILE_CAU_HINH, e);
             }
         }
         ghiDeTuMoiTruong(props, "url", "BLUEMOON_DB_URL");
@@ -63,14 +63,14 @@ public final class Database {
         String url = props.getProperty("url");
         if (url == null || url.isBlank()) {
             throw new CauHinhException(
-                    "Thieu cau hinh CSDL. Sao chep config/db.properties.example"
-                            + " thanh config/db.properties va dien thong tin.");
+                    "Thiếu cấu hình CSDL. Sao chép config/db.properties.example"
+                            + " thành config/db.properties và điền thông tin.");
         }
         try {
             return DriverManager.getConnection(url,
                     props.getProperty("user"), props.getProperty("password"));
         } catch (SQLException e) {
-            throw new CauHinhException("Khong ket noi duoc MySQL", e);
+            throw new CauHinhException("Không kết nối được MySQL", e);
         }
     }
 }

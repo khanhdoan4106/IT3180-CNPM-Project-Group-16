@@ -25,7 +25,10 @@ View (FXML + CSS) -> Controller -> Service -> DAO -> MySQL
 - SQL luôn dùng `PreparedStatement`, không nối chuỗi từ dữ liệu người dùng.
 - Không xóa cứng dữ liệu nghiệp vụ; đổi trạng thái để giữ lịch sử.
 
-## Giao diện (theo hướng dẫn giảng viên)
-- Đăng nhập, tạo/thu khoản phí: 1120x645. Màn hình chính: 1440x1024.
-- Chọn một layout thống nhất (đầu-thân hoặc trái-đầu-thân) cho toàn app.
-- Palette màu và bảng đặc tả giao diện lưu ở `docs/design/`.
+## Giao diện
+- Kích thước theo hướng dẫn giảng viên: đăng nhập, tạo/thu khoản phí
+  1120x645; màn hình chính 1440x1024.
+- Bố cục đầu – thân cho toàn ứng dụng: thanh menu trên cùng, màn hình chức
+  năng hiển thị ở phần thân (`trang-chinh.fxml`).
+- Màu dùng biến `-mau-*` trong `css/giao-dien.css`; đổi bảng màu chỉ sửa
+  các biến này.

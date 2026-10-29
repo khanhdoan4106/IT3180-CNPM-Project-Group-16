@@ -49,7 +49,7 @@ import javafx.scene.layout.GridPane;
 public class NhanKhauController {
 
     private static final String LOI_CSDL =
-            "Khong ket noi duoc co so du lieu. Xem docs/setup.md";
+            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
 
     private final NhanKhauService service = new NhanKhauService(
             new NhanKhauDaoImpl(), new HoGiaDinhDaoImpl());
@@ -199,13 +199,13 @@ public class NhanKhauController {
     private void onLuu() {
         TomTatHo ho = hoCombo.getValue();
         if (ho == null) {
-            baoLoi("Vui long chon ho gia dinh");
+            baoLoi("Vui lòng chọn hộ gia đình");
             return;
         }
         for (DatePicker p : new DatePicker[] {ngaySinhPicker, tamTruTuPicker,
                 tamTruDenPicker}) {
             if (NgayUtil.saiDinhDang(p)) {
-                baoLoi("Ngay phai co dang dd/mm/yyyy");
+                baoLoi("Ngày phải có dạng dd/mm/yyyy");
                 return;
             }
         }
@@ -222,10 +222,10 @@ public class NhanKhauController {
             } else {
                 nk = service.capNhat(dangSua.getId(), tt);
             }
-            String viec = dangSua == null ? "Da them" : "Da cap nhat";
+            String viec = dangSua == null ? "Đã thêm" : "Đã cập nhật";
             taiThanhVien();
             chonDong(nk.getId());
-            baoThanhCong(viec + " nhan khau " + nk.getHoTen());
+            baoThanhCong(viec + " nhân khẩu " + nk.getHoTen());
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -239,9 +239,10 @@ public class NhanKhauController {
             return;
         }
         Alert hoi = new Alert(Alert.AlertType.CONFIRMATION,
-                "Danh dau " + dangSua.getHoTen() + " da roi ho?"
-                        + "\nDu lieu van duoc giu lai.",
+                "Đánh dấu " + dangSua.getHoTen() + " đã rời hộ?"
+                        + "\nDữ liệu vẫn được giữ lại.",
                 ButtonType.OK, ButtonType.CANCEL);
+        hoi.setTitle("Xác nhận");
         hoi.setHeaderText(null);
         if (hoi.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
             return;
@@ -251,7 +252,7 @@ public class NhanKhauController {
             service.danhDauChuyenDi(dangSua.getId());
             onNhapMoi();
             taiThanhVien();
-            baoThanhCong(ten + " da duoc danh dau chuyen di");
+            baoThanhCong(ten + " đã được đánh dấu chuyển đi");
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -267,7 +268,7 @@ public class NhanKhauController {
         }
         if (NgayUtil.saiDinhDang(dotTuPicker)
                 || NgayUtil.saiDinhDang(dotDenPicker)) {
-            baoDot("Ngay phai co dang dd/mm/yyyy", true);
+            baoDot("Ngày phải có dạng dd/mm/yyyy", true);
             return;
         }
         ThongTinDot tt = new ThongTinDot(loaiDotCombo.getValue(),
@@ -277,7 +278,7 @@ public class NhanKhauController {
             DotCuTru dot = dotService.ghiNhan(nk.getId(), tt);
             taiThanhVien();
             chonDong(nk.getId());
-            baoDot("Da ghi nhan " + dot.getLoai().getNhan().toLowerCase()
+            baoDot("Đã ghi nhận " + dot.getLoai().getNhan().toLowerCase()
                     + " cho " + nk.getHoTen(), false);
         } catch (NghiepVuException e) {
             baoDot(e.getMessage(), true);
@@ -323,8 +324,8 @@ public class NhanKhauController {
                     .count();
             long quaHan = tinhTrang.values().stream()
                     .filter(TinhTrangCuTru::quaHanTamTru).count();
-            soThanhVienLabel.setText(dangO + " thanh vien dang o"
-                    + (quaHan > 0 ? ", " + quaHan + " qua han tam tru" : ""));
+            soThanhVienLabel.setText(dangO + " thành viên đang ở"
+                    + (quaHan > 0 ? ", " + quaHan + " quá hạn tạm trú" : ""));
         } catch (CauHinhException | DaoException e) {
             tinhTrang = new HashMap<>();
             bangNhanKhau.getItems().clear();
@@ -340,13 +341,13 @@ public class NhanKhauController {
         dotTuPicker.setValue(null);
         dotDenPicker.setValue(null);
         if (nk == null) {
-            tieuDeDotLabel.setText("Tam tru / tam vang");
+            tieuDeDotLabel.setText("Tạm trú / tạm vắng");
             bangDot.getItems().clear();
             loaiDotCombo.setValue(null);
             ghiDotButton.setDisable(true);
             return;
         }
-        tieuDeDotLabel.setText("Tam tru / tam vang: " + nk.getHoTen());
+        tieuDeDotLabel.setText("Tạm trú / tạm vắng: " + nk.getHoTen());
         loaiDotCombo.setValue(nk.getLoaiCuTru() == LoaiCuTru.TAM_TRU
                 ? LoaiDotCuTru.TAM_TRU : LoaiDotCuTru.TAM_VANG);
         ghiDotButton.setDisable(
@@ -366,8 +367,8 @@ public class NhanKhauController {
         }
         dangSua = nk;
         boolean dangO = nk.getTrangThai() == TrangThaiNhanKhau.DANG_O;
-        tieuDeFormLabel.setText(dangO ? "Sua nhan khau"
-                : "Nhan khau (da chuyen di)");
+        tieuDeFormLabel.setText(dangO ? "Sửa nhân khẩu"
+                : "Nhân khẩu (đã chuyển đi)");
         hoTenField.setText(nk.getHoTen());
         ngaySinhPicker.setValue(nk.getNgaySinh());
         gioiTinhCombo.setValue(nk.getGioiTinh());
@@ -385,7 +386,7 @@ public class NhanKhauController {
 
     private void nhapMoi() {
         dangSua = null;
-        tieuDeFormLabel.setText("Them nhan khau");
+        tieuDeFormLabel.setText("Thêm nhân khẩu");
         hoTenField.clear();
         ngaySinhPicker.setValue(null);
         gioiTinhCombo.setValue(null);
@@ -491,8 +492,8 @@ public class NhanKhauController {
             TinhTrangCuTru tt = tinhTrangCua(nk);
             if (tt.quaHanTamTru()) {
                 getStyleClass().add("qua-han");
-                setText(tt.hanTamTru() == null ? "Chua co han"
-                        : NgayUtil.hien(tt.hanTamTru()) + " (qua han)");
+                setText(tt.hanTamTru() == null ? "Chưa có hạn"
+                        : NgayUtil.hien(tt.hanTamTru()) + " (quá hạn)");
             } else {
                 setText(NgayUtil.hien(tt.hanTamTru()));
             }

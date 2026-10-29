@@ -12,20 +12,20 @@
     <top>
         <HBox styleClass="thanh-dau" spacing="12">
             <Label text="BlueMoon" styleClass="logo"/>
-            <Button text="Ho gia dinh" styleClass="nut-menu"
+            <Button text="Hộ gia đình" styleClass="nut-menu"
                     onAction="#onMoHoGiaDinh"/>
-            <Button text="Nhan khau" styleClass="nut-menu"
+            <Button text="Nhân khẩu" styleClass="nut-menu"
                     onAction="#onMoNhanKhau"/>
-            <Button fx:id="taiKhoanButton" text="Tai khoan"
+            <Button fx:id="taiKhoanButton" text="Tài khoản"
                     styleClass="nut-menu" onAction="#onMoTaiKhoan"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="chaoLabel" styleClass="chao"/>
-            <Button text="Dang xuat" onAction="#onDangXuat"/>
+            <Button text="Đăng xuất" onAction="#onDangXuat"/>
         </HBox>
     </top>
     <center>
         <StackPane fx:id="noiDung" styleClass="nen">
-            <Label text="Chon chuc nang tren thanh menu"
+            <Label text="Chọn chức năng trên thanh menu"
                    styleClass="phu-de"/>
         </StackPane>
     </center>

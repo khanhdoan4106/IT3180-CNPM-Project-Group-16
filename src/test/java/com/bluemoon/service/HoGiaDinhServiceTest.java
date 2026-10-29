@@ -106,9 +106,9 @@ class HoGiaDinhServiceTest {
                 null);
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.them(tt, trong));
-        for (String truong : List.of("Ma can ho", "Loai can ho", "Tang",
-                "Dien tich", "Ngay chuyen den", "Ho ten chu ho",
-                "Ngay sinh chu ho", "Gioi tinh chu ho")) {
+        for (String truong : List.of("Mã căn hộ", "Loại căn hộ", "Tầng",
+                "Diện tích", "Ngày chuyển đến", "Họ tên chủ hộ",
+                "Ngày sinh chủ hộ", "Giới tính chủ hộ")) {
             assertTrue(e.getMessage().contains(truong), truong);
         }
         assertTrue(kho.ho.isEmpty());
@@ -145,7 +145,7 @@ class HoGiaDinhServiceTest {
     void chuHoTuDu14TuoiThieuCccdBiTuChoi() {
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.them(hopLe("A0601"), chuHo("")));
-        assertTrue(e.getMessage().contains("So CCCD chu ho"));
+        assertTrue(e.getMessage().contains("Số CCCD chủ hộ"));
         assertTrue(kho.ho.isEmpty());
     }
 
@@ -169,7 +169,7 @@ class HoGiaDinhServiceTest {
         kho.trungKhiGhi = "uq_ho_ma_dang_o";
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> them(hopLe("A0601")));
-        assertEquals("Ma can ho A0601 da co ho dang o", e.getMessage());
+        assertEquals("Mã căn hộ A0601 đã có hộ đang ở", e.getMessage());
     }
 
     @Test
@@ -177,7 +177,7 @@ class HoGiaDinhServiceTest {
         kho.trungKhiGhi = "uq_nk_cccd_dang_o";
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.them(hopLe("A0601"), chuHo("001182000001")));
-        assertEquals("So CCCD 001182000001 da ton tai", e.getMessage());
+        assertEquals("Số CCCD 001182000001 đã tồn tại", e.getMessage());
     }
 
     @Test
@@ -218,8 +218,8 @@ class HoGiaDinhServiceTest {
     void chuHoTamTruThieuDotThiKhongLuuHo() {
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.them(hopLe("A0601"), chuHoTamTru(""), null));
-        assertTrue(e.getMessage().contains("Noi thuong tru chu ho"));
-        assertTrue(e.getMessage().contains("Ngay bat dau tam tru chu ho"));
+        assertTrue(e.getMessage().contains("Nơi thường trú chủ hộ"));
+        assertTrue(e.getMessage().contains("Ngày bắt đầu tạm trú chủ hộ"));
         assertTrue(kho.ho.isEmpty());
         assertTrue(kho.nhanKhau.isEmpty());
         assertTrue(kho.dot.isEmpty());
@@ -304,7 +304,7 @@ class HoGiaDinhServiceTest {
                 "", LocalDate.of(2023, 7, 15));
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.capNhat(ho.getId(), tt));
-        assertTrue(e.getMessage().contains("Tang"));
+        assertTrue(e.getMessage().contains("Tầng"));
         assertEquals(6, kho.ho.get(ho.getId()).getTang());
     }
 

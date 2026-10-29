@@ -76,10 +76,21 @@ Viết báo cáo, làm slide, họp, review, phỏng vấn khách hàng không c
 - `docs/meeting-notes/yyyy-mm-dd-<noi-dung>.md`: biên bản mỗi buổi họp,
   ghi rõ việc của từng người.
 
-Không viết lại lịch sử `main` (không force-push, không rebase nhánh đã
-push).
+## 6. Kết thúc Sprint: Release
 
-## 6. Không được commit
+1. Merge hết Pull Request của Sprint, CI xanh, cập nhật trạng thái trong
+   [Product Backlog](docs/requirements/08-product-backlog.md).
+2. GitHub → Releases → Draft a new release → tag `v0.N.0` trên `main`
+   (Sprint 1: `v0.1.0`, …, Sprint 4: `v1.0.0`).
+3. Mô tả: story đã xong kèm AC và PR, kết quả test, hạn chế còn lại.
+   Đính kèm `database/schema.sql`, `database/seed.sql`.
+4. Nâng `<version>` trong `pom.xml` lên phiên bản Sprint kế tiếp
+   (`0.N+1.0-SNAPSHOT`).
+
+Không viết lại lịch sử `main` (không force-push, không rebase nhánh đã
+push): tag của các Release phải luôn trỏ đúng commit.
+
+## 7. Không được commit
 
 Mật khẩu, `config/db.properties`, file build (`target/`), file IDE. Xem
 `.gitignore`.

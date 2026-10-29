@@ -78,7 +78,11 @@ Là Ban quản trị, tôi muốn chuyển vai trò chủ hộ sang một thành
 - **Ước lượng:** chưa ước lượng
 - **Phụ thuộc:** US-002
 
-_Chưa viết Acceptance Criteria._
+**Acceptance Criteria**
+
+- **AC-073:** **Giả sử** hộ đang ở có ít nhất một thành viên khác đang ở, **khi** BQT chọn thành viên đó làm chủ hộ mới và lưu, **thì** thành viên đó thành chủ hộ, chủ hộ cũ đổi sang quan hệ BQT chọn hoặc được đánh dấu chuyển đi, và hộ vẫn có đúng một chủ hộ.
+- **AC-074:** **Giả sử** hộ không còn thành viên nào khác đang ở, **khi** BQT đổi chủ hộ, **thì** hệ thống từ chối và hướng dẫn đánh dấu cả hộ chuyển đi.
+- **AC-075:** **Giả sử** thành viên được chọn đã chuyển đi, **khi** BQT đổi chủ hộ, **thì** hệ thống từ chối và giữ nguyên chủ hộ hiện tại.
 
 ## EPIC-02: Quản lý danh mục và khoản thu
 

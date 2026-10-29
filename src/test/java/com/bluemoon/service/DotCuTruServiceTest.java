@@ -92,8 +92,8 @@ class DotCuTruServiceTest {
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.ghiNhan(thuongTru.getId(),
                         tamVang(null, null)));
-        assertTrue(e.getMessage().contains("Ngay bat dau"));
-        assertTrue(e.getMessage().contains("Ngay ket thuc"));
+        assertTrue(e.getMessage().contains("Ngày bắt đầu"));
+        assertTrue(e.getMessage().contains("Ngày kết thúc"));
         assertTrue(service.theoNhanKhau(thuongTru.getId()).isEmpty());
     }
 
@@ -218,7 +218,7 @@ class DotCuTruServiceTest {
         NghiepVuException e = assertThrows(NghiepVuException.class,
                 () -> service.ghiNhan(thuongTru.getId(),
                         tamVang(HOM_NAY, HOM_NAY.plusDays(5))));
-        assertTrue(e.getMessage().contains("da chuyen di"));
+        assertTrue(e.getMessage().contains("đã chuyển đi"));
         assertEquals(1, kho.dot.size());
     }
 }

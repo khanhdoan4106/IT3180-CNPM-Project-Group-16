@@ -5,7 +5,7 @@ package com.bluemoon.model;
  */
 public enum GioiTinh {
     NAM("Nam"),
-    NU("Nu");
+    NU("Nữ");
 
     private final String nhan;
 

@@ -13,13 +13,16 @@
 
 **Theo sprint:**
 
-| Sprint | Tổng SP |
-|---|---|
-| Sprint 1 | 24 |
-| Sprint 2 | 24 |
-| Sprint 3 | 28 |
-| Sprint 4 | 28 |
-| **Tổng** | **104** |
+| Sprint | Tổng SP | Phát hành | Trạng thái |
+|---|---|---|---|
+| Sprint 1 | 24 | `v0.1.0` | Hoàn thành |
+| Sprint 2 | 24 | `v0.2.0` | Chưa bắt đầu |
+| Sprint 3 | 28 | `v0.3.0` | Chưa bắt đầu |
+| Sprint 4 | 28 | `v1.0.0` | Chưa bắt đầu |
+| **Tổng** | **104** | | |
+
+US-026 (Should) chưa xếp Sprint và chưa ước lượng; sẽ ước lượng ở buổi
+Planning Poker khi đưa vào Sprint.
 
 ## EPIC-01: Quản lý hộ gia đình và nhân khẩu
 
@@ -81,7 +84,7 @@
 | US-023 | Đổi mật khẩu và cập nhật thông tin cá nhân | Should | Sprint 2 | Chưa bắt đầu | 3 |
 | TS-001 | Sao lưu dữ liệu MySQL định kỳ (hàng ngày/tuần) để tránh mất dữ liệu. | Should | Sprint 4 | Chưa bắt đầu | 5 |
 | TS-002 | Ghi nhật ký mọi thao tác thay đổi dữ liệu quan trọng. | Should | Sprint 4 | Chưa bắt đầu | 5 |
-| TS-003 | Thiết lập ứng dụng Java máy tính để bàn kết nối CSDL MySQL tập trung. | Must | Sprint 1 | Chưa bắt đầu | 5 |
+| TS-003 | Thiết lập ứng dụng Java máy tính để bàn kết nối CSDL MySQL tập trung. | Must | Sprint 1 | Hoàn thành | 5 |
 | TS-004 | Rà soát giao diện dễ dùng cho người lớn tuổi (chữ rõ, ít bước thao tác). | Could | Sprint 4 | Chưa bắt đầu | 2 |
 
 ## EPIC-06: Phí gửi xe (v2.0, chưa làm ở v1.0)

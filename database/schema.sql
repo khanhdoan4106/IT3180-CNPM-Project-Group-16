@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS tam_tru_tam_vang (
     INDEX idx_ttv_nhan_khau (nhan_khau_id, tu_ngay)
 );
 
--- TODO (Sprint 2): khoan_phi
--- TODO (Sprint 3): dot_thu, phai_nop, phieu_thu
+-- Bảng sẽ thêm (xem docs/design/erd.md):
+--   Sprint 2: khoan_phi, dot_thu, phai_nop (US-005, US-006, US-009)
+--   Sprint 3: phieu_thu (US-010 đến US-014)
 -- Quy ước: không dùng ON DELETE CASCADE; hộ ngừng quản lý chỉ đổi trạng thái.

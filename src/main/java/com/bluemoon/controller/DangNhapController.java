@@ -39,7 +39,7 @@ public class DangNhapController {
             thongBaoLabel.setText(e.getMessage());
         } catch (CauHinhException | DaoException e) {
             thongBaoLabel.setText(
-                    "Khong ket noi duoc co so du lieu. Xem docs/setup.md");
+                    "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md");
         }
     }
 }

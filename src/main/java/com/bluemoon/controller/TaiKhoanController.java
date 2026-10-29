@@ -22,7 +22,7 @@ import javafx.scene.control.TextField;
 public class TaiKhoanController {
 
     private static final String LOI_CSDL =
-            "Khong ket noi duoc co so du lieu. Xem docs/setup.md";
+            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
 
     private final TaiKhoanService service =
             new TaiKhoanService(new TaiKhoanDaoImpl());
@@ -55,7 +55,7 @@ public class TaiKhoanController {
                     matKhauField.getText(), nhapLaiField.getText(),
                     vaiTroCombo.getValue());
             nhapMoi();
-            baoThanhCong("Da tao tai khoan " + tk.getTenDangNhap() + " ("
+            baoThanhCong("Đã tạo tài khoản " + tk.getTenDangNhap() + " ("
                     + tk.getVaiTro().getNhan() + ")");
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
