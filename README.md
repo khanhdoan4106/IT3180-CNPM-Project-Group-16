@@ -6,6 +6,26 @@ nhân khẩu và thu phí, thay cho sổ sách và Excel.
 Bài tập lớn IT3180 Nhập môn Công nghệ phần mềm – Nhóm 16, Đại học Bách khoa
 Hà Nội.
 
+## Bối cảnh
+
+Chung cư BlueMoon (ngã tư Văn Phú, hoàn thành năm 2023) có 30 tầng gồm
+kiot, tầng đế, căn hộ và penthouse, do Ban quản trị (BQT) do cư dân bầu ra
+điều hành. Hiện BQT quản lý bằng sổ tay và Excel: tính phí bằng tay, thông
+báo thu bằng giấy, sổ thu không có số biên lai, khó tổng hợp báo cáo nhân
+khẩu khi công an phường yêu cầu.
+
+Các khoản thu chính:
+
+| Khoản thu | Cách tính |
+|---|---|
+| Phí dịch vụ (vệ sinh, rác, an ninh, cảnh quan) | Diện tích × đơn giá 2.500 – 16.500 đ/m², bắt buộc hằng tháng |
+| Phí quản lý chung cư | Diện tích × 7.000 đ/m² (mặc định), bắt buộc hằng tháng |
+| Đóng góp tự nguyện (quỹ vì người nghèo, quỹ biển đảo…) | Theo đợt, không bắt buộc, đóng bao nhiêu ghi bấy nhiêu (kể cả 0 đ) |
+
+Người dùng: **Quản trị viên** (BQT – quản lý cư dân, khoản thu, tài khoản,
+báo cáo) và **Thủ quỹ** (tra cứu, thu phí, in biên lai). Cư dân không dùng
+trực tiếp phần mềm.
+
 ## Trạng thái
 
 | Mốc | Nội dung | Trạng thái |
@@ -58,21 +78,38 @@ cho mỗi Pull Request ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
 ## Cấu trúc thư mục
 
 ```text
-src/main/java/com/bluemoon/   model, dao, service, controller, util, config
-src/main/resources/           FXML và CSS
-src/test/java/                test JUnit
-database/                     schema.sql, seed.sql
-config/                       mẫu cấu hình kết nối CSDL
-docs/requirements/            yêu cầu: user story, backlog, traceability
-docs/design/                  kiến trúc, ERD, sơ đồ lớp, use case
-docs/meeting-notes/           biên bản họp nhóm
+.
+├── src/main/java/com/bluemoon/
+│   ├── Launcher.java, App.java   điểm khởi động ứng dụng JavaFX
+│   ├── config/                   đọc config/db.properties, mở kết nối MySQL
+│   ├── model/                    lớp dữ liệu và enum (HoGiaDinh, NhanKhau, TaiKhoan…)
+│   ├── dao/                      truy cập MySQL bằng PreparedStatement
+│   ├── service/                  quy tắc nghiệp vụ, kiểm tra dữ liệu
+│   ├── controller/               xử lý sự kiện của từng màn hình
+│   └── util/                     điều hướng màn hình, băm mật khẩu, định dạng ngày
+├── src/main/resources/com/bluemoon/
+│   ├── view/                     FXML: dang-nhap, trang-chinh, ho-gia-dinh, nhan-khau, tai-khoan
+│   └── css/giao-dien.css         màu và kiểu chữ dùng chung
+├── src/test/java/com/bluemoon/   JUnit 5; service test dùng DAO giả (KhoGia)
+├── database/
+│   ├── schema.sql                tạo CSDL và bảng
+│   └── seed.sql                  dữ liệu mẫu, tài khoản admin
+├── config/db.properties.example  mẫu cấu hình kết nối (bản thật không commit)
+├── docs/
+│   ├── requirements/             01–11: wish list → user story → backlog → traceability
+│   ├── design/                   kiến trúc, ERD, sơ đồ lớp, use case, quy ước mã
+│   ├── meeting-notes/            biên bản họp
+│   ├── setup.md                  cài đặt và chạy
+│   └── workflow.md               quy trình làm việc của nhóm
+├── .github/                      CI (workflows/ci.yml), mẫu Issue và Pull Request
+└── pom.xml                       Maven: JavaFX, MySQL Connector, BCrypt, JUnit
 ```
 
 ## Quy trình làm việc
 
 Issue → nhánh `feature/US-xxx-ten` → commit `feat(US-xxx): ...` → Pull
 Request → thành viên khác review → merge vào `main` → cuối Sprint tạo
-Release. Chi tiết: [CONTRIBUTING.md](CONTRIBUTING.md).
+Release. Chi tiết: [docs/workflow.md](docs/workflow.md).
 
 ## Tài liệu
 
@@ -80,7 +117,7 @@ Release. Chi tiết: [CONTRIBUTING.md](CONTRIBUTING.md).
 |---|---|
 | Yêu cầu | [Wish list](docs/requirements/01-wish-list.md), [As-is](docs/requirements/02-as-is-scenario.md), [Visionary](docs/requirements/03-visionary-scenario.md), [NFR](docs/requirements/04-nfr.md), [Raw log](docs/requirements/05-raw-log.md), [Epic/Feature](docs/requirements/06-epic-feature-list.md), [User Story](docs/requirements/07-user-stories.md), [Backlog](docs/requirements/08-product-backlog.md), [Traceability](docs/requirements/09-traceability-matrix.md), [Definition of Done](docs/requirements/10-definition-of-done.md), [Giả định](docs/requirements/11-chot-va-gia-dinh.md) |
 | Thiết kế | [Kiến trúc](docs/design/architecture.md), [ERD](docs/design/erd.md), [Sơ đồ lớp](docs/design/class-diagram.md), [Use case](docs/design/use-case.md), [Quy ước mã](docs/design/coding-convention.md) |
-| Vận hành | [Cài đặt](docs/setup.md), [Đóng góp](CONTRIBUTING.md) |
+| Vận hành | [Cài đặt](docs/setup.md), [Quy trình làm việc](docs/workflow.md) |
 
 ## Thành viên
 

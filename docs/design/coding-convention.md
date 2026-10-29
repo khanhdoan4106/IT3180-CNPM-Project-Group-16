@@ -11,4 +11,4 @@
 | Dữ liệu nghiệp vụ | Không xóa cứng; đổi trạng thái để giữ lịch sử |
 | Gỡ lỗi | Không để lại mã bị comment-out hay `System.out.println` |
 
-Quy trình nhánh, commit và review: [CONTRIBUTING.md](../../CONTRIBUTING.md).
+Quy trình nhánh, commit và review: [workflow.md](../workflow.md).
