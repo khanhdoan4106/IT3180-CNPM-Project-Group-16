@@ -8,8 +8,10 @@ import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiCuTru;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
+import com.bluemoon.model.TaiKhoan;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiHo;
+import com.bluemoon.model.VaiTro;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -65,14 +67,17 @@ public class HoGiaDinhService {
      * Them ho gia dinh moi cung chu ho (AC-001 - AC-004). Quan he trong
      * {@code chuHo} bi bo qua, luon luu la chu ho.
      *
+     * @param nguoi tai khoan dang dang nhap, phai la Quan tri vien (AC-060)
      * @param tt du lieu ho tren form
      * @param chuHo du lieu chu ho tren form
      * @return ho vua them, da co id
      * @throws NghiepVuException neu thieu/sai du lieu, trung ma can ho hoac
      *         trung so CCCD chu ho
      */
-    public HoGiaDinh them(ThongTinHo tt, ThongTinNhanKhau chuHo) {
-        return them(tt, chuHo, null);
+    public HoGiaDinh them(TaiKhoan nguoi, ThongTinHo tt,
+            ThongTinNhanKhau chuHo) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI);
+        return them(nguoi, tt, chuHo, null);
     }
 
     /**
@@ -80,6 +85,7 @@ public class HoGiaDinhService {
      * nha, US-003); khi do dot tam tru dau tien cua chu ho luu cung giao
      * dich.
      *
+     * @param nguoi tai khoan dang dang nhap, phai la Quan tri vien (AC-060)
      * @param tt du lieu ho tren form
      * @param chuHo du lieu chu ho tren form
      * @param dotTamTru dot tam tru dau tien cua chu ho (loai bi bo qua); bat
@@ -88,8 +94,10 @@ public class HoGiaDinhService {
      * @throws NghiepVuException neu thieu/sai du lieu, trung ma can ho hoac
      *         trung so CCCD chu ho
      */
-    public HoGiaDinh them(ThongTinHo tt, ThongTinNhanKhau chuHo,
+    public HoGiaDinh them(TaiKhoan nguoi, ThongTinHo tt,
+            ThongTinNhanKhau chuHo,
             ThongTinDot dotTamTru) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI);
         List<String> thieu = new ArrayList<>();
         List<String> sai = new ArrayList<>();
         HoGiaDinh ho = docHo(tt, 0, TrangThaiHo.DANG_O, thieu, sai);
@@ -112,7 +120,7 @@ public class HoGiaDinhService {
                     "Số CCCD " + nk.getSoCccd() + " đã tồn tại");
         }
         try {
-            return ho.voiId(dao.them(ho, nk, dot));
+            return ho.voiId(dao.them(ho, nk, dot, nguoi.getId()));
         } catch (TrungKhoaException e) {
             throw LoiTrung.doi(e, ho.getMaCanHo(), nk.getSoCccd());
         }
@@ -121,13 +129,15 @@ public class HoGiaDinhService {
     /**
      * Sua thong tin ho dang o. Chu ho sua o man hinh nhan khau.
      *
+     * @param nguoi tai khoan dang dang nhap, phai la Quan tri vien (AC-060)
      * @param id khoa chinh ho can sua
      * @param tt du lieu tren form
      * @return ho sau khi sua
      * @throws NghiepVuException neu khong tim thay, ho da chuyen di, du lieu
      *         sai hoac trung ma can ho
      */
-    public HoGiaDinh capNhat(int id, ThongTinHo tt) {
+    public HoGiaDinh capNhat(TaiKhoan nguoi, int id, ThongTinHo tt) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI);
         HoGiaDinh cu = layDangO(id);
         List<String> thieu = new ArrayList<>();
         List<String> sai = new ArrayList<>();
@@ -149,22 +159,27 @@ public class HoGiaDinhService {
      * lieu de giu lich su; can ho co the nhan ho moi, CCCD cua cac thanh
      * vien khai bao lai duoc o ho khac.
      *
+     * @param nguoi tai khoan dang dang nhap, phai la Quan tri vien (AC-060)
      * @param id khoa chinh ho
      * @throws NghiepVuException neu khong tim thay hoac ho da chuyen di
      */
-    public void danhDauChuyenDi(int id) {
+    public void danhDauChuyenDi(TaiKhoan nguoi, int id) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI);
         layDangO(id);
-        dao.danhDauChuyenDi(id);
+        dao.danhDauChuyenDi(id, nguoi.getId());
     }
 
     /**
      * Tim ho theo ma can ho hoac ten chu ho (RAW-027).
      *
+     * @param nguoi tai khoan dang dang nhap, phai la Quan tri vien (AC-060)
      * @param tuKhoa tu khoa, co the rong
      * @param gomDaChuyenDi true de lay ca ho da chuyen di
      * @return danh sach ho kem ten chu ho va so thanh vien
      */
-    public List<TomTatHo> timKiem(String tuKhoa, boolean gomDaChuyenDi) {
+    public List<TomTatHo> timKiem(TaiKhoan nguoi, String tuKhoa,
+            boolean gomDaChuyenDi) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI);
         return dao.timKiem(tuKhoa == null ? "" : tuKhoa.trim(),
                 gomDaChuyenDi);
     }

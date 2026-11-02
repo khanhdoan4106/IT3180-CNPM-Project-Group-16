@@ -1,23 +1,34 @@
 package com.bluemoon.controller;
 
 import com.bluemoon.config.CauHinhException;
+import com.bluemoon.dao.BienDongDaoImpl;
+import com.bluemoon.dao.CongNoDaoImpl;
 import com.bluemoon.dao.DaoException;
 import com.bluemoon.dao.HoGiaDinhDaoImpl;
+import com.bluemoon.dao.KhoanPhiDaoImpl;
 import com.bluemoon.dao.NhanKhauDaoImpl;
+import com.bluemoon.model.BienDong;
 import com.bluemoon.model.GioiTinh;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiCanHo;
 import com.bluemoon.model.LoaiCuTru;
 import com.bluemoon.model.LoaiDotCuTru;
+import com.bluemoon.model.TaiKhoan;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiHo;
+import com.bluemoon.service.BienDongService;
+import com.bluemoon.service.CongNoService;
 import com.bluemoon.service.HoGiaDinhService;
 import com.bluemoon.service.NghiepVuException;
+import com.bluemoon.service.SoTien;
 import com.bluemoon.service.ThongTinDot;
 import com.bluemoon.service.ThongTinHo;
 import com.bluemoon.service.ThongTinNhanKhau;
 import com.bluemoon.util.NgayUtil;
+import com.bluemoon.util.PhienLamViec;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.function.Function;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -47,6 +58,11 @@ public class HoGiaDinhController {
 
     private final HoGiaDinhService service = new HoGiaDinhService(
             new HoGiaDinhDaoImpl(), new NhanKhauDaoImpl());
+    private final BienDongService bienDongService =
+            new BienDongService(new BienDongDaoImpl());
+    private final CongNoService congNoService = new CongNoService(
+            new CongNoDaoImpl(), new KhoanPhiDaoImpl(),
+            new HoGiaDinhDaoImpl());
 
     /** Ho dang sua; null khi dang them moi. */
     private TomTatHo dangSua;
@@ -117,6 +133,8 @@ public class HoGiaDinhController {
     private Label thongBaoLabel;
     @FXML
     private Button chuyenDiButton;
+    @FXML
+    private Button lichSuButton;
 
     @FXML
     private void initialize() {
@@ -180,7 +198,7 @@ public class HoGiaDinhController {
         try {
             HoGiaDinh ho;
             if (dangSua == null) {
-                ho = service.them(tt, new ThongTinNhanKhau(
+                ho = service.them(nguoi(), tt, new ThongTinNhanKhau(
                         chuHoField.getText(),
                         NgayUtil.doc(ngaySinhChuHoPicker),
                         gioiTinhChuHoCombo.getValue(),
@@ -191,7 +209,7 @@ public class HoGiaDinhController {
                                 NgayUtil.doc(tamTruTuChuHoPicker),
                                 NgayUtil.doc(tamTruDenChuHoPicker), null));
             } else {
-                ho = service.capNhat(dangSua.ho().getId(), tt);
+                ho = service.capNhat(nguoi(), dangSua.ho().getId(), tt);
             }
             String viec = dangSua == null ? "Đã thêm" : "Đã cập nhật";
             taiLai();
@@ -217,7 +235,7 @@ public class HoGiaDinhController {
         }
         Alert hoi = new Alert(Alert.AlertType.CONFIRMATION,
                 "Đánh dấu hộ " + dangSua + " đã chuyển đi?"
-                        + "\nDữ liệu của hộ vẫn được giữ lại.",
+                        + "\nDữ liệu của hộ vẫn được giữ lại." + canhBaoNo(),
                 ButtonType.OK, ButtonType.CANCEL);
         hoi.setTitle("Xác nhận");
         hoi.setHeaderText(null);
@@ -226,7 +244,7 @@ public class HoGiaDinhController {
         }
         try {
             String ma = dangSua.ho().getMaCanHo();
-            service.danhDauChuyenDi(dangSua.ho().getId());
+            service.danhDauChuyenDi(nguoi(), dangSua.ho().getId());
             onNhapMoi();
             taiLai();
             baoThanhCong("Hộ " + ma + " đã được đánh dấu chuyển đi");
@@ -240,7 +258,7 @@ public class HoGiaDinhController {
     private void taiLai() {
         try {
             bangHo.setItems(FXCollections.observableArrayList(
-                    service.timKiem(timKiemField.getText(),
+                    service.timKiem(nguoi(), timKiemField.getText(),
                             gomChuyenDiCheck.isSelected())));
             soLuongLabel.setText(bangHo.getItems().size() + " hộ");
         } catch (CauHinhException | DaoException e) {
@@ -274,6 +292,7 @@ public class HoGiaDinhController {
                 : "Hộ " + ho.getMaCanHo() + " (đã chuyển đi)");
         datChoPhepSua(dangO);
         chuyenDiButton.setDisable(!dangO);
+        lichSuButton.setDisable(false);
         thongBaoLabel.setText("");
     }
 
@@ -297,6 +316,7 @@ public class HoGiaDinhController {
         hienPhanChuHo(true);
         datChoPhepSua(true);
         chuyenDiButton.setDisable(true);
+        lichSuButton.setDisable(true);
         thongBaoLabel.setText("");
         maField.requestFocus();
     }
@@ -347,5 +367,40 @@ public class HoGiaDinhController {
 
     private static <T> ObservableValue<T> giaTri(T v) {
         return new SimpleObjectProperty<>(v);
+    }
+
+    /** Canh bao no chua dong; no van giu de thu (giả định 21). */
+    private String canhBaoNo() {
+        try {
+            BigDecimal no = congNoService.tongChuaDong(nguoi(),
+                    dangSua.ho().getId());
+            return no.signum() > 0 ? "\n\nHộ còn nợ " + SoTien.hienThi(no)
+                    + " chưa đóng. Khoản nợ vẫn được giữ để thu tiếp." : "";
+        } catch (NghiepVuException | CauHinhException | DaoException e) {
+            return "";
+        }
+    }
+
+    /** US-027: lich su bien dong nhan khau cua ho dang chon. */
+    @FXML
+    private void onLichSu() {
+        if (dangSua == null) {
+            return;
+        }
+        try {
+            List<BienDong> ds = bienDongService.theoHo(nguoi(),
+                    dangSua.ho().getId());
+            BangLichSu.hien("Lịch sử biến động – hộ "
+                    + dangSua.ho().getMaCanHo(), ds);
+        } catch (NghiepVuException e) {
+            baoLoi(e.getMessage());
+        } catch (CauHinhException | DaoException e) {
+            baoLoi(LOI_CSDL);
+        }
+    }
+
+    /** Tai khoan dang dang nhap, truyen cho service kiem tra quyen. */
+    private static TaiKhoan nguoi() {
+        return PhienLamViec.hienTai();
     }
 }

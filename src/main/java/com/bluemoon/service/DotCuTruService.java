@@ -9,9 +9,11 @@ import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiCuTru;
 import com.bluemoon.model.LoaiDotCuTru;
 import com.bluemoon.model.NhanKhau;
+import com.bluemoon.model.TaiKhoan;
 import com.bluemoon.model.TinhTrangCuTru;
 import com.bluemoon.model.TrangThaiHo;
 import com.bluemoon.model.TrangThaiNhanKhau;
+import com.bluemoon.model.VaiTro;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -71,13 +73,15 @@ public class DotCuTruService {
      * ghi cho nguoi dang ky tam tru (gia han = them dot moi), tam vang chi
      * ghi cho nguoi thuong tru.
      *
+     * @param nguoi tai khoan dang dang nhap, phai la Quan tri vien (AC-060)
      * @param nhanKhauId id nhan khau
      * @param tt du lieu tren form
      * @return dot vua ghi, da co id
      * @throws NghiepVuException neu nhan khau/ho khong con o, thieu ngay,
      *         ngay ket thuc truoc ngay bat dau, sai loai hoac chong ngay
      */
-    public DotCuTru ghiNhan(int nhanKhauId, ThongTinDot tt) {
+    public DotCuTru ghiNhan(TaiKhoan nguoi, int nhanKhauId, ThongTinDot tt) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI);
         NhanKhau nk = layDangO(nhanKhauId);
         List<String> thieu = new ArrayList<>();
         List<String> sai = new ArrayList<>();
@@ -105,7 +109,7 @@ public class DotCuTruService {
             }
         }
         try {
-            return dot.voiId(dao.them(dot));
+            return dot.voiId(dao.them(dot, nguoi.getId()));
         } catch (TrungKhoaException e) {
             throw LoiTrung.doi(e, null, null);
         }
@@ -114,10 +118,12 @@ public class DotCuTruService {
     /**
      * Lay cac dot cua mot nhan khau, moi nhat truoc.
      *
+     * @param nguoi tai khoan dang dang nhap, phai la Quan tri vien (AC-060)
      * @param nhanKhauId id nhan khau
      * @return danh sach dot
      */
-    public List<DotCuTru> theoNhanKhau(int nhanKhauId) {
+    public List<DotCuTru> theoNhanKhau(TaiKhoan nguoi, int nhanKhauId) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI);
         return dao.theoNhanKhau(nhanKhauId);
     }
 
@@ -125,11 +131,14 @@ public class DotCuTruService {
      * Tinh tinh trang cu tru hom nay cua cac thanh vien trong ho: han tam tru
      * (to do khi qua han ma chua gia han) va dang tam vang den ngay nao.
      *
+     * @param nguoi tai khoan dang dang nhap, phai la Quan tri vien (AC-060)
      * @param hoId id ho gia dinh
      * @return tinh trang theo id nhan khau; nguoi khong co trong map thi
      *         dung {@link TinhTrangCuTru#TRONG}
      */
-    public Map<Integer, TinhTrangCuTru> tinhTrangTheoHo(int hoId) {
+    public Map<Integer, TinhTrangCuTru> tinhTrangTheoHo(TaiKhoan nguoi,
+            int hoId) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI);
         LocalDate homNay = LocalDate.now(dongHo);
         Map<Integer, List<DotCuTru>> theoNguoi = new HashMap<>();
         for (DotCuTru d : dao.theoHo(hoId)) {

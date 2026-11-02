@@ -14,6 +14,7 @@ import com.bluemoon.model.LoaiCuTru;
 import com.bluemoon.model.LoaiDotCuTru;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
+import com.bluemoon.model.TaiKhoan;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiHo;
 import com.bluemoon.model.TrangThaiNhanKhau;
@@ -26,6 +27,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class HoGiaDinhServiceTest {
+
+    private static final TaiKhoan QT = KhoGia.QT;
 
     private static final LocalDate HOM_NAY = LocalDate.of(2026, 11, 2);
 
@@ -59,7 +62,7 @@ class HoGiaDinhServiceTest {
     }
 
     private HoGiaDinh them(ThongTinHo tt) {
-        return service.them(tt, chuHo());
+        return service.them(QT, tt, chuHo());
     }
 
     @Test
@@ -67,7 +70,7 @@ class HoGiaDinhServiceTest {
         HoGiaDinh ho = them(hopLe("A0601"));
         assertTrue(ho.getId() > 0);
         assertEquals(TrangThaiHo.DANG_O, ho.getTrangThai());
-        assertEquals(1, service.timKiem("", false).size());
+        assertEquals(1, service.timKiem(QT, "", false).size());
     }
 
     @Test
@@ -76,7 +79,7 @@ class HoGiaDinhServiceTest {
         List<NhanKhau> thanhVien = kho.nhanKhauDao.theoHo(ho.getId());
         assertEquals(1, thanhVien.size());
         assertEquals(QuanHeChuHo.CHU_HO, thanhVien.get(0).getQuanHe());
-        TomTatHo dong = service.timKiem("", false).get(0);
+        TomTatHo dong = service.timKiem(QT, "", false).get(0);
         assertEquals("Nguyen Thi Lan", dong.tenChuHo());
         assertEquals(1, dong.soThanhVien());
     }
@@ -86,7 +89,7 @@ class HoGiaDinhServiceTest {
         ThongTinNhanKhau tt = new ThongTinNhanKhau("Le Van A",
                 LocalDate.of(1990, 1, 1), GioiTinh.NAM, "001090000001",
                 QuanHeChuHo.CON);
-        HoGiaDinh ho = service.them(hopLe("A0601"), tt);
+        HoGiaDinh ho = service.them(QT, hopLe("A0601"), tt);
         assertEquals(QuanHeChuHo.CHU_HO,
                 kho.nhanKhauDao.theoHo(ho.getId()).get(0).getQuanHe());
     }
@@ -105,7 +108,7 @@ class HoGiaDinhServiceTest {
         ThongTinNhanKhau trong = new ThongTinNhanKhau("  ", null, null, "",
                 null);
         NghiepVuException e = assertThrows(NghiepVuException.class,
-                () -> service.them(tt, trong));
+                () -> service.them(QT, tt, trong));
         for (String truong : List.of("Mã căn hộ", "Loại căn hộ", "Tầng",
                 "Diện tích", "Ngày chuyển đến", "Họ tên chủ hộ",
                 "Ngày sinh chủ hộ", "Giới tính chủ hộ")) {
@@ -127,9 +130,9 @@ class HoGiaDinhServiceTest {
 
     @Test
     void cccdChuHoDaTonTaiThiKhongLuuHo() {
-        service.them(hopLe("A0601"), chuHo("001182000001"));
+        service.them(QT, hopLe("A0601"), chuHo("001182000001"));
         NghiepVuException e = assertThrows(NghiepVuException.class,
-                () -> service.them(hopLe("A0602"), chuHo("001182000001")));
+                () -> service.them(QT, hopLe("A0602"), chuHo("001182000001")));
         assertTrue(e.getMessage().contains("CCCD"));
         assertEquals(1, kho.ho.size());
     }
@@ -137,29 +140,29 @@ class HoGiaDinhServiceTest {
     @Test
     void cccdChuHoSaiDinhDangBiTuChoi() {
         assertThrows(NghiepVuException.class,
-                () -> service.them(hopLe("A0601"), chuHo("12345")));
+                () -> service.them(QT, hopLe("A0601"), chuHo("12345")));
         assertTrue(kho.ho.isEmpty());
     }
 
     @Test
     void chuHoTuDu14TuoiThieuCccdBiTuChoi() {
         NghiepVuException e = assertThrows(NghiepVuException.class,
-                () -> service.them(hopLe("A0601"), chuHo("")));
+                () -> service.them(QT, hopLe("A0601"), chuHo("")));
         assertTrue(e.getMessage().contains("Số CCCD chủ hộ"));
         assertTrue(kho.ho.isEmpty());
     }
 
     @Test
     void hoChuyenDiThiMoiThanhVienChuyenDiVaCccdDungLaiDuoc() {
-        HoGiaDinh cu = service.them(hopLe("A0601"), chuHo("001182000001"));
-        service.danhDauChuyenDi(cu.getId());
+        HoGiaDinh cu = service.them(QT, hopLe("A0601"), chuHo("001182000001"));
+        service.danhDauChuyenDi(QT, cu.getId());
         for (NhanKhau n : kho.nhanKhauDao.theoHo(cu.getId())) {
             assertEquals(TrangThaiNhanKhau.DA_CHUYEN_DI, n.getTrangThai());
         }
-        HoGiaDinh moi = service.them(hopLe("A0602"), chuHo("001182000001"));
-        assertEquals(1, service.timKiem("A0602", false).get(0)
+        HoGiaDinh moi = service.them(QT, hopLe("A0602"), chuHo("001182000001"));
+        assertEquals(1, service.timKiem(QT, "A0602", false).get(0)
                 .soThanhVien());
-        assertEquals(0, service.timKiem("A0601", true).get(0)
+        assertEquals(0, service.timKiem(QT, "A0601", true).get(0)
                 .soThanhVien());
         assertTrue(moi.getId() > cu.getId());
     }
@@ -176,7 +179,7 @@ class HoGiaDinhServiceTest {
     void haiMayCungDungMotCccdChuHoThiBaoTrungCccd() {
         kho.trungKhiGhi = "uq_nk_cccd_dang_o";
         NghiepVuException e = assertThrows(NghiepVuException.class,
-                () -> service.them(hopLe("A0601"), chuHo("001182000001")));
+                () -> service.them(QT, hopLe("A0601"), chuHo("001182000001")));
         assertEquals("Số CCCD 001182000001 đã tồn tại", e.getMessage());
     }
 
@@ -185,7 +188,7 @@ class HoGiaDinhServiceTest {
         HoGiaDinh ho = them(hopLe("A0601"));
         kho.trungKhiGhi = "uq_ho_ma_dang_o";
         assertThrows(NghiepVuException.class,
-                () -> service.capNhat(ho.getId(), hopLe("A0602")));
+                () -> service.capNhat(QT, ho.getId(), hopLe("A0602")));
     }
 
     @Test
@@ -201,7 +204,7 @@ class HoGiaDinhServiceTest {
 
     @Test
     void chuHoDuocLaNguoiTamTruVaLuuCungDotDauTien() {
-        HoGiaDinh ho = service.them(hopLe("A0601"), chuHoTamTru("Nam Dinh"),
+        HoGiaDinh ho = service.them(QT, hopLe("A0601"), chuHoTamTru("Nam Dinh"),
                 new ThongTinDot(LoaiDotCuTru.TAM_VANG, HOM_NAY,
                         HOM_NAY.plusYears(1), "Thue nha"));
         NhanKhau ch = kho.nhanKhauDao.theoHo(ho.getId()).get(0);
@@ -217,7 +220,7 @@ class HoGiaDinhServiceTest {
     @Test
     void chuHoTamTruThieuDotThiKhongLuuHo() {
         NghiepVuException e = assertThrows(NghiepVuException.class,
-                () -> service.them(hopLe("A0601"), chuHoTamTru(""), null));
+                () -> service.them(QT, hopLe("A0601"), chuHoTamTru(""), null));
         assertTrue(e.getMessage().contains("Nơi thường trú chủ hộ"));
         assertTrue(e.getMessage().contains("Ngày bắt đầu tạm trú chủ hộ"));
         assertTrue(kho.ho.isEmpty());
@@ -228,11 +231,11 @@ class HoGiaDinhServiceTest {
     @Test
     void canHoCoHoCuDaChuyenDiThiThemDuocHoMoi() {
         HoGiaDinh cu = them(hopLe("A0601"));
-        service.danhDauChuyenDi(cu.getId());
+        service.danhDauChuyenDi(QT, cu.getId());
         HoGiaDinh moi = them(hopLe("A0601"));
-        assertEquals(2, service.timKiem("A0601", true).size());
-        assertEquals(1, service.timKiem("A0601", false).size());
-        assertEquals(moi.getId(), service.timKiem("A0601", false).get(0)
+        assertEquals(2, service.timKiem(QT, "A0601", true).size());
+        assertEquals(1, service.timKiem(QT, "A0601", false).size());
+        assertEquals(moi.getId(), service.timKiem(QT, "A0601", false).get(0)
                 .ho().getId());
     }
 
@@ -281,7 +284,7 @@ class HoGiaDinhServiceTest {
         HoGiaDinh ho = them(hopLe("A0601"));
         ThongTinHo tt = new ThongTinHo("A0601", LoaiCanHo.CAN_HO, "6", "80",
                 "", LocalDate.of(2023, 7, 15));
-        HoGiaDinh sua = service.capNhat(ho.getId(), tt);
+        HoGiaDinh sua = service.capNhat(QT, ho.getId(), tt);
         assertEquals(0, new BigDecimal("80").compareTo(
                 kho.ho.get(ho.getId()).getDienTich()));
         assertEquals(ho.getId(), sua.getId());
@@ -293,7 +296,7 @@ class HoGiaDinhServiceTest {
         them(hopLe("A0601"));
         HoGiaDinh b = them(hopLe("A0602"));
         assertThrows(NghiepVuException.class,
-                () -> service.capNhat(b.getId(), hopLe("A0601")));
+                () -> service.capNhat(QT, b.getId(), hopLe("A0601")));
         assertEquals("A0602", kho.ho.get(b.getId()).getMaCanHo());
     }
 
@@ -303,7 +306,7 @@ class HoGiaDinhServiceTest {
         ThongTinHo tt = new ThongTinHo("A0601", LoaiCanHo.CAN_HO, "", "70",
                 "", LocalDate.of(2023, 7, 15));
         NghiepVuException e = assertThrows(NghiepVuException.class,
-                () -> service.capNhat(ho.getId(), tt));
+                () -> service.capNhat(QT, ho.getId(), tt));
         assertTrue(e.getMessage().contains("Tầng"));
         assertEquals(6, kho.ho.get(ho.getId()).getTang());
     }
@@ -311,29 +314,53 @@ class HoGiaDinhServiceTest {
     @Test
     void hoDaChuyenDiKhongSuaDuoc() {
         HoGiaDinh ho = them(hopLe("A0601"));
-        service.danhDauChuyenDi(ho.getId());
+        service.danhDauChuyenDi(QT, ho.getId());
         assertThrows(NghiepVuException.class,
-                () -> service.capNhat(ho.getId(), hopLe("A0601")));
+                () -> service.capNhat(QT, ho.getId(), hopLe("A0601")));
         assertThrows(NghiepVuException.class,
-                () -> service.danhDauChuyenDi(ho.getId()));
+                () -> service.danhDauChuyenDi(QT, ho.getId()));
     }
 
     @Test
     void timKiemMacDinhAnHoDaChuyenDi() {
         HoGiaDinh ho = them(hopLe("A0601"));
-        service.danhDauChuyenDi(ho.getId());
-        assertFalse(service.timKiem("", true).isEmpty());
-        assertTrue(service.timKiem("", false).isEmpty());
+        service.danhDauChuyenDi(QT, ho.getId());
+        assertFalse(service.timKiem(QT, "", true).isEmpty());
+        assertTrue(service.timKiem(QT, "", false).isEmpty());
     }
 
     @Test
     void timKiemTheoTenChuHo() {
         them(hopLe("A0601"));
-        service.them(hopLe("A0602"), new ThongTinNhanKhau("Le Minh Quan",
+        service.them(QT, hopLe("A0602"), new ThongTinNhanKhau("Le Minh Quan",
                 LocalDate.of(1990, 11, 2), GioiTinh.NAM, "001090005678",
                 null));
-        List<TomTatHo> kq = service.timKiem("Minh Quan", false);
+        List<TomTatHo> kq = service.timKiem(QT, "Minh Quan", false);
         assertEquals(1, kq.size());
         assertEquals("A0602", kq.get(0).ho().getMaCanHo());
+    }
+
+    // US-022, US-027
+
+    @Test
+    void thuQuyKhongXemHaySuaDuocHo() { // AC-060, AC-062
+        HoGiaDinh ho = them(hopLe("A0601"));
+        assertThrows(NghiepVuException.class,
+                () -> service.timKiem(KhoGia.TQ, "", false));
+        assertThrows(NghiepVuException.class,
+                () -> service.them(KhoGia.TQ, hopLe("A0602"), chuHo()));
+        assertThrows(NghiepVuException.class,
+                () -> service.danhDauChuyenDi(KhoGia.TQ, ho.getId()));
+        assertEquals(TrangThaiHo.DANG_O, kho.ho.get(ho.getId())
+                .getTrangThai());
+    }
+
+    @Test
+    void lapHoVaChuyenDiGhiLichSu() { // US-027
+        HoGiaDinh ho = them(hopLe("A0601"));
+        assertEquals(List.of("CHUYEN_DEN:" + ho.getId() + ":1:1"),
+                kho.lichSu);
+        service.danhDauChuyenDi(QT, ho.getId());
+        assertEquals("CHUYEN_DI:" + ho.getId() + ":1:1", kho.lichSu.get(1));
     }
 }

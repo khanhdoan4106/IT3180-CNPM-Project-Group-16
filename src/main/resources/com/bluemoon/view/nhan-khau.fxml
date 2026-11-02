@@ -176,6 +176,8 @@
                         styleClass="nut-chinh" onAction="#onLuu"/>
                 <Button text="Nhập mới" onAction="#onNhapMoi"/>
                 <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="chuHoButton" text="Đặt làm chủ hộ"
+                        disable="true" onAction="#onDatChuHo"/>
                 <Button fx:id="chuyenDiButton" text="Đánh dấu chuyển đi"
                         styleClass="nut-phu" disable="true"
                         onAction="#onChuyenDi"/>

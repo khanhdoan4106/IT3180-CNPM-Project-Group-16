@@ -2,6 +2,7 @@ package com.bluemoon.dao;
 
 import com.bluemoon.model.DotCuTru;
 import com.bluemoon.model.NhanKhau;
+import com.bluemoon.model.QuanHeChuHo;
 import com.bluemoon.model.TrangThaiNhanKhau;
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +16,10 @@ public interface NhanKhauDao {
      * Them nhan khau vao ho.
      *
      * @param nk nhan khau chua co id, da co hoId
+     * @param nguoiGhi id tai khoan thao tac, ghi vao lich su (US-027)
      * @return khoa chinh vua sinh
      */
-    int them(NhanKhau nk);
+    int them(NhanKhau nk, int nguoiGhi);
 
     /**
      * Them nguoi tam tru cung dot tam tru dau tien trong mot giao dich, de
@@ -25,9 +27,10 @@ public interface NhanKhauDao {
      *
      * @param nk nhan khau chua co id, da co hoId
      * @param dot dot tam tru dau tien, chua co nhanKhauId
+     * @param nguoiGhi id tai khoan thao tac, ghi vao lich su (US-027)
      * @return khoa chinh cua nhan khau vua sinh
      */
-    int themKemDot(NhanKhau nk, DotCuTru dot);
+    int themKemDot(NhanKhau nk, DotCuTru dot, int nguoiGhi);
 
     /**
      * Cap nhat thong tin nhan khau (theo id). Khong doi ho.
@@ -37,12 +40,14 @@ public interface NhanKhauDao {
     void capNhat(NhanKhau nk);
 
     /**
-     * Doi trang thai cu tru cua mot nhan khau.
+     * Doi trang thai cu tru cua mot nhan khau. Chuyen tu dang o sang da
+     * chuyen di thi ghi lich su (US-027) trong cung giao dich.
      *
      * @param id khoa chinh
      * @param trangThai trang thai moi
+     * @param nguoiGhi id tai khoan thao tac
      */
-    void capNhatTrangThai(int id, TrangThaiNhanKhau trangThai);
+    void capNhatTrangThai(int id, TrangThaiNhanKhau trangThai, int nguoiGhi);
 
     /**
      * Tim nhan khau theo khoa chinh.
@@ -79,4 +84,18 @@ public interface NhanKhauDao {
      * @return true neu ho da co nhan khau khac la chu ho
      */
     boolean coChuHo(int hoId, int boQuaId);
+
+    /**
+     * Doi chu ho trong mot giao dich (US-026): chu ho cu doi sang quan he
+     * moi (va chuyen di neu can) truoc, roi gan chu ho moi, de rang buoc
+     * "moi ho mot chu ho" khong bi vi pham giua chung. Ghi lich su (US-027).
+     *
+     * @param chuHoCuId chu ho hien tai
+     * @param chuHoMoiId thanh vien duoc chon lam chu ho
+     * @param quanHeCu quan he moi cua chu ho cu (khong phai CHU_HO)
+     * @param cuChuyenDi true neu chu ho cu roi ho (mat, chuyen di, tach ho)
+     * @param nguoiGhi id tai khoan thao tac
+     */
+    void doiChuHo(int chuHoCuId, int chuHoMoiId, QuanHeChuHo quanHeCu,
+            boolean cuChuyenDi, int nguoiGhi);
 }
