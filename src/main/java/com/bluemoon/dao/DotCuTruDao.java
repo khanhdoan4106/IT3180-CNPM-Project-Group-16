@@ -16,10 +16,11 @@ public interface DotCuTruDao {
      * lai chong ngay, de hai may cung luu khong lot.
      *
      * @param dot dot chua co id, da co nhanKhauId
+     * @param nguoiGhi id tai khoan thao tac, ghi vao lich su (US-027)
      * @return khoa chinh vua sinh
      * @throws TrungKhoaException voi ten {@link #CHONG_NGAY} neu chong ngay
      */
-    int them(DotCuTru dot);
+    int them(DotCuTru dot, int nguoiGhi);
 
     /**
      * Lay cac dot cua mot nhan khau, moi nhat truoc.

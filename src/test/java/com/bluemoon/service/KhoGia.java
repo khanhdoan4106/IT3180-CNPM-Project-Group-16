@@ -6,11 +6,14 @@ import com.bluemoon.dao.NhanKhauDao;
 import com.bluemoon.dao.TrungKhoaException;
 import com.bluemoon.model.DotCuTru;
 import com.bluemoon.model.HoGiaDinh;
+import com.bluemoon.model.LoaiBienDong;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
+import com.bluemoon.model.TaiKhoan;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiHo;
 import com.bluemoon.model.TrangThaiNhanKhau;
+import com.bluemoon.model.VaiTro;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -39,6 +42,19 @@ class KhoGia {
      */
     String trungKhiGhi;
 
+    /** Quan tri vien dung chung cho cac test. */
+    static final TaiKhoan QT = new TaiKhoan(1, "admin", "x", "Quản trị",
+            VaiTro.QUAN_TRI, true);
+    /** Thu quy dung chung cho cac test. */
+    static final TaiKhoan TQ = new TaiKhoan(2, "thuquy", "x", "Thủ quỹ",
+            VaiTro.THU_QUY, true);
+    /** Lich su bien dong da ghi, dang "LOAI:hoId:nhanKhauId:nguoiGhi". */
+    final List<String> lichSu = new ArrayList<>();
+
+    private void ghi(int hoId, int nkId, LoaiBienDong loai, int nguoiGhi) {
+        lichSu.add(loai.name() + ":" + hoId + ":" + nkId + ":" + nguoiGhi);
+    }
+
     private void kiemTraTrung() {
         if (trungKhiGhi != null) {
             throw new TrungKhoaException(trungKhiGhi, null);
@@ -57,13 +73,17 @@ class KhoGia {
     private class HoDao implements HoGiaDinhDao {
 
         @Override
-        public int them(HoGiaDinh h, NhanKhau chuHo, DotCuTru dotTamTru) {
+        public int them(HoGiaDinh h, NhanKhau chuHo, DotCuTru dotTamTru,
+                int nguoiGhi) {
             kiemTraTrung();
             int id = idHo++;
             ho.put(id, h.voiId(id));
-            int chuHoId = nhanKhauDao.them(chuHo.voiHoId(id));
+            int chuHoId = nhanKhauDao.them(chuHo.voiHoId(id), nguoiGhi);
             if (dotTamTru != null) {
-                themDot(dotTamTru.voiNhanKhauId(chuHoId));
+                DotCuTru d = dotTamTru.voiNhanKhauId(chuHoId);
+                themDot(d);
+                ghi(id, chuHoId, LoaiBienDong.valueOf(d.getLoai().name()),
+                        nguoiGhi);
             }
             return id;
         }
@@ -75,11 +95,11 @@ class KhoGia {
         }
 
         @Override
-        public void danhDauChuyenDi(int id) {
+        public void danhDauChuyenDi(int id, int nguoiGhi) {
             ho.put(id, ho.get(id).voiTrangThai(TrangThaiHo.DA_CHUYEN_DI));
             for (NhanKhau n : nhanKhauDao.theoHo(id)) {
                 nhanKhauDao.capNhatTrangThai(n.getId(),
-                        TrangThaiNhanKhau.DA_CHUYEN_DI);
+                        TrangThaiNhanKhau.DA_CHUYEN_DI, nguoiGhi);
             }
         }
 
@@ -117,17 +137,19 @@ class KhoGia {
     private class NkDao implements NhanKhauDao {
 
         @Override
-        public int them(NhanKhau nk) {
+        public int them(NhanKhau nk, int nguoiGhi) {
             kiemTraTrung();
             int id = idNk++;
             nhanKhau.put(id, nk.voiId(id));
+            ghi(nk.getHoId(), id, LoaiBienDong.CHUYEN_DEN, nguoiGhi);
             return id;
         }
 
         @Override
-        public int themKemDot(NhanKhau nk, DotCuTru d) {
-            int id = them(nk);
+        public int themKemDot(NhanKhau nk, DotCuTru d, int nguoiGhi) {
+            int id = them(nk, nguoiGhi);
             themDot(d.voiNhanKhauId(id));
+            ghi(nk.getHoId(), id, LoaiBienDong.TAM_TRU, nguoiGhi);
             return id;
         }
 
@@ -139,8 +161,28 @@ class KhoGia {
         }
 
         @Override
-        public void capNhatTrangThai(int id, TrangThaiNhanKhau trangThai) {
-            nhanKhau.put(id, nhanKhau.get(id).voiTrangThai(trangThai));
+        public void capNhatTrangThai(int id, TrangThaiNhanKhau trangThai,
+                int nguoiGhi) {
+            NhanKhau cu = nhanKhau.get(id);
+            nhanKhau.put(id, cu.voiTrangThai(trangThai));
+            if (dangO(cu) && trangThai == TrangThaiNhanKhau.DA_CHUYEN_DI) {
+                ghi(cu.getHoId(), id, LoaiBienDong.CHUYEN_DI, nguoiGhi);
+            }
+        }
+
+        @Override
+        public void doiChuHo(int cuId, int moiId, QuanHeChuHo quanHeCu,
+                boolean cuChuyenDi, int nguoiGhi) {
+            NhanKhau cu = nhanKhau.get(cuId);
+            NhanKhau moi = nhanKhau.get(moiId);
+            nhanKhau.put(cuId, cu.voiQuanHe(quanHeCu).voiTrangThai(
+                    cuChuyenDi ? TrangThaiNhanKhau.DA_CHUYEN_DI
+                            : TrangThaiNhanKhau.DANG_O));
+            nhanKhau.put(moiId, moi.voiQuanHe(QuanHeChuHo.CHU_HO));
+            ghi(cu.getHoId(), moiId, LoaiBienDong.DOI_CHU_HO, nguoiGhi);
+            if (cuChuyenDi) {
+                ghi(cu.getHoId(), cuId, LoaiBienDong.CHUYEN_DI, nguoiGhi);
+            }
         }
 
         @Override
@@ -178,7 +220,7 @@ class KhoGia {
     private class DotDao implements DotCuTruDao {
 
         @Override
-        public int them(DotCuTru d) {
+        public int them(DotCuTru d, int nguoiGhi) {
             kiemTraTrung();
             boolean chong = dot.values().stream().anyMatch(
                     c -> c.getNhanKhauId() == d.getNhanKhauId()
@@ -186,7 +228,10 @@ class KhoGia {
             if (chong) {
                 throw new TrungKhoaException(CHONG_NGAY, null);
             }
-            return themDot(d);
+            int id = themDot(d);
+            ghi(nhanKhau.get(d.getNhanKhauId()).getHoId(), d.getNhanKhauId(),
+                    LoaiBienDong.valueOf(d.getLoai().name()), nguoiGhi);
+            return id;
         }
 
         @Override

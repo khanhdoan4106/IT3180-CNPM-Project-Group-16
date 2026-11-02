@@ -1,6 +1,8 @@
 package com.bluemoon.dao;
 
 import com.bluemoon.model.TaiKhoan;
+import com.bluemoon.model.VaiTro;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,4 +34,44 @@ public interface TaiKhoanDao {
      * @throws TrungKhoaException neu ten dang nhap da ton tai
      */
     int them(TaiKhoan tk);
+
+    /**
+     * Tim tai khoan theo khoa chinh.
+     *
+     * @param id khoa chinh
+     * @return tai khoan, rong neu khong co
+     */
+    Optional<TaiKhoan> timTheoId(int id);
+
+    /**
+     * Tat ca tai khoan, theo ten dang nhap.
+     *
+     * @return danh sach tai khoan
+     */
+    List<TaiKhoan> danhSach();
+
+    /**
+     * Cap nhat thong tin ca nhan (US-023).
+     *
+     * @param id khoa chinh
+     * @param hoTen ho ten moi
+     * @param soDienThoai so dien thoai moi, co the null
+     */
+    void capNhatThongTin(int id, String hoTen, String soDienThoai);
+
+    /**
+     * Doi vai tro (US-022).
+     *
+     * @param id khoa chinh
+     * @param vaiTro vai tro moi
+     */
+    void capNhatVaiTro(int id, VaiTro vaiTro);
+
+    /**
+     * Khoa hoac mo khoa tai khoan; khong xoa de giu lich su thu.
+     *
+     * @param id khoa chinh
+     * @param hoatDong false de khoa
+     */
+    void capNhatHoatDong(int id, boolean hoatDong);
 }

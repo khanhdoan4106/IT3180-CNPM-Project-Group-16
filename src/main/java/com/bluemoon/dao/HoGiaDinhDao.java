@@ -19,9 +19,10 @@ public interface HoGiaDinhDao {
      * @param ho ho gia dinh chua co id
      * @param chuHo nhan khau chu ho, chua co id va hoId
      * @param dotTamTru dot tam tru dau tien cua chu ho, null neu thuong tru
+     * @param nguoiGhi id tai khoan thao tac, ghi vao lich su (US-027)
      * @return khoa chinh cua ho vua sinh
      */
-    int them(HoGiaDinh ho, NhanKhau chuHo, DotCuTru dotTamTru);
+    int them(HoGiaDinh ho, NhanKhau chuHo, DotCuTru dotTamTru, int nguoiGhi);
 
     /**
      * Cap nhat thong tin ho (theo id).
@@ -35,8 +36,9 @@ public interface HoGiaDinhDao {
      * mot giao dich.
      *
      * @param id khoa chinh ho
+     * @param nguoiGhi id tai khoan thao tac, ghi vao lich su (US-027)
      */
-    void danhDauChuyenDi(int id);
+    void danhDauChuyenDi(int id, int nguoiGhi);
 
     /**
      * Tim ho theo khoa chinh.

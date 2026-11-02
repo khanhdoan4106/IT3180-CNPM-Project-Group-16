@@ -148,6 +148,8 @@
                         styleClass="nut-chinh" onAction="#onLuu"/>
                 <Button text="Nhập mới" onAction="#onNhapMoi"/>
                 <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="lichSuButton" text="Lịch sử biến động"
+                        disable="true" onAction="#onLichSu"/>
                 <Button fx:id="chuyenDiButton" text="Đánh dấu chuyển đi"
                         styleClass="nut-phu" disable="true"
                         onAction="#onChuyenDi"/>

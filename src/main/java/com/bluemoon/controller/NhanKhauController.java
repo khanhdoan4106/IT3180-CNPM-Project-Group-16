@@ -11,6 +11,7 @@ import com.bluemoon.model.LoaiCuTru;
 import com.bluemoon.model.LoaiDotCuTru;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
+import com.bluemoon.model.TaiKhoan;
 import com.bluemoon.model.TinhTrangCuTru;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiNhanKhau;
@@ -21,8 +22,10 @@ import com.bluemoon.service.NhanKhauService;
 import com.bluemoon.service.ThongTinDot;
 import com.bluemoon.service.ThongTinNhanKhau;
 import com.bluemoon.util.NgayUtil;
+import com.bluemoon.util.PhienLamViec;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -32,6 +35,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -144,6 +148,8 @@ public class NhanKhauController {
     private Button luuButton;
     @FXML
     private Button chuyenDiButton;
+    @FXML
+    private Button chuHoButton;
 
     @FXML
     private void initialize() {
@@ -216,16 +222,57 @@ public class NhanKhauController {
         try {
             NhanKhau nk;
             if (dangSua == null) {
-                nk = service.them(ho.ho().getId(), tt, new ThongTinDot(
+                nk = service.them(nguoi(), ho.ho().getId(), tt, new ThongTinDot(
                         LoaiDotCuTru.TAM_TRU, NgayUtil.doc(tamTruTuPicker),
                         NgayUtil.doc(tamTruDenPicker), null));
             } else {
-                nk = service.capNhat(dangSua.getId(), tt);
+                nk = service.capNhat(nguoi(), dangSua.getId(), tt);
             }
             String viec = dangSua == null ? "Đã thêm" : "Đã cập nhật";
             taiThanhVien();
             chonDong(nk.getId());
             baoThanhCong(viec + " nhân khẩu " + nk.getHoTen());
+        } catch (NghiepVuException e) {
+            baoLoi(e.getMessage());
+        } catch (CauHinhException | DaoException e) {
+            baoLoi(LOI_CSDL);
+        }
+    }
+
+    /** Chu ho cu "roi ho" khi chon muc nay trong hop thoai doi chu ho. */
+    private static final String ROI_HO = "Rời hộ (mất, chuyển đi, tách hộ)";
+
+    /** US-026: dat thanh vien dang chon lam chu ho. */
+    @FXML
+    private void onDatChuHo() {
+        TomTatHo ho = hoCombo.getValue();
+        if (dangSua == null || ho == null) {
+            return;
+        }
+        ChoiceDialog<String> hoi = new ChoiceDialog<>(
+                QuanHeChuHo.VO_CHONG.getNhan(), QuanHeChuHo.VO_CHONG.getNhan(),
+                QuanHeChuHo.CON.getNhan(), QuanHeChuHo.KHAC.getNhan(), ROI_HO);
+        hoi.setTitle("Đổi chủ hộ");
+        hoi.setHeaderText("Đặt " + dangSua.getHoTen() + " làm chủ hộ "
+                + ho.ho().getMaCanHo());
+        hoi.setContentText("Chủ hộ hiện tại:");
+        Optional<String> chon = hoi.showAndWait();
+        if (chon.isEmpty()) {
+            return;
+        }
+        QuanHeChuHo quanHeCu = null;
+        for (QuanHeChuHo q : QuanHeChuHo.values()) {
+            if (q.getNhan().equals(chon.get())) {
+                quanHeCu = q;
+            }
+        }
+        try {
+            String ten = dangSua.getHoTen();
+            service.doiChuHo(nguoi(), ho.ho().getId(), dangSua.getId(),
+                    quanHeCu);
+            onNhapMoi();
+            taiThanhVien();
+            baoThanhCong(ten + " đã là chủ hộ");
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -249,7 +296,7 @@ public class NhanKhauController {
         }
         try {
             String ten = dangSua.getHoTen();
-            service.danhDauChuyenDi(dangSua.getId());
+            service.danhDauChuyenDi(nguoi(), dangSua.getId());
             onNhapMoi();
             taiThanhVien();
             baoThanhCong(ten + " đã được đánh dấu chuyển đi");
@@ -275,7 +322,7 @@ public class NhanKhauController {
                 NgayUtil.doc(dotTuPicker), NgayUtil.doc(dotDenPicker),
                 lyDoField.getText());
         try {
-            DotCuTru dot = dotService.ghiNhan(nk.getId(), tt);
+            DotCuTru dot = dotService.ghiNhan(nguoi(), nk.getId(), tt);
             taiThanhVien();
             chonDong(nk.getId());
             baoDot("Đã ghi nhận " + dot.getLoai().getNhan().toLowerCase()
@@ -296,7 +343,7 @@ public class NhanKhauController {
     private void taiDanhSachHo() {
         try {
             hoCombo.setItems(FXCollections.observableArrayList(
-                    hoService.timKiem("", false)));
+                    hoService.timKiem(nguoi(), "", false)));
         } catch (CauHinhException | DaoException e) {
             hoCombo.getItems().clear();
             baoLoi(LOI_CSDL);
@@ -316,9 +363,9 @@ public class NhanKhauController {
             return;
         }
         try {
-            tinhTrang = dotService.tinhTrangTheoHo(ho.ho().getId());
+            tinhTrang = dotService.tinhTrangTheoHo(nguoi(), ho.ho().getId());
             bangNhanKhau.setItems(FXCollections.observableArrayList(
-                    service.theoHo(ho.ho().getId())));
+                    service.theoHo(nguoi(), ho.ho().getId())));
             long dangO = bangNhanKhau.getItems().stream().filter(
                     n -> n.getTrangThai() == TrangThaiNhanKhau.DANG_O)
                     .count();
@@ -354,7 +401,7 @@ public class NhanKhauController {
                 nk.getTrangThai() != TrangThaiNhanKhau.DANG_O);
         try {
             bangDot.setItems(FXCollections.observableArrayList(
-                    dotService.theoNhanKhau(nk.getId())));
+                    dotService.theoNhanKhau(nguoi(), nk.getId())));
         } catch (CauHinhException | DaoException e) {
             bangDot.getItems().clear();
             baoDot(LOI_CSDL, true);
@@ -381,6 +428,8 @@ public class NhanKhauController {
         hienPhanTamTru();
         chuyenDiButton.setDisable(!dangO
                 || nk.getQuanHe() == QuanHeChuHo.CHU_HO);
+        chuHoButton.setDisable(!dangO
+                || nk.getQuanHe() == QuanHeChuHo.CHU_HO);
         thongBaoLabel.setText("");
     }
 
@@ -400,6 +449,7 @@ public class NhanKhauController {
         hienPhanTamTru();
         luuButton.setDisable(hoCombo.getValue() == null);
         chuyenDiButton.setDisable(true);
+        chuHoButton.setDisable(true);
         thongBaoLabel.setText("");
     }
 
@@ -498,5 +548,10 @@ public class NhanKhauController {
                 setText(NgayUtil.hien(tt.hanTamTru()));
             }
         }
+    }
+
+    /** Tai khoan dang dang nhap, truyen cho service kiem tra quyen. */
+    private static TaiKhoan nguoi() {
+        return PhienLamViec.hienTai();
     }
 }

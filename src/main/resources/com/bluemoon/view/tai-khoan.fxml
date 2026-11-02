@@ -5,59 +5,157 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<!-- US-020: Dang ky tai khoan. Chi Quan tri vien mo duoc man hinh nay. -->
+<!-- US-023 tai khoan cua toi; US-020, US-022 quan ly tai khoan (Quan tri
+     vien). -->
 <BorderPane xmlns:fx="http://javafx.com/fxml" styleClass="nen"
             fx:controller="com.bluemoon.controller.TaiKhoanController">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
-    <top>
-        <Label text="Đăng ký tài khoản" styleClass="tieu-de-trang">
+    <center>
+        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
+            <Tab text="Tài khoản của tôi">
+                <HBox spacing="16">
+                    <padding>
+                        <Insets top="16"/>
+                    </padding>
+                    <VBox styleClass="the" spacing="10" prefWidth="420"
+                          maxHeight="-Infinity">
+                        <Label text="Thông tin cá nhân"
+                               styleClass="tieu-de-form"/>
+                        <GridPane hgap="10" vgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="130"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+                            <Label text="Tên đăng nhập" GridPane.rowIndex="0"/>
+                            <Label fx:id="tenDangNhapLabel"
+                                   GridPane.rowIndex="0"
+                                   GridPane.columnIndex="1"/>
+                            <Label text="Vai trò" GridPane.rowIndex="1"/>
+                            <Label fx:id="vaiTroLabel" GridPane.rowIndex="1"
+                                   GridPane.columnIndex="1"/>
+                            <Label text="Họ tên *" GridPane.rowIndex="2"/>
+                            <TextField fx:id="hoTenCuaToiField"
+                                       GridPane.rowIndex="2"
+                                       GridPane.columnIndex="1"/>
+                            <Label text="Điện thoại" GridPane.rowIndex="3"/>
+                            <TextField fx:id="sdtCuaToiField"
+                                       promptText="vd 0912345678"
+                                       GridPane.rowIndex="3"
+                                       GridPane.columnIndex="1"/>
+                        </GridPane>
+                        <Label text="Tên đăng nhập và vai trò do Quản trị viên quản lý."
+                               styleClass="phu-de" wrapText="true"/>
+                        <Button text="Lưu thay đổi" styleClass="nut-chinh"
+                                onAction="#onLuuHoTen"/>
+                    </VBox>
+                    <VBox styleClass="the" spacing="10" prefWidth="420"
+                          maxHeight="-Infinity">
+                        <Label text="Đổi mật khẩu" styleClass="tieu-de-form"/>
+                        <Label text="Mật khẩu hiện tại *"/>
+                        <PasswordField fx:id="matKhauCuField"/>
+                        <Label text="Mật khẩu mới *"/>
+                        <PasswordField fx:id="matKhauMoiField"
+                                       promptText="ít nhất 8 ký tự"/>
+                        <Label text="Nhập lại mật khẩu mới *"/>
+                        <PasswordField fx:id="nhapLaiMoiField"/>
+                        <Button text="Đổi mật khẩu" styleClass="nut-chinh"
+                                onAction="#onDoiMatKhau"/>
+                    </VBox>
+                </HBox>
+            </Tab>
+            <Tab fx:id="quanLyTab" text="Quản lý tài khoản">
+                <HBox spacing="16">
+                    <padding>
+                        <Insets top="16"/>
+                    </padding>
+                    <VBox styleClass="the" spacing="10" HBox.hgrow="ALWAYS">
+                        <TableView fx:id="bangTaiKhoan" VBox.vgrow="ALWAYS">
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            </columnResizePolicy>
+                            <columns>
+                                <TableColumn fx:id="cotTen"
+                                             text="Tên đăng nhập"/>
+                                <TableColumn fx:id="cotHoTen" text="Họ tên"/>
+                                <TableColumn fx:id="cotSdt" text="Điện thoại"/>
+                                <TableColumn fx:id="cotVaiTro" text="Vai trò"/>
+                                <TableColumn fx:id="cotTrangThai"
+                                             text="Trạng thái"/>
+                            </columns>
+                        </TableView>
+                        <HBox spacing="10">
+                            <Label text="Không xóa tài khoản, chỉ khóa để giữ lịch sử thu."
+                                   styleClass="phu-de"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="Đổi vai trò" onAction="#onDoiVaiTro"/>
+                            <Button fx:id="khoaButton" text="Khóa"
+                                    onAction="#onKhoa"/>
+                            <Button text="Đặt lại mật khẩu"
+                                    onAction="#onDatLaiMatKhau"/>
+                        </HBox>
+                    </VBox>
+                    <VBox styleClass="the" spacing="10" prefWidth="380"
+                          maxHeight="-Infinity">
+                        <Label text="Đăng ký tài khoản"
+                               styleClass="tieu-de-form"/>
+                        <GridPane hgap="10" vgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="130"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+                            <Label text="Tên đăng nhập *" GridPane.rowIndex="0"/>
+                            <TextField fx:id="tenDangNhapField"
+                                       promptText="vd thuquy01"
+                                       GridPane.rowIndex="0"
+                                       GridPane.columnIndex="1"/>
+                            <Label text="Họ tên *" GridPane.rowIndex="1"/>
+                            <TextField fx:id="hoTenField"
+                                       GridPane.rowIndex="1"
+                                       GridPane.columnIndex="1"/>
+                            <Label text="Mật khẩu *" GridPane.rowIndex="2"/>
+                            <PasswordField fx:id="matKhauField"
+                                           promptText="ít nhất 8 ký tự"
+                                           GridPane.rowIndex="2"
+                                           GridPane.columnIndex="1"/>
+                            <Label text="Nhập lại mật khẩu *"
+                                   GridPane.rowIndex="3"/>
+                            <PasswordField fx:id="nhapLaiField"
+                                           GridPane.rowIndex="3"
+                                           GridPane.columnIndex="1"/>
+                            <Label text="Vai trò *" GridPane.rowIndex="4"/>
+                            <ComboBox fx:id="vaiTroCombo" maxWidth="Infinity"
+                                      GridPane.rowIndex="4"
+                                      GridPane.columnIndex="1"/>
+                        </GridPane>
+                        <HBox spacing="10">
+                            <Button text="Đăng ký" styleClass="nut-chinh"
+                                    onAction="#onDangKy"/>
+                            <Button text="Nhập mới" onAction="#onNhapMoi"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
+            </Tab>
+        </TabPane>
+    </center>
+    <bottom>
+        <Label fx:id="thongBaoLabel" wrapText="true">
             <BorderPane.margin>
-                <Insets bottom="12"/>
+                <Insets top="10"/>
             </BorderPane.margin>
         </Label>
-    </top>
-    <left>
-        <VBox styleClass="the" spacing="10" prefWidth="420"
-              maxHeight="-Infinity">
-            <GridPane hgap="10" vgap="10">
-                <columnConstraints>
-                    <ColumnConstraints minWidth="130"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-                <Label text="Tên đăng nhập *" GridPane.rowIndex="0"/>
-                <TextField fx:id="tenDangNhapField" promptText="vd ketoan01"
-                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-                <Label text="Họ tên *" GridPane.rowIndex="1"/>
-                <TextField fx:id="hoTenField"
-                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-                <Label text="Mật khẩu *" GridPane.rowIndex="2"/>
-                <PasswordField fx:id="matKhauField"
-                               promptText="ít nhất 8 ký tự"
-                               GridPane.rowIndex="2"
-                               GridPane.columnIndex="1"/>
-                <Label text="Nhập lại mật khẩu *" GridPane.rowIndex="3"/>
-                <PasswordField fx:id="nhapLaiField"
-                               GridPane.rowIndex="3"
-                               GridPane.columnIndex="1"/>
-                <Label text="Vai trò *" GridPane.rowIndex="4"/>
-                <ComboBox fx:id="vaiTroCombo" maxWidth="Infinity"
-                          GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-            </GridPane>
-            <Label fx:id="thongBaoLabel" wrapText="true"/>
-            <HBox spacing="10">
-                <Button text="Đăng ký" defaultButton="true"
-                        styleClass="nut-chinh" onAction="#onDangKy"/>
-                <Button text="Nhập mới" onAction="#onNhapMoi"/>
-            </HBox>
-        </VBox>
-    </left>
+    </bottom>
 </BorderPane>

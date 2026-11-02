@@ -82,6 +82,17 @@ public class NhanKhau {
                 quanHe, trangThaiMoi, loaiCuTru, noiThuongTru);
     }
 
+    /**
+     * Tao ban sao voi quan he moi (doi chu ho, US-026).
+     *
+     * @param quanHeMoi quan he voi chu ho
+     * @return nhan khau voi quan he moi
+     */
+    public NhanKhau voiQuanHe(QuanHeChuHo quanHeMoi) {
+        return new NhanKhau(id, hoId, hoTen, ngaySinh, gioiTinh, soCccd,
+                quanHeMoi, trangThai, loaiCuTru, noiThuongTru);
+    }
+
     public int getId() {
         return id;
     }

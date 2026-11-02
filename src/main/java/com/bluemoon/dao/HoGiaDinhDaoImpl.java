@@ -3,6 +3,7 @@ package com.bluemoon.dao;
 import com.bluemoon.config.Database;
 import com.bluemoon.model.DotCuTru;
 import com.bluemoon.model.HoGiaDinh;
+import com.bluemoon.model.LoaiBienDong;
 import com.bluemoon.model.LoaiCanHo;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.TomTatHo;
@@ -57,15 +58,20 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
                     + "ORDER BY h.ma_can_ho, h.ngay_chuyen_den DESC";
 
     @Override
-    public int them(HoGiaDinh ho, NhanKhau chuHo, DotCuTru dotTamTru) {
+    public int them(HoGiaDinh ho, NhanKhau chuHo, DotCuTru dotTamTru,
+            int nguoiGhi) {
         try (Connection conn = Database.getConnection()) {
             conn.setAutoCommit(false);
             try {
                 int id = themHo(conn, ho);
                 int chuHoId = NhanKhauDaoImpl.them(conn, chuHo.voiHoId(id));
+                BienDongDaoImpl.ghi(conn, id, chuHoId, LoaiBienDong.CHUYEN_DEN,
+                        ho.getNgayChuyenDen(), "Lập hộ mới, là chủ hộ",
+                        nguoiGhi);
                 if (dotTamTru != null) {
-                    DotCuTruDaoImpl.them(conn,
-                            dotTamTru.voiNhanKhauId(chuHoId));
+                    DotCuTru dot = dotTamTru.voiNhanKhauId(chuHoId);
+                    DotCuTruDaoImpl.them(conn, dot);
+                    BienDongDaoImpl.ghiDot(conn, id, dot, nguoiGhi);
                 }
                 conn.commit();
                 return id;
@@ -107,7 +113,7 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
     }
 
     @Override
-    public void danhDauChuyenDi(int id) {
+    public void danhDauChuyenDi(int id, int nguoiGhi) {
         try (Connection conn = Database.getConnection()) {
             conn.setAutoCommit(false);
             try (PreparedStatement ho = conn.prepareStatement(
@@ -116,6 +122,8 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
                             SQL_THANH_VIEN_CHUYEN_DI)) {
                 ho.setInt(1, id);
                 ho.executeUpdate();
+                BienDongDaoImpl.ghiCaHoChuyenDi(conn, id, "Cả hộ chuyển đi",
+                        nguoiGhi);
                 tv.setInt(1, id);
                 tv.executeUpdate();
                 conn.commit();

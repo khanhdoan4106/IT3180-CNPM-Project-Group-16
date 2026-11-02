@@ -24,7 +24,7 @@ public class DotCuTruDaoImpl implements DotCuTruDao {
             "INSERT INTO tam_tru_tam_vang (nhan_khau_id, loai, tu_ngay, "
                     + "den_ngay, ly_do) VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_KHOA_NHAN_KHAU =
-            "SELECT id FROM nhan_khau WHERE id = ? FOR UPDATE";
+            "SELECT ho_id FROM nhan_khau WHERE id = ? FOR UPDATE";
     private static final String SQL_CHONG_NGAY =
             "SELECT 1 FROM tam_tru_tam_vang WHERE nhan_khau_id = ? "
                     + "AND tu_ngay <= ? AND ? <= den_ngay LIMIT 1";
@@ -37,15 +37,16 @@ public class DotCuTruDaoImpl implements DotCuTruDao {
                     + "WHERE n.ho_id = ? ORDER BY t.tu_ngay DESC";
 
     @Override
-    public int them(DotCuTru dot) {
+    public int them(DotCuTru dot, int nguoiGhi) {
         try (Connection conn = Database.getConnection()) {
             conn.setAutoCommit(false);
             try {
-                khoaNhanKhau(conn, dot.getNhanKhauId());
+                int hoId = khoaNhanKhau(conn, dot.getNhanKhauId());
                 if (chongNgay(conn, dot)) {
                     throw new TrungKhoaException(CHONG_NGAY, null);
                 }
                 int id = them(conn, dot);
+                BienDongDaoImpl.ghiDot(conn, hoId, dot, nguoiGhi);
                 conn.commit();
                 return id;
             } catch (SQLException | RuntimeException e) {
@@ -94,12 +95,18 @@ public class DotCuTruDaoImpl implements DotCuTruDao {
         return doc(SQL_THEO_HO, hoId, "Loi lay tam tru/tam vang cua ho");
     }
 
-    private static void khoaNhanKhau(Connection conn, int nhanKhauId)
+    /** Khoa dong nhan khau, tra ve ho cua nguoi do. */
+    private static int khoaNhanKhau(Connection conn, int nhanKhauId)
             throws SQLException {
         try (PreparedStatement ps =
                 conn.prepareStatement(SQL_KHOA_NHAN_KHAU)) {
             ps.setInt(1, nhanKhauId);
-            ps.executeQuery().close();
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    throw new SQLException("Khong tim thay nhan khau");
+                }
+                return rs.getInt(1);
+            }
         }
     }
 
