@@ -1,6 +1,8 @@
 -- Dữ liệu mẫu cho môi trường dev. Tài khoản: admin / Admin@123
 -- ĐỔI MẬT KHẨU này nếu triển khai thật.
 USE bluemoon;
+-- Doc file theo UTF-8 du may chay mysql dang dung bang ma khac.
+SET NAMES utf8mb4;
 
 INSERT IGNORE INTO tai_khoan (ten_dang_nhap, mat_khau_bam, ho_ten, vai_tro)
 VALUES ('admin',
@@ -68,3 +70,38 @@ FROM (SELECT '036093004321' AS cccd, 'TAM_TRU' AS loai, -60 AS tu,
 JOIN nhan_khau n ON n.cccd_dang_o = d.cccd
 WHERE NOT EXISTS (SELECT 1 FROM tam_tru_tam_vang t
                   WHERE t.nhan_khau_id = n.id AND t.loai = d.loai);
+
+-- Danh muc khoan thu mau (US-005, US-006). Phi quan ly mac dinh 7.000 d/m2
+-- (AC-016); don gia phi dich vu 5.000 d/m2 chi la vi du trong khoang
+-- 2.500-16.500 (AC-015). Chay lai khong sinh trung (UNIQUE ten + tu_ngay).
+INSERT IGNORE INTO khoan_phi
+    (ten, loai, cach_tinh, don_gia, tu_ngay, den_ngay)
+VALUES ('Phí dịch vụ', 'BAT_BUOC', 'THEO_DIEN_TICH', 5000, '2026-01-01',
+        NULL),
+       ('Phí quản lý', 'BAT_BUOC', 'THEO_DIEN_TICH', 7000, '2026-01-01',
+        NULL),
+       ('Quỹ vì người nghèo 2026', 'TU_NGUYEN', 'KHONG_CO_DINH', NULL,
+        '2026-10-01', '2026-12-31'),
+       ('Quỹ biển đảo', 'TU_NGUYEN', 'CO_DINH_THEO_HO', 50000, '2026-11-01',
+        '2026-11-30');
+
+-- Lich su bien dong mau (US-027) cho du lieu tren: moi nhan khau chuyen den
+-- tu ngay ho chuyen den, moi dot tam tru/tam vang mot dong. Chay lai khong
+-- sinh trung.
+INSERT INTO bien_dong_nhan_khau (ho_id, nhan_khau_id, loai, ngay, ghi_chu,
+                                 nguoi_ghi)
+SELECT n.ho_id, n.id, 'CHUYEN_DEN', h.ngay_chuyen_den, 'Dữ liệu mẫu',
+       (SELECT id FROM tai_khoan WHERE ten_dang_nhap = 'admin')
+FROM nhan_khau n JOIN ho_gia_dinh h ON h.id = n.ho_id
+WHERE NOT EXISTS (SELECT 1 FROM bien_dong_nhan_khau b
+                  WHERE b.nhan_khau_id = n.id AND b.loai = 'CHUYEN_DEN');
+
+INSERT INTO bien_dong_nhan_khau (ho_id, nhan_khau_id, loai, ngay, ghi_chu,
+                                 nguoi_ghi)
+SELECT n.ho_id, n.id, t.loai, t.tu_ngay,
+       CONCAT('Đến ', DATE_FORMAT(t.den_ngay, '%d/%m/%Y')),
+       (SELECT id FROM tai_khoan WHERE ten_dang_nhap = 'admin')
+FROM tam_tru_tam_vang t JOIN nhan_khau n ON n.id = t.nhan_khau_id
+WHERE NOT EXISTS (SELECT 1 FROM bien_dong_nhan_khau b
+                  WHERE b.nhan_khau_id = n.id AND b.loai = t.loai
+                    AND b.ngay = t.tu_ngay);
