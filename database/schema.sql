@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS tai_khoan (
     ho_ten        VARCHAR(100) NOT NULL,
     vai_tro       ENUM('QUAN_TRI', 'THU_QUY') NOT NULL,
     hoat_dong     BOOLEAN      NOT NULL DEFAULT TRUE,
+    -- US-023: so dien thoai lien he, khong bat buoc
+    so_dien_thoai VARCHAR(15)  NULL,
     ngay_tao      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -85,7 +87,98 @@ CREATE TABLE IF NOT EXISTS tam_tru_tam_vang (
     INDEX idx_ttv_nhan_khau (nhan_khau_id, tu_ngay)
 );
 
+-- US-027: lich su bien dong nhan khau trong ho (Bo bai tap ch.7: them/xoa,
+-- thoi gian). Ghi trong cung giao dich voi thao tac tren ho, nhan khau, dot
+-- tam tru/tam vang; khong sua, khong xoa.
+CREATE TABLE IF NOT EXISTS bien_dong_nhan_khau (
+    id           INT AUTO_INCREMENT PRIMARY KEY,
+    ho_id        INT          NOT NULL,
+    nhan_khau_id INT          NOT NULL,
+    loai         ENUM('CHUYEN_DEN', 'CHUYEN_DI', 'TAM_TRU', 'TAM_VANG',
+                      'DOI_CHU_HO') NOT NULL,
+    ngay         DATE         NOT NULL,
+    ghi_chu      VARCHAR(200) NULL,
+    nguoi_ghi    INT          NOT NULL,
+    thoi_diem    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_bd_ho FOREIGN KEY (ho_id) REFERENCES ho_gia_dinh (id),
+    CONSTRAINT fk_bd_nhan_khau FOREIGN KEY (nhan_khau_id)
+        REFERENCES nhan_khau (id),
+    CONSTRAINT fk_bd_nguoi_ghi FOREIGN KEY (nguoi_ghi)
+        REFERENCES tai_khoan (id),
+    INDEX idx_bd_ho (ho_id, ngay),
+    INDEX idx_bd_ngay (ngay)
+);
+
+-- US-005, US-006: danh mục khoản thu. Khoản bắt buộc (phí dịch vụ, phí
+-- quản lý) tính theo diện tích × đơn giá (đ/m²). Khoản tự nguyện có thời
+-- gian thu riêng (bắt buộc có ngày kết thúc); số tiền mỗi hộ có thể cố
+-- định hoặc để trống (AC-021).
+-- Một tên chỉ dùng một lần trong cùng đợt, tức cùng ngày bắt đầu (AC-020).
+-- Đổi đơn giá chỉ ảnh hưởng các tháng chốt sau; tháng đã chốt giữ số cũ
+-- trong phai_nop. Khoản ngừng thu chỉ đổi trạng thái, không xóa.
+CREATE TABLE IF NOT EXISTS khoan_phi (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    ten        VARCHAR(100)  NOT NULL,
+    loai       ENUM('BAT_BUOC', 'TU_NGUYEN') NOT NULL,
+    cach_tinh  ENUM('THEO_DIEN_TICH', 'CO_DINH_THEO_HO', 'KHONG_CO_DINH')
+                             NOT NULL,
+    don_gia    DECIMAL(12, 2) NULL,
+    tu_ngay    DATE          NOT NULL,
+    den_ngay   DATE          NULL,
+    trang_thai ENUM('DANG_THU', 'DA_DONG') NOT NULL DEFAULT 'DANG_THU',
+    ngay_tao   DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_kp_ten_dot UNIQUE (ten, tu_ngay),
+    CONSTRAINT chk_kp_don_gia CHECK (
+        (cach_tinh = 'KHONG_CO_DINH' AND don_gia IS NULL)
+        OR (cach_tinh <> 'KHONG_CO_DINH' AND don_gia IS NOT NULL
+            AND don_gia > 0)),
+    CONSTRAINT chk_kp_bat_buoc CHECK (
+        loai = 'TU_NGUYEN' OR cach_tinh = 'THEO_DIEN_TICH'),
+    CONSTRAINT chk_kp_ngay CHECK (
+        (loai = 'BAT_BUOC' OR den_ngay IS NOT NULL)
+        AND (den_ngay IS NULL OR den_ngay >= tu_ngay))
+);
+
+-- US-009: mỗi tháng một đợt chốt công nợ (UNIQUE thang). Chốt lại cùng tháng
+-- chỉ bổ sung hộ/khoản còn thiếu, không tạo trùng (AC-028).
+CREATE TABLE IF NOT EXISTS dot_thu (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    thang       DATE     NOT NULL,
+    nguoi_chot  INT      NOT NULL,
+    ngay_chot   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_dt_nguoi_chot FOREIGN KEY (nguoi_chot)
+        REFERENCES tai_khoan (id),
+    CONSTRAINT uq_dt_thang UNIQUE (thang),
+    CONSTRAINT chk_dt_ngay_dau_thang CHECK (DAY(thang) = 1)
+);
+
+-- US-009, US-008: khoản phải nộp của từng hộ trong một tháng đã chốt (AC-027).
+-- Lưu lại diện tích và đơn giá lúc chốt để đối chiếu (AC-018). Sửa giá trị
+-- (US-008) đổi so_tien, giữ so_tien_goc và ghi người sửa, lý do. Từ Sprint 3,
+-- khoản đã có phiếu thu thì không sửa được (AC-026).
+CREATE TABLE IF NOT EXISTS phai_nop (
+    id           INT AUTO_INCREMENT PRIMARY KEY,
+    dot_thu_id   INT           NOT NULL,
+    ho_id        INT           NOT NULL,
+    khoan_phi_id INT           NOT NULL,
+    dien_tich    DECIMAL(6, 2)  NOT NULL,
+    don_gia      DECIMAL(12, 2) NOT NULL,
+    so_tien_goc  DECIMAL(14, 2) NOT NULL,
+    so_tien      DECIMAL(14, 2) NOT NULL,
+    nguoi_sua    INT           NULL,
+    ngay_sua     DATETIME      NULL,
+    ghi_chu      VARCHAR(200)  NULL,
+    CONSTRAINT fk_pn_dot_thu FOREIGN KEY (dot_thu_id) REFERENCES dot_thu (id),
+    CONSTRAINT fk_pn_ho FOREIGN KEY (ho_id) REFERENCES ho_gia_dinh (id),
+    CONSTRAINT fk_pn_khoan_phi FOREIGN KEY (khoan_phi_id)
+        REFERENCES khoan_phi (id),
+    CONSTRAINT fk_pn_nguoi_sua FOREIGN KEY (nguoi_sua)
+        REFERENCES tai_khoan (id),
+    CONSTRAINT uq_pn_dot_ho_khoan UNIQUE (dot_thu_id, ho_id, khoan_phi_id),
+    CONSTRAINT chk_pn_so_tien CHECK (so_tien >= 0 AND so_tien_goc >= 0),
+    INDEX idx_pn_ho (ho_id, dot_thu_id)
+);
+
 -- Bảng sẽ thêm (xem docs/design/erd.md):
---   Sprint 2: khoan_phi, dot_thu, phai_nop (US-005, US-006, US-009)
 --   Sprint 3: phieu_thu (US-010 đến US-014)
 -- Quy ước: không dùng ON DELETE CASCADE; hộ ngừng quản lý chỉ đổi trạng thái.
