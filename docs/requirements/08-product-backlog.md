@@ -2,12 +2,12 @@
 
 ## Tổng hợp
 
-**Theo MoSCoW** (tính trên 30 mục US và TS):
+**Theo MoSCoW** (tính trên 31 mục US và TS):
 
 | Ưu tiên | Số mục |
 |---|---|
 | Must | 13 |
-| Should | 13 |
+| Should | 14 |
 | Could | 2 |
 | Won't | 2 |
 
@@ -16,13 +16,13 @@
 | Sprint | Tổng SP | Phát hành | Trạng thái |
 |---|---|---|---|
 | Sprint 1 | 24 | `v0.1.0` | Hoàn thành |
-| Sprint 2 | 24 | `v0.2.0` | Chưa bắt đầu |
+| Sprint 2 | 32 | `v0.2.0` | Chưa bắt đầu |
 | Sprint 3 | 28 | `v0.3.0` | Chưa bắt đầu |
 | Sprint 4 | 28 | `v1.0.0` | Chưa bắt đầu |
-| **Tổng** | **104** | | |
+| **Tổng** | **112** | | |
 
-US-026 (Should) chưa xếp Sprint và chưa ước lượng; sẽ ước lượng ở buổi
-Planning Poker khi đưa vào Sprint.
+US-026 và US-027 đưa vào Sprint 2 (giả định 20, 26). Nếu Sprint 2 quá tải,
+dời US-008 (3 SP) sang Sprint 3.
 
 ## EPIC-01: Quản lý hộ gia đình và nhân khẩu
 
@@ -34,7 +34,8 @@ Planning Poker khi đưa vào Sprint.
 | US-002 | Lưu thông tin nhân khẩu và quan hệ với chủ hộ | Must | Sprint 1 | Hoàn thành | 5 |
 | US-003 | Ghi nhận tạm trú, tạm vắng kèm ngày bắt đầu và kết thúc | Must | Sprint 1 | Hoàn thành | 5 |
 | US-004 | Xuất danh sách nhân khẩu tạm vắng | Should | Sprint 3 | Chưa bắt đầu | 3 |
-| US-026 | Đổi chủ hộ (chủ hộ mất, chuyển đi, tách hộ) | Should | Chưa xếp | Chưa bắt đầu | Chưa ước lượng |
+| US-026 | Đổi chủ hộ (chủ hộ mất, chuyển đi, tách hộ) | Should | Sprint 2 | Chưa bắt đầu | 3 |
+| US-027 | Lịch sử biến động nhân khẩu trong hộ | Should | Sprint 2 | Chưa bắt đầu | 5 |
 
 ## EPIC-02: Quản lý danh mục và khoản thu
 
@@ -80,7 +81,7 @@ Planning Poker khi đưa vào Sprint.
 |---|---|---|---|---|---|
 | US-020 | Đăng ký tài khoản đăng nhập | Must | Sprint 1 | Hoàn thành | 3 |
 | US-021 | Đăng nhập bằng tên đăng nhập và mật khẩu | Must | Sprint 1 | Hoàn thành | 3 |
-| US-022 | Phân quyền Quản trị viên và Nhân viên thu phí | Should | Sprint 2 | Chưa bắt đầu | 5 |
+| US-022 | Phân quyền Quản trị viên và Thủ quỹ | Should | Sprint 2 | Chưa bắt đầu | 5 |
 | US-023 | Đổi mật khẩu và cập nhật thông tin cá nhân | Should | Sprint 2 | Chưa bắt đầu | 3 |
 | TS-001 | Sao lưu dữ liệu MySQL định kỳ (hàng ngày/tuần) để tránh mất dữ liệu. | Should | Sprint 4 | Chưa bắt đầu | 5 |
 | TS-002 | Ghi nhật ký mọi thao tác thay đổi dữ liệu quan trọng. | Should | Sprint 4 | Chưa bắt đầu | 5 |

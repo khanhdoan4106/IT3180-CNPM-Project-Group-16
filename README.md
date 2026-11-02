@@ -97,9 +97,10 @@ cho mỗi Pull Request ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
 ├── config/db.properties.example  mẫu cấu hình kết nối (bản thật không commit)
 ├── docs/
 │   ├── requirements/             01–11: wish list → user story → backlog → traceability
-│   ├── design/                   kiến trúc, ERD, sơ đồ lớp, use case, quy ước mã
+│   ├── design/                   kiến trúc, ERD, sơ đồ lớp, use case, giao diện, quy ước mã
 │   ├── meeting-notes/            biên bản họp
 │   ├── setup.md                  cài đặt và chạy
+│   ├── thuat-ngu.md              thuật ngữ dùng thống nhất
 │   └── workflow.md               quy trình làm việc của nhóm
 ├── .github/                      CI (workflows/ci.yml), mẫu Issue và Pull Request
 └── pom.xml                       Maven: JavaFX, MySQL Connector, BCrypt, JUnit
@@ -115,8 +116,8 @@ Release. Chi tiết: [docs/workflow.md](docs/workflow.md).
 
 | Nhóm | Tài liệu |
 |---|---|
-| Yêu cầu | [Wish list](docs/requirements/01-wish-list.md), [As-is](docs/requirements/02-as-is-scenario.md), [Visionary](docs/requirements/03-visionary-scenario.md), [NFR](docs/requirements/04-nfr.md), [Raw log](docs/requirements/05-raw-log.md), [Epic/Feature](docs/requirements/06-epic-feature-list.md), [User Story](docs/requirements/07-user-stories.md), [Backlog](docs/requirements/08-product-backlog.md), [Traceability](docs/requirements/09-traceability-matrix.md), [Definition of Done](docs/requirements/10-definition-of-done.md), [Giả định](docs/requirements/11-chot-va-gia-dinh.md) |
-| Thiết kế | [Kiến trúc](docs/design/architecture.md), [ERD](docs/design/erd.md), [Sơ đồ lớp](docs/design/class-diagram.md), [Use case](docs/design/use-case.md), [Quy ước mã](docs/design/coding-convention.md) |
+| Yêu cầu | [Wish list](docs/requirements/01-wish-list.md), [As-is](docs/requirements/02-as-is-scenario.md), [Visionary](docs/requirements/03-visionary-scenario.md), [NFR](docs/requirements/04-nfr.md), [Raw log](docs/requirements/05-raw-log.md), [Epic/Feature](docs/requirements/06-epic-feature-list.md), [User Story](docs/requirements/07-user-stories.md), [Backlog](docs/requirements/08-product-backlog.md), [Traceability](docs/requirements/09-traceability-matrix.md), [Definition of Done](docs/requirements/10-definition-of-done.md), [Giả định](docs/requirements/11-chot-va-gia-dinh.md), [Thuật ngữ](docs/thuat-ngu.md) |
+| Thiết kế | [Kiến trúc](docs/design/architecture.md), [ERD](docs/design/erd.md), [Sơ đồ lớp](docs/design/class-diagram.md), [Use case](docs/design/use-case.md), [Giao diện](docs/design/ui.md), [Quy ước mã](docs/design/coding-convention.md) |
 | Vận hành | [Cài đặt](docs/setup.md), [Quy trình làm việc](docs/workflow.md) |
 
 ## Thành viên

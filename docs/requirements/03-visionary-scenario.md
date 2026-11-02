@@ -2,7 +2,7 @@
 
 | Bước quy trình tương lai | Ai thực hiện | Hệ thống hỗ trợ gì | Lợi ích mong muốn |
 |---|---|---|---|
-| 1. Đăng ký tài khoản và đăng nhập | Ban quản trị, Thủ quỹ | Tạo tài khoản, xác thực, phân quyền Quản trị viên / Nhân viên thu phí | Bảo mật, đúng người đúng quyền |
+| 1. Đăng ký tài khoản và đăng nhập | Ban quản trị, Thủ quỹ | Tạo tài khoản, xác thực, phân quyền Quản trị viên / Thủ quỹ | Bảo mật, đúng người đúng quyền |
 | 2. Quản lý hộ gia đình và nhân khẩu | Ban quản trị | Thêm/sửa hộ, nhân khẩu, quan hệ với chủ hộ; ghi nhận tạm trú, tạm vắng | Dữ liệu tập trung, truy vết được |
 | 3. Báo cáo nhân khẩu cho cơ quan chức năng | Ban quản trị | Xuất danh sách tạm vắng, tạm trú đúng trường dữ liệu quy định | Cung cấp nhanh, đúng quy định |
 | 4. Quản lý khoản thu | Ban quản trị | Cấu hình phí dịch vụ, phí quản lý; tạo khoản tự nguyện theo đợt | Linh hoạt, tự tính theo diện tích |

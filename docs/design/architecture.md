@@ -25,10 +25,46 @@ View (FXML + CSS) -> Controller -> Service -> DAO -> MySQL
 - SQL luôn dùng `PreparedStatement`, không nối chuỗi từ dữ liệu người dùng.
 - Không xóa cứng dữ liệu nghiệp vụ; đổi trạng thái để giữ lịch sử.
 
+## Phân quyền
+
+Kiểm tra ở hai lớp (NFR-002, NFR-009):
+
+1. **Controller** ẩn mục menu và nút mà vai trò không được dùng.
+2. **Service** kiểm tra lại vai trò của người đang đăng nhập trước mỗi thao
+   tác, ném `NghiepVuException` nếu không có quyền. Ẩn nút chưa đủ: lớp này
+   chặn cả khi màn hình mở bằng đường khác (AC-062).
+
+| Chức năng | Quản trị viên | Thủ quỹ | Căn cứ |
+|---|---|---|---|
+| Hộ gia đình, nhân khẩu, tạm trú/tạm vắng, báo cáo nhân khẩu | Có | Không | AC-060, AC-062 |
+| Xem danh mục khoản thu | Có | Có | US-005 |
+| Sửa đơn giá, tạo khoản thu tự nguyện | Có | Không | AC-016, US-006 |
+| Chốt công nợ, sửa khoản thu của hộ | Có | Có | US-009, US-008 |
+| Tra cứu phí, thu phí, biên lai, hủy phiếu | Có | Có | AC-060, US-010 – US-014 |
+| Thống kê, xuất Excel | Có | Có | US-016 – US-019 |
+| Đăng ký và quản lý tài khoản | Có | Không | US-020, AC-061 |
+| Tài khoản của tôi | Có | Có | US-023 |
+
+Tra cứu phí (US-010) chỉ hiện thông tin hộ cần cho việc thu: mã phòng, chủ
+hộ, các khoản chưa đóng.
+
+## Chức năng và mã nguồn
+
+| Chức năng | Story | Controller / FXML | Service | DAO | Test |
+|---|---|---|---|---|---|
+| Đăng nhập | US-021 | `DangNhapController`, `dang-nhap.fxml` | `TaiKhoanService` | `TaiKhoanDao` | `TaiKhoanServiceTest`, `MatKhauUtilTest` |
+| Tài khoản của tôi, quản lý tài khoản | US-020, US-022, US-023 | `TaiKhoanController`, `tai-khoan.fxml` | `TaiKhoanService` | `TaiKhoanDao` | `TaiKhoanServiceTest` |
+| Hộ gia đình | US-001 | `HoGiaDinhController`, `ho-gia-dinh.fxml` | `HoGiaDinhService` | `HoGiaDinhDao` | `HoGiaDinhServiceTest` |
+| Nhân khẩu, đổi chủ hộ | US-002, US-026 | `NhanKhauController`, `nhan-khau.fxml` | `NhanKhauService`, `KiemTraNhanKhau` | `NhanKhauDao` | `NhanKhauServiceTest` |
+| Tạm trú, tạm vắng | US-003 | `NhanKhauController` | `DotCuTruService` | `DotCuTruDao` | `DotCuTruServiceTest` |
+| Lịch sử biến động nhân khẩu | US-027 | `HoGiaDinhController`, `TrangChinhController`, `BangLichSu` | `BienDongService` | `BienDongDao` (ghi trong giao dịch của DAO hộ, nhân khẩu, đợt) | `HoGiaDinhServiceTest`, `NhanKhauServiceTest`, `DotCuTruServiceTest` |
+| Khung ứng dụng, menu theo vai trò | US-022 | `TrangChinhController`, `trang-chinh.fxml` | `PhanQuyen` | – | – |
+| Khoản thu | US-005, US-006 | `KhoanThuController`, `khoan-thu.fxml` | `KhoanPhiService` | `KhoanPhiDao` | `KhoanPhiServiceTest` |
+| Chốt, sửa công nợ | US-009, US-008 | `CongNoController`, `cong-no.fxml` | `CongNoService` | `CongNoDao` | `CongNoServiceTest` |
+
+Thêm chức năng mới thì thêm một dòng vào bảng này trong cùng Pull Request.
+
 ## Giao diện
-- Kích thước theo hướng dẫn giảng viên: đăng nhập, tạo/thu khoản phí
-  1120x645; màn hình chính 1440x1024.
-- Bố cục đầu – thân cho toàn ứng dụng: thanh menu trên cùng, màn hình chức
-  năng hiển thị ở phần thân (`trang-chinh.fxml`).
-- Màu dùng biến `-mau-*` trong `css/giao-dien.css`; đổi bảng màu chỉ sửa
-  các biến này.
+
+Bố cục, màn hình, phương án màu và đặc tả: [ui.md](ui.md). Màu dùng biến
+`-mau-*` trong `css/giao-dien.css`; đổi phương án màu chỉ sửa các biến này.

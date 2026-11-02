@@ -9,11 +9,11 @@ Không gồm US-024, US-025 (v2.0, Won't).
 | Tác nhân | Vai trò trong hệ thống (tài khoản) | Ghi chú |
 |---|---|---|
 | Ban quản trị | Quản trị viên (`QUAN_TRI`) | Quản lý cư dân, khoản thu, tài khoản, báo cáo |
-| Thủ quỹ | Nhân viên thu phí (`THU_QUY`) | Thu phí, biên lai, công nợ |
+| Thủ quỹ | Thủ quỹ (`THU_QUY`) | Thu phí, biên lai, công nợ; tương ứng tác nhân Kế toán trong Bộ bài tập |
 | Người dùng | Cả hai vai trò | Đăng nhập, đổi mật khẩu |
 
-Tên vai trò "Thủ quỹ" và "Nhân viên thu phí" đang dùng song song trong tài
-liệu yêu cầu; nhóm sẽ chốt một tên trước khi làm US-022.
+Nhóm chốt tên vai trò "Thủ quỹ" ngày 01/11/2026 (tài liệu cũ gọi là Nhân
+viên thu phí).
 
 ## Sơ đồ
 
@@ -33,6 +33,7 @@ flowchart LR
             UC003(["US-003 Tạm trú, tạm vắng"])
             UC004(["US-004 Báo cáo nhân khẩu"])
             UC026(["US-026 Đổi chủ hộ"])
+            UC027(["US-027 Lịch sử biến động nhân khẩu"])
         end
         subgraph M2["Quản lý thu phí"]
             UC005(["US-005 Tính phí tự động"])
@@ -59,7 +60,7 @@ flowchart LR
         end
     end
 
-    BQT --- UC001 & UC002 & UC003 & UC004 & UC026
+    BQT --- UC001 & UC002 & UC003 & UC004 & UC026 & UC027
     BQT --- UC006 & UC015 & UC016 & UC017 & UC019
     BQT --- UC020 & UC022
     TQ --- UC005 & UC007 & UC008 & UC009 & UC010

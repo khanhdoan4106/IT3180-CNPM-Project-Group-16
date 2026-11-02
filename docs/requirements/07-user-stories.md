@@ -75,7 +75,7 @@ Là Ban quản trị, tôi muốn chuyển vai trò chủ hộ sang một thành
 - **Epic / Feature:** EPIC-01 / F-02
 - **Nguồn:** Rà soát US-002 (US-002 chưa cho đổi quan hệ của chủ hộ)
 - **Ưu tiên:** Should
-- **Ước lượng:** chưa ước lượng
+- **Ước lượng:** 3 SP
 - **Phụ thuộc:** US-002
 
 **Acceptance Criteria**
@@ -83,6 +83,23 @@ Là Ban quản trị, tôi muốn chuyển vai trò chủ hộ sang một thành
 - **AC-073:** **Giả sử** hộ đang ở có ít nhất một thành viên khác đang ở, **khi** BQT chọn thành viên đó làm chủ hộ mới và lưu, **thì** thành viên đó thành chủ hộ, chủ hộ cũ đổi sang quan hệ BQT chọn hoặc được đánh dấu chuyển đi, và hộ vẫn có đúng một chủ hộ.
 - **AC-074:** **Giả sử** hộ không còn thành viên nào khác đang ở, **khi** BQT đổi chủ hộ, **thì** hệ thống từ chối và hướng dẫn đánh dấu cả hộ chuyển đi.
 - **AC-075:** **Giả sử** thành viên được chọn đã chuyển đi, **khi** BQT đổi chủ hộ, **thì** hệ thống từ chối và giữ nguyên chủ hộ hiện tại.
+
+### US-027: Lịch sử biến động nhân khẩu
+
+Là Ban quản trị, tôi muốn xem lịch sử nhân khẩu chuyển đến, chuyển đi, tạm trú, tạm vắng của từng hộ, để tra cứu và báo cáo biến động dân cư khi chính quyền yêu cầu.
+
+- **Epic / Feature:** EPIC-01 / F-02
+- **Nguồn:** Bộ bài tập IT3180 chương 7 (lịch sử thay đổi nhân khẩu trong hộ), RAW-006
+- **Ưu tiên:** Should
+- **Ước lượng:** 5 SP
+- **Phụ thuộc:** US-002, US-003
+
+**Acceptance Criteria**
+
+- **AC-076:** **Giả sử** BQT thêm hộ, thêm nhân khẩu hoặc đánh dấu nhân khẩu/hộ chuyển đi, **khi** lưu thành công, **thì** hệ thống ghi một dòng lịch sử cho từng nhân khẩu với loại biến động, ngày và người ghi.
+- **AC-077:** **Giả sử** BQT ghi nhận một đợt tạm trú hoặc tạm vắng, **khi** lưu thành công, **thì** lịch sử có dòng tạm trú/tạm vắng kèm ngày bắt đầu và ngày kết thúc.
+- **AC-078:** **Giả sử** thao tác bị từ chối hoặc lỗi giữa chừng, **khi** kết thúc, **thì** không có dòng lịch sử nào được ghi.
+- **AC-079:** **Giả sử** BQT chọn một hộ, **khi** mở lịch sử, **thì** hệ thống hiện các biến động của hộ, mới nhất trước; lịch sử không sửa, không xóa được.
 
 ## EPIC-02: Quản lý danh mục và khoản thu
 
@@ -360,7 +377,7 @@ Là Ban quản trị, tôi muốn đăng nhập bằng tên đăng nhập và m�
 
 ### US-022: Phân quyền
 
-Là Quản trị viên, tôi muốn phân quyền Quản trị viên và Nhân viên thu phí, để mỗi người chỉ dùng chức năng được giao và thông tin cư dân không bị lộ.
+Là Quản trị viên, tôi muốn phân quyền Quản trị viên và Thủ quỹ, để mỗi người chỉ dùng chức năng được giao và thông tin cư dân không bị lộ.
 
 - **Epic / Feature:** EPIC-05 / F-17
 - **Nguồn:** RAW-027, RAW-035
@@ -370,7 +387,7 @@ Là Quản trị viên, tôi muốn phân quyền Quản trị viên và Nhân v
 
 **Acceptance Criteria**
 
-- **AC-060:** **Giả sử** tài khoản vai trò Nhân viên thu phí, **khi** đăng nhập, **thì** chỉ dùng được chức năng thu phí và tra cứu.
+- **AC-060:** **Giả sử** tài khoản vai trò Thủ quỹ, **khi** đăng nhập, **thì** chỉ dùng được chức năng thu phí và tra cứu.
 - **AC-061:** **Giả sử** tài khoản Quản trị viên, **khi** đăng nhập, **thì** dùng được mọi chức năng gồm quản lý tài khoản.
 - **AC-062:** **Giả sử** thông tin nhân khẩu và công nợ của một hộ, **khi** người không có quyền truy cập, **thì** hệ thống không hiển thị dữ liệu.
 

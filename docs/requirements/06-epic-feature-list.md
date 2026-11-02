@@ -32,7 +32,7 @@
 | F-14 | Xuất báo cáo Excel | Xuất báo cáo thu tiền theo mẫu thủ công cũ | EPIC-04 |
 | F-15 | Thống kê theo khoản thu | Tổng thu theo từng khoản/quỹ và đợt | EPIC-04 |
 | F-16 | Đăng ký tài khoản | Tạo tài khoản người dùng | EPIC-05 |
-| F-17 | Đăng nhập và phân quyền | Xác thực; vai trò Quản trị viên / Nhân viên thu phí | EPIC-05 |
+| F-17 | Đăng nhập và phân quyền | Xác thực; vai trò Quản trị viên / Thủ quỹ | EPIC-05 |
 | F-18 | Quản lý tài khoản | Đổi mật khẩu, cập nhật thông tin cá nhân | EPIC-05 |
 | F-19 | Quản lý phí gửi xe (v2.0) | Quản lý biển số và tính phí xe máy/ô tô | EPIC-06 |
 | F-20 | Thu hộ điện, nước, internet (v2.0) | Import file thông báo và thu hộ | EPIC-07 |
