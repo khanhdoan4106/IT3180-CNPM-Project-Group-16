@@ -10,7 +10,9 @@ import com.bluemoon.dao.TrungKhoaException;
 import com.bluemoon.model.TaiKhoan;
 import com.bluemoon.model.VaiTro;
 import com.bluemoon.util.MatKhauUtil;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +35,40 @@ class TaiKhoanServiceTest {
         @Override
         public void capNhatMatKhau(int id, String matKhauBam) {
             matKhauMoiNhat = matKhauBam;
+        }
+
+        @Override
+        public Optional<TaiKhoan> timTheoId(int id) {
+            return theoTen.values().stream().filter(t -> t.getId() == id)
+                    .findFirst();
+        }
+
+        @Override
+        public List<TaiKhoan> danhSach() {
+            return theoTen.values().stream().sorted(Comparator.comparing(
+                    TaiKhoan::getTenDangNhap)).toList();
+        }
+
+        @Override
+        public void capNhatThongTin(int id, String hoTen, String sdt) {
+            TaiKhoan t = timTheoId(id).orElseThrow();
+            theoTen.put(t.getTenDangNhap(), t.voiThongTin(hoTen, sdt));
+        }
+
+        @Override
+        public void capNhatVaiTro(int id, VaiTro vaiTro) {
+            TaiKhoan t = timTheoId(id).orElseThrow();
+            theoTen.put(t.getTenDangNhap(), new TaiKhoan(id,
+                    t.getTenDangNhap(), t.getMatKhauBam(), t.getHoTen(),
+                    vaiTro, t.isHoatDong()));
+        }
+
+        @Override
+        public void capNhatHoatDong(int id, boolean hoatDong) {
+            TaiKhoan t = timTheoId(id).orElseThrow();
+            theoTen.put(t.getTenDangNhap(), new TaiKhoan(id,
+                    t.getTenDangNhap(), t.getMatKhauBam(), t.getHoTen(),
+                    t.getVaiTro(), hoatDong));
         }
 
         @Override
@@ -223,5 +259,102 @@ class TaiKhoanServiceTest {
                 () -> service.dangKy(null, "ketoan01", "Nguyen Van A",
                         "matkhau123", "matkhau123", VaiTro.THU_QUY));
         assertFalse(dao.theoTen.containsKey("ketoan01"));
+    }
+
+    // US-023: tai khoan cua toi
+
+    @Test
+    void doiMatKhauCoNhapLai() { // AC-063
+        service.doiMatKhau(admin, "matkhau123", "matkhaumoi456",
+                "matkhaumoi456");
+        assertTrue(MatKhauUtil.kiemTra("matkhaumoi456",
+                dao.matKhauMoiNhat));
+    }
+
+    @Test
+    void doiMatKhauNhapLaiKhongKhopHoacTrungCu() {
+        assertThrows(NghiepVuException.class, () -> service.doiMatKhau(
+                admin, "matkhau123", "matkhaumoi456", "matkhaumoi457"));
+        assertThrows(NghiepVuException.class, () -> service.doiMatKhau(
+                admin, "matkhau123", "matkhau123", "matkhau123"));
+        assertThrows(NghiepVuException.class, () -> service.doiMatKhau(
+                admin, "sai", "matkhaumoi456", "matkhaumoi456")); // AC-064
+    }
+
+    @Test
+    void capNhatThongTinCaNhan() { // AC-065
+        TaiKhoan moi = service.capNhatThongTin(thuQuy, "  Trần   Thị Lan ",
+                "0912.345.678");
+        assertEquals("Trần Thị Lan", moi.getHoTen());
+        assertEquals("0912345678", moi.getSoDienThoai());
+        TaiKhoan luu = dao.theoTen.get("thuquy");
+        assertEquals("Trần Thị Lan", luu.getHoTen());
+        assertEquals("0912345678", luu.getSoDienThoai());
+        assertEquals(VaiTro.THU_QUY, moi.getVaiTro());
+        assertEquals(null, service.capNhatThongTin(thuQuy, "Lan", "")
+                .getSoDienThoai());
+        assertThrows(NghiepVuException.class,
+                () -> service.capNhatThongTin(thuQuy, " ", ""));
+        assertThrows(NghiepVuException.class,
+                () -> service.capNhatThongTin(thuQuy, "Lan", "12345"));
+    }
+
+    // US-022: quan ly tai khoan
+
+    @Test
+    void chiQuanTriVienXemDanhSach() { // AC-061
+        assertEquals(3, service.danhSach(admin).size());
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.danhSach(thuQuy));
+        assertEquals(PhanQuyen.LOI_KHONG_CO_QUYEN, e.getMessage());
+    }
+
+    @Test
+    void doiVaiTroVaKhoaTaiKhoanKhac() {
+        assertEquals(VaiTro.QUAN_TRI,
+                service.doiVaiTro(admin, 3, VaiTro.QUAN_TRI).getVaiTro());
+        assertFalse(service.datHoatDong(admin, 3, false).isHoatDong());
+        assertThrows(NghiepVuException.class,
+                () -> service.dangNhap("thuquy", "matkhau123"));
+        assertTrue(service.datHoatDong(admin, 3, true).isHoatDong());
+    }
+
+    @Test
+    void khongTuKhoaHayTuHaQuyenMinh() {
+        assertThrows(NghiepVuException.class,
+                () -> service.datHoatDong(admin, 1, false));
+        assertThrows(NghiepVuException.class,
+                () -> service.doiVaiTro(admin, 1, VaiTro.THU_QUY));
+        assertTrue(dao.theoTen.get("admin").isHoatDong());
+    }
+
+    @Test
+    void thuQuyKhongQuanLyDuocTaiKhoan() {
+        assertThrows(NghiepVuException.class,
+                () -> service.datHoatDong(thuQuy, 1, false));
+        assertThrows(NghiepVuException.class,
+                () -> service.doiVaiTro(thuQuy, 3, VaiTro.QUAN_TRI));
+    }
+
+    @Test
+    void datLaiMatKhauChoNguoiQuen() { // RAW-035
+        service.datLaiMatKhau(admin, 3, "tamthoi123", "tamthoi123");
+        assertTrue(MatKhauUtil.kiemTra("tamthoi123", dao.matKhauMoiNhat));
+        assertThrows(NghiepVuException.class, () -> service.datLaiMatKhau(
+                admin, 3, "tamthoi123", "tamthoi124"));
+        assertThrows(NghiepVuException.class, () -> service.datLaiMatKhau(
+                admin, 99, "tamthoi123", "tamthoi123"));
+    }
+
+    @Test
+    void lamMoiPhienThayKhoaVaDoiVaiTroNgay() {
+        service.doiVaiTro(admin, 3, VaiTro.QUAN_TRI);
+        assertEquals(VaiTro.QUAN_TRI,
+                service.lamMoiPhien(thuQuy).getVaiTro());
+        service.datHoatDong(admin, 3, false);
+        assertThrows(NghiepVuException.class,
+                () -> service.lamMoiPhien(thuQuy));
+        assertThrows(NghiepVuException.class,
+                () -> service.lamMoiPhien(null));
     }
 }
