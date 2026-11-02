@@ -3,7 +3,7 @@
 | ID (NFR-xxx) | Mô tả yêu cầu phi chức năng | Nguồn | Loại NFR | Ghi chú (RAW nguồn) |
 |---|---|---|---|---|
 | NFR-001 | Hệ thống phải xác thực người dùng trước khi truy cập | Ban quản trị | Bảo mật | RAW-025 |
-| NFR-002 | Phân quyền rõ ràng giữa Quản trị viên và Nhân viên thu phí | Ban quản trị | Bảo mật | RAW-035 |
+| NFR-002 | Phân quyền rõ ràng giữa Quản trị viên và Thủ quỹ | Ban quản trị | Bảo mật | RAW-035 |
 | NFR-003 | Dữ liệu phải được sao lưu định kỳ (hàng ngày/tuần) | Ban quản trị | Sao lưu | RAW-034 |
 | NFR-004 | Ghi nhật ký mọi thao tác thay đổi dữ liệu quan trọng | Ban quản trị, sổ thu | Truy vết | RAW-033, RAW-017 |
 | NFR-005 | Thời gian phản hồi các truy vấn tra cứu dưới 3 giây | Quan sát thủ quỹ | Hiệu năng | RAW-028 |
