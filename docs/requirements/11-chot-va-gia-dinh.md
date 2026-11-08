@@ -37,7 +37,7 @@ kèm lý do.
 25. **Nợ quá 3 tháng (US-017):** số tháng nợ là số tháng chốt công nợ còn ít nhất một khoản bắt buộc chưa đóng; lọc các hộ có từ 3 tháng trở lên, kể cả hộ đã chuyển đi.
 26. **Đổi chủ hộ (US-026):** trong một giao dịch, chủ hộ cũ đổi sang quan hệ Ban quản trị chọn (vợ/chồng, con, khác) hoặc rời hộ, rồi người được chọn mới thành chủ hộ; ghi lịch sử "Đổi chủ hộ" (và "Chuyển đi" nếu chủ hộ cũ rời hộ).
 
-Các giả định 27–31 được Scrum Master chốt ngày 08/11/2026, khi rà soát cuối
+Các giả định 27–32 được Scrum Master chốt ngày 08/11/2026, khi rà soát cuối
 Sprint 2 ([báo cáo rà soát](../review/sprint-2-ra-soat.md), mục 5).
 
 27. **Phạm vi Sprint 3 và in ấn:** Sprint 3 giữ đủ 28 SP, gồm US-004 (danh sách tạm vắng) và US-015 (thông báo thu phí) bên cạnh phần thu phí (US-007, US-010 – US-014). US-004, US-013 (biên lai) và US-015 in trực tiếp ra máy in bằng một cơ chế chung là `PrinterJob` của JavaFX. Xuất file Excel/PDF để Sprint 4 cùng US-018; vì vậy AC-014 của US-004 (xuất file Excel/PDF) làm ở Sprint 4.
