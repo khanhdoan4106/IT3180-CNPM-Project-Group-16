@@ -43,6 +43,25 @@ IntelliJ → Maven → bluemoon → Lifecycle → `test`. Kết quả mong đợ
 
 Dòng lệnh (cần Maven 3.9+ trong PATH): `mvn test`, chạy app: `mvn javafx:run`.
 
+Kiểm thử tích hợp với MySQL thật (lớp `*IT`, thử DAO và giao dịch): tạo một
+CSDL **riêng có chữ `test` trong tên**, vì mỗi test xóa và tạo lại toàn bộ
+bảng của CSDL đó.
+
+```sql
+CREATE DATABASE bluemoon_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+GRANT ALL ON bluemoon_test.* TO 'bluemoon'@'localhost';
+```
+
+Rồi đặt biến môi trường và chạy `mvn verify -Pmysql` (PowerShell):
+
+```powershell
+$env:BLUEMOON_DB_URL = "jdbc:mysql://localhost:3306/bluemoon_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh&characterEncoding=UTF-8"
+mvn verify -Pmysql
+```
+
+Thiếu biến này, hoặc tên CSDL không có chữ `test`, thì các lớp `*IT` tự bỏ
+qua. `mvn verify` không có `-Pmysql` không chạy kiểm thử tích hợp.
+
 ## 5. Chuẩn bị demo
 
 Ngày của dữ liệu mẫu tạm trú/tạm vắng được tính lúc chạy `seed.sql` (theo
