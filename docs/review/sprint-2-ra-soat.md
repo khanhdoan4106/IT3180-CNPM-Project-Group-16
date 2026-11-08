@@ -32,6 +32,13 @@ nhánh `fix/sprint-2-ra-soat`, mỗi mục một commit, kèm test tái hiện.
 | N12 | Một phần: backlog, README, traceability (thêm US-026). Còn `use-case.md`, `erd.md`, `ui.md` | – |
 | N6, N7, N10, N11, N13, G1–G15 | Chưa làm, để Sprint 3 | – |
 
+Sau khi sửa: 161 test đơn vị và 5 kiểm thử tích hợp (MySQL 8.0.46) đều
+đạt.
+
+## 1. Build và cơ sở dữ liệu
+
+Kết quả lúc rà soát, trên `main` tại `f912c32`:
+
 | Kiểm tra | Kết quả |
 |---|---|
 | `mvn -q clean verify` (Temurin 21, Maven 3.9.11) | Đạt. 141 test: TaiKhoan 28, NhanKhau 36, HoGiaDinh 30, DotCuTru 15, CongNo 13, KhoanPhi 11, MatKhauUtil 5, TrungKhoaException 2, DatabaseConfig 1 |
@@ -385,66 +392,101 @@ Sprint 1 (US-001–003, 020, 021, TS-003) vẫn khớp với mã.
 - `docs/setup.md` làm theo được từ máy mới (đã chạy lại các bước CSDL). Chỗ
   vướng duy nhất là N8 với người đã có CSDL Sprint 1.
 
-## 5. Chuẩn bị Sprint 3 (đề xuất để duyệt)
+## 5. Chuẩn bị Sprint 3
+
+Mục này đã cập nhật theo các quyết định của Scrum Master ngày 08/11/2026,
+ghi thành giả định 27–31 trong
+[11-chot-va-gia-dinh.md](../requirements/11-chot-va-gia-dinh.md). Đây vẫn
+là thiết kế, chưa có mã Sprint 3.
 
 ### 5.1 Căn cứ
 
 - **`erd.md` (mục "Bảng dự kiến"):**
-  - Phiếu có mã biên lai tăng liên tục.
-  - Chi tiết trỏ tới `phai_nop` (khoản bắt buộc, đóng đủ) hoặc `khoan_phi`
-    (khoản tự nguyện, số bất kỳ kể cả 0 đ).
+  - Chi tiết phiếu trỏ tới `phai_nop` (khoản bắt buộc, đóng đủ) hoặc
+    `khoan_phi` (khoản tự nguyện, số bất kỳ kể cả 0 đ).
   - "Đã đóng" nghĩa là có dòng chi tiết thuộc phiếu chưa hủy.
-  - Khi lập phiếu, khóa các dòng `phai_nop` bằng `SELECT … FOR UPDATE`.
-- **Giả định:**
+  - Khi lập phiếu, khóa các dòng liên quan bằng `SELECT … FOR UPDATE`.
+- **Giả định có từ trước:**
   - 21: tra cứu tìm được cả hộ đã chuyển đi còn nợ.
   - 23: khoản bắt buộc đóng đủ; ghi 0 đ là "không đóng", khác "chưa thu".
   - 24: tổng thu tháng tính theo ngày thu trên phiếu chưa hủy.
   - 25: nợ quá 3 tháng tính theo tháng chốt còn khoản chưa đóng.
-- **Backlog Sprint 3** có 28 SP: US-004, 007, 010–015.
+- **Giả định mới (đã chốt):**
+  - 27: Sprint 3 giữ 28 SP, gồm US-004 và US-015; in bằng `PrinterJob`;
+    Excel/PDF (cả AC-014) để Sprint 4.
+  - 28: Thủ quỹ hủy phiếu mình lập, Quản trị viên hủy mọi phiếu; chỉ trong
+    ngày lập; bắt buộc lý do; phiếu hủy giữ lại.
+  - 29: đóng góp nhiều lần cho một quỹ, tổng là cộng các lần; 0 đ chỉ ghi
+    khi hộ chưa có lần nào cho quỹ đó.
+  - 30: phiếu chỉ gồm khoản 0 đ vẫn lưu và có số, ghi "Không thu tiền",
+    không in.
+  - 31: số `PT-<năm>-<5 chữ số>`, đánh lại mỗi năm, liên tục, cấp từ bảng
+    đếm theo năm; phiếu hủy giữ số.
 
 ### 5.2 Schema đề xuất
 
+Đã chạy thử trên MySQL 8.0.46 (sau `schema.sql` và `seed.sql` hiện tại):
+tạo bảng không lỗi, cấp số ra `PT-2026-00001`, giao dịch hoàn tác không làm
+nhảy số. Các ràng buộc chặn đúng: thu trùng một khoản phải nộp, phiếu có
+tiền mà thiếu hình thức, năm lệch ngày lập, trùng số biên lai, hủy thiếu
+người hủy hoặc lý do. Hủy xong thì khoản đó thu lại được.
+
 ```sql
--- US-010 – US-014, US-007: phiếu thu. Hủy chỉ đổi trạng thái (AC-043).
+-- Bộ đếm số biên lai theo năm (giả định 31): khóa dòng trong cùng giao
+-- dịch lưu phiếu nên số liên tục, không nhảy khi hoàn tác.
+CREATE TABLE IF NOT EXISTS bo_dem_bien_lai (
+    nam     SMALLINT NOT NULL PRIMARY KEY,
+    so_cuoi INT      NOT NULL DEFAULT 0,
+    CONSTRAINT chk_bdbl_so_cuoi CHECK (so_cuoi BETWEEN 0 AND 99999)
+);
+
+-- US-010 – US-014, US-007: phiếu thu. Số biên lai PT-<nam>-<so 5 chữ số>.
+-- Hủy chỉ đổi trạng thái, phiếu giữ số (AC-043, giả định 28, 31).
 CREATE TABLE IF NOT EXISTS phieu_thu (
-    id           INT AUTO_INCREMENT PRIMARY KEY,
-    so_bien_lai  INT           NOT NULL,
-    ho_id        INT           NOT NULL,
-    tong_tien    DECIMAL(14, 2) NOT NULL,
-    hinh_thuc    ENUM('TIEN_MAT', 'CHUYEN_KHOAN') NOT NULL,
-    nguoi_thu    INT           NOT NULL,
-    thoi_diem    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    so_lan_in    INT           NOT NULL DEFAULT 0,
-    da_huy       BOOLEAN       NOT NULL DEFAULT FALSE,
-    nguoi_huy    INT           NULL,
-    thoi_diem_huy DATETIME     NULL,
-    ly_do_huy    VARCHAR(200)  NULL,
+    id            INT AUTO_INCREMENT PRIMARY KEY,
+    nam           SMALLINT       NOT NULL,
+    so            INT            NOT NULL,
+    ho_id         INT            NOT NULL,
+    tong_tien     DECIMAL(14, 2) NOT NULL,
+    hinh_thuc     ENUM('TIEN_MAT', 'CHUYEN_KHOAN') NULL,
+    nguoi_thu     INT            NOT NULL,
+    thoi_diem     DATETIME       NOT NULL,
+    so_lan_in     INT            NOT NULL DEFAULT 0,
+    da_huy        BOOLEAN        NOT NULL DEFAULT FALSE,
+    nguoi_huy     INT            NULL,
+    thoi_diem_huy DATETIME       NULL,
+    ly_do_huy     VARCHAR(200)   NULL,
     CONSTRAINT fk_pt_ho FOREIGN KEY (ho_id) REFERENCES ho_gia_dinh (id),
     CONSTRAINT fk_pt_nguoi_thu FOREIGN KEY (nguoi_thu)
         REFERENCES tai_khoan (id),
     CONSTRAINT fk_pt_nguoi_huy FOREIGN KEY (nguoi_huy)
         REFERENCES tai_khoan (id),
-    CONSTRAINT uq_pt_so_bien_lai UNIQUE (so_bien_lai),
+    CONSTRAINT uq_pt_so_bien_lai UNIQUE (nam, so),
+    CONSTRAINT chk_pt_so CHECK (so BETWEEN 1 AND 99999),
+    CONSTRAINT chk_pt_nam CHECK (nam = YEAR(thoi_diem)),
     CONSTRAINT chk_pt_tong_tien CHECK (tong_tien >= 0),
+    CONSTRAINT chk_pt_hinh_thuc CHECK (tong_tien = 0 OR hinh_thuc IS NOT NULL),
     CONSTRAINT chk_pt_huy CHECK (
         (da_huy = FALSE AND nguoi_huy IS NULL AND thoi_diem_huy IS NULL
             AND ly_do_huy IS NULL)
         OR (da_huy = TRUE AND nguoi_huy IS NOT NULL
-            AND thoi_diem_huy IS NOT NULL AND ly_do_huy IS NOT NULL)),
+            AND thoi_diem_huy IS NOT NULL AND ly_do_huy IS NOT NULL
+            AND ly_do_huy <> '')),
     INDEX idx_pt_ho (ho_id, thoi_diem),
     INDEX idx_pt_thoi_diem (thoi_diem)
 );
 
--- Mỗi dòng một khoản trong phiếu. con_hieu_luc chép da_huy của phiếu
--- (đổi trong cùng giao dịch hủy) để cột sinh chặn thu trùng ở tầng CSDL,
--- giống cách cccd_dang_o chép trang_thai.
+-- Mỗi dòng một khoản trong phiếu: khoản phải nộp (phai_nop_id) hoặc một
+-- lần đóng góp tự nguyện (phai_nop_id NULL). con_hieu_luc chép da_huy của
+-- phiếu (đổi trong cùng giao dịch hủy) để cột sinh chặn thu trùng một
+-- khoản phải nộp ở tầng CSDL, như cccd_dang_o chép trang_thai.
 CREATE TABLE IF NOT EXISTS phieu_thu_chi_tiet (
-    id            INT AUTO_INCREMENT PRIMARY KEY,
-    phieu_thu_id  INT           NOT NULL,
-    khoan_phi_id  INT           NOT NULL,
-    phai_nop_id   INT           NULL,
-    so_tien       DECIMAL(14, 2) NOT NULL,
-    con_hieu_luc  BOOLEAN       NOT NULL DEFAULT TRUE,
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    phieu_thu_id    INT            NOT NULL,
+    khoan_phi_id    INT            NOT NULL,
+    phai_nop_id     INT            NULL,
+    so_tien         DECIMAL(14, 2) NOT NULL,
+    con_hieu_luc    BOOLEAN        NOT NULL DEFAULT TRUE,
     phai_nop_da_thu INT AS (IF(con_hieu_luc, phai_nop_id, NULL)) STORED,
     CONSTRAINT fk_ptct_phieu FOREIGN KEY (phieu_thu_id)
         REFERENCES phieu_thu (id),
@@ -460,73 +502,87 @@ CREATE TABLE IF NOT EXISTS phieu_thu_chi_tiet (
 
 **Lý do từng quyết định:**
 
-- **`so_bien_lai` tách khỏi `id`.** AUTO_INCREMENT của InnoDB nhảy số khi
-  giao dịch hoàn tác, trong khi sổ thu cũ bị chê vì "không có số biên lai"
-  (RAW-032). Số được cấp bằng `SELECT COALESCE(MAX(so_bien_lai), 0) + 1 …
-  FOR UPDATE` trong giao dịch lập phiếu, nên liên tục, không nhảy. Ràng buộc
-  `UNIQUE` là lưới an toàn cuối.
-- **`phai_nop_da_thu` UNIQUE.** CSDL chặn hai phiếu còn hiệu lực cùng thu
-  một khoản phải nộp, kể cả khi Service có lỗi. Đây là cùng cách đã dùng cho
-  CCCD và chủ hộ.
-- **`khoan_phi_id` luôn có**, kể cả với khoản bắt buộc. Thống kê theo khoản
-  (US-019) và tổng thu (US-016) khỏi phải nối qua `phai_nop`.
-- **`so_lan_in`** để in lại thì ghi "Bản in lại" (AC-040).
-  **`thoi_diem`** dùng cho hủy trong ngày (AC-042) và tổng thu tháng (giả
-  định 24).
-- **Không xóa phiếu;** hủy ghi người hủy, thời điểm hủy, lý do (AC-041,
-  AC-043). CHECK `chk_pt_huy` giữ bốn cột này luôn đi cùng nhau.
-- **Khóa dòng `ho_gia_dinh`** (`SELECT … FOR UPDATE`) ở đầu giao dịch lập
-  và hủy phiếu. Một quy tắc khóa duy nhất cho cả khoản bắt buộc và đóng góp
-  tự nguyện; hai máy thu cùng một hộ sẽ chạy nối tiếp.
+- **`nam` + `so` thay cho một cột số (giả định 31).** Mỗi năm đánh lại từ
+  00001 nên khóa duy nhất là `(nam, so)`. Hiển thị bằng
+  `String.format("PT-%d-%05d", nam, so)`, không lưu chuỗi để khỏi lệch với
+  hai cột. `chk_pt_nam` giữ năm khớp ngày lập.
+- **Bảng đếm `bo_dem_bien_lai` thay `AUTO_INCREMENT`.** Trong giao dịch lưu
+  phiếu: `INSERT … ON DUPLICATE KEY UPDATE` để có dòng của năm, rồi
+  `SELECT so_cuoi … FOR UPDATE`, rồi tăng `so_cuoi`. Hoàn tác thì số trả
+  lại, nên không có khoảng trống; hai máy lập phiếu cùng lúc thì chạy nối
+  tiếp. Đến 99.999 thì báo hết số của năm.
+- **Thứ tự khóa:** dòng `ho_gia_dinh` trước, bộ đếm sau cùng. Một quy tắc
+  khóa cho cả khoản bắt buộc lẫn đóng góp tự nguyện (kiểm tra "0 đ chỉ khi
+  chưa có lần nào", giả định 29) tránh được deadlock. Khóa bộ đếm cuối cùng
+  để giữ khóa ngắn nhất.
+- **`thoi_diem` do Service truyền xuống** (từ `Clock`, như các Service
+  khác), không để CSDL tự điền. Như vậy năm của số biên lai, điều kiện "hủy
+  trong ngày" (AC-042) và tổng thu tháng (giả định 24) cùng dùng một đồng
+  hồ, và test được.
+- **`hinh_thuc` được NULL chỉ khi `tong_tien = 0`.** Phiếu "Không thu tiền"
+  (giả định 30) không có hình thức thanh toán; phiếu có tiền vẫn bắt buộc
+  (AC-038).
+- **`phai_nop_da_thu` UNIQUE:** CSDL chặn hai phiếu còn hiệu lực cùng thu
+  một khoản phải nộp, kể cả khi Service có lỗi. Không có ràng buộc tương tự
+  cho đóng góp tự nguyện, vì được đóng nhiều lần (giả định 29).
+- **`khoan_phi_id` luôn có**, kể cả với khoản bắt buộc, để thống kê theo
+  khoản (US-019) và tổng thu (US-016) khỏi phải nối qua `phai_nop`.
+- **Hủy (giả định 28):** một giao dịch đặt `da_huy`, người hủy, thời điểm,
+  lý do, và đặt `con_hieu_luc = FALSE` cho các dòng chi tiết. Phiếu và số
+  giữ nguyên. `chk_pt_huy` bắt buộc đủ bốn cột hủy và lý do không rỗng.
+  Quyền (Thủ quỹ chỉ phiếu của mình) và "trong ngày" kiểm tra ở Service.
+- **`so_lan_in`:** in lại thì ghi "Bản in lại" (AC-040). Phiếu 0 đ không in
+  nên luôn bằng 0.
 
 ### 5.3 Mã cần thêm
 
 | Tầng | Thành phần | Nội dung |
 |---|---|---|
-| Model | `PhieuThu`, `ChiTietPhieuThu`, `HinhThucThanhToan` (enum có nhãn), `TraCuuHo` (hộ, chủ hộ, khoản chưa đóng, quỹ đang mở) | Record như `PhaiNop`, `KhoanPhi` |
-| DAO | `PhieuThuDao` / `PhieuThuDaoImpl` | `lapPhieu` (một giao dịch: khóa hộ, kiểm tra lại khoản chưa thu, cấp số biên lai, ghi phiếu và chi tiết), `huy`, `timTheoId`, `theoHo`, `ghiLanIn`, `khoanChuaDong(hoId)`, `timHoTheoMa(ma)` (gồm hộ đã chuyển đi còn nợ, giả định 21) |
-| Service | `ThuPhiService` (Quản trị viên và Thủ quỹ) | `traCuu` (AC-030, 031), `thu(hoId, phaiNopIds, dongGop, hinhThuc)` (AC-033–038, AC-022–024), `huyPhieu(id, lyDo)` (AC-041–043), `bienLai(id)` trả dữ liệu biên lai và cờ bản in lại (AC-039, 040) |
-| Controller / FXML | `ThuPhiController` + `thu-phi.fxml`; `bien-lai.fxml` | Ô mã phòng → danh sách khoản (chọn sẵn tất cả) → chọn hình thức → "Thu". Mục tiêu tối đa 5 bước (AC-072). Biên lai in bằng `javafx.print.PrinterJob`, không cần thư viện mới; "Microsoft Print to PDF" cho bản PDF |
-| Menu | `trang-chinh.fxml` | Nút "Thu phí" cho cả hai vai trò |
-| Test | `ThuPhiServiceTest` (mở rộng `KhoThuPhiGia`), `PhieuThuDaoIT` (N9) | Thu tất cả, thu một phần, thu trùng, 0 đ, hủy trong ngày và hôm trước, in lại, Thủ quỹ và Quản trị viên |
-| Tài liệu | `erd.md`, `class-diagram.md`, `architecture.md` (bảng chức năng), `ui.md`, `use-case.md` | Cùng PR với mã |
+| Model | `PhieuThu` (kèm `soBienLai()` dạng `PT-2026-00001`), `ChiTietPhieuThu`, `HinhThucThanhToan` (enum có nhãn), `TraCuuHo` (hộ, chủ hộ, khoản chưa đóng, quỹ đang mở và trạng thái chưa thu/không đóng/đã đóng của hộ) | Record như `PhaiNop`, `KhoanPhi` |
+| DAO | `PhieuThuDao` / `PhieuThuDaoImpl` | `lapPhieu` (một giao dịch: khóa hộ, kiểm tra lại khoản chưa thu và quy tắc 0 đ, cấp số từ bộ đếm, ghi phiếu và chi tiết), `huy`, `timTheoId`, `theoHo`, `ghiLanIn`, `khoanChuaDong(hoId)`, `dongGopCuaHo(hoId)`, `timHoTheoMa(ma)` (gồm hộ đã chuyển đi còn nợ, giả định 21) |
+| Service | `ThuPhiService` (Quản trị viên và Thủ quỹ) | `traCuu` (AC-030, 031), `thu(hoId, phaiNopIds, dongGop, hinhThuc)` (AC-033–038, AC-022–024, giả định 29–30), `huyPhieu(id, lyDo)` (AC-041–043, giả định 28), `bienLai(id)` (AC-039, 040; phiếu 0 đ báo không in) |
+| Service | `BaoCaoNhanKhauService` (US-004), `ThongBaoPhiService` (US-015) | Dữ liệu danh sách tạm vắng (AC-012, 013) và thông báo phí của hộ (AC-044, 045) |
+| In ấn | `util/InAn` dùng chung cho US-004, US-013, US-015 | Nhận một `Node` (bố cục FXML: `bien-lai.fxml`, `thong-bao-phi.fxml`, `danh-sach-tam-vang.fxml`), chọn máy in bằng `PrinterJob.showPrintDialog`, co theo khổ giấy. "Microsoft Print to PDF" dùng tạm cho bản PDF; xuất file thật ở Sprint 4 |
+| Controller / FXML | `ThuPhiController` + `thu-phi.fxml` | Ô mã phòng → danh sách khoản (chọn sẵn tất cả) và quỹ đang mở → chọn hình thức → "Thu". Mục tiêu tối đa 5 bước (AC-072). Danh sách phiếu trong ngày của hộ để in lại, hủy |
+| Menu | `trang-chinh.fxml` | Nút "Thu phí" cho cả hai vai trò; "Báo cáo nhân khẩu" cho Quản trị viên |
+| Test | `ThuPhiServiceTest` (mở rộng `KhoThuPhiGia`), `PhieuThuIT` | Thu tất cả, thu một phần, thu trùng, đóng góp nhiều lần, 0 đ khi đã có lần trước, phiếu 0 đ, số liên tục và đánh lại khi sang năm, hủy (người lập, người khác, Quản trị viên, hôm trước, thiếu lý do), in lại |
+| Tài liệu | `schema.sql`, `erd.md`, `class-diagram.md`, `architecture.md`, `ui.md`, `use-case.md`, `setup.md` (bảng "Dựng lại CSDL" nếu đổi bảng đã có) | Cùng PR với mã |
 
 ### 5.4 Phần Sprint 2 phải sửa theo
 
 | Vị trí | Thay đổi | Lý do |
 |---|---|---|
-| `CongNoDaoImpl.java:177` `daCoPhieuThu` | `SELECT 1 FROM phieu_thu_chi_tiet WHERE phai_nop_id = ? AND con_hieu_luc` | Bật AC-026 |
-| `CongNoDaoImpl.java:50` `SQL_TONG_NO` | Trừ khoản có `phai_nop_da_thu` | Cảnh báo nợ khi chuyển đi đúng; khớp DAO giả (G12) |
-| `CongNoService.suaSoTien` + `CongNoDaoImpl.java:52` | Gộp kiểm tra và cập nhật vào một câu: `UPDATE … WHERE id = ? AND NOT EXISTS (chi tiết còn hiệu lực)`, số dòng 0 thì báo `LOI_DA_THU` | Hiện kiểm tra và sửa là hai lần gọi riêng; thu tiền xen giữa sẽ sửa được khoản đã thu |
+| `CongNoDaoImpl.daCoPhieuThu` | `SELECT 1 FROM phieu_thu_chi_tiet WHERE phai_nop_da_thu = ?` | Bật AC-026 |
+| `CongNoDaoImpl` `SQL_TONG_NO` | Trừ khoản có `phai_nop_da_thu` | Cảnh báo nợ khi chuyển đi đúng; khớp DAO giả (G12) |
+| `CongNoService.suaSoTien` + `CongNoDaoImpl` `SQL_SUA` | Gộp kiểm tra và cập nhật vào một câu: `UPDATE … WHERE id = ? AND NOT EXISTS (chi tiết còn hiệu lực)`, số dòng 0 thì báo `LOI_DA_THU` | Hiện kiểm tra và sửa là hai lần gọi riêng; thu tiền xen giữa sẽ sửa được khoản đã thu |
 | `CongNoController.hoiSoTienMoi` | Khoản đã thu thì khóa ô và hiện nhãn đỏ (ui.md, AC-026) | Đúng đặc tả |
 | `KhoanPhi` | Thêm `dangMo(LocalDate)`: `DANG_THU` và hôm nay trong `[tu_ngay, den_ngay]`; màn Khoản thu hiện "Hết hạn" theo ngày | AC-022 "khoản đang mở"; G9 |
 | `PhaiNop` / `CongNoDao.theoThang` | Thêm cột "Đã đóng" (có phiếu chưa hủy) | Màn Công nợ cho thấy khoản nào sửa được |
-| `08-product-backlog.md` | US-008 chuyển "Hoàn thành" khi AC-026 xong | Mục 4 |
+| `08-product-backlog.md` | US-008 chuyển "Hoàn thành" khi AC-026 xong; US-004 ghi AC-014 làm ở Sprint 4 | Mục 4, giả định 27 |
 
-### 5.5 Cần chốt trước khi làm
+### 5.5 Quyết định đã chốt
 
-1. **Phạm vi.** Backlog Sprint 3 còn US-004 (báo cáo tạm vắng, 3 SP) và
-   US-015 (thông báo thu phí, 3 SP), không có trong danh sách của Scrum
-   Master. Đề xuất: giữ cả hai, vì không phụ thuộc phần thu phí và dùng lại
-   dữ liệu sẵn có. Nếu thiếu người thì dời US-015 sang Sprint 4.
-2. **Ai được hủy phiếu.** Đề xuất: người lập phiếu hoặc Quản trị viên, chỉ
-   trong ngày lập.
-3. **Đóng góp tự nguyện.** Đề xuất: mỗi hộ ghi một lần cho mỗi quỹ trong
-   một đợt. Ghi sai thì hủy phiếu rồi ghi lại. Như vậy "chưa thu" và "không
-   đóng (0 đ)" luôn rõ ràng.
-4. **Phiếu chỉ gồm 0 đ.** Đề xuất: vẫn lưu phiếu (có người ghi, thời điểm)
-   nhưng không in biên lai.
-5. **Số biên lai.** Đề xuất: một dãy liên tục cho toàn hệ thống, hiển thị 6
-   chữ số (`000123`). Phương án khác: đánh lại từ đầu mỗi năm.
+| # | Câu hỏi | Quyết định | Giả định |
+|---|---|---|---|
+| 1 | Phạm vi Sprint 3 | Giữ US-004, US-015 (28 SP). US-004, US-013, US-015 in chung bằng `PrinterJob`; Excel/PDF để Sprint 4 | 27 |
+| 2 | Ai được hủy phiếu | Thủ quỹ: phiếu do mình lập. Quản trị viên: mọi phiếu. Chỉ trong ngày lập, bắt buộc lý do; phiếu hủy giữ lại kèm người hủy, thời điểm, lý do; khoản phải nộp trở về chưa đóng | 28 |
+| 3 | Đóng góp tự nguyện | Nhiều lần cho một quỹ, tổng là cộng các lần. 0 đ chỉ khi hộ chưa có lần nào cho quỹ đó ("đã hỏi, không đóng"); đóng hơn 0 sau đó thì tính đã đóng | 29 |
+| 4 | Phiếu chỉ gồm 0 đ | Lưu và có số, ghi "Không thu tiền", không in biên lai | 30 |
+| 5 | Số biên lai | `PT-<năm>-<5 chữ số>`, đánh lại mỗi năm, liên tục, cấp từ bảng đếm theo năm khóa `FOR UPDATE` trong giao dịch lưu phiếu, không dùng `AUTO_INCREMENT`; phiếu hủy giữ số | 31 |
+
+Hệ quả cần lưu ý khi lập kế hoạch Sprint 3: US-004 chỉ "Hoàn thành" phần in
+trực tiếp ở Sprint 3; AC-014 (xuất file Excel/PDF) chuyển sang Sprint 4 cùng
+US-018.
 
 ### 5.6 Việc cần làm trước khi đóng Sprint 2 (đến 29/11)
 
-1. Duyệt báo cáo này.
-2. Nhánh `fix/ra-soat-sprint-2`: sửa L1–L3 và N1–N4 kèm test. Mở PR, CI
-   xanh, một thành viên review.
-3. Nhánh `docs/ra-soat-sprint-2`: các mục ở mục 4, N7 (seed) và báo cáo
-   này. Mở PR.
-4. Sprint Review và Retrospective; biên bản vào `docs/meeting-notes/`.
-5. Sau khi hai PR được merge: GitHub → Releases → tạo tag `v0.2.0` trên
-   `main`. Release notes ghi rõ phải dựng lại CSDL (N8).
-6. PR riêng nâng `pom.xml` lên `0.3.0-SNAPSHOT` sau khi đã có tag (G15).
+1. ~~Duyệt báo cáo này.~~ Đã duyệt 08/11/2026.
+2. ~~Sửa L1–L3, N1–N4 kèm test, cập nhật tài liệu.~~ Đã làm trên nhánh
+   `fix/sprint-2-ra-soat`; mở Pull Request, chờ CI xanh và một thành viên
+   review.
+3. Sprint Review và Retrospective; biên bản vào `docs/meeting-notes/`.
+4. Sau khi Pull Request được merge: GitHub → Releases → tạo tag `v0.2.0`
+   trên `main`. Release notes ghi rõ phải dựng lại CSDL (`docs/setup.md`,
+   mục "Dựng lại CSDL khi kéo bản mới").
+5. Pull Request riêng nâng `pom.xml` lên `0.3.0-SNAPSHOT` sau khi đã có tag
+   (G15).
