@@ -20,7 +20,7 @@ nhánh `fix/sprint-2-ra-soat`, mỗi mục một commit, kèm test tái hiện.
 
 | Phát hiện | Xử lý | Test |
 |---|---|---|
-| L1 | Đã sửa: chỉ tính hộ chuyển đến không sau cuối tháng và khoản có hiệu lực trong tháng; không có gì để tính thì báo rõ tháng. Không giới hạn số tháng được chốt | 4 test `CongNoServiceTest`, `CongNoIT` |
+| L1 | Đã sửa: chỉ tính hộ chuyển đến không sau cuối tháng và khoản có hiệu lực trong tháng; không có gì để tính thì báo rõ tháng. Không giới hạn số tháng được chốt; chốt bù chỉ tính hộ còn đang ở lúc chốt (giả định 32) | 4 test `CongNoServiceTest`, `CongNoIT` |
 | L2 | Đã sửa: điền sẵn bằng `SoTien.hienThi` | `SoTienTest`, `CongNoIT` |
 | L3 | Đã sửa: `dd/MM/uuuu` + `ResolverStyle.STRICT` | `NgayUtilTest` |
 | N1, N2 | Đã sửa: `LoiCsdl` tách mất kết nối / thiếu cấu hình / lỗi dữ liệu; `SoTien.doc` chặn số trên 1.000.000.000 đ | `LoiCsdlTest`, `SoTienTest`, `KhoanPhiServiceTest`, `CongNoIT` |
