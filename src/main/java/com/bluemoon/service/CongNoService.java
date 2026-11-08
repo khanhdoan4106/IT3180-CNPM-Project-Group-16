@@ -75,9 +75,12 @@ public class CongNoService {
     /**
      * Thang hien tai da chot chua, de Trang chinh nhac chot.
      *
+     * @param nguoi tai khoan dang dang nhap
      * @return true neu thang hien tai chua co dot chot
+     * @throws NghiepVuException neu chua dang nhap hoac khong co quyen
      */
-    public boolean canNhacChot() {
+    public boolean canNhacChot(TaiKhoan nguoi) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI, VaiTro.THU_QUY);
         return !dao.daChot(thangHienTai());
     }
 
@@ -158,6 +161,7 @@ public class CongNoService {
      * @throws NghiepVuException nhu {@link #xemTruoc}
      */
     public KetQuaChot chot(TaiKhoan nguoi, YearMonth thang) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI, VaiTro.THU_QUY);
         KetQuaTinhCongNo tinh = xemTruoc(nguoi, thang);
         boolean lanDau = !dao.daChot(thang);
         int soMoi = dao.chot(thang, nguoi.getId(), tinh.khoan());

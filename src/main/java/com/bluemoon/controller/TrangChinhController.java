@@ -92,7 +92,7 @@ public class TrangChinhController {
         try {
             CongNoService congNo = new CongNoService(new CongNoDaoImpl(),
                     new KhoanPhiDaoImpl(), new HoGiaDinhDaoImpl());
-            if (congNo.canNhacChot()) {
+            if (congNo.canNhacChot(PhienLamViec.hienTai())) {
                 YearMonth t = congNo.thangHienTai();
                 nhacChotLabel.setText("Tháng " + t.getMonthValue() + "/"
                         + t.getYear() + " chưa chốt công nợ. Chốt để tạo"
@@ -100,8 +100,8 @@ public class TrangChinhController {
                 nhacChotBox.setVisible(true);
                 nhacChotBox.setManaged(true);
             }
-        } catch (CauHinhException | DaoException e) {
-            // Khong nhac duoc thi bo qua; man hinh chuc nang se bao loi CSDL.
+        } catch (NghiepVuException | CauHinhException | DaoException e) {
+            // Khong nhac duoc thi bo qua; man hinh chuc nang se bao loi.
         }
     }
 

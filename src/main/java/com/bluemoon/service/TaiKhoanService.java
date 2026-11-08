@@ -78,10 +78,7 @@ public class TaiKhoanService {
      */
     public TaiKhoan dangKy(TaiKhoan nguoiTao, String tenDangNhap,
             String hoTen, String matKhau, String nhapLai, VaiTro vaiTro) {
-        if (nguoiTao == null || nguoiTao.getVaiTro() != VaiTro.QUAN_TRI) {
-            throw new NghiepVuException(
-                    "Chỉ Quản trị viên mới được đăng ký tài khoản");
-        }
+        PhanQuyen.yeuCau(nguoiTao, VaiTro.QUAN_TRI);
         String ten = tenDangNhap == null ? "" : tenDangNhap.trim();
         if (!TEN_HOP_LE.matcher(ten).matches()) {
             throw new NghiepVuException("Tên đăng nhập gồm 3-50 ký tự: chữ"
@@ -111,14 +108,10 @@ public class TaiKhoanService {
     }
 
     /**
-     * Doi mat khau cua chinh nguoi dung.
-     *
-     * @param tk tai khoan dang dang nhap
-     * @param matKhauCu mat khau hien tai
-     * @param matKhauMoi mat khau moi
-     * @throws NghiepVuException neu mat khau cu sai hoac mat khau moi yeu
+     * Kiem tra mat khau cu, mat khau moi roi luu; chi goi sau khi da kiem
+     * tra quyen va o nhap lai.
      */
-    public void doiMatKhau(TaiKhoan tk, String matKhauCu,
+    private void luuMatKhauMoi(TaiKhoan tk, String matKhauCu,
             String matKhauMoi) {
         if (!MatKhauUtil.kiemTra(matKhauCu, tk.getMatKhauBam())) {
             throw new NghiepVuException("Mật khẩu hiện tại không đúng");
@@ -147,7 +140,7 @@ public class TaiKhoanService {
             throw new NghiepVuException(
                     "Mật khẩu mới phải khác mật khẩu hiện tại");
         }
-        doiMatKhau(tk, matKhauCu, matKhauMoi);
+        luuMatKhauMoi(tk, matKhauCu, matKhauMoi);
     }
 
     /**

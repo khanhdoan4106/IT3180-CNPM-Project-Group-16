@@ -143,7 +143,8 @@ class TaiKhoanServiceTest {
 
     @Test
     void doiMatKhauThanhCongLuuBam() {
-        service.doiMatKhau(admin, "matkhau123", "matkhaumoi456");
+        service.doiMatKhau(admin, "matkhau123", "matkhaumoi456",
+                "matkhaumoi456");
         assertTrue(MatKhauUtil.kiemTra("matkhaumoi456",
                 dao.matKhauMoiNhat));
     }
@@ -151,13 +152,14 @@ class TaiKhoanServiceTest {
     @Test
     void doiMatKhauSaiMatKhauCu() {
         assertThrows(NghiepVuException.class,
-                () -> service.doiMatKhau(admin, "sai", "matkhaumoi456"));
+                () -> service.doiMatKhau(admin, "sai", "matkhaumoi456",
+                        "matkhaumoi456"));
     }
 
     @Test
     void matKhauMoiQuaNganBiTuChoi() {
         assertThrows(NghiepVuException.class,
-                () -> service.doiMatKhau(admin, "matkhau123", "123"));
+                () -> service.doiMatKhau(admin, "matkhau123", "123", "123"));
     }
 
     @Test
@@ -258,6 +260,18 @@ class TaiKhoanServiceTest {
         assertThrows(NghiepVuException.class,
                 () -> service.dangKy(null, "ketoan01", "Nguyen Van A",
                         "matkhau123", "matkhau123", VaiTro.THU_QUY));
+        assertFalse(dao.theoTen.containsKey("ketoan01"));
+    }
+
+    @Test
+    void quanTriVienBiKhoaKhongDangKyDuoc() {
+        // PhanQuyen: tai khoan trong phien da bi khoa thi khong thao tac.
+        TaiKhoan biKhoa = new TaiKhoan(9, "qtcu", "x", "QT cũ",
+                VaiTro.QUAN_TRI, false);
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.dangKy(biKhoa, "ketoan01", "Nguyen Van A",
+                        "matkhau123", "matkhau123", VaiTro.THU_QUY));
+        assertEquals(PhanQuyen.LOI_CHUA_DANG_NHAP, e.getMessage());
         assertFalse(dao.theoTen.containsKey("ketoan01"));
     }
 

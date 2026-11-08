@@ -141,11 +141,11 @@ class CongNoServiceTest {
     @Test
     void chotLuuVaChotLaiKhongTaoTrung() {
         // AC-027, AC-028
-        assertTrue(service.canNhacChot());
+        assertTrue(service.canNhacChot(thuQuy));
         CongNoService.KetQuaChot lan1 = service.chot(thuQuy, T12);
         assertTrue(lan1.lanDau());
         assertEquals(4, lan1.soMoi());
-        assertFalse(service.canNhacChot());
+        assertFalse(service.canNhacChot(thuQuy));
 
         CongNoService.KetQuaChot lan2 = service.chot(admin, T12);
         assertFalse(lan2.lanDau());
@@ -217,6 +217,17 @@ class CongNoServiceTest {
         }
         assertThrows(NghiepVuException.class,
                 () -> service.suaSoTien(admin, 999, "1", null));
+    }
+
+    @Test
+    void nhacChotCanDangNhap() {
+        assertThrows(NghiepVuException.class,
+                () -> service.canNhacChot(null));
+        TaiKhoan biKhoa = new TaiKhoan(3, "cu", "x", "Cũ", VaiTro.THU_QUY,
+                false);
+        assertThrows(NghiepVuException.class,
+                () -> service.canNhacChot(biKhoa));
+        assertTrue(service.canNhacChot(admin));
     }
 
     @Test
