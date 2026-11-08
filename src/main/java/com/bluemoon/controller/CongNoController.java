@@ -200,7 +200,8 @@ public class CongNoController {
     /** Hop thoai sua so tien; tra ve {so tien, ghi chu} hoac rong. */
     private static Optional<String[]> hoiSoTienMoi(PhaiNop p) {
         Dialog<String[]> d = new Dialog<>();
-        d.setTitle("Sửa khoản thu – " + p.maCanHo());
+        // Thuat ngu: "khoan thu" la muc danh muc, cua ho la "khoan phai nop".
+        d.setTitle("Sửa khoản phải nộp – " + p.maCanHo());
         d.setHeaderText(p.tenKhoan() + " · giá trị cũ "
                 + SoTien.hienThi(p.soTien()));
         ButtonType luu = new ButtonType("Lưu thay đổi",
@@ -214,7 +215,7 @@ public class CongNoController {
         GridPane luoi = new GridPane();
         luoi.setHgap(10);
         luoi.setVgap(10);
-        luoi.addRow(0, new Label("Số tiền (đ)"), soTien);
+        luoi.addRow(0, new Label("Số tiền"), soTien);
         luoi.addRow(1, new Label("Ghi chú"), ghiChu);
         d.getDialogPane().setContent(luoi);
         d.setResultConverter(b -> b == luu

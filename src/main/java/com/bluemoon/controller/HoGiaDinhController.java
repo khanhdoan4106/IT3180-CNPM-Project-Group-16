@@ -174,14 +174,14 @@ public class HoGiaDinhController {
     @FXML
     private void onLuu() {
         if (NgayUtil.saiDinhDang(ngayPicker)) {
-            baoLoi("Ngày chuyển đến phải có dạng dd/mm/yyyy");
+            baoLoi(NgayUtil.loi("Ngày chuyển đến"));
             return;
         }
         if (dangSua == null) {
             for (DatePicker p : new DatePicker[] {ngaySinhChuHoPicker,
                     tamTruTuChuHoPicker, tamTruDenChuHoPicker}) {
                 if (NgayUtil.saiDinhDang(p)) {
-                    baoLoi("Ngày phải có dạng dd/mm/yyyy");
+                    baoLoi(NgayUtil.loi("Ngày"));
                     return;
                 }
             }
@@ -237,7 +237,7 @@ public class HoGiaDinhController {
             service.danhDauChuyenDi(nguoi(), dangSua.ho().getId());
             onNhapMoi();
             taiLai();
-            baoThanhCong("Hộ " + ma + " đã được đánh dấu chuyển đi");
+            baoThanhCong("Đã đánh dấu hộ " + ma + " chuyển đi");
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {

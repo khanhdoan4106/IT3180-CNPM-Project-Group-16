@@ -123,7 +123,7 @@ public class KhoanThuController {
     private void onTao() {
         if (NgayUtil.saiDinhDang(tuNgayPicker)
                 || NgayUtil.saiDinhDang(denNgayPicker)) {
-            baoLoi("Ngày không đúng định dạng dd/mm/yyyy");
+            baoLoi(NgayUtil.loi("Ngày"));
             return;
         }
         try {

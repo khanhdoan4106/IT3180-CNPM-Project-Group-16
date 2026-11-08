@@ -24,6 +24,18 @@ public final class NgayUtil {
     }
 
     /**
+     * Thong bao khi o ngay co chu nhung doc khong duoc: sai dang, hoac
+     * dung dang nhung la ngay khong co (31/02).
+     *
+     * @param truong ten truong, vd "Ngày chuyển đến"
+     * @return thong bao loi
+     */
+    public static String loi(String truong) {
+        return truong + " không hợp lệ: nhập ngày có thật theo dạng"
+                + " dd/mm/yyyy, ví dụ 08/11/2026";
+    }
+
+    /**
      * Doc chuoi ngay dd/MM/yyyy.
      *
      * @param chu chuoi nguoi dung go, co the null

@@ -38,6 +38,13 @@ class NgayUtilTest {
     }
 
     @Test
+    void thongBaoLoiNoiRoNgayPhaiCoThat() {
+        assertEquals("Ngày chuyển đến không hợp lệ: nhập ngày có thật theo"
+                + " dạng dd/mm/yyyy, ví dụ 08/11/2026",
+                NgayUtil.loi("Ngày chuyển đến"));
+    }
+
+    @Test
     void hienThiRoiDocLaiDuoc() {
         LocalDate ngay = LocalDate.of(2026, 3, 5);
         assertEquals("05/03/2026", NgayUtil.hien(ngay));

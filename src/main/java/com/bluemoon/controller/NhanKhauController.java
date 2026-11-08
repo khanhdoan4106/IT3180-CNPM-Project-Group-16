@@ -206,7 +206,7 @@ public class NhanKhauController {
         for (DatePicker p : new DatePicker[] {ngaySinhPicker, tamTruTuPicker,
                 tamTruDenPicker}) {
             if (NgayUtil.saiDinhDang(p)) {
-                baoLoi("Ngày phải có dạng dd/mm/yyyy");
+                baoLoi(NgayUtil.loi("Ngày"));
                 return;
             }
         }
@@ -248,9 +248,12 @@ public class NhanKhauController {
                 QuanHeChuHo.VO_CHONG.getNhan(), QuanHeChuHo.VO_CHONG.getNhan(),
                 QuanHeChuHo.CON.getNhan(), QuanHeChuHo.KHAC.getNhan(), ROI_HO);
         hoi.setTitle("Đổi chủ hộ");
-        hoi.setHeaderText("Đặt " + dangSua.getHoTen() + " làm chủ hộ "
+        hoi.setHeaderText("Đặt " + dangSua.getHoTen() + " làm chủ hộ căn "
                 + ho.ho().getMaCanHo());
-        hoi.setContentText("Chủ hộ hiện tại:");
+        // Nhan noi ro dang chon quan he cua chu ho cu, khong phai chon nguoi.
+        hoi.setContentText("Quan hệ của "
+                + (ho.tenChuHo() == null ? "chủ hộ hiện tại" : ho.tenChuHo())
+                + " với chủ hộ mới:");
         HopThoai.datNut(hoi, HopThoai.DONG_Y);
         Optional<String> chon = hoi.showAndWait();
         if (chon.isEmpty()) {
@@ -268,7 +271,7 @@ public class NhanKhauController {
                     quanHeCu);
             onNhapMoi();
             taiThanhVien();
-            baoThanhCong(ten + " đã là chủ hộ");
+            baoThanhCong("Đã đặt " + ten + " làm chủ hộ");
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -282,7 +285,7 @@ public class NhanKhauController {
             return;
         }
         if (!HopThoai.xacNhan("Đánh dấu " + dangSua.getHoTen()
-                + " đã rời hộ?\nDữ liệu vẫn được giữ lại.")) {
+                + " đã chuyển đi khỏi hộ?\nDữ liệu vẫn được giữ lại.")) {
             return;
         }
         try {
@@ -290,7 +293,7 @@ public class NhanKhauController {
             service.danhDauChuyenDi(nguoi(), dangSua.getId());
             onNhapMoi();
             taiThanhVien();
-            baoThanhCong(ten + " đã được đánh dấu chuyển đi");
+            baoThanhCong("Đã đánh dấu " + ten + " chuyển đi");
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -306,7 +309,7 @@ public class NhanKhauController {
         }
         if (NgayUtil.saiDinhDang(dotTuPicker)
                 || NgayUtil.saiDinhDang(dotDenPicker)) {
-            baoDot("Ngày phải có dạng dd/mm/yyyy", true);
+            baoDot(NgayUtil.loi("Ngày"), true);
             return;
         }
         ThongTinDot tt = new ThongTinDot(loaiDotCombo.getValue(),
