@@ -213,7 +213,8 @@ public class CongNoController {
         ButtonType luu = new ButtonType("Lưu thay đổi",
                 ButtonBar.ButtonData.OK_DONE);
         d.getDialogPane().getButtonTypes().addAll(luu, ButtonType.CANCEL);
-        TextField soTien = new TextField(p.soTien().toPlainString());
+        // Cung dang SoTien.doc nhan (377.500 đ); CSDL tra ve 377500.00.
+        TextField soTien = new TextField(SoTien.hienThi(p.soTien()));
         TextField ghiChu = new TextField(p.ghiChu() == null ? ""
                 : p.ghiChu());
         ghiChu.setPromptText("Không bắt buộc");

@@ -97,7 +97,8 @@ public class KhoanThuController {
         }
         dangChonLabel.setText("Đang chọn: " + k.ten() + ". Phí dịch vụ "
                 + "2.500 – 16.500 đ/m², phí quản lý từ 7.000 đ/m².");
-        donGiaField.setText(k.donGia().toPlainString());
+        // Cung dang SoTien.doc nhan (5.000 đ); CSDL tra ve 5000.00.
+        donGiaField.setText(SoTien.hienThi(k.donGia()));
     }
 
     @FXML
