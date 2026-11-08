@@ -22,8 +22,29 @@
 4. Sao chép `config/db.properties.example` thành `config/db.properties`,
    điền `user` và `password`. File này nằm trong `.gitignore`, không commit.
 
-Khi `schema.sql` thay đổi cấu trúc bảng đã có, dựng lại CSDL bằng root:
-`DROP DATABASE bluemoon;` rồi chạy lại bước 2 (quyền ở bước 3 vẫn giữ).
+### Dựng lại CSDL khi kéo bản mới
+
+`schema.sql` chỉ tạo bảng **chưa có** (`CREATE TABLE IF NOT EXISTS`), không
+thêm cột vào bảng đã có, và dự án không có script nâng cấp. Vì vậy, khi bản
+mới đổi cấu trúc bảng đã có, CSDL cũ phải dựng lại từ đầu:
+
+| Từ bản | Lên bản | Thay đổi bảng đã có | Cần dựng lại |
+|---|---|---|---|
+| `v0.1.0` (Sprint 1) | `v0.2.0` (Sprint 2) | Thêm cột `tai_khoan.so_dien_thoai` | Có |
+
+Dấu hiệu chưa dựng lại: đăng nhập báo "Có lỗi khi đọc hoặc lưu dữ liệu"
+(CSDL thiếu cột mà ứng dụng đọc).
+
+Cách làm, bằng tài khoản root trong MySQL Workbench:
+
+1. `DROP DATABASE bluemoon;` (xóa **toàn bộ** dữ liệu trong CSDL này, kể
+   cả dữ liệu tự nhập khi thử; dữ liệu mẫu sẽ có lại ở bước 2).
+2. Chạy lại `database/schema.sql`, rồi `database/seed.sql` (bước 2 ở
+   trên).
+3. Không cần tạo lại user: quyền `GRANT ALL ON bluemoon.*` ở bước 3 vẫn
+   còn sau khi xóa CSDL.
+
+Khi mở Pull Request đổi cấu trúc bảng đã có, thêm một dòng vào bảng trên.
 
 ## 3. Chạy ứng dụng
 
@@ -43,6 +64,25 @@ IntelliJ → Maven → bluemoon → Lifecycle → `test`. Kết quả mong đợ
 
 Dòng lệnh (cần Maven 3.9+ trong PATH): `mvn test`, chạy app: `mvn javafx:run`.
 
+Kiểm thử tích hợp với MySQL thật (lớp `*IT`, thử DAO và giao dịch): tạo một
+CSDL **riêng có chữ `test` trong tên**, vì mỗi test xóa và tạo lại toàn bộ
+bảng của CSDL đó.
+
+```sql
+CREATE DATABASE bluemoon_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+GRANT ALL ON bluemoon_test.* TO 'bluemoon'@'localhost';
+```
+
+Rồi đặt biến môi trường và chạy `mvn verify -Pmysql` (PowerShell):
+
+```powershell
+$env:BLUEMOON_DB_URL = "jdbc:mysql://localhost:3306/bluemoon_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh&characterEncoding=UTF-8"
+mvn verify -Pmysql
+```
+
+Thiếu biến này, hoặc tên CSDL không có chữ `test`, thì các lớp `*IT` tự bỏ
+qua. `mvn verify` không có `-Pmysql` không chạy kiểm thử tích hợp.
+
 ## 5. Chuẩn bị demo
 
 Ngày của dữ liệu mẫu tạm trú/tạm vắng được tính lúc chạy `seed.sql` (theo
@@ -59,7 +99,9 @@ màn hình Nhân khẩu:
 
 | Hiện tượng | Cách xử lý |
 |---|---|
-| Báo không kết nối được cơ sở dữ liệu | Sai `user`/`password` trong `config/db.properties`, hoặc MySQL chưa chạy |
+| "Không kết nối được cơ sở dữ liệu" | Sai `user`/`password` trong `config/db.properties`, hoặc MySQL chưa chạy |
+| "Thiếu hoặc sai cấu hình kết nối cơ sở dữ liệu" | Chưa có `config/db.properties` (mục 2, bước 4) |
+| "Có lỗi khi đọc hoặc lưu dữ liệu" ngay khi đăng nhập, sau khi kéo bản mới | CSDL tạo từ bản cũ, thiếu cột mới: [dựng lại CSDL](#dựng-lại-csdl-khi-kéo-bản-mới) |
 | `release version 21 not supported` | Chọn JDK 21 trong Project Structure |
 | `'mvn' is not recognized` | Chạy bằng bảng Maven trong IntelliJ |
 | Không thấy cửa sổ ứng dụng | Cửa sổ nằm sau IntelliJ, dùng Alt+Tab |

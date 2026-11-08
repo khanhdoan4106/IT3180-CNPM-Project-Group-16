@@ -31,9 +31,6 @@ import javafx.scene.layout.VBox;
  */
 public class KhoanThuController {
 
-    private static final String LOI_CSDL =
-            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
-
     private final KhoanPhiService service =
             new KhoanPhiService(new KhoanPhiDaoImpl());
 
@@ -97,7 +94,8 @@ public class KhoanThuController {
         }
         dangChonLabel.setText("Đang chọn: " + k.ten() + ". Phí dịch vụ "
                 + "2.500 – 16.500 đ/m², phí quản lý từ 7.000 đ/m².");
-        donGiaField.setText(k.donGia().toPlainString());
+        // Cung dang SoTien.doc nhan (5.000 đ); CSDL tra ve 5000.00.
+        donGiaField.setText(SoTien.hienThi(k.donGia()));
     }
 
     @FXML
@@ -117,15 +115,17 @@ public class KhoanThuController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
     @FXML
     private void onTao() {
-        if (NgayUtil.saiDinhDang(tuNgayPicker)
-                || NgayUtil.saiDinhDang(denNgayPicker)) {
-            baoLoi("Ngày không đúng định dạng dd/mm/yyyy");
+        String loiNgay = NgayUtil.loiDauTien(
+                NgayUtil.loiCuaO(tuNgayPicker, "Từ ngày"),
+                NgayUtil.loiCuaO(denNgayPicker, "Đến ngày"));
+        if (loiNgay != null) {
+            baoLoi(loiNgay);
             return;
         }
         try {
@@ -138,7 +138,7 @@ public class KhoanThuController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -157,7 +157,7 @@ public class KhoanThuController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 

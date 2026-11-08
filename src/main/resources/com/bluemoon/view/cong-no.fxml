@@ -23,11 +23,11 @@
                 <VBox spacing="2" HBox.hgrow="ALWAYS">
                     <Label text="Chốt công nợ đầu tháng"
                            styleClass="tieu-de-trang"/>
-                    <Label text="Tạo khoản phải nộp phí dịch vụ và phí quản lý cho mọi hộ đang ở."
+                    <Label text="Tạo khoản phải nộp phí dịch vụ và phí quản lý cho mọi hộ đang ở." wrapText="true"
                            styleClass="phu-de"/>
                 </VBox>
                 <ComboBox fx:id="thangCombo" prefWidth="160"/>
-                <Button text="Xem trước" onAction="#onXemTruoc"/>
+                <Button minWidth="-Infinity" text="Xem trước" onAction="#onXemTruoc"/>
             </HBox>
             <Label fx:id="trangThaiLabel" wrapText="true"/>
             <Label fx:id="boQuaLabel" styleClass="loi" wrapText="true"/>
@@ -64,12 +64,12 @@
             </BorderPane.margin>
             <Label fx:id="thongBaoLabel" wrapText="true"/>
             <HBox spacing="10">
-                <Label text="Sau khi chốt, có thể sửa khoản của từng hộ khi hộ chưa đóng tiền."
+                <Label text="Sau khi chốt, có thể sửa khoản của từng hộ khi hộ chưa đóng tiền." wrapText="true"
                        styleClass="phu-de"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="suaButton" text="Sửa khoản đã chọn"
+                <Button minWidth="-Infinity" fx:id="suaButton" text="Sửa khoản đã chọn"
                         onAction="#onSua"/>
-                <Button text="Chốt công nợ"
+                <Button minWidth="-Infinity" text="Chốt công nợ"
                         styleClass="nut-chinh" onAction="#onChot"/>
             </HBox>
         </VBox>

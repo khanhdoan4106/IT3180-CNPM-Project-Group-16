@@ -1,3 +1,30 @@
+/* Phong Be Vietnam Pro (OFL, fonts/OFL.txt) nhung san de moi may va CI
+   ve chu giong nhau, khong phu thuoc phong cai tren may (docs/design/ui.md).
+   JavaFX doc do dam tu tep phong, khong nhan font-weight trong @font-face:
+   Regular va Bold cung ho "Be Vietnam Pro" (dung -fx-font-weight: bold);
+   Medium, SemiBold la ho rieng "Be Vietnam Pro Medium" / "... SemiBold".
+   PhongChu.nap() nap lai bang luong doc vi JavaFX khong nap duoc url() khi
+   duong dan co dau cach. */
+@font-face {
+    font-family: "Be Vietnam Pro";
+    src: url("../fonts/BeVietnamPro-Regular.ttf");
+}
+
+@font-face {
+    font-family: "Be Vietnam Pro";
+    src: url("../fonts/BeVietnamPro-Medium.ttf");
+}
+
+@font-face {
+    font-family: "Be Vietnam Pro";
+    src: url("../fonts/BeVietnamPro-SemiBold.ttf");
+}
+
+@font-face {
+    font-family: "Be Vietnam Pro";
+    src: url("../fonts/BeVietnamPro-Bold.ttf");
+}
+
 /* Bang mau tam thoi - thay bang palette chot tren Figma (docs/design). */
 .root {
     -mau-chinh: #2563eb;
@@ -5,7 +32,7 @@
     -mau-nen: #f1f5f9;
     -mau-chu: #0f172a;
     -mau-loi: #dc2626;
-    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-family: "Be Vietnam Pro";
     -fx-font-size: 14px;
     -fx-text-fill: -mau-chu;
 }
@@ -98,4 +125,10 @@
 .table-cell.qua-han {
     -fx-text-fill: -mau-loi;
     -fx-font-weight: bold;
+}
+
+/* Form ben phai cuon duoc (Ho gia dinh, Nhan khau): khung trang .the nam
+   tren ScrollPane, vung nhin trong suot. */
+.cuon-form > .viewport {
+    -fx-background-color: transparent;
 }

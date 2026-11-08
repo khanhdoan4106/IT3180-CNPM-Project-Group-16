@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.function.Function;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -62,7 +61,7 @@ final class BangLichSu {
         TableView<BienDong> bang = taoBang(ds, false);
         bang.setPrefSize(820, 360);
         d.getDialogPane().setContent(bang);
-        d.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        d.getDialogPane().getButtonTypes().add(HopThoai.DONG);
         d.showAndWait();
     }
 

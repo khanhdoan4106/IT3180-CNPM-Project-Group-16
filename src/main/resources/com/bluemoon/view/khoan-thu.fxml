@@ -52,7 +52,7 @@
                 <Region HBox.hgrow="ALWAYS"/>
                 <TextField fx:id="donGiaField" promptText="Đơn giá đ/m²"
                            prefWidth="140"/>
-                <Button text="Sửa đơn giá" onAction="#onSuaDonGia"/>
+                <Button minWidth="-Infinity" text="Sửa đơn giá" onAction="#onSuaDonGia"/>
             </HBox>
         </VBox>
     </center>
@@ -81,9 +81,9 @@
                    styleClass="phu-de" wrapText="true"/>
             <Region VBox.vgrow="ALWAYS"/>
             <HBox spacing="10">
-                <Button text="Tạo khoản thu" styleClass="nut-chinh"
+                <Button minWidth="-Infinity" text="Tạo khoản thu" styleClass="nut-chinh"
                         defaultButton="true" onAction="#onTao"/>
-                <Button text="Nhập mới" onAction="#onNhapMoi"/>
+                <Button minWidth="-Infinity" text="Nhập mới" onAction="#onNhapMoi"/>
             </HBox>
         </VBox>
     </right>

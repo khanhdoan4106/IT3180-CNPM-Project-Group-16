@@ -32,9 +32,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -51,9 +49,6 @@ import javafx.scene.layout.GridPane;
  * tru/tam vang. Chi chuyen su kien cho service va hien ket qua.
  */
 public class NhanKhauController {
-
-    private static final String LOI_CSDL =
-            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
 
     private final NhanKhauService service = new NhanKhauService(
             new NhanKhauDaoImpl(), new HoGiaDinhDaoImpl());
@@ -208,12 +203,13 @@ public class NhanKhauController {
             baoLoi("Vui lòng chọn hộ gia đình");
             return;
         }
-        for (DatePicker p : new DatePicker[] {ngaySinhPicker, tamTruTuPicker,
-                tamTruDenPicker}) {
-            if (NgayUtil.saiDinhDang(p)) {
-                baoLoi("Ngày phải có dạng dd/mm/yyyy");
-                return;
-            }
+        String loiNgay = NgayUtil.loiDauTien(
+                NgayUtil.loiCuaO(ngaySinhPicker, "Ngày sinh"),
+                NgayUtil.loiCuaO(tamTruTuPicker, "Tạm trú từ"),
+                NgayUtil.loiCuaO(tamTruDenPicker, "Tạm trú đến"));
+        if (loiNgay != null) {
+            baoLoi(loiNgay);
+            return;
         }
         ThongTinNhanKhau tt = new ThongTinNhanKhau(hoTenField.getText(),
                 NgayUtil.doc(ngaySinhPicker), gioiTinhCombo.getValue(),
@@ -235,7 +231,7 @@ public class NhanKhauController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -253,9 +249,13 @@ public class NhanKhauController {
                 QuanHeChuHo.VO_CHONG.getNhan(), QuanHeChuHo.VO_CHONG.getNhan(),
                 QuanHeChuHo.CON.getNhan(), QuanHeChuHo.KHAC.getNhan(), ROI_HO);
         hoi.setTitle("Đổi chủ hộ");
-        hoi.setHeaderText("Đặt " + dangSua.getHoTen() + " làm chủ hộ "
+        hoi.setHeaderText("Đặt " + dangSua.getHoTen() + " làm chủ hộ căn "
                 + ho.ho().getMaCanHo());
-        hoi.setContentText("Chủ hộ hiện tại:");
+        // Nhan noi ro dang chon quan he cua chu ho cu, khong phai chon nguoi.
+        hoi.setContentText("Quan hệ của "
+                + (ho.tenChuHo() == null ? "chủ hộ hiện tại" : ho.tenChuHo())
+                + " với chủ hộ mới:");
+        HopThoai.datNut(hoi, HopThoai.DONG_Y);
         Optional<String> chon = hoi.showAndWait();
         if (chon.isEmpty()) {
             return;
@@ -272,11 +272,11 @@ public class NhanKhauController {
                     quanHeCu);
             onNhapMoi();
             taiThanhVien();
-            baoThanhCong(ten + " đã là chủ hộ");
+            baoThanhCong("Đã đặt " + ten + " làm chủ hộ");
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -285,13 +285,8 @@ public class NhanKhauController {
         if (dangSua == null) {
             return;
         }
-        Alert hoi = new Alert(Alert.AlertType.CONFIRMATION,
-                "Đánh dấu " + dangSua.getHoTen() + " đã rời hộ?"
-                        + "\nDữ liệu vẫn được giữ lại.",
-                ButtonType.OK, ButtonType.CANCEL);
-        hoi.setTitle("Xác nhận");
-        hoi.setHeaderText(null);
-        if (hoi.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+        if (!HopThoai.xacNhan("Đánh dấu " + dangSua.getHoTen()
+                + " đã chuyển đi khỏi hộ?\nDữ liệu vẫn được giữ lại.")) {
             return;
         }
         try {
@@ -299,11 +294,11 @@ public class NhanKhauController {
             service.danhDauChuyenDi(nguoi(), dangSua.getId());
             onNhapMoi();
             taiThanhVien();
-            baoThanhCong(ten + " đã được đánh dấu chuyển đi");
+            baoThanhCong("Đã đánh dấu " + ten + " chuyển đi");
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -313,9 +308,11 @@ public class NhanKhauController {
         if (nk == null) {
             return;
         }
-        if (NgayUtil.saiDinhDang(dotTuPicker)
-                || NgayUtil.saiDinhDang(dotDenPicker)) {
-            baoDot("Ngày phải có dạng dd/mm/yyyy", true);
+        String loiNgay = NgayUtil.loiDauTien(
+                NgayUtil.loiCuaO(dotTuPicker, "Từ ngày"),
+                NgayUtil.loiCuaO(dotDenPicker, "Đến ngày"));
+        if (loiNgay != null) {
+            baoDot(loiNgay, true);
             return;
         }
         ThongTinDot tt = new ThongTinDot(loaiDotCombo.getValue(),
@@ -330,7 +327,7 @@ public class NhanKhauController {
         } catch (NghiepVuException e) {
             baoDot(e.getMessage(), true);
         } catch (CauHinhException | DaoException e) {
-            baoDot(LOI_CSDL, true);
+            baoDot(LoiCsdl.thongBao(e), true);
         }
     }
 
@@ -346,7 +343,7 @@ public class NhanKhauController {
                     hoService.timKiem(nguoi(), "", false)));
         } catch (CauHinhException | DaoException e) {
             hoCombo.getItems().clear();
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -377,7 +374,7 @@ public class NhanKhauController {
             tinhTrang = new HashMap<>();
             bangNhanKhau.getItems().clear();
             soThanhVienLabel.setText("");
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -404,7 +401,7 @@ public class NhanKhauController {
                     dotService.theoNhanKhau(nguoi(), nk.getId())));
         } catch (CauHinhException | DaoException e) {
             bangDot.getItems().clear();
-            baoDot(LOI_CSDL, true);
+            baoDot(LoiCsdl.thongBao(e), true);
         }
     }
 

@@ -13,6 +13,7 @@ import com.bluemoon.model.VaiTro;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Clock;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,22 +75,28 @@ public class CongNoService {
     /**
      * Thang hien tai da chot chua, de Trang chinh nhac chot.
      *
+     * @param nguoi tai khoan dang dang nhap
      * @return true neu thang hien tai chua co dot chot
+     * @throws NghiepVuException neu chua dang nhap hoac khong co quyen
      */
-    public boolean canNhacChot() {
+    public boolean canNhacChot(TaiKhoan nguoi) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI, VaiTro.THU_QUY);
         return !dao.daChot(thangHienTai());
     }
 
     /**
-     * Tinh thu cong no mot thang, chua luu (AC-027): moi ho dang o nhan
-     * moi khoan bat buoc dang thu, so tien = dien tich x don gia, lam tron
-     * den dong. Ho chua co dien tich bi bo qua (AC-029).
+     * Tinh thu cong no mot thang, chua luu (AC-027): moi ho dang o da
+     * chuyen den truoc het thang (den giua thang van tinh du thang, gia
+     * dinh 15) nhan moi khoan bat buoc dang thu co hieu luc trong thang, so
+     * tien = dien tich x don gia, lam tron den dong. Ho chua co dien tich
+     * bi bo qua (AC-029).
      *
      * @param nguoi tai khoan dang dang nhap
      * @param thang thang can tinh
      * @return cac khoan phai nop va cac ho bi bo qua
      * @throws NghiepVuException neu khong co quyen, chua chon thang, thang
-     *         o tuong lai hoac chua co khoan bat buoc nao
+     *         o tuong lai, thang khong co khoan bat buoc nao ap dung hoac
+     *         khong co ho nao o trong thang
      */
     public KetQuaTinhCongNo xemTruoc(TaiKhoan nguoi, YearMonth thang) {
         PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI, VaiTro.THU_QUY);
@@ -97,8 +104,7 @@ public class CongNoService {
             throw new NghiepVuException("Chưa chọn tháng");
         }
         if (thang.isAfter(thangHienTai())) {
-            throw new NghiepVuException("Chưa đến tháng "
-                    + thang.getMonthValue() + "/" + thang.getYear()
+            throw new NghiepVuException("Chưa đến " + tenThang(thang)
                     + ", chưa chốt được");
         }
         List<KhoanPhi> batBuoc = khoanPhiDao.danhSach().stream()
@@ -106,10 +112,24 @@ public class CongNoService {
         if (batBuoc.isEmpty()) {
             throw new NghiepVuException("Chưa có khoản thu bắt buộc nào");
         }
+        batBuoc = batBuoc.stream().filter(k -> k.apDungTrong(thang)).toList();
+        if (batBuoc.isEmpty()) {
+            throw new NghiepVuException(tenThang(thang) + " chưa có khoản"
+                    + " thu bắt buộc nào được áp dụng, không có gì để chốt");
+        }
+        LocalDate cuoiThang = thang.atEndOfMonth();
+        List<HoGiaDinh> dangO = hoDao.timKiem("", false).stream()
+                .map(TomTatHo::ho)
+                .filter(h -> h.getNgayChuyenDen() != null
+                        && !h.getNgayChuyenDen().isAfter(cuoiThang))
+                .toList();
+        if (dangO.isEmpty()) {
+            throw new NghiepVuException(tenThang(thang) + " chưa có hộ nào"
+                    + " ở chung cư, không có gì để chốt");
+        }
         List<PhaiNop> khoan = new ArrayList<>();
         List<String> boQua = new ArrayList<>();
-        for (TomTatHo t : hoDao.timKiem("", false)) {
-            HoGiaDinh ho = t.ho();
+        for (HoGiaDinh ho : dangO) {
             BigDecimal dt = ho.getDienTich();
             if (dt == null || dt.signum() <= 0) {
                 boQua.add(ho.getMaCanHo());
@@ -126,6 +146,11 @@ public class CongNoService {
         return new KetQuaTinhCongNo(thang, khoan, boQua);
     }
 
+    /** "Tháng 6/2025", dung trong thong bao. */
+    private static String tenThang(YearMonth thang) {
+        return "Tháng " + thang.getMonthValue() + "/" + thang.getYear();
+    }
+
     /**
      * Chot cong no mot thang (AC-027, AC-028). Chot lai cung thang chi them
      * ho hoac khoan con thieu; khoan da co, ke ca da sua, giu nguyen.
@@ -136,6 +161,7 @@ public class CongNoService {
      * @throws NghiepVuException nhu {@link #xemTruoc}
      */
     public KetQuaChot chot(TaiKhoan nguoi, YearMonth thang) {
+        PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI, VaiTro.THU_QUY);
         KetQuaTinhCongNo tinh = xemTruoc(nguoi, thang);
         boolean lanDau = !dao.daChot(thang);
         int soMoi = dao.chot(thang, nguoi.getId(), tinh.khoan());

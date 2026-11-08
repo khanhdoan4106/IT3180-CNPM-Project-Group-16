@@ -34,9 +34,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -52,9 +50,6 @@ import javafx.scene.layout.VBox;
  * hien ket qua, khong chua nghiep vu.
  */
 public class HoGiaDinhController {
-
-    private static final String LOI_CSDL =
-            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
 
     private final HoGiaDinhService service = new HoGiaDinhService(
             new HoGiaDinhDaoImpl(), new NhanKhauDaoImpl());
@@ -178,18 +173,19 @@ public class HoGiaDinhController {
 
     @FXML
     private void onLuu() {
-        if (NgayUtil.saiDinhDang(ngayPicker)) {
-            baoLoi("Ngày chuyển đến phải có dạng dd/mm/yyyy");
+        // Phan chu ho chi co khi them moi; ten o theo nhan tren form.
+        String loiNgay = NgayUtil.loiDauTien(
+                NgayUtil.loiCuaO(ngayPicker, "Ngày chuyển đến"),
+                dangSua != null ? null
+                        : NgayUtil.loiCuaO(ngaySinhChuHoPicker, "Ngày sinh"),
+                dangSua != null ? null
+                        : NgayUtil.loiCuaO(tamTruTuChuHoPicker, "Tạm trú từ"),
+                dangSua != null ? null
+                        : NgayUtil.loiCuaO(tamTruDenChuHoPicker,
+                                "Tạm trú đến"));
+        if (loiNgay != null) {
+            baoLoi(loiNgay);
             return;
-        }
-        if (dangSua == null) {
-            for (DatePicker p : new DatePicker[] {ngaySinhChuHoPicker,
-                    tamTruTuChuHoPicker, tamTruDenChuHoPicker}) {
-                if (NgayUtil.saiDinhDang(p)) {
-                    baoLoi("Ngày phải có dạng dd/mm/yyyy");
-                    return;
-                }
-            }
         }
         ThongTinHo tt = new ThongTinHo(maField.getText(),
                 loaiCombo.getValue(), tangField.getText(),
@@ -218,7 +214,7 @@ public class HoGiaDinhController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -233,13 +229,8 @@ public class HoGiaDinhController {
         if (dangSua == null) {
             return;
         }
-        Alert hoi = new Alert(Alert.AlertType.CONFIRMATION,
-                "Đánh dấu hộ " + dangSua + " đã chuyển đi?"
-                        + "\nDữ liệu của hộ vẫn được giữ lại." + canhBaoNo(),
-                ButtonType.OK, ButtonType.CANCEL);
-        hoi.setTitle("Xác nhận");
-        hoi.setHeaderText(null);
-        if (hoi.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+        if (!HopThoai.xacNhan("Đánh dấu hộ " + dangSua + " đã chuyển đi?"
+                + "\nDữ liệu của hộ vẫn được giữ lại." + canhBaoNo())) {
             return;
         }
         try {
@@ -247,11 +238,11 @@ public class HoGiaDinhController {
             service.danhDauChuyenDi(nguoi(), dangSua.ho().getId());
             onNhapMoi();
             taiLai();
-            baoThanhCong("Hộ " + ma + " đã được đánh dấu chuyển đi");
+            baoThanhCong("Đã đánh dấu hộ " + ma + " chuyển đi");
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -264,7 +255,7 @@ public class HoGiaDinhController {
         } catch (CauHinhException | DaoException e) {
             bangHo.getItems().clear();
             soLuongLabel.setText("");
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -395,7 +386,7 @@ public class HoGiaDinhController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 

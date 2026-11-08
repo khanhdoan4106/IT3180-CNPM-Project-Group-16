@@ -20,7 +20,6 @@ import java.util.function.Function;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -39,8 +38,6 @@ import javafx.util.StringConverter;
  */
 public class CongNoController {
 
-    private static final String LOI_CSDL =
-            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
     /** So thang gan nhat hien trong o chon thang. */
     private static final int SO_THANG = 12;
 
@@ -133,7 +130,7 @@ public class CongNoController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -151,18 +148,14 @@ public class CongNoController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
     @FXML
     private void onChot() {
-        Alert hoi = new Alert(Alert.AlertType.CONFIRMATION,
-                "Chốt công nợ " + tenThang().toLowerCase() + "?",
-                ButtonType.OK, ButtonType.CANCEL);
-        hoi.setTitle("Xác nhận");
-        hoi.setHeaderText(null);
-        if (hoi.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+        if (!HopThoai.xacNhan("Chốt công nợ " + tenThang().toLowerCase()
+                + "?")) {
             return;
         }
         try {
@@ -176,7 +169,7 @@ public class CongNoController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -200,27 +193,29 @@ public class CongNoController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
     /** Hop thoai sua so tien; tra ve {so tien, ghi chu} hoac rong. */
     private static Optional<String[]> hoiSoTienMoi(PhaiNop p) {
         Dialog<String[]> d = new Dialog<>();
-        d.setTitle("Sửa khoản thu – " + p.maCanHo());
+        // Thuat ngu: "khoan thu" la muc danh muc, cua ho la "khoan phai nop".
+        d.setTitle("Sửa khoản phải nộp – " + p.maCanHo());
         d.setHeaderText(p.tenKhoan() + " · giá trị cũ "
                 + SoTien.hienThi(p.soTien()));
         ButtonType luu = new ButtonType("Lưu thay đổi",
                 ButtonBar.ButtonData.OK_DONE);
-        d.getDialogPane().getButtonTypes().addAll(luu, ButtonType.CANCEL);
-        TextField soTien = new TextField(p.soTien().toPlainString());
+        HopThoai.datNut(d, luu);
+        // Cung dang SoTien.doc nhan (377.500 đ); CSDL tra ve 377500.00.
+        TextField soTien = new TextField(SoTien.hienThi(p.soTien()));
         TextField ghiChu = new TextField(p.ghiChu() == null ? ""
                 : p.ghiChu());
         ghiChu.setPromptText("Không bắt buộc");
         GridPane luoi = new GridPane();
         luoi.setHgap(10);
         luoi.setVgap(10);
-        luoi.addRow(0, new Label("Số tiền (đ)"), soTien);
+        luoi.addRow(0, new Label("Số tiền"), soTien);
         luoi.addRow(1, new Label("Ghi chú"), ghiChu);
         d.getDialogPane().setContent(luoi);
         d.setResultConverter(b -> b == luu

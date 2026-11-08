@@ -3,6 +3,7 @@ package com.bluemoon.util;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import javafx.scene.control.DatePicker;
 import javafx.util.StringConverter;
 
@@ -11,10 +12,70 @@ import javafx.util.StringConverter;
  */
 public final class NgayUtil {
 
-    private static final DateTimeFormatter DINH_DANG =
-            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    /**
+     * STRICT: ngay khong ton tai (31/02) la sai, khong bi doi ngam thanh
+     * ngay cuoi thang nhu kieu SMART mac dinh. STRICT can "uuuu" (nam) thay
+     * cho "yyyy" (nam cua ky nguyen).
+     */
+    private static final DateTimeFormatter DINH_DANG = DateTimeFormatter
+            .ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
 
     private NgayUtil() {
+    }
+
+    /**
+     * Thong bao khi o ngay co chu nhung doc khong duoc: sai dang, hoac
+     * dung dang nhung la ngay khong co (31/02).
+     *
+     * @param truong ten o ngay dung nhu nhan tren man hinh, vd "Ngày sinh"
+     * @return thong bao loi
+     */
+    public static String loi(String truong) {
+        return truong + " không hợp lệ: nhập ngày có thật theo dạng"
+                + " ngày/tháng/năm, ví dụ 08/11/2026";
+    }
+
+    /**
+     * Thong bao loi cua mot o ngay neu o do co chu nhung doc khong duoc.
+     *
+     * @param o o chon ngay
+     * @param truong ten o nhu nhan tren man hinh
+     * @return thong bao loi, null neu o hop le hoac de trong
+     */
+    public static String loiCuaO(DatePicker o, String truong) {
+        return saiDinhDang(o) ? loi(truong) : null;
+    }
+
+    /**
+     * Loi dau tien trong danh sach (theo thu tu cac o tren form).
+     *
+     * @param cacLoi ket qua {@link #loiCuaO} cua tung o
+     * @return loi dau tien khac null, hoac null neu moi o deu hop le
+     */
+    public static String loiDauTien(String... cacLoi) {
+        for (String l : cacLoi) {
+            if (l != null) {
+                return l;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Doc chuoi ngay dd/MM/yyyy.
+     *
+     * @param chu chuoi nguoi dung go, co the null
+     * @return ngay, hoac null neu de trong, sai dinh dang hay khong ton tai
+     */
+    public static LocalDate docChuoi(String chu) {
+        if (chu == null || chu.isBlank()) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(chu.strip(), DINH_DANG);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 
     /**
@@ -77,14 +138,7 @@ public final class NgayUtil {
 
         @Override
         public LocalDate fromString(String chu) {
-            if (chu == null || chu.isBlank()) {
-                return null;
-            }
-            try {
-                return LocalDate.parse(chu.strip(), DINH_DANG);
-            } catch (DateTimeParseException e) {
-                return null;
-            }
+            return docChuoi(chu);
         }
     }
 }

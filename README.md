@@ -31,7 +31,7 @@ trực tiếp phần mềm.
 | Mốc | Nội dung | Trạng thái |
 |---|---|---|
 | Sprint 1 – [`v0.1.0`](../../releases/tag/v0.1.0) | Đăng nhập, đăng ký tài khoản, hộ gia đình, nhân khẩu, tạm trú/tạm vắng | Hoàn thành |
-| Sprint 2 – `v0.2.0` | Khoản thu, chốt công nợ, phân quyền, đổi mật khẩu | Chưa bắt đầu |
+| Sprint 2 – `v0.2.0` | Khoản thu, chốt và sửa công nợ, phân quyền hai lớp, quản lý tài khoản, đổi mật khẩu, đổi chủ hộ, lịch sử biến động nhân khẩu | Hoàn thành (AC-026 của US-008 làm cùng phiếu thu ở Sprint 3) |
 | Sprint 3 – `v0.3.0` | Ghi nhận đóng góp, thu phí, biên lai, hủy phiếu, thông báo, báo cáo nhân khẩu | Chưa bắt đầu |
 | Sprint 4 – `v1.0.0` | Thống kê, xuất Excel, sao lưu, nhật ký thao tác, rà soát giao diện | Chưa bắt đầu |
 
@@ -88,7 +88,7 @@ cho mỗi Pull Request ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
 │   ├── controller/               xử lý sự kiện của từng màn hình
 │   └── util/                     điều hướng màn hình, băm mật khẩu, định dạng ngày
 ├── src/main/resources/com/bluemoon/
-│   ├── view/                     FXML: dang-nhap, trang-chinh, ho-gia-dinh, nhan-khau, tai-khoan
+│   ├── view/                     FXML: dang-nhap, trang-chinh, ho-gia-dinh, nhan-khau, tai-khoan, khoan-thu, cong-no
 │   └── css/giao-dien.css         màu và kiểu chữ dùng chung
 ├── src/test/java/com/bluemoon/   JUnit 5; service test dùng DAO giả (KhoGia)
 ├── database/

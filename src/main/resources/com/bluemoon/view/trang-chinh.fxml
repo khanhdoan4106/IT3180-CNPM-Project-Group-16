@@ -12,20 +12,20 @@
             fx:controller="com.bluemoon.controller.TrangChinhController">
     <top>
         <HBox styleClass="thanh-dau" spacing="12">
-            <Label text="BlueMoon" styleClass="logo"/>
-            <Button fx:id="hoGiaDinhButton" text="Hộ gia đình"
+            <Label text="BlueMoon" styleClass="logo" minWidth="-Infinity"/>
+            <Button minWidth="-Infinity" fx:id="hoGiaDinhButton" text="Hộ gia đình"
                     styleClass="nut-menu" onAction="#onMoHoGiaDinh"/>
-            <Button fx:id="nhanKhauButton" text="Nhân khẩu"
+            <Button minWidth="-Infinity" fx:id="nhanKhauButton" text="Nhân khẩu"
                     styleClass="nut-menu" onAction="#onMoNhanKhau"/>
-            <Button text="Khoản thu" styleClass="nut-menu"
+            <Button minWidth="-Infinity" text="Khoản thu" styleClass="nut-menu"
                     onAction="#onMoKhoanThu"/>
-            <Button text="Công nợ" styleClass="nut-menu"
+            <Button minWidth="-Infinity" text="Công nợ" styleClass="nut-menu"
                     onAction="#onMoCongNo"/>
-            <Button text="Tài khoản" styleClass="nut-menu"
+            <Button minWidth="-Infinity" text="Tài khoản" styleClass="nut-menu"
                     onAction="#onMoTaiKhoan"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="chaoLabel" styleClass="chao"/>
-            <Button text="Đăng xuất" onAction="#onDangXuat"/>
+            <Button minWidth="-Infinity" text="Đăng xuất" onAction="#onDangXuat"/>
         </HBox>
     </top>
     <center>

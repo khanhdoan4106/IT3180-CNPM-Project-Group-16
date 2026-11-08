@@ -141,11 +141,11 @@ class CongNoServiceTest {
     @Test
     void chotLuuVaChotLaiKhongTaoTrung() {
         // AC-027, AC-028
-        assertTrue(service.canNhacChot());
+        assertTrue(service.canNhacChot(thuQuy));
         CongNoService.KetQuaChot lan1 = service.chot(thuQuy, T12);
         assertTrue(lan1.lanDau());
         assertEquals(4, lan1.soMoi());
-        assertFalse(service.canNhacChot());
+        assertFalse(service.canNhacChot(thuQuy));
 
         CongNoService.KetQuaChot lan2 = service.chot(admin, T12);
         assertFalse(lan2.lanDau());
@@ -210,12 +210,24 @@ class CongNoServiceTest {
         service.chot(admin, T12);
         int id = tim(service.theoThang(admin, T12), "K01", "Phí quản lý")
                 .id();
-        for (String sai : new String[] {"-1", "abc", "", "245.000"}) {
+        for (String sai : new String[] {"-1", "abc", "", "245.000",
+                "1.000.000.001"}) {
             assertThrows(NghiepVuException.class,
                     () -> service.suaSoTien(admin, id, sai, null));
         }
         assertThrows(NghiepVuException.class,
                 () -> service.suaSoTien(admin, 999, "1", null));
+    }
+
+    @Test
+    void nhacChotCanDangNhap() {
+        assertThrows(NghiepVuException.class,
+                () -> service.canNhacChot(null));
+        TaiKhoan biKhoa = new TaiKhoan(3, "cu", "x", "Cũ", VaiTro.THU_QUY,
+                false);
+        assertThrows(NghiepVuException.class,
+                () -> service.canNhacChot(biKhoa));
+        assertTrue(service.canNhacChot(admin));
     }
 
     @Test
@@ -240,5 +252,70 @@ class CongNoServiceTest {
         kho.daCoPhieuThu.add(daThu);
         assertEquals(0, tien("175000").compareTo(
                 service.tongChuaDong(thuQuy, k01)));
+    }
+
+    private int themHoTu(String ma, LocalDate ngayChuyenDen) {
+        int id = nextHo++;
+        khoHo.ho.put(id, new HoGiaDinh(id, ma, LoaiCanHo.CAN_HO, 6,
+                tien("80"), null, ngayChuyenDen, TrangThaiHo.DANG_O));
+        return id;
+    }
+
+    private void themKhoanBatBuoc(String ten, LocalDate tu, LocalDate den) {
+        kho.khoanPhiDao.them(new KhoanPhi(0, ten, LoaiKhoanPhi.BAT_BUOC,
+                CachTinhPhi.THEO_DIEN_TICH, tien("1000"), tu, den,
+                TrangThaiKhoanPhi.DANG_THU));
+    }
+
+    private static boolean coHo(KetQuaTinhCongNo kq, String ma) {
+        return kq.khoan().stream().anyMatch(p -> p.maCanHo().equals(ma));
+    }
+
+    private static boolean coKhoan(KetQuaTinhCongNo kq, String ten) {
+        return kq.khoan().stream().anyMatch(p -> p.tenKhoan().equals(ten));
+    }
+
+    @Test
+    void khongTinhHoChuyenDenSauThangChot() {
+        // Loi 1: chot thang cu tung tinh ca ho chua o.
+        themHoTu("B0909", LocalDate.of(2026, 12, 5));
+        assertFalse(coHo(service.xemTruoc(admin, YearMonth.of(2026, 11)),
+                "B0909"));
+        assertEquals(4, service.chot(admin, YearMonth.of(2026, 11)).soMoi());
+        // Den giua thang van tinh du thang (gia dinh 15).
+        assertTrue(coHo(service.xemTruoc(admin, T12), "B0909"));
+        themHoTu("C0101", LocalDate.of(2026, 12, 31));
+        assertTrue(coHo(service.xemTruoc(admin, T12), "C0101"));
+    }
+
+    @Test
+    void chiTinhKhoanCoHieuLucTrongThang() {
+        themKhoanBatBuoc("Phí mới", LocalDate.of(2026, 12, 15), null);
+        themKhoanBatBuoc("Phí cũ", DAU_NAM, LocalDate.of(2026, 10, 31));
+        KetQuaTinhCongNo t11 = service.xemTruoc(admin, YearMonth.of(2026, 11));
+        assertFalse(coKhoan(t11, "Phí mới"), "chua bat dau");
+        assertFalse(coKhoan(t11, "Phí cũ"), "da ket thuc");
+        assertTrue(coKhoan(service.xemTruoc(admin, T12), "Phí mới"));
+        assertTrue(coKhoan(service.xemTruoc(admin, YearMonth.of(2026, 10)),
+                "Phí cũ"));
+    }
+
+    @Test
+    void thangChuaCoKhoanApDungThiBaoRoVaKhongChot() {
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.chot(admin, YearMonth.of(2025, 6)));
+        assertTrue(e.getMessage().startsWith("Tháng 6/2025 chưa có khoản"),
+                e.getMessage());
+        assertTrue(kho.thangDaChot.isEmpty());
+    }
+
+    @Test
+    void thangChuaCoHoNaoThiBaoRoVaKhongChot() {
+        themKhoanBatBuoc("Phí năm trước", LocalDate.of(2025, 1, 1), null);
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.chot(admin, YearMonth.of(2025, 12)));
+        assertTrue(e.getMessage().startsWith("Tháng 12/2025 chưa có hộ nào"),
+                e.getMessage());
+        assertTrue(kho.thangDaChot.isEmpty());
     }
 }

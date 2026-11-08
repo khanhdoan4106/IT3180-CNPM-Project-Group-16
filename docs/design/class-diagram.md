@@ -78,6 +78,8 @@ hàm đọc.
 
 Mọi hàm của Service nhận `TaiKhoan nguoi` (người đang đăng nhập) làm tham số
 đầu và kiểm tra quyền bằng `PhanQuyen.yeuCau`; sơ đồ lược bỏ tham số này.
+Ngoại lệ: `dangNhap`, `lamMoiPhien`, `thangHienTai` (xem
+[architecture.md](architecture.md#phân-quyền)).
 
 ```mermaid
 classDiagram

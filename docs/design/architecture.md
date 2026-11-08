@@ -34,6 +34,11 @@ Kiểm tra ở hai lớp (NFR-002, NFR-009):
    tác, ném `NghiepVuException` nếu không có quyền. Ẩn nút chưa đủ: lớp này
    chặn cả khi màn hình mở bằng đường khác (AC-062).
 
+Mọi hàm public của Service nhận `TaiKhoan nguoi` và gọi
+`PhanQuyen.yeuCau`, trừ ba hàm: `TaiKhoanService.dangNhap` và
+`TaiKhoanService.lamMoiPhien` (chạy khi chưa có hoặc đang kiểm tra lại
+phiên), `CongNoService.thangHienTai` (chỉ đọc đồng hồ, không đọc dữ liệu).
+
 | Chức năng | Quản trị viên | Thủ quỹ | Căn cứ |
 |---|---|---|---|
 | Hộ gia đình, nhân khẩu, tạm trú/tạm vắng, báo cáo nhân khẩu | Có | Không | AC-060, AC-062 |
