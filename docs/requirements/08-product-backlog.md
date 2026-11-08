@@ -16,13 +16,16 @@
 | Sprint | Tổng SP | Phát hành | Trạng thái |
 |---|---|---|---|
 | Sprint 1 | 24 | `v0.1.0` | Hoàn thành |
-| Sprint 2 | 32 | `v0.2.0` | Chưa bắt đầu |
+| Sprint 2 | 32 | `v0.2.0` | Hoàn thành, trừ AC-026 của US-008 (làm cùng phiếu thu ở Sprint 3) |
 | Sprint 3 | 28 | `v0.3.0` | Chưa bắt đầu |
 | Sprint 4 | 28 | `v1.0.0` | Chưa bắt đầu |
 | **Tổng** | **112** | | |
 
-US-026 và US-027 đưa vào Sprint 2 (giả định 20, 26). Nếu Sprint 2 quá tải,
-dời US-008 (3 SP) sang Sprint 3.
+US-026 và US-027 đưa vào Sprint 2 (giả định 20, 26). US-008 đã làm AC-025
+ở Sprint 2; AC-026 (không sửa khoản đã có phiếu thu) cần bảng phiếu thu nên
+hoàn tất cùng US-011, US-014 ở Sprint 3, khi đó US-008 mới chuyển "Hoàn
+thành". Kết quả rà soát cuối Sprint 2:
+[docs/review/sprint-2-ra-soat.md](../review/sprint-2-ra-soat.md).
 
 ## EPIC-01: Quản lý hộ gia đình và nhân khẩu
 
@@ -34,8 +37,8 @@ dời US-008 (3 SP) sang Sprint 3.
 | US-002 | Lưu thông tin nhân khẩu và quan hệ với chủ hộ | Must | Sprint 1 | Hoàn thành | 5 |
 | US-003 | Ghi nhận tạm trú, tạm vắng kèm ngày bắt đầu và kết thúc | Must | Sprint 1 | Hoàn thành | 5 |
 | US-004 | Xuất danh sách nhân khẩu tạm vắng | Should | Sprint 3 | Chưa bắt đầu | 3 |
-| US-026 | Đổi chủ hộ (chủ hộ mất, chuyển đi, tách hộ) | Should | Sprint 2 | Chưa bắt đầu | 3 |
-| US-027 | Lịch sử biến động nhân khẩu trong hộ | Should | Sprint 2 | Chưa bắt đầu | 5 |
+| US-026 | Đổi chủ hộ (chủ hộ mất, chuyển đi, tách hộ) | Should | Sprint 2 | Hoàn thành | 3 |
+| US-027 | Lịch sử biến động nhân khẩu trong hộ | Should | Sprint 2 | Hoàn thành | 5 |
 
 ## EPIC-02: Quản lý danh mục và khoản thu
 
@@ -43,11 +46,11 @@ dời US-008 (3 SP) sang Sprint 3.
 
 | ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
 |---|---|---|---|---|---|
-| US-005 | Hệ thống tự tính phí dịch vụ và phí quản lý theo diện tích × đơn giá | Must | Sprint 2 | Chưa bắt đầu | 5 |
-| US-006 | Tự tạo khoản thu tự nguyện mới theo từng đợt (VD Quỹ vì người nghèo) | Must | Sprint 2 | Chưa bắt đầu | 3 |
+| US-005 | Hệ thống tự tính phí dịch vụ và phí quản lý theo diện tích × đơn giá | Must | Sprint 2 | Hoàn thành | 5 |
+| US-006 | Tự tạo khoản thu tự nguyện mới theo từng đợt (VD Quỹ vì người nghèo) | Must | Sprint 2 | Hoàn thành | 3 |
 | US-007 | Ghi nhận số tiền đóng góp tùy ý (kể cả 0đ) cho nhiều quỹ của một hộ | Must | Sprint 3 | Chưa bắt đầu | 5 |
-| US-008 | Cập nhật lại giá trị khoản thu của một hộ trước khi hộ đóng | Should | Sprint 2 | Chưa bắt đầu | 3 |
-| US-009 | Hệ thống tự tạo danh sách công nợ cho tất cả các phòng vào đầu mỗi tháng | Must | Sprint 2 | Chưa bắt đầu | 5 |
+| US-008 | Cập nhật lại giá trị khoản thu của một hộ trước khi hộ đóng | Should | Sprint 2 | Đang làm: AC-026 chờ phiếu thu (Sprint 3) | 3 |
+| US-009 | Hệ thống tự tạo danh sách công nợ cho tất cả các phòng vào đầu mỗi tháng | Must | Sprint 2 | Hoàn thành | 5 |
 
 ## EPIC-03: Thu phí và thanh toán
 
@@ -81,8 +84,8 @@ dời US-008 (3 SP) sang Sprint 3.
 |---|---|---|---|---|---|
 | US-020 | Đăng ký tài khoản đăng nhập | Must | Sprint 1 | Hoàn thành | 3 |
 | US-021 | Đăng nhập bằng tên đăng nhập và mật khẩu | Must | Sprint 1 | Hoàn thành | 3 |
-| US-022 | Phân quyền Quản trị viên và Thủ quỹ | Should | Sprint 2 | Chưa bắt đầu | 5 |
-| US-023 | Đổi mật khẩu và cập nhật thông tin cá nhân | Should | Sprint 2 | Chưa bắt đầu | 3 |
+| US-022 | Phân quyền Quản trị viên và Thủ quỹ | Should | Sprint 2 | Hoàn thành | 5 |
+| US-023 | Đổi mật khẩu và cập nhật thông tin cá nhân | Should | Sprint 2 | Hoàn thành | 3 |
 | TS-001 | Sao lưu dữ liệu MySQL định kỳ (hàng ngày/tuần) để tránh mất dữ liệu. | Should | Sprint 4 | Chưa bắt đầu | 5 |
 | TS-002 | Ghi nhật ký mọi thao tác thay đổi dữ liệu quan trọng. | Should | Sprint 4 | Chưa bắt đầu | 5 |
 | TS-003 | Thiết lập ứng dụng Java máy tính để bàn kết nối CSDL MySQL tập trung. | Must | Sprint 1 | Hoàn thành | 5 |

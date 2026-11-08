@@ -42,4 +42,5 @@
 | RAW-038 | EPIC-03 | F-11 | US-015 | AC-044–045 | Quy trình hiện tại |
 | RAW-039 | EPIC-05 | F-16 | US-020 | AC-054–056 | Luồng nghiệp vụ 1 |
 | RAW-040 | EPIC-05 | F-18 | US-023 | AC-063–065 |  |
+| RAW-002 (rà soát US-002) | EPIC-01 | F-02 | US-026 | AC-073–075 | Đổi chủ hộ khi chủ hộ mất, chuyển đi, tách hộ; giả định 26 |
 | Bộ bài tập ch.7 | EPIC-01 | F-02 | US-027 | AC-076–079 | Lịch sử thay đổi nhân khẩu trong hộ |
