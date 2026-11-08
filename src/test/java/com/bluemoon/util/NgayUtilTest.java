@@ -38,10 +38,21 @@ class NgayUtilTest {
     }
 
     @Test
-    void thongBaoLoiNoiRoNgayPhaiCoThat() {
+    void thongBaoLoiNeuDungTenO() {
+        assertEquals("Ngày sinh không hợp lệ: nhập ngày có thật theo"
+                + " dạng ngày/tháng/năm, ví dụ 08/11/2026",
+                NgayUtil.loi("Ngày sinh"));
         assertEquals("Ngày chuyển đến không hợp lệ: nhập ngày có thật theo"
-                + " dạng dd/mm/yyyy, ví dụ 08/11/2026",
+                + " dạng ngày/tháng/năm, ví dụ 08/11/2026",
                 NgayUtil.loi("Ngày chuyển đến"));
+    }
+
+    @Test
+    void loiDauTienTheoThuTuO() {
+        assertEquals(NgayUtil.loi("Đến ngày"), NgayUtil.loiDauTien(null,
+                NgayUtil.loi("Đến ngày"), NgayUtil.loi("Tạm trú đến")));
+        assertNull(NgayUtil.loiDauTien(null, null));
+        assertNull(NgayUtil.loiDauTien());
     }
 
     @Test

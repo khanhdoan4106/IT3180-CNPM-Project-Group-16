@@ -203,12 +203,13 @@ public class NhanKhauController {
             baoLoi("Vui lòng chọn hộ gia đình");
             return;
         }
-        for (DatePicker p : new DatePicker[] {ngaySinhPicker, tamTruTuPicker,
-                tamTruDenPicker}) {
-            if (NgayUtil.saiDinhDang(p)) {
-                baoLoi(NgayUtil.loi("Ngày"));
-                return;
-            }
+        String loiNgay = NgayUtil.loiDauTien(
+                NgayUtil.loiCuaO(ngaySinhPicker, "Ngày sinh"),
+                NgayUtil.loiCuaO(tamTruTuPicker, "Tạm trú từ"),
+                NgayUtil.loiCuaO(tamTruDenPicker, "Tạm trú đến"));
+        if (loiNgay != null) {
+            baoLoi(loiNgay);
+            return;
         }
         ThongTinNhanKhau tt = new ThongTinNhanKhau(hoTenField.getText(),
                 NgayUtil.doc(ngaySinhPicker), gioiTinhCombo.getValue(),
@@ -307,9 +308,11 @@ public class NhanKhauController {
         if (nk == null) {
             return;
         }
-        if (NgayUtil.saiDinhDang(dotTuPicker)
-                || NgayUtil.saiDinhDang(dotDenPicker)) {
-            baoDot(NgayUtil.loi("Ngày"), true);
+        String loiNgay = NgayUtil.loiDauTien(
+                NgayUtil.loiCuaO(dotTuPicker, "Từ ngày"),
+                NgayUtil.loiCuaO(dotDenPicker, "Đến ngày"));
+        if (loiNgay != null) {
+            baoDot(loiNgay, true);
             return;
         }
         ThongTinDot tt = new ThongTinDot(loaiDotCombo.getValue(),

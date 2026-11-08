@@ -121,9 +121,11 @@ public class KhoanThuController {
 
     @FXML
     private void onTao() {
-        if (NgayUtil.saiDinhDang(tuNgayPicker)
-                || NgayUtil.saiDinhDang(denNgayPicker)) {
-            baoLoi(NgayUtil.loi("Ngày"));
+        String loiNgay = NgayUtil.loiDauTien(
+                NgayUtil.loiCuaO(tuNgayPicker, "Từ ngày"),
+                NgayUtil.loiCuaO(denNgayPicker, "Đến ngày"));
+        if (loiNgay != null) {
+            baoLoi(loiNgay);
             return;
         }
         try {

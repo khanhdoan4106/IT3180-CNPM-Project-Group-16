@@ -173,18 +173,19 @@ public class HoGiaDinhController {
 
     @FXML
     private void onLuu() {
-        if (NgayUtil.saiDinhDang(ngayPicker)) {
-            baoLoi(NgayUtil.loi("Ngày chuyển đến"));
+        // Phan chu ho chi co khi them moi; ten o theo nhan tren form.
+        String loiNgay = NgayUtil.loiDauTien(
+                NgayUtil.loiCuaO(ngayPicker, "Ngày chuyển đến"),
+                dangSua != null ? null
+                        : NgayUtil.loiCuaO(ngaySinhChuHoPicker, "Ngày sinh"),
+                dangSua != null ? null
+                        : NgayUtil.loiCuaO(tamTruTuChuHoPicker, "Tạm trú từ"),
+                dangSua != null ? null
+                        : NgayUtil.loiCuaO(tamTruDenChuHoPicker,
+                                "Tạm trú đến"));
+        if (loiNgay != null) {
+            baoLoi(loiNgay);
             return;
-        }
-        if (dangSua == null) {
-            for (DatePicker p : new DatePicker[] {ngaySinhChuHoPicker,
-                    tamTruTuChuHoPicker, tamTruDenChuHoPicker}) {
-                if (NgayUtil.saiDinhDang(p)) {
-                    baoLoi(NgayUtil.loi("Ngày"));
-                    return;
-                }
-            }
         }
         ThongTinHo tt = new ThongTinHo(maField.getText(),
                 loaiCombo.getValue(), tangField.getText(),

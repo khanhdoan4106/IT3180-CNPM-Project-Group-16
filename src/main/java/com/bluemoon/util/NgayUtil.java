@@ -27,12 +27,38 @@ public final class NgayUtil {
      * Thong bao khi o ngay co chu nhung doc khong duoc: sai dang, hoac
      * dung dang nhung la ngay khong co (31/02).
      *
-     * @param truong ten truong, vd "Ngày chuyển đến"
+     * @param truong ten o ngay dung nhu nhan tren man hinh, vd "Ngày sinh"
      * @return thong bao loi
      */
     public static String loi(String truong) {
         return truong + " không hợp lệ: nhập ngày có thật theo dạng"
-                + " dd/mm/yyyy, ví dụ 08/11/2026";
+                + " ngày/tháng/năm, ví dụ 08/11/2026";
+    }
+
+    /**
+     * Thong bao loi cua mot o ngay neu o do co chu nhung doc khong duoc.
+     *
+     * @param o o chon ngay
+     * @param truong ten o nhu nhan tren man hinh
+     * @return thong bao loi, null neu o hop le hoac de trong
+     */
+    public static String loiCuaO(DatePicker o, String truong) {
+        return saiDinhDang(o) ? loi(truong) : null;
+    }
+
+    /**
+     * Loi dau tien trong danh sach (theo thu tu cac o tren form).
+     *
+     * @param cacLoi ket qua {@link #loiCuaO} cua tung o
+     * @return loi dau tien khac null, hoac null neu moi o deu hop le
+     */
+    public static String loiDauTien(String... cacLoi) {
+        for (String l : cacLoi) {
+            if (l != null) {
+                return l;
+            }
+        }
+        return null;
     }
 
     /**
