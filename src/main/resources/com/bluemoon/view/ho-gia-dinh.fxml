@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -122,9 +123,13 @@
                                   GridPane.columnIndex="1"/>
                         <Label text="Số CCCD" GridPane.rowIndex="3"/>
                         <TextField fx:id="cccdChuHoField"
-                                   promptText="bắt buộc từ 14 tuổi"
+                                   promptText="12 chữ số"
                                    GridPane.rowIndex="3"
-                                   GridPane.columnIndex="1"/>
+                                   GridPane.columnIndex="1">
+                            <tooltip>
+                                <Tooltip text="Số CCCD gồm 12 chữ số, bắt buộc với người từ 14 tuổi"/>
+                            </tooltip>
+                        </TextField>
                         <Label text="Cư trú *" GridPane.rowIndex="4"/>
                         <ComboBox fx:id="loaiCuTruChuHoCombo"
                                   maxWidth="Infinity" GridPane.rowIndex="4"

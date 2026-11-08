@@ -25,6 +25,7 @@ import javafx.scene.control.Labeled;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,7 +34,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 /**
  * Tai tung man hinh FXML o kich thuoc 1120x645 (Figma, docs/design/ui.md),
  * khong mo cua so, roi kiem tra khong nut hay nhan nao bi cat chu thanh
- * "...", moi nut deu toi duoc (nam trong cua so hoac trong ScrollPane) va
+ * "...", chu goi y (promptText) cua o nhap nam tron trong o, moi nut deu
+ * toi duoc (nam trong cua so hoac trong ScrollPane) va
  * chu dung phong nhung Be Vietnam Pro. Chay headless bang Monocle nen chay
  * duoc tren CI khong co man hinh.
  *
@@ -185,6 +187,22 @@ class BoCucFxmlTest {
                 loi.add(tienTo + moTa(b) + " nằm ngoài cửa sổ "
                         + (int) RONG + "×" + (int) CAO
                         + " và không trong ScrollPane");
+            }
+        }
+        if (node instanceof TextField tf && tf.getPromptText() != null
+                && !tf.getPromptText().isEmpty()) {
+            // Chu goi y chi hien khi o trong: do bang Text cung phong voi
+            // o, so voi vung nhap (rong o tru padding va vien).
+            Text thuoc = new Text(tf.getPromptText());
+            thuoc.setFont(tf.getFont());
+            double rong = thuoc.getLayoutBounds().getWidth();
+            double vung = tf.getWidth() - tf.getInsets().getLeft()
+                    - tf.getInsets().getRight();
+            if (rong > vung + 0.5) {
+                loi.add(tienTo + "TextField " + (tf.getId() == null ? ""
+                        : tf.getId() + " ") + "gợi ý \"" + tf.getPromptText()
+                        + "\" rộng " + Math.round(rong) + " > vùng nhập "
+                        + Math.round(vung));
             }
         }
         if (node instanceof Parent p) {
