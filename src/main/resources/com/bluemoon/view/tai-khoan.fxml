@@ -59,7 +59,7 @@
                         </GridPane>
                         <Label text="Tên đăng nhập và vai trò do Quản trị viên quản lý."
                                styleClass="phu-de" wrapText="true"/>
-                        <Button text="Lưu thay đổi" styleClass="nut-chinh"
+                        <Button minWidth="-Infinity" text="Lưu thay đổi" styleClass="nut-chinh"
                                 onAction="#onLuuHoTen"/>
                     </VBox>
                     <VBox styleClass="the" spacing="10" prefWidth="420"
@@ -72,7 +72,7 @@
                                        promptText="ít nhất 8 ký tự"/>
                         <Label text="Nhập lại mật khẩu mới *"/>
                         <PasswordField fx:id="nhapLaiMoiField"/>
-                        <Button text="Đổi mật khẩu" styleClass="nut-chinh"
+                        <Button minWidth="-Infinity" text="Đổi mật khẩu" styleClass="nut-chinh"
                                 onAction="#onDoiMatKhau"/>
                     </VBox>
                 </HBox>
@@ -101,10 +101,10 @@
                             <Label text="Không xóa tài khoản, chỉ khóa để giữ lịch sử thu."
                                    styleClass="phu-de"/>
                             <Region HBox.hgrow="ALWAYS"/>
-                            <Button text="Đổi vai trò" onAction="#onDoiVaiTro"/>
-                            <Button fx:id="khoaButton" text="Khóa"
+                            <Button minWidth="-Infinity" text="Đổi vai trò" onAction="#onDoiVaiTro"/>
+                            <Button minWidth="-Infinity" fx:id="khoaButton" text="Khóa"
                                     onAction="#onKhoa"/>
-                            <Button text="Đặt lại mật khẩu"
+                            <Button minWidth="-Infinity" text="Đặt lại mật khẩu"
                                     onAction="#onDatLaiMatKhau"/>
                         </HBox>
                     </VBox>
@@ -142,9 +142,9 @@
                                       GridPane.columnIndex="1"/>
                         </GridPane>
                         <HBox spacing="10">
-                            <Button text="Đăng ký" styleClass="nut-chinh"
+                            <Button minWidth="-Infinity" text="Đăng ký" styleClass="nut-chinh"
                                     onAction="#onDangKy"/>
-                            <Button text="Nhập mới" onAction="#onNhapMoi"/>
+                            <Button minWidth="-Infinity" text="Nhập mới" onAction="#onNhapMoi"/>
                         </HBox>
                     </VBox>
                 </HBox>

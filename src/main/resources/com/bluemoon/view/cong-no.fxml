@@ -27,7 +27,7 @@
                            styleClass="phu-de"/>
                 </VBox>
                 <ComboBox fx:id="thangCombo" prefWidth="160"/>
-                <Button text="Xem trước" onAction="#onXemTruoc"/>
+                <Button minWidth="-Infinity" text="Xem trước" onAction="#onXemTruoc"/>
             </HBox>
             <Label fx:id="trangThaiLabel" wrapText="true"/>
             <Label fx:id="boQuaLabel" styleClass="loi" wrapText="true"/>
@@ -67,9 +67,9 @@
                 <Label text="Sau khi chốt, có thể sửa khoản của từng hộ khi hộ chưa đóng tiền."
                        styleClass="phu-de"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="suaButton" text="Sửa khoản đã chọn"
+                <Button minWidth="-Infinity" fx:id="suaButton" text="Sửa khoản đã chọn"
                         onAction="#onSua"/>
-                <Button text="Chốt công nợ"
+                <Button minWidth="-Infinity" text="Chốt công nợ"
                         styleClass="nut-chinh" onAction="#onChot"/>
             </HBox>
         </VBox>

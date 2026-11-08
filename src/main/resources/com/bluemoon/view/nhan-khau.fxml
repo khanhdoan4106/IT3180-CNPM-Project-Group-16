@@ -112,7 +112,7 @@
                                        GridPane.columnIndex="1"/>
                         </GridPane>
                         <Label fx:id="thongBaoDotLabel" wrapText="true"/>
-                        <Button fx:id="ghiDotButton" text="Ghi nhận"
+                        <Button minWidth="-Infinity" fx:id="ghiDotButton" text="Ghi nhận"
                                 styleClass="nut-chinh" disable="true"
                                 onAction="#onGhiDot"/>
                     </VBox>
@@ -171,14 +171,16 @@
                             GridPane.rowIndex="2" GridPane.columnIndex="1"/>
             </GridPane>
             <Label fx:id="thongBaoLabel" wrapText="true"/>
+            <!-- Hai hang: khung 380px khong du cho 4 nut tren mot hang. -->
             <HBox spacing="10">
-                <Button fx:id="luuButton" text="Lưu" defaultButton="true"
+                <Button minWidth="-Infinity" fx:id="luuButton" text="Lưu" defaultButton="true"
                         styleClass="nut-chinh" onAction="#onLuu"/>
-                <Button text="Nhập mới" onAction="#onNhapMoi"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="chuHoButton" text="Đặt làm chủ hộ"
+                <Button minWidth="-Infinity" text="Nhập mới" onAction="#onNhapMoi"/>
+            </HBox>
+            <HBox spacing="10">
+                <Button minWidth="-Infinity" fx:id="chuHoButton" text="Đặt làm chủ hộ"
                         disable="true" onAction="#onDatChuHo"/>
-                <Button fx:id="chuyenDiButton" text="Đánh dấu chuyển đi"
+                <Button minWidth="-Infinity" fx:id="chuyenDiButton" text="Đánh dấu chuyển đi"
                         styleClass="nut-phu" disable="true"
                         onAction="#onChuyenDi"/>
             </HBox>

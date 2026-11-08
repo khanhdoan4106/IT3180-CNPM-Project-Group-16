@@ -18,7 +18,7 @@
         <Label text="Mật khẩu"/>
         <PasswordField fx:id="matKhauField" onAction="#onDangNhap"/>
         <Label fx:id="thongBaoLabel" styleClass="loi" wrapText="true"/>
-        <Button text="Đăng nhập" defaultButton="true" maxWidth="Infinity"
+        <Button minWidth="-Infinity" text="Đăng nhập" defaultButton="true" maxWidth="Infinity"
                 styleClass="nut-chinh" onAction="#onDangNhap"/>
     </VBox>
 </StackPane>
