@@ -125,6 +125,9 @@
         <!-- Cua so thap (1120x645) khong du cao cho ca form: cuon duoc de
              toi cac nut. Khung trang dat tren ScrollPane de bong khong bi
              cat. -->
+        <!-- Cot nhan moi GridPane trong form rong co dinh 116px (nhan dai
+             nhat "Nơi thường trú *" voi Be Vietnam Pro ~108px) de o nhap
+             cac nhom thang hang. Doi nhan thi do lai. -->
         <ScrollPane styleClass="the,cuon-form" fitToWidth="true"
                     hbarPolicy="NEVER" prefWidth="380">
             <BorderPane.margin>
@@ -135,7 +138,7 @@
                        styleClass="tieu-de-form"/>
                 <GridPane hgap="10" vgap="10">
                     <columnConstraints>
-                        <ColumnConstraints minWidth="-Infinity"/>
+                        <ColumnConstraints minWidth="116" prefWidth="116" maxWidth="116"/>
                         <ColumnConstraints hgrow="ALWAYS"/>
                     </columnConstraints>
                     <Label text="Họ tên *" GridPane.rowIndex="0"/>
@@ -161,7 +164,7 @@
                 <!-- Chi hien voi nguoi tam tru; ngay tam tru chi khi them moi. -->
                 <GridPane fx:id="tamTruGrid" hgap="10" vgap="10">
                     <columnConstraints>
-                        <ColumnConstraints minWidth="-Infinity"/>
+                        <ColumnConstraints minWidth="116" prefWidth="116" maxWidth="116"/>
                         <ColumnConstraints hgrow="ALWAYS"/>
                     </columnConstraints>
                     <Label text="Nơi thường trú *" GridPane.rowIndex="0"/>

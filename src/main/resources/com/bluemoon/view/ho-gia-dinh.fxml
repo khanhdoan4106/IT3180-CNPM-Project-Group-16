@@ -66,6 +66,9 @@
         <!-- Cua so thap (1120x645) khong du cao cho ca form: cuon duoc de
              toi cac nut. Khung trang dat tren ScrollPane de bong khong bi
              cat. -->
+        <!-- Cot nhan moi GridPane trong form rong co dinh 136px (nhan dai
+             nhat "Ngày chuyển đến *" voi Be Vietnam Pro ~128px) de o nhap
+             cac nhom thang hang. Doi nhan thi do lai. -->
         <ScrollPane styleClass="the,cuon-form" fitToWidth="true"
                     hbarPolicy="NEVER" prefWidth="380">
             <BorderPane.margin>
@@ -76,7 +79,7 @@
                        styleClass="tieu-de-form"/>
                 <GridPane hgap="10" vgap="10">
                     <columnConstraints>
-                        <ColumnConstraints minWidth="-Infinity"/>
+                        <ColumnConstraints minWidth="136" prefWidth="136" maxWidth="136"/>
                         <ColumnConstraints hgrow="ALWAYS"/>
                     </columnConstraints>
                     <Label text="Mã căn hộ *" GridPane.rowIndex="0"/>
@@ -103,7 +106,7 @@
                     <Label text="Chủ hộ" styleClass="tieu-de-form"/>
                     <GridPane hgap="10" vgap="10">
                         <columnConstraints>
-                            <ColumnConstraints minWidth="-Infinity"/>
+                            <ColumnConstraints minWidth="136" prefWidth="136" maxWidth="136"/>
                             <ColumnConstraints hgrow="ALWAYS"/>
                         </columnConstraints>
                         <Label text="Họ tên *" GridPane.rowIndex="0"/>
@@ -130,7 +133,7 @@
                     <!-- US-003: chu ho tam tru (ho thue nha), kem dot dau. -->
                     <GridPane fx:id="tamTruChuHoGrid" hgap="10" vgap="10">
                         <columnConstraints>
-                            <ColumnConstraints minWidth="-Infinity"/>
+                            <ColumnConstraints minWidth="136" prefWidth="136" maxWidth="136"/>
                             <ColumnConstraints hgrow="ALWAYS"/>
                         </columnConstraints>
                         <Label text="Nơi thường trú *" GridPane.rowIndex="0"/>
