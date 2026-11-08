@@ -39,8 +39,6 @@ import javafx.util.StringConverter;
  */
 public class CongNoController {
 
-    private static final String LOI_CSDL =
-            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
     /** So thang gan nhat hien trong o chon thang. */
     private static final int SO_THANG = 12;
 
@@ -133,7 +131,7 @@ public class CongNoController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -151,7 +149,7 @@ public class CongNoController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -176,7 +174,7 @@ public class CongNoController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -200,7 +198,7 @@ public class CongNoController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 

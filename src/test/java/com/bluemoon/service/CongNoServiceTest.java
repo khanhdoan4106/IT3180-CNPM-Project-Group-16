@@ -210,7 +210,8 @@ class CongNoServiceTest {
         service.chot(admin, T12);
         int id = tim(service.theoThang(admin, T12), "K01", "Phí quản lý")
                 .id();
-        for (String sai : new String[] {"-1", "abc", "", "245.000"}) {
+        for (String sai : new String[] {"-1", "abc", "", "245.000",
+                "1.000.000.001"}) {
             assertThrows(NghiepVuException.class,
                     () -> service.suaSoTien(admin, id, sai, null));
         }

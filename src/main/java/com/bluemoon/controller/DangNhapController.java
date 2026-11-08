@@ -38,8 +38,7 @@ public class DangNhapController {
         } catch (NghiepVuException e) {
             thongBaoLabel.setText(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            thongBaoLabel.setText(
-                    "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md");
+            thongBaoLabel.setText(LoiCsdl.thongBao(e));
         }
     }
 }

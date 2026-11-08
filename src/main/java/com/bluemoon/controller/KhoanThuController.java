@@ -31,9 +31,6 @@ import javafx.scene.layout.VBox;
  */
 public class KhoanThuController {
 
-    private static final String LOI_CSDL =
-            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
-
     private final KhoanPhiService service =
             new KhoanPhiService(new KhoanPhiDaoImpl());
 
@@ -118,7 +115,7 @@ public class KhoanThuController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -139,7 +136,7 @@ public class KhoanThuController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -158,7 +155,7 @@ public class KhoanThuController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 

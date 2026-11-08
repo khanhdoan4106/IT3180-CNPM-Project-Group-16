@@ -94,6 +94,25 @@ class CongNoIT {
     }
 
     @Test
+    void soQuaLonBiChanTruocKhiToiMySql() {
+        // Truoc day vuot DECIMAL(12,2) thanh DaoException ("khong ket noi").
+        int quanLy = khoanPhiDao.them(new KhoanPhi(0,
+                KhoanPhiService.PHI_QUAN_LY, LoaiKhoanPhi.BAT_BUOC,
+                CachTinhPhi.THEO_DIEN_TICH, new BigDecimal("7000"),
+                LocalDate.of(2026, 1, 1), null, TrangThaiKhoanPhi.DANG_THU));
+        assertThrows(NghiepVuException.class,
+                () -> khoanPhi.suaDonGia(admin, quanLy, "99999999999999"));
+        assertThrows(NghiepVuException.class, () -> khoanPhi.taoKhoanTuNguyen(
+                admin, "Quỹ A", LocalDate.of(2026, 12, 1),
+                LocalDate.of(2026, 12, 31), "99999999999999"));
+        // Muc tran van luu duoc vao cot DECIMAL(12,2).
+        khoanPhi.suaDonGia(admin, quanLy, "1.000.000.000");
+        congNo.chot(admin, T11);
+        assertTrue(congNo.theoThang(admin, T11).stream().anyMatch(
+                p -> p.soTien().compareTo(new BigDecimal("75500000000")) == 0));
+    }
+
+    @Test
     void soTienPhaiNopDienSanTuCsdlLuuLaiDuoc() {
         congNo.chot(admin, T11);
         PhaiNop p = congNo.theoThang(admin, T11).get(0);

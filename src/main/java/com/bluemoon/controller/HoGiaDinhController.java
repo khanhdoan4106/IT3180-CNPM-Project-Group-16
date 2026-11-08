@@ -53,9 +53,6 @@ import javafx.scene.layout.VBox;
  */
 public class HoGiaDinhController {
 
-    private static final String LOI_CSDL =
-            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
-
     private final HoGiaDinhService service = new HoGiaDinhService(
             new HoGiaDinhDaoImpl(), new NhanKhauDaoImpl());
     private final BienDongService bienDongService =
@@ -218,7 +215,7 @@ public class HoGiaDinhController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -251,7 +248,7 @@ public class HoGiaDinhController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -264,7 +261,7 @@ public class HoGiaDinhController {
         } catch (CauHinhException | DaoException e) {
             bangHo.getItems().clear();
             soLuongLabel.setText("");
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -395,7 +392,7 @@ public class HoGiaDinhController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 

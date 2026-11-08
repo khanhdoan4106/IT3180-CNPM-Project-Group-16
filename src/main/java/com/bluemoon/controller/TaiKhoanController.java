@@ -34,9 +34,6 @@ import javafx.scene.layout.GridPane;
  */
 public class TaiKhoanController {
 
-    private static final String LOI_CSDL =
-            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
-
     private final TaiKhoanService service =
             new TaiKhoanService(new TaiKhoanDaoImpl());
 
@@ -128,7 +125,7 @@ public class TaiKhoanController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -146,7 +143,7 @@ public class TaiKhoanController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -165,7 +162,7 @@ public class TaiKhoanController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -184,7 +181,7 @@ public class TaiKhoanController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -206,7 +203,7 @@ public class TaiKhoanController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -224,7 +221,7 @@ public class TaiKhoanController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -249,7 +246,7 @@ public class TaiKhoanController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 

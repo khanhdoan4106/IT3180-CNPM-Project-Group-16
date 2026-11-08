@@ -52,9 +52,6 @@ import javafx.scene.layout.GridPane;
  */
 public class NhanKhauController {
 
-    private static final String LOI_CSDL =
-            "Không kết nối được cơ sở dữ liệu. Xem docs/setup.md";
-
     private final NhanKhauService service = new NhanKhauService(
             new NhanKhauDaoImpl(), new HoGiaDinhDaoImpl());
     private final HoGiaDinhService hoService = new HoGiaDinhService(
@@ -235,7 +232,7 @@ public class NhanKhauController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -276,7 +273,7 @@ public class NhanKhauController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -303,7 +300,7 @@ public class NhanKhauController {
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -330,7 +327,7 @@ public class NhanKhauController {
         } catch (NghiepVuException e) {
             baoDot(e.getMessage(), true);
         } catch (CauHinhException | DaoException e) {
-            baoDot(LOI_CSDL, true);
+            baoDot(LoiCsdl.thongBao(e), true);
         }
     }
 
@@ -346,7 +343,7 @@ public class NhanKhauController {
                     hoService.timKiem(nguoi(), "", false)));
         } catch (CauHinhException | DaoException e) {
             hoCombo.getItems().clear();
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -377,7 +374,7 @@ public class NhanKhauController {
             tinhTrang = new HashMap<>();
             bangNhanKhau.getItems().clear();
             soThanhVienLabel.setText("");
-            baoLoi(LOI_CSDL);
+            baoLoi(LoiCsdl.thongBao(e));
         }
     }
 
@@ -404,7 +401,7 @@ public class NhanKhauController {
                     dotService.theoNhanKhau(nguoi(), nk.getId())));
         } catch (CauHinhException | DaoException e) {
             bangDot.getItems().clear();
-            baoDot(LOI_CSDL, true);
+            baoDot(LoiCsdl.thongBao(e), true);
         }
     }
 

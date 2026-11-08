@@ -33,6 +33,16 @@ class SoTienTest {
     }
 
     @Test
+    void chanSoLonHonMotTy() {
+        bang("1000000000", SoTien.doc("1.000.000.000", "Số tiền"));
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> SoTien.doc("1.000.000.001", "Số tiền"));
+        assertEquals("Số tiền tối đa 1.000.000.000 đ", e.getMessage());
+        assertThrows(NghiepVuException.class,
+                () -> SoTien.doc("99999999999999999999", "Số tiền"));
+    }
+
+    @Test
     void giaTriCsdlHienThiRoiDocLaiDuoc() {
         // Loi 2: CSDL tra ve DECIMAL(12,2) = 5000.00; dien san bang
         // toPlainString thi chinh SoTien.doc tu choi.

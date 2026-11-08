@@ -76,6 +76,17 @@ class KhoanPhiServiceTest {
     }
 
     @Test
+    void soQuaLonBiChanOServiceTruocKhiToiCsdl() {
+        // Truoc day vuot DECIMAL(12,2) o MySQL va bao "Khong ket noi".
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.suaDonGia(admin, quanLy, "99999999999999"));
+        assertEquals("Đơn giá tối đa 1.000.000.000 đ", e.getMessage());
+        assertEquals(new BigDecimal("7000"), kho.khoan.get(quanLy).donGia());
+        assertThrows(NghiepVuException.class, () -> service.taoKhoanTuNguyen(
+                admin, "Quỹ A", T12, CUOI_NAM, "1.000.000.001"));
+    }
+
+    @Test
     void tuChoiDonGiaKhongPhaiSo() {
         assertThrows(NghiepVuException.class,
                 () -> service.suaDonGia(admin, dichVu, "5,5k"));
