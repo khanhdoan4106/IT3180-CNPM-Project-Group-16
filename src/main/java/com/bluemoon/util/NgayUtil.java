@@ -3,6 +3,7 @@ package com.bluemoon.util;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import javafx.scene.control.DatePicker;
 import javafx.util.StringConverter;
 
@@ -11,10 +12,32 @@ import javafx.util.StringConverter;
  */
 public final class NgayUtil {
 
-    private static final DateTimeFormatter DINH_DANG =
-            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    /**
+     * STRICT: ngay khong ton tai (31/02) la sai, khong bi doi ngam thanh
+     * ngay cuoi thang nhu kieu SMART mac dinh. STRICT can "uuuu" (nam) thay
+     * cho "yyyy" (nam cua ky nguyen).
+     */
+    private static final DateTimeFormatter DINH_DANG = DateTimeFormatter
+            .ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
 
     private NgayUtil() {
+    }
+
+    /**
+     * Doc chuoi ngay dd/MM/yyyy.
+     *
+     * @param chu chuoi nguoi dung go, co the null
+     * @return ngay, hoac null neu de trong, sai dinh dang hay khong ton tai
+     */
+    public static LocalDate docChuoi(String chu) {
+        if (chu == null || chu.isBlank()) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(chu.strip(), DINH_DANG);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 
     /**
@@ -77,14 +100,7 @@ public final class NgayUtil {
 
         @Override
         public LocalDate fromString(String chu) {
-            if (chu == null || chu.isBlank()) {
-                return null;
-            }
-            try {
-                return LocalDate.parse(chu.strip(), DINH_DANG);
-            } catch (DateTimeParseException e) {
-                return null;
-            }
+            return docChuoi(chu);
         }
     }
 }
