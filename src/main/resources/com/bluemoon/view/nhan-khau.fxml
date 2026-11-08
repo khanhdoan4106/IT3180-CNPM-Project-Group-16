@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -89,7 +90,7 @@
                     <VBox spacing="8" prefWidth="330">
                         <GridPane hgap="10" vgap="8">
                             <columnConstraints>
-                                <ColumnConstraints minWidth="90"/>
+                                <ColumnConstraints minWidth="-Infinity"/>
                                 <ColumnConstraints hgrow="ALWAYS"/>
                             </columnConstraints>
                             <Label text="Loại *" GridPane.rowIndex="0"/>
@@ -121,69 +122,75 @@
         </VBox>
     </center>
     <right>
-        <VBox styleClass="the" spacing="10" prefWidth="380">
+        <!-- Cua so thap (1120x645) khong du cao cho ca form: cuon duoc de
+             toi cac nut. Khung trang dat tren ScrollPane de bong khong bi
+             cat. -->
+        <ScrollPane styleClass="the,cuon-form" fitToWidth="true"
+                    hbarPolicy="NEVER" prefWidth="380">
             <BorderPane.margin>
                 <Insets left="20"/>
             </BorderPane.margin>
-            <Label fx:id="tieuDeFormLabel" text="Thêm nhân khẩu"
-                   styleClass="tieu-de-form"/>
-            <GridPane hgap="10" vgap="10">
-                <columnConstraints>
-                    <ColumnConstraints minWidth="120"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-                <Label text="Họ tên *" GridPane.rowIndex="0"/>
-                <TextField fx:id="hoTenField" GridPane.rowIndex="0"
-                           GridPane.columnIndex="1"/>
-                <Label text="Ngày sinh *" GridPane.rowIndex="1"/>
-                <DatePicker fx:id="ngaySinhPicker" maxWidth="Infinity"
-                            GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-                <Label text="Giới tính *" GridPane.rowIndex="2"/>
-                <ComboBox fx:id="gioiTinhCombo" maxWidth="Infinity"
-                          GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-                <Label text="Số CCCD" GridPane.rowIndex="3"/>
-                <TextField fx:id="cccdField"
-                           promptText="12 chữ số, bắt buộc từ 14 tuổi"
-                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-                <Label text="Quan hệ *" GridPane.rowIndex="4"/>
-                <ComboBox fx:id="quanHeCombo" maxWidth="Infinity"
-                          GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-                <Label text="Cư trú *" GridPane.rowIndex="5"/>
-                <ComboBox fx:id="loaiCuTruCombo" maxWidth="Infinity"
-                          GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-            </GridPane>
-            <!-- Chi hien voi nguoi tam tru; ngay tam tru chi khi them moi. -->
-            <GridPane fx:id="tamTruGrid" hgap="10" vgap="10">
-                <columnConstraints>
-                    <ColumnConstraints minWidth="120"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-                <Label text="Nơi thường trú *" GridPane.rowIndex="0"/>
-                <TextField fx:id="noiThuongTruField" GridPane.rowIndex="0"
-                           GridPane.columnIndex="1"/>
-                <Label fx:id="tamTruTuLabel" text="Tạm trú từ *"
-                       GridPane.rowIndex="1"/>
-                <DatePicker fx:id="tamTruTuPicker" maxWidth="Infinity"
-                            GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-                <Label fx:id="tamTruDenLabel" text="Tạm trú đến *"
-                       GridPane.rowIndex="2"/>
-                <DatePicker fx:id="tamTruDenPicker" maxWidth="Infinity"
-                            GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-            </GridPane>
-            <Label fx:id="thongBaoLabel" wrapText="true"/>
-            <!-- Hai hang: khung 380px khong du cho 4 nut tren mot hang. -->
-            <HBox spacing="10">
-                <Button minWidth="-Infinity" fx:id="luuButton" text="Lưu" defaultButton="true"
-                        styleClass="nut-chinh" onAction="#onLuu"/>
-                <Button minWidth="-Infinity" text="Nhập mới" onAction="#onNhapMoi"/>
-            </HBox>
-            <HBox spacing="10">
-                <Button minWidth="-Infinity" fx:id="chuHoButton" text="Đặt làm chủ hộ"
-                        disable="true" onAction="#onDatChuHo"/>
-                <Button minWidth="-Infinity" fx:id="chuyenDiButton" text="Đánh dấu chuyển đi"
-                        styleClass="nut-phu" disable="true"
-                        onAction="#onChuyenDi"/>
-            </HBox>
-        </VBox>
+            <VBox spacing="10">
+                <Label fx:id="tieuDeFormLabel" text="Thêm nhân khẩu"
+                       styleClass="tieu-de-form"/>
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="-Infinity"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+                    <Label text="Họ tên *" GridPane.rowIndex="0"/>
+                    <TextField fx:id="hoTenField" GridPane.rowIndex="0"
+                               GridPane.columnIndex="1"/>
+                    <Label text="Ngày sinh *" GridPane.rowIndex="1"/>
+                    <DatePicker fx:id="ngaySinhPicker" maxWidth="Infinity"
+                                GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label text="Giới tính *" GridPane.rowIndex="2"/>
+                    <ComboBox fx:id="gioiTinhCombo" maxWidth="Infinity"
+                              GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    <Label text="Số CCCD" GridPane.rowIndex="3"/>
+                    <TextField fx:id="cccdField"
+                               promptText="12 chữ số, bắt buộc từ 14 tuổi"
+                               GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                    <Label text="Quan hệ *" GridPane.rowIndex="4"/>
+                    <ComboBox fx:id="quanHeCombo" maxWidth="Infinity"
+                              GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                    <Label text="Cư trú *" GridPane.rowIndex="5"/>
+                    <ComboBox fx:id="loaiCuTruCombo" maxWidth="Infinity"
+                              GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                </GridPane>
+                <!-- Chi hien voi nguoi tam tru; ngay tam tru chi khi them moi. -->
+                <GridPane fx:id="tamTruGrid" hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="-Infinity"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+                    <Label text="Nơi thường trú *" GridPane.rowIndex="0"/>
+                    <TextField fx:id="noiThuongTruField" GridPane.rowIndex="0"
+                               GridPane.columnIndex="1"/>
+                    <Label fx:id="tamTruTuLabel" text="Tạm trú từ *"
+                           GridPane.rowIndex="1"/>
+                    <DatePicker fx:id="tamTruTuPicker" maxWidth="Infinity"
+                                GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label fx:id="tamTruDenLabel" text="Tạm trú đến *"
+                           GridPane.rowIndex="2"/>
+                    <DatePicker fx:id="tamTruDenPicker" maxWidth="Infinity"
+                                GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                </GridPane>
+                <Label fx:id="thongBaoLabel" wrapText="true"/>
+                <!-- Hai hang: khung 380px khong du cho 4 nut tren mot hang. -->
+                <HBox spacing="10">
+                    <Button minWidth="-Infinity" fx:id="luuButton" text="Lưu" defaultButton="true"
+                            styleClass="nut-chinh" onAction="#onLuu"/>
+                    <Button minWidth="-Infinity" text="Nhập mới" onAction="#onNhapMoi"/>
+                </HBox>
+                <HBox spacing="10">
+                    <Button minWidth="-Infinity" fx:id="chuHoButton" text="Đặt làm chủ hộ"
+                            disable="true" onAction="#onDatChuHo"/>
+                    <Button minWidth="-Infinity" fx:id="chuyenDiButton" text="Đánh dấu chuyển đi"
+                            styleClass="nut-phu" disable="true"
+                            onAction="#onChuyenDi"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
     </right>
 </BorderPane>

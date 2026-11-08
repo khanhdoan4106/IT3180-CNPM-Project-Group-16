@@ -23,6 +23,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -57,6 +58,9 @@ public class TrangChinhController {
         if (tk != null) {
             chaoLabel.setText("Xin chào, " + tk.getHoTen() + " ("
                     + tk.getVaiTro().getNhan() + ")");
+            // Ten dai co the bi rut gon "..." tren thanh menu: hien du
+            // noi dung khi re chuot.
+            chaoLabel.setTooltip(new Tooltip(chaoLabel.getText()));
         }
         // AC-060: Thu quy khong dung ho gia dinh, nhan khau. Muc Tai khoan
         // ai cung thay (US-023); tab quan ly chi Quan tri vien thay.

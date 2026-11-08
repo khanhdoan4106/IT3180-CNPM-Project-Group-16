@@ -12,7 +12,7 @@
             fx:controller="com.bluemoon.controller.TrangChinhController">
     <top>
         <HBox styleClass="thanh-dau" spacing="12">
-            <Label text="BlueMoon" styleClass="logo"/>
+            <Label text="BlueMoon" styleClass="logo" minWidth="-Infinity"/>
             <Button minWidth="-Infinity" fx:id="hoGiaDinhButton" text="Hộ gia đình"
                     styleClass="nut-menu" onAction="#onMoHoGiaDinh"/>
             <Button minWidth="-Infinity" fx:id="nhanKhauButton" text="Nhân khẩu"

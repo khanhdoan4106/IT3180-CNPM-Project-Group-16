@@ -2,6 +2,7 @@ package com.bluemoon.view;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.bluemoon.util.PhongChu;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,15 +11,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.text.Text;
@@ -29,7 +33,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 /**
  * Tai tung man hinh FXML o kich thuoc 1120x645 (Figma, docs/design/ui.md),
  * khong mo cua so, roi kiem tra khong nut hay nhan nao bi cat chu thanh
- * "...". Chay headless bang Monocle nen chay duoc tren CI khong co man hinh.
+ * "...", moi nut deu toi duoc (nam trong cua so hoac trong ScrollPane) va
+ * chu dung phong nhung Be Vietnam Pro. Chay headless bang Monocle nen chay
+ * duoc tren CI khong co man hinh.
  *
  * <p>Bo fx:controller va cac thuoc tinh on...="#..." truoc khi tai de khong
  * can CSDL; chu dong (loi chao, nut Khoa/Mo khoa) dien tay ban dai nhat.
@@ -46,6 +52,15 @@ class BoCucFxmlTest {
             "chaoLabel", "Xin chào, Nguyễn Thị Thu Hương (Quản trị viên)",
             "khoaButton", "Mở khóa");
 
+    /**
+     * Nhan duoc phep rut gon "...". Loi chao tren thanh menu chua ten nguoi
+     * dung, dai bao nhieu cung duoc: khi qua dai thi rut gon va controller
+     * gan Tooltip hien du noi dung (TrangChinhController).
+     */
+    private static final Set<String> DUOC_RUT_GON = Set.of("chaoLabel");
+
+    private static final String PHONG = PhongChu.HO_PHONG;
+
     @BeforeAll
     static void khoiDongJavaFx() throws Exception {
         datNeuChuaCo("glass.platform", "Monocle");
@@ -58,6 +73,10 @@ class BoCucFxmlTest {
             xong.complete(null);
         }
         xong.get(30, TimeUnit.SECONDS);
+        trenLuongFx(() -> {
+            PhongChu.nap();
+            return null;
+        });
     }
 
     private static void datNeuChuaCo(String khoa, String giaTri) {
@@ -149,12 +168,23 @@ class BoCucFxmlTest {
         if (node instanceof Labeled l && l.getText() != null
                 && !l.getText().isEmpty()) {
             String hienThi = chuHienThi(l);
-            if (hienThi != null && !hienThi.equals(l.getText())) {
+            if (!PHONG.equals(l.getFont().getFamily())) {
+                loi.add(tienTo + moTa(l) + " dùng phông \""
+                        + l.getFont().getFamily() + "\" thay vì " + PHONG);
+            }
+            if (l.getId() != null && DUOC_RUT_GON.contains(l.getId())) {
+                // bo qua: xem DUOC_RUT_GON
+            } else if (hienThi != null && !hienThi.equals(l.getText())) {
                 loi.add(tienTo + moTa(l) + " hiện \"" + hienThi + "\"");
             } else if (l instanceof Button b
                     && b.getWidth() + 0.5 < b.prefWidth(-1)) {
                 loi.add(tienTo + moTa(b) + " rộng " + Math.round(b.getWidth())
                         + " < cần " + Math.round(b.prefWidth(-1)));
+            }
+            if (l instanceof Button b && !toiDuoc(b)) {
+                loi.add(tienTo + moTa(b) + " nằm ngoài cửa sổ "
+                        + (int) RONG + "×" + (int) CAO
+                        + " và không trong ScrollPane");
             }
         }
         if (node instanceof Parent p) {
@@ -162,6 +192,23 @@ class BoCucFxmlTest {
                 thuThapLoi(con, tienTo, loi);
             }
         }
+    }
+
+    /**
+     * Nut toi duoc neu nam tron trong cua so, hoac nam trong mot ScrollPane
+     * (cuon toi duoc).
+     */
+    private static boolean toiDuoc(Button b) {
+        for (Node cha = b.getParent(); cha != null; cha = cha.getParent()) {
+            if (cha instanceof ScrollPane) {
+                return true;
+            }
+        }
+        Bounds khung = b.localToScene(b.getLayoutBounds());
+        double sai = 0.5;
+        return khung.getMinX() >= -sai && khung.getMinY() >= -sai
+                && khung.getMaxX() <= RONG + sai
+                && khung.getMaxY() <= CAO + sai;
     }
 
     /** Chu skin dang ve (da cat neu khong du cho), null neu chua co skin. */

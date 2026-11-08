@@ -37,7 +37,7 @@
                                styleClass="tieu-de-form"/>
                         <GridPane hgap="10" vgap="10">
                             <columnConstraints>
-                                <ColumnConstraints minWidth="130"/>
+                                <ColumnConstraints minWidth="-Infinity"/>
                                 <ColumnConstraints hgrow="ALWAYS"/>
                             </columnConstraints>
                             <Label text="Tên đăng nhập" GridPane.rowIndex="0"/>
@@ -98,7 +98,7 @@
                             </columns>
                         </TableView>
                         <HBox spacing="10">
-                            <Label text="Không xóa tài khoản, chỉ khóa để giữ lịch sử thu."
+                            <Label text="Không xóa tài khoản, chỉ khóa để giữ lịch sử thu." wrapText="true"
                                    styleClass="phu-de"/>
                             <Region HBox.hgrow="ALWAYS"/>
                             <Button minWidth="-Infinity" text="Đổi vai trò" onAction="#onDoiVaiTro"/>
@@ -114,7 +114,7 @@
                                styleClass="tieu-de-form"/>
                         <GridPane hgap="10" vgap="10">
                             <columnConstraints>
-                                <ColumnConstraints minWidth="130"/>
+                                <ColumnConstraints minWidth="-Infinity"/>
                                 <ColumnConstraints hgrow="ALWAYS"/>
                             </columnConstraints>
                             <Label text="Tên đăng nhập *" GridPane.rowIndex="0"/>
