@@ -32,9 +32,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -253,6 +251,7 @@ public class NhanKhauController {
         hoi.setHeaderText("Đặt " + dangSua.getHoTen() + " làm chủ hộ "
                 + ho.ho().getMaCanHo());
         hoi.setContentText("Chủ hộ hiện tại:");
+        HopThoai.datNut(hoi, HopThoai.DONG_Y);
         Optional<String> chon = hoi.showAndWait();
         if (chon.isEmpty()) {
             return;
@@ -282,13 +281,8 @@ public class NhanKhauController {
         if (dangSua == null) {
             return;
         }
-        Alert hoi = new Alert(Alert.AlertType.CONFIRMATION,
-                "Đánh dấu " + dangSua.getHoTen() + " đã rời hộ?"
-                        + "\nDữ liệu vẫn được giữ lại.",
-                ButtonType.OK, ButtonType.CANCEL);
-        hoi.setTitle("Xác nhận");
-        hoi.setHeaderText(null);
-        if (hoi.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+        if (!HopThoai.xacNhan("Đánh dấu " + dangSua.getHoTen()
+                + " đã rời hộ?\nDữ liệu vẫn được giữ lại.")) {
             return;
         }
         try {

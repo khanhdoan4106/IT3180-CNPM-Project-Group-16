@@ -20,7 +20,6 @@ import java.time.YearMonth;
 import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -144,9 +143,7 @@ public class TrangChinhController {
                 return;
             }
         } catch (NghiepVuException e) {
-            Alert bao = new Alert(Alert.AlertType.WARNING, e.getMessage());
-            bao.setHeaderText(null);
-            bao.showAndWait();
+            HopThoai.canhBao(e.getMessage());
             onDangXuat();
             return;
         } catch (CauHinhException | DaoException e) {

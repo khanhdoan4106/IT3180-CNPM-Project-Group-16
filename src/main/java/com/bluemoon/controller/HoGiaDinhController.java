@@ -34,9 +34,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -230,13 +228,8 @@ public class HoGiaDinhController {
         if (dangSua == null) {
             return;
         }
-        Alert hoi = new Alert(Alert.AlertType.CONFIRMATION,
-                "Đánh dấu hộ " + dangSua + " đã chuyển đi?"
-                        + "\nDữ liệu của hộ vẫn được giữ lại." + canhBaoNo(),
-                ButtonType.OK, ButtonType.CANCEL);
-        hoi.setTitle("Xác nhận");
-        hoi.setHeaderText(null);
-        if (hoi.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+        if (!HopThoai.xacNhan("Đánh dấu hộ " + dangSua + " đã chuyển đi?"
+                + "\nDữ liệu của hộ vẫn được giữ lại." + canhBaoNo())) {
             return;
         }
         try {

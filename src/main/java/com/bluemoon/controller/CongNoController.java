@@ -20,7 +20,6 @@ import java.util.function.Function;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -155,12 +154,8 @@ public class CongNoController {
 
     @FXML
     private void onChot() {
-        Alert hoi = new Alert(Alert.AlertType.CONFIRMATION,
-                "Chốt công nợ " + tenThang().toLowerCase() + "?",
-                ButtonType.OK, ButtonType.CANCEL);
-        hoi.setTitle("Xác nhận");
-        hoi.setHeaderText(null);
-        if (hoi.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+        if (!HopThoai.xacNhan("Chốt công nợ " + tenThang().toLowerCase()
+                + "?")) {
             return;
         }
         try {
@@ -210,7 +205,7 @@ public class CongNoController {
                 + SoTien.hienThi(p.soTien()));
         ButtonType luu = new ButtonType("Lưu thay đổi",
                 ButtonBar.ButtonData.OK_DONE);
-        d.getDialogPane().getButtonTypes().addAll(luu, ButtonType.CANCEL);
+        HopThoai.datNut(d, luu);
         // Cung dang SoTien.doc nhan (377.500 đ); CSDL tra ve 377500.00.
         TextField soTien = new TextField(SoTien.hienThi(p.soTien()));
         TextField ghiChu = new TextField(p.ghiChu() == null ? ""

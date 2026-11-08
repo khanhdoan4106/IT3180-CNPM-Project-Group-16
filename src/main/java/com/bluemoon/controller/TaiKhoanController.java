@@ -265,7 +265,7 @@ public class TaiKhoanController {
         d.setHeaderText("Tài khoản " + t.getTenDangNhap());
         ButtonType luu = new ButtonType("Đặt lại",
                 ButtonBar.ButtonData.OK_DONE);
-        d.getDialogPane().getButtonTypes().addAll(luu, ButtonType.CANCEL);
+        HopThoai.datNut(d, luu);
         PasswordField moi = new PasswordField();
         moi.setPromptText("ít nhất 8 ký tự");
         PasswordField nhapLai = new PasswordField();
