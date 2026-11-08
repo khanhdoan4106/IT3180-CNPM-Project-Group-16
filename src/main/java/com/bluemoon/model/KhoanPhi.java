@@ -2,6 +2,7 @@ package com.bluemoon.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 /**
  * Mot khoan trong danh muc khoan thu (bang khoan_phi, US-005, US-006).
@@ -49,5 +50,17 @@ public record KhoanPhi(int id, String ten, LoaiKhoanPhi loai,
     public boolean tinhCongNo() {
         return loai == LoaiKhoanPhi.BAT_BUOC
                 && trangThai == TrangThaiKhoanPhi.DANG_THU;
+    }
+
+    /**
+     * Khoan co hieu luc trong thang khong: bat dau khong sau ngay cuoi
+     * thang va chua ket thuc truoc ngay dau thang.
+     *
+     * @param thang thang can xet
+     * @return true neu khoan ap dung cho it nhat mot ngay trong thang
+     */
+    public boolean apDungTrong(YearMonth thang) {
+        return !tuNgay.isAfter(thang.atEndOfMonth())
+                && (denNgay == null || !denNgay.isBefore(thang.atDay(1)));
     }
 }
