@@ -179,6 +179,74 @@ CREATE TABLE IF NOT EXISTS phai_nop (
     INDEX idx_pn_ho (ho_id, dot_thu_id)
 );
 
--- Bảng sẽ thêm (xem docs/design/erd.md):
---   Sprint 3: phieu_thu (US-010 đến US-014)
+-- Giả định 31: bộ đếm số biên lai theo năm. Khóa dòng của năm trong cùng
+-- giao dịch lưu phiếu nên số liên tục, không nhảy khi giao dịch hoàn tác.
+CREATE TABLE IF NOT EXISTS bo_dem_bien_lai (
+    nam     SMALLINT NOT NULL PRIMARY KEY,
+    so_cuoi INT      NOT NULL DEFAULT 0,
+    CONSTRAINT chk_bdbl_so_cuoi CHECK (so_cuoi BETWEEN 0 AND 99999)
+);
+
+-- US-010 đến US-014, US-007: phiếu thu, số biên lai PT-<nam>-<so 5 chữ số>.
+-- hinh_thuc để trống chỉ khi phiếu không thu tiền (giả định 30). Hủy chỉ đổi
+-- trạng thái và ghi người hủy, lý do; phiếu giữ số (AC-043, giả định 28).
+CREATE TABLE IF NOT EXISTS phieu_thu (
+    id            INT AUTO_INCREMENT PRIMARY KEY,
+    nam           SMALLINT       NOT NULL,
+    so            INT            NOT NULL,
+    ho_id         INT            NOT NULL,
+    tong_tien     DECIMAL(14, 2) NOT NULL,
+    hinh_thuc     ENUM('TIEN_MAT', 'CHUYEN_KHOAN') NULL,
+    nguoi_thu     INT            NOT NULL,
+    thoi_diem     DATETIME       NOT NULL,
+    so_lan_in     INT            NOT NULL DEFAULT 0,
+    da_huy        BOOLEAN        NOT NULL DEFAULT FALSE,
+    nguoi_huy     INT            NULL,
+    thoi_diem_huy DATETIME       NULL,
+    ly_do_huy     VARCHAR(200)   NULL,
+    CONSTRAINT fk_pt_ho FOREIGN KEY (ho_id) REFERENCES ho_gia_dinh (id),
+    CONSTRAINT fk_pt_nguoi_thu FOREIGN KEY (nguoi_thu)
+        REFERENCES tai_khoan (id),
+    CONSTRAINT fk_pt_nguoi_huy FOREIGN KEY (nguoi_huy)
+        REFERENCES tai_khoan (id),
+    CONSTRAINT uq_pt_so_bien_lai UNIQUE (nam, so),
+    CONSTRAINT chk_pt_so CHECK (so BETWEEN 1 AND 99999),
+    CONSTRAINT chk_pt_nam CHECK (nam = YEAR(thoi_diem)),
+    CONSTRAINT chk_pt_tong_tien CHECK (tong_tien >= 0),
+    CONSTRAINT chk_pt_hinh_thuc CHECK (tong_tien = 0 OR hinh_thuc IS NOT NULL),
+    CONSTRAINT chk_pt_so_lan_in CHECK (so_lan_in >= 0),
+    CONSTRAINT chk_pt_huy CHECK (
+        (da_huy = FALSE AND nguoi_huy IS NULL AND thoi_diem_huy IS NULL
+            AND ly_do_huy IS NULL)
+        OR (da_huy = TRUE AND nguoi_huy IS NOT NULL
+            AND thoi_diem_huy IS NOT NULL AND ly_do_huy IS NOT NULL
+            AND ly_do_huy <> '')),
+    INDEX idx_pt_ho (ho_id, thoi_diem),
+    INDEX idx_pt_thoi_diem (thoi_diem)
+);
+
+-- Mỗi dòng là một khoản trong phiếu: một khoản phải nộp (phai_nop_id), hoặc
+-- một lần đóng góp tự nguyện (phai_nop_id để trống, đóng được nhiều lần,
+-- giả định 29). con_hieu_luc chép ngược da_huy của phiếu, đổi trong cùng giao
+-- dịch hủy, để cột sinh phai_nop_da_thu chặn thu trùng một khoản phải nộp
+-- ngay ở CSDL (cùng cách cccd_dang_o chép trang_thai).
+CREATE TABLE IF NOT EXISTS phieu_thu_chi_tiet (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    phieu_thu_id    INT            NOT NULL,
+    khoan_phi_id    INT            NOT NULL,
+    phai_nop_id     INT            NULL,
+    so_tien         DECIMAL(14, 2) NOT NULL,
+    con_hieu_luc    BOOLEAN        NOT NULL DEFAULT TRUE,
+    phai_nop_da_thu INT AS (IF(con_hieu_luc, phai_nop_id, NULL)) STORED,
+    CONSTRAINT fk_ptct_phieu FOREIGN KEY (phieu_thu_id)
+        REFERENCES phieu_thu (id),
+    CONSTRAINT fk_ptct_khoan FOREIGN KEY (khoan_phi_id)
+        REFERENCES khoan_phi (id),
+    CONSTRAINT fk_ptct_phai_nop FOREIGN KEY (phai_nop_id)
+        REFERENCES phai_nop (id),
+    CONSTRAINT uq_ptct_phai_nop_da_thu UNIQUE (phai_nop_da_thu),
+    CONSTRAINT chk_ptct_so_tien CHECK (so_tien >= 0),
+    INDEX idx_ptct_khoan (khoan_phi_id)
+);
+
 -- Quy ước: không dùng ON DELETE CASCADE; hộ ngừng quản lý chỉ đổi trạng thái.
