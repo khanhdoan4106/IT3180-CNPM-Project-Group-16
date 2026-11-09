@@ -43,7 +43,7 @@
     <center>
         <TableView fx:id="bangKhoan">
             <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS"/>
             </columnResizePolicy>
             <columns>
                 <TableColumn fx:id="cotCanHo" text="Căn hộ" prefWidth="110"/>

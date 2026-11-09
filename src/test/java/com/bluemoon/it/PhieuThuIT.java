@@ -210,6 +210,19 @@ class PhieuThuIT {
     }
 
     @Test
+    void hoDaChuyenDiKhongGhiDongGopTuNguyen() {
+        hoDao.danhDauChuyenDi(hoId, admin.getId());
+        assertTrue(thuPhi.thongTin(admin, hoId).dongGop().isEmpty());
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> thuPhi.thu(admin, hoId, moiKhoan(),
+                        Map.of(quy, "50.000"), HinhThucThanhToan.TIEN_MAT));
+        assertEquals(ThuPhiService.LOI_HO_DA_CHUYEN_DI, e.getMessage());
+        assertEquals(0, thuPhi.homNay(admin).size());
+        thuPhi.thu(admin, hoId, moiKhoan(), null, HinhThucThanhToan.TIEN_MAT);
+        assertEquals(1, thuPhi.homNay(admin).size());
+    }
+
+    @Test
     void thongBaoPhiVaDanhSachTamVang() {
         ThongBaoPhiService thongBao = new ThongBaoPhiService(phieuDao,
                 new CongNoDaoImpl());
@@ -303,6 +316,17 @@ class PhieuThuIT {
         } catch (RuntimeException e) {
             return e;
         }
+    }
+
+    @Test
+    void daInKhongDemPhieuDaHuy() {
+        PhieuThu p = thuPhi.thu(admin, hoId, moiKhoan(), null,
+                HinhThucThanhToan.TIEN_MAT);
+        phieuDao.ghiLanIn(p.id());
+        assertEquals(1, phieuDao.timTheoId(p.id()).orElseThrow().soLanIn());
+        thuPhi.huy(admin, p.id(), "Thu nhầm");
+        phieuDao.ghiLanIn(p.id());
+        assertEquals(1, phieuDao.timTheoId(p.id()).orElseThrow().soLanIn());
     }
 
     @Test

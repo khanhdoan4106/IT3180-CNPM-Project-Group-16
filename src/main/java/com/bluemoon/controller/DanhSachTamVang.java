@@ -49,7 +49,8 @@ final class DanhSachTamVang {
                 cot("Từ ngày", 95, v -> NgayUtil.hien(v.tuNgay())),
                 cot("Đến ngày", 95, v -> NgayUtil.hien(v.denNgay())),
                 cot("Lý do", 180, v -> v.lyDo() == null ? "" : v.lyDo())));
-        bang.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        bang.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
         bang.setPlaceholder(new Label("Chọn ngày rồi bấm Xem"));
         bang.setPrefSize(760, 360);
         thongBao.setWrapText(true);

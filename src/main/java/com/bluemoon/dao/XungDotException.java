@@ -22,7 +22,9 @@ public class XungDotException extends DaoException {
         /** Da dung het 99.999 so bien lai cua nam. */
         HET_SO,
         /** Phieu da bi huy. */
-        DA_HUY
+        DA_HUY,
+        /** Nhan khau vua doi trang thai hoac quan he o may khac. */
+        NHAN_KHAU_DOI
     }
 
     private final Loai loai;

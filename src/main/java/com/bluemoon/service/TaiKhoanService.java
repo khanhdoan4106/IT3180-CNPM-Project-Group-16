@@ -18,9 +18,9 @@ public class TaiKhoanService {
     public static final int MAT_KHAU_TOI_THIEU = 8;
     /** Do dai toi da cua ho ten, theo cot ho_ten. */
     public static final int HO_TEN_TOI_DA = 100;
-    /** Chu khong dau, so, dau cham, gach duoi; 3-50 ky tu (cot 50). */
     /** So dien thoai Viet Nam 10 chu so (cung quy uoc voi ho gia dinh). */
     private static final Pattern MAU_SDT = Pattern.compile("0\\d{9}");
+    /** Chu khong dau, so, dau cham, gach duoi; 3-50 ky tu (cot 50). */
     private static final Pattern TEN_HOP_LE =
             Pattern.compile("[A-Za-z0-9._]{3,50}");
 

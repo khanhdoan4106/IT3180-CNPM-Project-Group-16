@@ -165,6 +165,7 @@ public class CongNoController {
             bangKhoan.setItems(FXCollections.observableArrayList(kq.khoan()));
             tomTat(kq.khoan());
             hienBoQua(kq);
+            thongBaoLabel.getStyleClass().removeAll("loi", "thanh-cong");
             thongBaoLabel.setText("Đang xem trước, chưa lưu.");
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());

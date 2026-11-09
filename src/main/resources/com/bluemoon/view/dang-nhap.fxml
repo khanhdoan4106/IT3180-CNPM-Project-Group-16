@@ -14,7 +14,7 @@
         <Label text="Đăng nhập hệ thống quản lý chung cư"
                styleClass="phu-de"/>
         <Label text="Tên đăng nhập"/>
-        <TextField fx:id="tenDangNhapField" promptText="vd: admin"/>
+        <TextField fx:id="tenDangNhapField" promptText="vd admin"/>
         <Label text="Mật khẩu"/>
         <PasswordField fx:id="matKhauField" onAction="#onDangNhap"/>
         <Label fx:id="thongBaoLabel" styleClass="loi" wrapText="true"/>

@@ -85,7 +85,7 @@
                     <VBox styleClass="the" spacing="10" HBox.hgrow="ALWAYS">
                         <TableView fx:id="bangTaiKhoan" VBox.vgrow="ALWAYS">
                             <columnResizePolicy>
-                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS"/>
                             </columnResizePolicy>
                             <columns>
                                 <TableColumn fx:id="cotTen"

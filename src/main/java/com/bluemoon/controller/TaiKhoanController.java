@@ -155,10 +155,16 @@ public class TaiKhoanController {
         }
         VaiTro moi = t.getVaiTro() == VaiTro.QUAN_TRI ? VaiTro.THU_QUY
                 : VaiTro.QUAN_TRI;
+        if (!HopThoai.xacNhan("Đổi vai trò của " + t.getTenDangNhap()
+                + " từ " + t.getVaiTro().getNhan() + " thành "
+                + moi.getNhan() + "?")) {
+            return;
+        }
         try {
             service.doiVaiTro(PhienLamViec.hienTai(), t.getId(), moi);
             taiLai();
-            baoThanhCong(t.getTenDangNhap() + " giờ là " + moi.getNhan());
+            baoThanhCong("Đã đổi vai trò của " + t.getTenDangNhap()
+                    + " thành " + moi.getNhan());
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -170,6 +176,11 @@ public class TaiKhoanController {
     private void onKhoa() {
         TaiKhoan t = dangChon();
         if (t == null) {
+            return;
+        }
+        if (t.isHoatDong() && !HopThoai.xacNhan("Khóa tài khoản "
+                + t.getTenDangNhap() + "? Người này sẽ không đăng nhập được"
+                + " cho đến khi mở khóa.")) {
             return;
         }
         try {

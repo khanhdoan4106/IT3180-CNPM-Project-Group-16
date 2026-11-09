@@ -183,7 +183,8 @@ public class ThuPhiController {
                     tt.khoanChuaDong().stream().map(DongChon::new).toList()));
             bangNo.getItems().forEach(d -> d.chon.addListener(
                     (o, cu, moi) -> capNhatTong()));
-            hienQuy(tt.dongGop());
+            hienQuy(tt.dongGop(), tt.ho().ho().getTrangThai()
+                    != TrangThaiHo.DANG_O);
             lichSuButton.setDisable(false);
             capNhatTong();
         } catch (NghiepVuException e) {
@@ -193,11 +194,15 @@ public class ThuPhiController {
         }
     }
 
-    private void hienQuy(List<DongGopQuy> dsQuy) {
+    private void hienQuy(List<DongGopQuy> dsQuy, boolean daChuyenDi) {
         quyGrid.getChildren().clear();
         oQuy.clear();
         if (dsQuy.isEmpty()) {
-            quyGrid.add(new Label("Không có quỹ nào đang mở"), 0, 0);
+            Label khongCo = new Label(daChuyenDi
+                    ? ThuPhiService.LOI_HO_DA_CHUYEN_DI
+                    : "Không có quỹ nào đang mở");
+            khongCo.setWrapText(true);
+            quyGrid.add(khongCo, 0, 0);
             return;
         }
         int hang = 0;
@@ -501,7 +506,8 @@ public class ThuPhiController {
                         : p.hinhThuc().getNhan()),
                 cot("Người thu", 130, PhieuThu::tenNguoiThu),
                 cot("Trạng thái", 320, ThuPhiController::trangThai)));
-        bang.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        bang.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
         bang.setRowFactory(t -> new TableRow<>() {
             @Override
             protected void updateItem(PhieuThu p, boolean trong) {

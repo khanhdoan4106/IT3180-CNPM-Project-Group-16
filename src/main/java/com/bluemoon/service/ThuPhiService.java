@@ -15,6 +15,7 @@ import com.bluemoon.model.TaiKhoan;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TongDongGop;
 import com.bluemoon.model.TrangThaiDongGop;
+import com.bluemoon.model.TrangThaiHo;
 import com.bluemoon.model.VaiTro;
 import java.math.BigDecimal;
 import java.time.Clock;
@@ -44,6 +45,9 @@ public class ThuPhiService {
     /** AC-038. */
     public static final String LOI_CHUA_CHON_HINH_THUC =
             "Chưa chọn hình thức thanh toán";
+    /** Gia dinh 39: ho da chuyen di chi thu khoan con no. */
+    public static final String LOI_HO_DA_CHUYEN_DI = "Hộ đã chuyển đi chỉ"
+            + " thu các khoản còn nợ";
     /** Khoan vua duoc thu o may khac, hoac vua bi sua. */
     public static final String LOI_DU_LIEU_DOI = "Khoản phải nộp của hộ vừa"
             + " thay đổi (có thể vừa được thu hoặc sửa ở máy khác)."
@@ -116,7 +120,9 @@ public class ThuPhiService {
         TomTatHo ho = dao.timHo(hoId).orElseThrow(
                 () -> new NghiepVuException(LOI_KHONG_TIM_THAY));
         List<KhoanNo> no = dao.khoanChuaDong(hoId);
-        return new ThongTinThu(ho, no, dongGop(hoId));
+        // Gia dinh 39: ho da chuyen di khong ghi dong gop tu nguyen.
+        return new ThongTinThu(ho, no, daChuyenDi(ho) ? List.of()
+                : dongGop(hoId));
     }
 
     /**
@@ -178,6 +184,10 @@ public class ThuPhiService {
             HinhThucThanhToan hinhThuc) {
         PhanQuyen.yeuCau(nguoi, VaiTro.QUAN_TRI, VaiTro.THU_QUY);
         ThongTinThu tt = thongTin(nguoi, hoId);
+        if (daChuyenDi(tt.ho()) && dongGopNhap != null && dongGopNhap.values()
+                .stream().anyMatch(v -> v != null && !v.isBlank())) {
+            throw new NghiepVuException(LOI_HO_DA_CHUYEN_DI);
+        }
         List<PhieuThuMoi.Dong> dong = new ArrayList<>();
         Set<Integer> chon = new LinkedHashSet<>(
                 phaiNopIds == null ? List.of() : phaiNopIds);
@@ -210,6 +220,10 @@ public class ThuPhiService {
         } catch (DangBiKhoaException e) {
             throw new NghiepVuException(DangBiKhoaException.THONG_BAO);
         }
+    }
+
+    private static boolean daChuyenDi(TomTatHo ho) {
+        return ho.ho().getTrangThai() == TrangThaiHo.DA_CHUYEN_DI;
     }
 
     private static List<PhieuThuMoi.Dong> dongGopMoi(ThongTinThu tt,
@@ -355,6 +369,7 @@ public class ThuPhiService {
             case HET_SO -> "Đã dùng hết số biên lai của năm. Báo người"
                     + " quản trị hệ thống";
             case DA_HUY -> "Phiếu vừa được hủy ở máy khác";
+            case NHAN_KHAU_DOI -> LOI_DU_LIEU_DOI;
         };
     }
 }

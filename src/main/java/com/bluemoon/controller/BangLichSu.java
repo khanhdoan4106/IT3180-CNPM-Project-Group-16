@@ -34,7 +34,8 @@ final class BangLichSu {
     static TableView<BienDong> taoBang(List<BienDong> ds, boolean coCanHo) {
         TableView<BienDong> bang = new TableView<>(
                 FXCollections.observableArrayList(ds));
-        bang.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        bang.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
         bang.setPlaceholder(new Label("Chưa có biến động nào"));
         them(bang, "Ngày", b -> NgayUtil.hien(b.ngay()));
         if (coCanHo) {

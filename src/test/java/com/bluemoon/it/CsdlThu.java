@@ -61,6 +61,18 @@ final class CsdlThu {
                 VaiTro.QUAN_TRI, true);
     }
 
+    /** Chay database/seed.sql (bo chu thich va USE) tren CSDL thu. */
+    static void chaySeed() {
+        try (Connection conn = Database.getConnection();
+                Statement st = conn.createStatement()) {
+            for (String lenh : lenhCuaTep("seed.sql")) {
+                st.execute(lenh);
+            }
+        } catch (SQLException | IOException e) {
+            throw new IllegalStateException("Khong chay duoc seed.sql", e);
+        }
+    }
+
     /**
      * Dem so dong cua mot bang.
      *
@@ -93,9 +105,13 @@ final class CsdlThu {
 
     /** Cac lenh trong schema.sql, bo chu thich, CREATE DATABASE va USE. */
     private static List<String> lenhTaoBang() throws IOException {
+        return lenhCuaTep("schema.sql");
+    }
+
+    private static List<String> lenhCuaTep(String tep) throws IOException {
         StringBuilder sb = new StringBuilder();
-        for (String dong : Files.readAllLines(Path.of("database",
-                "schema.sql"), StandardCharsets.UTF_8)) {
+        for (String dong : Files.readAllLines(Path.of("database", tep),
+                StandardCharsets.UTF_8)) {
             if (!dong.strip().startsWith("--")) {
                 sb.append(dong).append('\n');
             }
