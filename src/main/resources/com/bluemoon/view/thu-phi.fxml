@@ -187,6 +187,28 @@
                     <padding>
                         <Insets top="12" right="4" bottom="0" left="4"/>
                     </padding>
+                    <top>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <BorderPane.margin>
+                                <Insets bottom="10"/>
+                            </BorderPane.margin>
+                            <HBox styleClass="nhan-tom-tat">
+                                <Label text="Số phiếu" styleClass="phu-de"/>
+                                <Label fx:id="soPhieuLabel" text="0"
+                                       styleClass="so-dam"/>
+                            </HBox>
+                            <HBox styleClass="nhan-tom-tat">
+                                <Label text="Đã thu hôm nay" styleClass="phu-de"/>
+                                <Label fx:id="daThuLabel" text="0 đ"
+                                       styleClass="so-xanh"/>
+                            </HBox>
+                            <HBox styleClass="nhan-tom-tat">
+                                <Label text="Đã hủy" styleClass="phu-de"/>
+                                <Label fx:id="daHuyLabel" text="0 phiếu"
+                                       styleClass="so-do"/>
+                            </HBox>
+                        </HBox>
+                    </top>
                     <center>
                         <TableView fx:id="bangPhieu">
                             <placeholder>

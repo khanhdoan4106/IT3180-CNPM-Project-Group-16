@@ -37,6 +37,7 @@
     -mau-thanh-cong: #15803d;
     -mau-vien: #cbd5e1;
     -mau-dai: #eff6ff;
+    -mau-nhan: #e2e8f0;
     -fx-font-family: "Be Vietnam Pro";
     -fx-font-size: 14px;
     -fx-text-fill: -mau-chu;
@@ -254,4 +255,44 @@
 
 .khung-bang .scroll-pane > .viewport {
     -fx-background-color: transparent;
+}
+
+/* Tab Phieu thu hom nay: dai tom tat, dong chon, trang thai phieu huy. */
+.nhan-tom-tat {
+    -fx-background-color: -mau-nhan;
+    -fx-background-radius: 14;
+    -fx-padding: 4 12 4 12;
+    -fx-spacing: 6;
+    -fx-alignment: center-left;
+}
+
+.so-dam {
+    -fx-font-weight: bold;
+}
+
+.so-xanh {
+    -fx-font-weight: bold;
+    -fx-text-fill: -mau-thanh-cong;
+}
+
+.so-do {
+    -fx-font-weight: bold;
+    -fx-text-fill: -mau-loi;
+}
+
+.bang-phieu .table-row-cell:filled:selected {
+    -fx-background: -mau-dai;
+    -fx-background-color: -mau-dai;
+}
+
+.bang-phieu .table-row-cell:filled:selected .table-cell {
+    -fx-text-fill: -mau-chu;
+}
+
+.bang-phieu .table-row-cell.phieu-da-huy:filled:selected .table-cell {
+    -fx-text-fill: -mau-phu-nhat;
+}
+
+.bang-phieu .table-row-cell.phieu-da-huy .table-cell.trang-thai-huy {
+    -fx-text-fill: -mau-loi;
 }

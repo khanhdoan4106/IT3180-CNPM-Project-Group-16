@@ -39,6 +39,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -103,6 +104,12 @@ public class ThuPhiController {
     private Label thongBaoLabel;
     @FXML
     private TableView<PhieuThu> bangPhieu;
+    @FXML
+    private Label soPhieuLabel;
+    @FXML
+    private Label daThuLabel;
+    @FXML
+    private Label daHuyLabel;
     @FXML
     private Label thongBaoPhieuLabel;
 
@@ -384,8 +391,12 @@ public class ThuPhiController {
 
     private void taiPhieuHomNay() {
         try {
-            bangPhieu.setItems(FXCollections.observableArrayList(
-                    service.homNay(PhienLamViec.hienTai())));
+            List<PhieuThu> ds = service.homNay(PhienLamViec.hienTai());
+            bangPhieu.setItems(FXCollections.observableArrayList(ds));
+            TomTatPhieuHomNay tt = TomTatPhieuHomNay.tu(ds);
+            soPhieuLabel.setText(String.valueOf(tt.soPhieu()));
+            daThuLabel.setText(SoTien.hienThi(tt.daThu()));
+            daHuyLabel.setText(tt.soHuy() + " phiếu");
         } catch (NghiepVuException e) {
             baoLoi(thongBaoPhieuLabel, e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -527,16 +538,20 @@ public class ThuPhiController {
     /** Cot chung cho bang phieu hom nay va lich su thu cua ho. */
     private static void cauHinhBangPhieu(TableView<PhieuThu> bang) {
         bang.getColumns().setAll(List.of(
-                cot("Số biên lai", 120, PhieuThu::soBienLai),
-                cot("Căn hộ", 70, PhieuThu::maCanHo),
-                cot("Thời điểm", 125, p -> p.thoiDiem().format(NGAY_GIO)),
-                cot("Tổng tiền", 110, p -> SoTien.hienThi(p.tongTien())),
+                cot("Số biên lai", 120, PhieuThu::soBienLai,
+                        "-fx-font-weight: bold;"),
+                cot("Căn hộ", 70, PhieuThu::maCanHo, null),
+                cot("Thời điểm", 125, p -> p.thoiDiem().format(NGAY_GIO),
+                        null),
+                cot("Tổng tiền", 110, p -> SoTien.hienThi(p.tongTien()),
+                        "-fx-alignment: CENTER-RIGHT;"),
                 cot("Hình thức", 105, p -> p.hinhThuc() == null ? "–"
-                        : p.hinhThuc().getNhan()),
-                cot("Người thu", 130, PhieuThu::tenNguoiThu),
-                cot("Trạng thái", 320, ThuPhiController::trangThai)));
+                        : p.hinhThuc().getNhan(), null),
+                cot("Người thu", 170, PhieuThu::tenNguoiThu, null),
+                cotTrangThai()));
         bang.setColumnResizePolicy(
                 TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
+        bang.getStyleClass().add("bang-phieu");
         bang.setRowFactory(t -> new TableRow<>() {
             @Override
             protected void updateItem(PhieuThu p, boolean trong) {
@@ -549,18 +564,42 @@ public class ThuPhiController {
         });
     }
 
+    /** Cot trang thai: phieu huy hien "Da huy: ly do" mau do. */
+    private static TableColumn<PhieuThu, String> cotTrangThai() {
+        TableColumn<PhieuThu, String> c = cot("Trạng thái", 280,
+                ThuPhiController::trangThai, null);
+        c.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String chu, boolean trong) {
+                super.updateItem(chu, trong);
+                setText(trong ? null : chu);
+                getStyleClass().remove("trang-thai-huy");
+                if (!trong && chu != null && chu.startsWith(TIEN_TO_HUY)) {
+                    getStyleClass().add("trang-thai-huy");
+                }
+            }
+        });
+        return c;
+    }
+
     private static TableColumn<PhieuThu, String> cot(String ten, double rong,
-            Function<PhieuThu, String> lay) {
+            Function<PhieuThu, String> lay, String kieu) {
         TableColumn<PhieuThu, String> c = new TableColumn<>(ten);
         c.setPrefWidth(rong);
+        if (kieu != null) {
+            c.setStyle(kieu);
+        }
         c.setCellValueFactory(
                 o -> new SimpleStringProperty(lay.apply(o.getValue())));
         return c;
     }
 
-    private static String trangThai(PhieuThu p) {
+    /** Tien to trang thai cua phieu huy; nguoi huy xem o "Xem chi tiet". */
+    static final String TIEN_TO_HUY = "Đã hủy: ";
+
+    static String trangThai(PhieuThu p) {
         if (p.daHuy()) {
-            return "Đã hủy (" + p.tenNguoiHuy() + "): " + p.lyDoHuy();
+            return TIEN_TO_HUY + p.lyDoHuy();
         }
         if (p.khongThuTien()) {
             return "Không thu tiền";
