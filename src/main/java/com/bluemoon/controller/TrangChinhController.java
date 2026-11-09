@@ -4,6 +4,7 @@ import com.bluemoon.config.CauHinhException;
 import com.bluemoon.dao.BienDongDaoImpl;
 import com.bluemoon.dao.CongNoDaoImpl;
 import com.bluemoon.dao.DaoException;
+import com.bluemoon.dao.DongHoCsdl;
 import com.bluemoon.dao.HoGiaDinhDaoImpl;
 import com.bluemoon.dao.KhoanPhiDaoImpl;
 import com.bluemoon.dao.TaiKhoanDaoImpl;
@@ -94,7 +95,8 @@ public class TrangChinhController {
     private void nhacChotCongNo() {
         try {
             CongNoService congNo = new CongNoService(new CongNoDaoImpl(),
-                    new KhoanPhiDaoImpl(), new HoGiaDinhDaoImpl());
+                    new KhoanPhiDaoImpl(), new HoGiaDinhDaoImpl(),
+                    new DongHoCsdl());
             if (congNo.canNhacChot(PhienLamViec.hienTai())) {
                 YearMonth t = congNo.thangHienTai();
                 nhacChotLabel.setText("Tháng " + t.getMonthValue() + "/"

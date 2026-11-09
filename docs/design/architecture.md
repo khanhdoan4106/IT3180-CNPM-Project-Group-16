@@ -37,7 +37,7 @@ Kiểm tra ở hai lớp (NFR-002, NFR-009):
 Mọi hàm public của Service nhận `TaiKhoan nguoi` và gọi
 `PhanQuyen.yeuCau`, trừ ba hàm: `TaiKhoanService.dangNhap` và
 `TaiKhoanService.lamMoiPhien` (chạy khi chưa có hoặc đang kiểm tra lại
-phiên), `CongNoService.thangHienTai` (chỉ đọc đồng hồ, không đọc dữ liệu).
+phiên), `CongNoService.thangHienTai` (chỉ đọc đồng hồ, không đọc dữ liệu nghiệp vụ).
 
 | Chức năng | Quản trị viên | Thủ quỹ | Căn cứ |
 |---|---|---|---|

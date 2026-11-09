@@ -3,6 +3,7 @@ package com.bluemoon.controller;
 import com.bluemoon.config.CauHinhException;
 import com.bluemoon.dao.CongNoDaoImpl;
 import com.bluemoon.dao.DaoException;
+import com.bluemoon.dao.DongHoCsdl;
 import com.bluemoon.dao.HoGiaDinhDaoImpl;
 import com.bluemoon.dao.KhoanPhiDaoImpl;
 import com.bluemoon.dao.PhieuThuDaoImpl;
@@ -48,7 +49,7 @@ public class CongNoController {
 
     private final CongNoService service = new CongNoService(
             new CongNoDaoImpl(), new KhoanPhiDaoImpl(),
-            new HoGiaDinhDaoImpl());
+            new HoGiaDinhDaoImpl(), new DongHoCsdl());
     private final ThongBaoPhiService thongBaoService = new ThongBaoPhiService(
             new PhieuThuDaoImpl(), new CongNoDaoImpl());
 
@@ -97,7 +98,13 @@ public class CongNoController {
         ganCot(cotDaDong, p -> p.daDong() ? "Đã đóng" : "");
         ganCot(cotGhiChu, CongNoController::ghiChu);
         List<YearMonth> thang = new ArrayList<>();
-        YearMonth hienTai = service.thangHienTai();
+        YearMonth hienTai;
+        try {
+            hienTai = service.thangHienTai();
+        } catch (CauHinhException | DaoException e) {
+            hienTai = YearMonth.now();
+            baoLoi(LoiCsdl.thongBao(e));
+        }
         for (int i = 0; i < SO_THANG; i++) {
             thang.add(hienTai.minusMonths(i));
         }

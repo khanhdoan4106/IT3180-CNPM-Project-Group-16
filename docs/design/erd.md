@@ -228,7 +228,8 @@ Thiết kế theo giả định 21–32 trong
 - **Hủy phiếu (US-014, giả định 28)** trong một giao dịch: đặt `da_huy`,
   người hủy, thời điểm, lý do và đặt `con_hieu_luc = FALSE` cho các dòng, để
   khoản phải nộp trở lại chưa đóng (AC-041). Quyền và điều kiện "trong ngày"
-  (AC-042) kiểm tra ở Service, theo cùng đồng hồ với lúc lập phiếu.
+  (AC-042) kiểm tra ở Service, theo cùng đồng hồ với lúc lập phiếu: giờ máy chủ
+  MySQL (`DongHoCsdl`), không theo giờ máy thu ngân (giả định 38).
 - **In biên lai (US-013).** `so_lan_in` tăng sau mỗi lần in; từ lần thứ hai
   biên lai ghi "BẢN IN LẠI" (AC-040). Phiếu 0 đ và phiếu đã hủy không in.
 

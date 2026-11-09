@@ -2,6 +2,7 @@ package com.bluemoon.controller;
 
 import com.bluemoon.config.CauHinhException;
 import com.bluemoon.dao.DaoException;
+import com.bluemoon.dao.DongHoCsdl;
 import com.bluemoon.dao.KhoanPhiDaoImpl;
 import com.bluemoon.dao.PhieuThuDaoImpl;
 import com.bluemoon.model.ChiTietPhieuThu;
@@ -56,7 +57,7 @@ public class ThuPhiController {
             DateTimeFormatter.ofPattern("HH:mm dd/MM/uuuu");
 
     private final ThuPhiService service = new ThuPhiService(
-            new PhieuThuDaoImpl(), new KhoanPhiDaoImpl());
+            new PhieuThuDaoImpl(), new KhoanPhiDaoImpl(), new DongHoCsdl());
 
     @FXML
     private ToggleGroup hinhThucGroup;
