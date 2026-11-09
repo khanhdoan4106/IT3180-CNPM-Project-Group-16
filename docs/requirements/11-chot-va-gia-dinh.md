@@ -46,3 +46,13 @@ Sprint 2 ([báo cáo rà soát](../review/sprint-2-ra-soat.md), mục 5).
 30. **Phiếu chỉ gồm khoản 0 đ:** vẫn được lưu và có số biên lai như mọi phiếu, hiển thị "Không thu tiền" và không in biên lai.
 31. **Số biên lai (AC-039):** có dạng `PT-<năm>-<5 chữ số>`, ví dụ `PT-2026-00001`; năm là năm lập phiếu, mỗi năm đánh lại từ 00001 và tăng liên tục, không có khoảng trống. Số được cấp từ một bảng đếm theo năm, khóa dòng bằng `SELECT … FOR UPDATE` trong cùng giao dịch lưu phiếu, không dùng `AUTO_INCREMENT` (cột tự tăng nhảy số khi giao dịch hoàn tác). Phiếu hủy vẫn giữ số của mình; số đó không được cấp lại.
 32. **Chốt bù tháng cũ (US-009):** được chốt một tháng đã qua (ví dụ quên chốt), hệ thống tính hộ đã chuyển đến không sau ngày cuối tháng đó và khoản bắt buộc có hiệu lực trong tháng đó. Tuy nhiên chỉ tính được các hộ **còn đang ở tại lúc chốt**: CSDL không lưu ngày chuyển đi của hộ, nên hộ đã ở trong tháng đó nhưng chuyển đi trước lúc chốt bù sẽ không có khoản phải nộp của tháng đó. Vì vậy Ban quản trị nên chốt công nợ ngay trong tháng (Trang chính nhắc khi tháng hiện tại chưa chốt, giả định 15).
+
+Các giả định 33–38 do nhóm đề xuất khi làm Sprint 3, chờ Scrum Master
+duyệt cùng Pull Request phiếu thu.
+
+33. **Khoản phải nộp 0 đ không phải nợ:** khoản đã sửa về 0 đ (US-008, ví dụ miễn phí cho hộ khó khăn) không hiện ở tra cứu phí, không tính vào tổng nợ và không cần thu.
+34. **Thu không đủ thì không thu gì (US-011):** nếu một khoản trong phiếu vừa được thu hoặc vừa bị sửa ở máy khác, cả phiếu bị từ chối và người thu được nhắc tra cứu lại; không lập phiếu thiếu khoản mà người thu không thấy.
+35. **Thông báo phí (US-015):** chỉ in cho tháng đã chốt; mỗi hộ một trang gồm khoản của tháng, các khoản tháng trước chưa đóng và tổng cần đóng. "In cho tất cả" chỉ gồm hộ đang ở còn khoản cần đóng; hộ đã chuyển đi in riêng từng hộ khi cần.
+36. **Danh sách tạm vắng (US-004):** tính theo một ngày Ban quản trị chọn (mặc định hôm nay): người đang ở, thuộc hộ đang ở, có đợt tạm vắng chứa ngày đó. Gồm họ tên, ngày sinh, số CCCD, căn hộ, thời gian tạm vắng, lý do.
+37. **Biên lai (US-013):** in số tiền bằng chữ và chỗ ký của người nộp, người thu; tên chủ hộ là chủ hộ tại lúc in. Số lần in được đếm sau khi máy in nhận lệnh, nên đóng hộp thoại xem trước mà không in thì lần sau vẫn là bản in đầu.
+38. **Giờ hệ thống:** Thời điểm lập/hủy phiếu, năm của số biên lai và điều kiện hủy trong ngày lấy theo giờ máy chủ CSDL, không theo giờ máy thu ngân, để chỉnh lịch máy không hủy được phiếu cũ. (Cài đặt: `DongHoCsdl`, đọc `SELECT NOW()`, múi giờ Asia/Ho_Chi_Minh; test dùng `Clock.fixed`.)

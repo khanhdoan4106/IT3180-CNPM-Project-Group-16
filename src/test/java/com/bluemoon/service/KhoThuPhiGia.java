@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import com.bluemoon.dao.DangBiKhoaException;
 
 /**
  * Du lieu gia lap trong bo nho cho danh muc khoan thu va cong no, de test
@@ -34,6 +35,8 @@ class KhoThuPhiGia {
     final CongNoDao congNoDao = new CnDao();
     /** Gia lap may khac vua luu cung ten: lan them tiep theo bi tu choi. */
     boolean trungKhiThem;
+    /** Gia lap MySQL huy giao dich sua vi deadlock hoac cho khoa qua han. */
+    boolean biKhoaKhiSua;
     private int idKhoan = 1;
     private int idPhaiNop = 1;
 
@@ -90,7 +93,7 @@ class KhoThuPhiGia {
                     phaiNop.put(id, new PhaiNop(id, p.hoId(), p.maCanHo(),
                             p.khoanPhiId(), p.tenKhoan(), p.dienTich(),
                             p.donGia(), p.soTienGoc(), p.soTien(), null, null,
-                            null));
+                            null, false));
                     thangCuaKhoan.put(id, thang);
                     soMoi++;
                 }
@@ -107,6 +110,11 @@ class KhoThuPhiGia {
         public List<PhaiNop> theoThang(YearMonth thang) {
             return phaiNop.values().stream()
                     .filter(p -> thangCuaKhoan.get(p.id()).equals(thang))
+                    .map(p -> new PhaiNop(p.id(), p.hoId(), p.maCanHo(),
+                            p.khoanPhiId(), p.tenKhoan(), p.dienTich(),
+                            p.donGia(), p.soTienGoc(), p.soTien(),
+                            p.nguoiSua(), p.ngaySua(), p.ghiChu(),
+                            daCoPhieuThu.contains(p.id())))
                     .toList();
         }
 
@@ -116,13 +124,20 @@ class KhoThuPhiGia {
         }
 
         @Override
-        public void suaSoTien(int id, BigDecimal soTien, int nguoiSua,
+        public boolean suaSoTien(int id, BigDecimal soTien, int nguoiSua,
                 String ghiChu) {
+            if (biKhoaKhiSua) {
+                throw new DangBiKhoaException("gia lap", null);
+            }
+            if (daCoPhieuThu.contains(id)) {
+                return false;
+            }
             PhaiNop p = phaiNop.get(id);
             phaiNop.put(id, new PhaiNop(id, p.hoId(), p.maCanHo(),
                     p.khoanPhiId(), p.tenKhoan(), p.dienTich(), p.donGia(),
                     p.soTienGoc(), soTien, nguoiSua, LocalDateTime.now(),
-                    ghiChu));
+                    ghiChu, false));
+            return true;
         }
 
         @Override

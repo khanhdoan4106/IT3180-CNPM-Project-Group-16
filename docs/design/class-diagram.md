@@ -1,6 +1,6 @@
 # Sơ đồ lớp
 
-Mô tả các lớp trong `src/main/java/com/bluemoon` sau Sprint 2. Kiến trúc
+Mô tả các lớp trong `src/main/java/com/bluemoon` sau Sprint 3. Kiến trúc
 phân tầng và bảng chức năng ↔ mã nguồn xem [architecture.md](architecture.md).
 
 ## Phân tầng và phụ thuộc
@@ -15,6 +15,7 @@ flowchart LR
         V5[tai-khoan.fxml]
         V6[khoan-thu.fxml]
         V7[cong-no.fxml]
+        V8[thu-phi.fxml]
     end
     subgraph Controller
         C1[DangNhapController]
@@ -24,6 +25,8 @@ flowchart LR
         C5[TaiKhoanController]
         C6[KhoanThuController]
         C7[CongNoController]
+        C8[ThuPhiController]
+        IN[MauIn + InAn]
     end
     subgraph Service
         S1[TaiKhoanService]
@@ -33,6 +36,9 @@ flowchart LR
         S5[KhoanPhiService]
         S6[CongNoService]
         S7[BienDongService]
+        S8[ThuPhiService]
+        S9[ThongBaoPhiService]
+        S10[BaoCaoNhanKhauService]
         PQ[PhanQuyen]
     end
     subgraph DAO
@@ -43,6 +49,8 @@ flowchart LR
         D5[KhoanPhiDao]
         D6[CongNoDao]
         D7[BienDongDao]
+        D8[PhieuThuDao]
+        D9[BaoCaoNhanKhauDao]
     end
     DB[(MySQL bluemoon)]
 
@@ -66,8 +74,14 @@ flowchart LR
     S3 --> D2
     S4 --> D2
     S4 --> D3
-    S1 & S2 & S3 & S4 & S5 & S6 & S7 -.-> PQ
-    D1 & D2 & D3 & D4 & D5 & D6 & D7 --> DB
+    V8 --> C8 --> S8 --> D8
+    S8 --> D5
+    C7 --> S9 --> D8
+    S9 --> D6
+    C4 --> S10 --> D9
+    C7 & C8 & C4 -.-> IN
+    S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9 & S10 -.-> PQ
+    D1 & D2 & D3 & D4 & D5 & D6 & D7 & D8 & D9 --> DB
 ```
 
 DAO hộ gia đình, nhân khẩu, đợt tạm trú/tạm vắng ghi `bien_dong_nhan_khau`
@@ -131,6 +145,23 @@ classDiagram
         +theoHo(hoId) List~BienDong~
         +ganDay() List~BienDong~
     }
+    class ThuPhiService {
+        +traCuu(maPhong) List~TomTatHo~
+        +thongTin(hoId) ThongTinThu
+        +thu(hoId, phaiNopIds, dongGop, hinhThuc) PhieuThu
+        +huy(id, lyDo) PhieuThu
+        +choIn(id) PhieuThu
+        +daIn(id) void
+        +homNay() List~PhieuThu~
+        +lichSu(hoId) List~PhieuThu~
+    }
+    class ThongBaoPhiService {
+        +motHo(thang, hoId) ThongBaoPhi
+        +tatCa(thang) List~ThongBaoPhi~
+    }
+    class BaoCaoNhanKhauService {
+        +tamVang(ngay) List~TamVang~
+    }
 
     TaiKhoanService --> TaiKhoanDao
     HoGiaDinhService --> HoGiaDinhDao
@@ -145,6 +176,11 @@ classDiagram
     CongNoService --> KhoanPhiDao
     CongNoService --> HoGiaDinhDao
     BienDongService --> BienDongDao
+    ThuPhiService --> PhieuThuDao
+    ThuPhiService --> KhoanPhiDao
+    ThongBaoPhiService --> PhieuThuDao
+    ThongBaoPhiService --> CongNoDao
+    BaoCaoNhanKhauService --> BaoCaoNhanKhauDao
 
     class TaiKhoan
     class HoGiaDinh
@@ -153,11 +189,17 @@ classDiagram
     class KhoanPhi
     class PhaiNop
     class BienDong
+    class PhieuThu
+    class ChiTietPhieuThu
     HoGiaDinh "1" o-- "1..*" NhanKhau
     NhanKhau "1" o-- "0..*" DotCuTru
     HoGiaDinh "1" o-- "0..*" PhaiNop
     KhoanPhi "1" o-- "0..*" PhaiNop
     HoGiaDinh "1" o-- "0..*" BienDong
+    HoGiaDinh "1" o-- "0..*" PhieuThu
+    PhieuThu "1" *-- "1..*" ChiTietPhieuThu
+    ChiTietPhieuThu "0..*" --> "0..1" PhaiNop
+    PhieuThu --> HinhThucThanhToan
     TaiKhoan --> VaiTro
     KhoanPhi --> LoaiKhoanPhi
     KhoanPhi --> CachTinhPhi
@@ -166,7 +208,7 @@ classDiagram
 ```
 
 Mỗi `XxxDao` là interface, có `XxxDaoImpl` cài bằng JDBC; test dùng DAO giả
-trong bộ nhớ (`KhoGia`, `KhoThuPhiGia`).
+trong bộ nhớ (`KhoGia`, `KhoThuPhiGia`, `KhoPhieuThuGia`).
 
 ## Ghi chú thiết kế
 
@@ -183,3 +225,16 @@ trong bộ nhớ (`KhoGia`, `KhoThuPhiGia`).
   `CauHinhException`: lỗi đọc `config/db.properties`.
 - `PhienLamViec` giữ tài khoản đang đăng nhập; `DieuHuong` chuyển màn hình;
   `BangLichSu` dựng bảng lịch sử biến động dùng chung cho hai màn hình.
+- `MauIn` dựng trang in (biên lai, thông báo phí, danh sách tạm vắng);
+  `InAn` xem trước rồi in bằng `PrinterJob`, dùng chung cho ba chức năng.
+- `XungDotException` (con của `DaoException`): DAO kiểm tra lại dưới khóa
+  dòng và phát hiện dữ liệu vừa đổi ở máy khác (khoản vừa được thu, số tiền
+  vừa sửa, hết số biên lai); Service đổi thành thông báo nghiệp vụ.
+- `DangBiKhoaException` (con của `DaoException`): MySQL huỷ giao dịch vì
+  deadlock (1213) hoặc chờ khóa quá hạn (1205); Service hiện "Có người khác
+  đang thao tác trên hộ này, vui lòng thử lại".
+- `DongHoCsdl` (extends `Clock`): giờ máy chủ MySQL (`SELECT NOW()`), dùng
+  cho `ThuPhiService`, `CongNoService` khi chạy thật; test dùng
+  `Clock.fixed` (giả định 38).
+- `ThongTinThu` (record lồng trong `ThuPhiService`): hộ, khoản chưa đóng và
+  các quỹ đang mở kèm tình trạng đóng góp của hộ (`DongGopQuy`).

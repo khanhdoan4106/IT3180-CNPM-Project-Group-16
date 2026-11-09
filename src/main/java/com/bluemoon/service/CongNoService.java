@@ -1,6 +1,8 @@
 package com.bluemoon.service;
 
 import com.bluemoon.dao.CongNoDao;
+import com.bluemoon.dao.DangBiKhoaException;
+import com.bluemoon.dao.XungDotException;
 import com.bluemoon.dao.HoGiaDinhDao;
 import com.bluemoon.dao.KhoanPhiDao;
 import com.bluemoon.model.HoGiaDinh;
@@ -140,7 +142,7 @@ public class CongNoService {
                         .setScale(0, RoundingMode.HALF_UP);
                 khoan.add(new PhaiNop(0, ho.getId(), ho.getMaCanHo(), k.id(),
                         k.ten(), dt, k.donGia(), tien, tien, null, null,
-                        null));
+                        null, false));
             }
         }
         return new KetQuaTinhCongNo(thang, khoan, boQua);
@@ -236,7 +238,16 @@ public class CongNoService {
             throw new NghiepVuException(
                     "Ghi chú tối đa " + GHI_CHU_TOI_DA + " ký tự");
         }
-        dao.suaSoTien(id, soTien, nguoi.getId(), ghiChu);
+        // Kiem tra lai duoi khoa trong DAO: may khac co the vua thu khoan nay.
+        try {
+            if (!dao.suaSoTien(id, soTien, nguoi.getId(), ghiChu)) {
+                throw new NghiepVuException(LOI_DA_THU);
+            }
+        } catch (DangBiKhoaException e) {
+            throw new NghiepVuException(DangBiKhoaException.THONG_BAO);
+        } catch (XungDotException e) {
+            throw new NghiepVuException("Không tìm thấy khoản phải nộp");
+        }
         return dao.timTheoId(id).orElseThrow();
     }
 }

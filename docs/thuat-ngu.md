@@ -15,6 +15,11 @@ Một khái niệm chỉ dùng một tên trong tài liệu, giao diện và mã
 | Chốt công nợ | Tạo khoản phải nộp tháng này cho mọi hộ đang ở, theo diện tích × đơn giá | `dot_thu` |
 | Khoản phải nộp | Số tiền một hộ phải nộp cho một khoản bắt buộc trong một tháng | `phai_nop` |
 | Công nợ | Tổng các khoản phải nộp chưa đóng của một hộ | tính từ `phai_nop` |
-| Phiếu thu | Một lần thu tiền của hộ, có thể gồm nhiều khoản; có hình thức thanh toán và người thu | `phieu_thu` (Sprint 3) |
+| Phiếu thu | Một lần thu tiền của hộ, có thể gồm nhiều khoản; có hình thức thanh toán và người thu | `phieu_thu` |
+| Mã phòng | Cách gọi khác của mã căn hộ ở quầy thu | `ho_gia_dinh.ma_can_ho` |
+| Số biên lai | Số của phiếu thu, dạng `PT-<năm>-<5 chữ số>`, đánh lại mỗi năm; phiếu hủy giữ số | `phieu_thu.nam`, `phieu_thu.so` |
 | Biên lai | Bản in của phiếu thu đưa cho cư dân | – |
+| Đóng góp tự nguyện | Số tiền hộ đóng cho một quỹ (khoản thu tự nguyện); đóng nhiều lần được, ghi 0 đ là "không đóng" | dòng `phieu_thu_chi_tiet` không có `phai_nop_id` |
+| Quỹ | Khoản thu tự nguyện có thời gian thu riêng (vd Quỹ vì người nghèo) | `khoan_phi.loai = TU_NGUYEN` |
+| Thông báo phí | Giấy báo các khoản hộ cần đóng đến hết một tháng đã chốt, in cho từng hộ | – |
 | Hủy phiếu | Hủy phiếu thu nhầm trong ngày; khoản phải nộp trở lại chưa đóng, phiếu vẫn được lưu | – |

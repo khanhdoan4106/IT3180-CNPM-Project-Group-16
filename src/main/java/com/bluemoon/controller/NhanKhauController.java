@@ -489,6 +489,12 @@ public class NhanKhauController {
         }
     }
 
+    /** US-004: danh sach tam vang cho cong an phuong. */
+    @FXML
+    private void onDanhSachTamVang() {
+        DanhSachTamVang.mo();
+    }
+
     private void baoLoi(String noiDung) {
         datThongBao(thongBaoLabel, noiDung, true);
     }

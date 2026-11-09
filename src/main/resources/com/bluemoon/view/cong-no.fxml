@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -11,7 +13,8 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<!-- US-009 chot cong no dau thang, US-008 sua khoan phai nop cua ho. -->
+<!-- US-009 chot cong no dau thang, US-008 sua khoan phai nop cua ho,
+     US-015 in thong bao phi. -->
 <BorderPane xmlns:fx="http://javafx.com/fxml" styleClass="nen"
             fx:controller="com.bluemoon.controller.CongNoController">
     <padding>
@@ -50,7 +53,8 @@
                 <TableColumn fx:id="cotDonGia" text="Đơn giá" prefWidth="110"/>
                 <TableColumn fx:id="cotSoTien" text="Phải nộp"
                              prefWidth="130"/>
-                <TableColumn fx:id="cotGhiChu" text="Ghi chú" prefWidth="220"/>
+                <TableColumn fx:id="cotDaDong" text="Đã đóng" prefWidth="90"/>
+                <TableColumn fx:id="cotGhiChu" text="Ghi chú" prefWidth="200"/>
             </columns>
             <placeholder>
                 <Label text="Chọn tháng rồi bấm Xem trước"/>
@@ -67,6 +71,15 @@
                 <Label text="Sau khi chốt, có thể sửa khoản của từng hộ khi hộ chưa đóng tiền." wrapText="true"
                        styleClass="phu-de"/>
                 <Region HBox.hgrow="ALWAYS"/>
+                <MenuButton minWidth="-Infinity" fx:id="thongBaoButton"
+                            text="In thông báo phí">
+                    <items>
+                        <MenuItem text="Cho hộ đang chọn"
+                                  onAction="#onThongBaoMotHo"/>
+                        <MenuItem text="Cho tất cả hộ đang ở còn khoản cần đóng"
+                                  onAction="#onThongBaoTatCa"/>
+                    </items>
+                </MenuButton>
                 <Button minWidth="-Infinity" fx:id="suaButton" text="Sửa khoản đã chọn"
                         onAction="#onSua"/>
                 <Button minWidth="-Infinity" text="Chốt công nợ"

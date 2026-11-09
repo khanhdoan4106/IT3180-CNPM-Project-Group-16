@@ -201,7 +201,7 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
         ps.setDate(6, Date.valueOf(ho.getNgayChuyenDen()));
     }
 
-    private static HoGiaDinh docDong(ResultSet rs) throws SQLException {
+    static HoGiaDinh docDong(ResultSet rs) throws SQLException {
         return new HoGiaDinh(
                 rs.getInt("id"),
                 rs.getString("ma_can_ho"),

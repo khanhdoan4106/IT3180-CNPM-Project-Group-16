@@ -21,6 +21,8 @@
                     onAction="#onMoKhoanThu"/>
             <Button minWidth="-Infinity" text="Công nợ" styleClass="nut-menu"
                     onAction="#onMoCongNo"/>
+            <Button minWidth="-Infinity" text="Thu phí" styleClass="nut-menu"
+                    onAction="#onMoThuPhi"/>
             <Button minWidth="-Infinity" text="Tài khoản" styleClass="nut-menu"
                     onAction="#onMoTaiKhoan"/>
             <Region HBox.hgrow="ALWAYS"/>

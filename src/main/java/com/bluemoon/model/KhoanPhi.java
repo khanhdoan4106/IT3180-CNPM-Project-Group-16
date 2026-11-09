@@ -63,4 +63,17 @@ public record KhoanPhi(int id, String ten, LoaiKhoanPhi loai,
         return !tuNgay.isAfter(thang.atEndOfMonth())
                 && (denNgay == null || !denNgay.isBefore(thang.atDay(1)));
     }
+
+    /**
+     * Khoan dang mo vao mot ngay: dang thu va ngay nam trong dot
+     * (AC-022). Khoan tu nguyen het dot thi khong ghi dong gop duoc nua.
+     *
+     * @param ngay ngay can xet
+     * @return true neu dang thu va tu ngay &lt;= ngay &lt;= den ngay
+     */
+    public boolean dangMo(LocalDate ngay) {
+        return trangThai == TrangThaiKhoanPhi.DANG_THU
+                && !tuNgay.isAfter(ngay)
+                && (denNgay == null || !denNgay.isBefore(ngay));
+    }
 }

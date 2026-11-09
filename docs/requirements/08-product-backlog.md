@@ -17,14 +17,15 @@
 |---|---|---|---|
 | Sprint 1 | 24 | `v0.1.0` | Hoàn thành |
 | Sprint 2 | 32 | `v0.2.0` | Hoàn thành, trừ AC-026 của US-008 (làm cùng phiếu thu ở Sprint 3) |
-| Sprint 3 | 28 | `v0.3.0` | Chưa bắt đầu |
+| Sprint 3 | 28 | `v0.3.0` | Hoàn thành, trừ AC-014 của US-004 (xuất tệp, làm cùng Sprint 4) |
 | Sprint 4 | 28 | `v1.0.0` | Chưa bắt đầu |
 | **Tổng** | **112** | | |
 
 US-026 và US-027 đưa vào Sprint 2 (giả định 20, 26). US-008 đã làm AC-025
 ở Sprint 2; AC-026 (không sửa khoản đã có phiếu thu) cần bảng phiếu thu nên
-hoàn tất cùng US-011, US-014 ở Sprint 3, khi đó US-008 mới chuyển "Hoàn
-thành". Kết quả rà soát cuối Sprint 2:
+hoàn tất cùng US-011, US-014 ở Sprint 3. US-004 in được danh sách tạm vắng
+ở Sprint 3; AC-014 (xuất tệp Excel/PDF) làm cùng US-018 ở Sprint 4 (giả định
+27). Kết quả rà soát cuối Sprint 2:
 [docs/review/sprint-2-ra-soat.md](../review/sprint-2-ra-soat.md).
 
 ## EPIC-01: Quản lý hộ gia đình và nhân khẩu
@@ -36,7 +37,7 @@ thành". Kết quả rà soát cuối Sprint 2:
 | US-001 | Thêm thông tin hộ gia đình và diện tích căn hộ khi cư dân mới chuyển đến | Must | Sprint 1 | Hoàn thành | 3 |
 | US-002 | Lưu thông tin nhân khẩu và quan hệ với chủ hộ | Must | Sprint 1 | Hoàn thành | 5 |
 | US-003 | Ghi nhận tạm trú, tạm vắng kèm ngày bắt đầu và kết thúc | Must | Sprint 1 | Hoàn thành | 5 |
-| US-004 | Xuất danh sách nhân khẩu tạm vắng | Should | Sprint 3 | Chưa bắt đầu | 3 |
+| US-004 | Xuất danh sách nhân khẩu tạm vắng | Should | Sprint 3 | Hoàn thành phần xem và in; AC-014 ở Sprint 4 | 3 |
 | US-026 | Đổi chủ hộ (chủ hộ mất, chuyển đi, tách hộ) | Should | Sprint 2 | Hoàn thành | 3 |
 | US-027 | Lịch sử biến động nhân khẩu trong hộ | Should | Sprint 2 | Hoàn thành | 5 |
 
@@ -48,8 +49,8 @@ thành". Kết quả rà soát cuối Sprint 2:
 |---|---|---|---|---|---|
 | US-005 | Hệ thống tự tính phí dịch vụ và phí quản lý theo diện tích × đơn giá | Must | Sprint 2 | Hoàn thành | 5 |
 | US-006 | Tự tạo khoản thu tự nguyện mới theo từng đợt (VD Quỹ vì người nghèo) | Must | Sprint 2 | Hoàn thành | 3 |
-| US-007 | Ghi nhận số tiền đóng góp tùy ý (kể cả 0đ) cho nhiều quỹ của một hộ | Must | Sprint 3 | Chưa bắt đầu | 5 |
-| US-008 | Cập nhật lại giá trị khoản thu của một hộ trước khi hộ đóng | Should | Sprint 2 | Đang làm: AC-026 chờ phiếu thu (Sprint 3) | 3 |
+| US-007 | Ghi nhận số tiền đóng góp tùy ý (kể cả 0đ) cho nhiều quỹ của một hộ | Must | Sprint 3 | Hoàn thành | 5 |
+| US-008 | Cập nhật lại giá trị khoản thu của một hộ trước khi hộ đóng | Should | Sprint 2 | Hoàn thành (AC-026 ở Sprint 3) | 3 |
 | US-009 | Hệ thống tự tạo danh sách công nợ cho tất cả các phòng vào đầu mỗi tháng | Must | Sprint 2 | Hoàn thành | 5 |
 
 ## EPIC-03: Thu phí và thanh toán
@@ -58,12 +59,12 @@ thành". Kết quả rà soát cuối Sprint 2:
 
 | ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
 |---|---|---|---|---|---|
-| US-010 | Nhập mã phòng để xem ngay các khoản chưa đóng | Must | Sprint 3 | Chưa bắt đầu | 3 |
-| US-011 | Thu tất cả các khoản của hộ bằng một nút và hệ thống tự cộng tổng | Must | Sprint 3 | Chưa bắt đầu | 5 |
-| US-012 | Chọn tiền mặt hoặc chuyển khoản và hệ thống tự lưu người thu | Must | Sprint 3 | Chưa bắt đầu | 3 |
-| US-013 | In biên lai từ phần mềm sau khi thu | Should | Sprint 3 | Chưa bắt đầu | 3 |
-| US-014 | Hủy phiếu thu nhầm trong ngày | Should | Sprint 3 | Chưa bắt đầu | 3 |
-| US-015 | In thông báo các khoản phí hàng tháng cho từng hộ | Should | Sprint 3 | Chưa bắt đầu | 3 |
+| US-010 | Nhập mã phòng để xem ngay các khoản chưa đóng | Must | Sprint 3 | Hoàn thành | 3 |
+| US-011 | Thu tất cả các khoản của hộ bằng một nút và hệ thống tự cộng tổng | Must | Sprint 3 | Hoàn thành | 5 |
+| US-012 | Chọn tiền mặt hoặc chuyển khoản và hệ thống tự lưu người thu | Must | Sprint 3 | Hoàn thành | 3 |
+| US-013 | In biên lai từ phần mềm sau khi thu | Should | Sprint 3 | Hoàn thành | 3 |
+| US-014 | Hủy phiếu thu nhầm trong ngày | Should | Sprint 3 | Hoàn thành | 3 |
+| US-015 | In thông báo các khoản phí hàng tháng cho từng hộ | Should | Sprint 3 | Hoàn thành | 3 |
 
 ## EPIC-04: Thống kê và báo cáo
 

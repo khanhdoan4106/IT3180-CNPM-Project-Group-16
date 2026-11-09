@@ -3,7 +3,7 @@
 Nguồn sự thật: [`database/schema.sql`](../../database/schema.sql). Khi
 sửa schema phải cập nhật file này trong cùng Pull Request.
 
-## Sơ đồ thực thể – liên kết (Sprint 1 và Sprint 2)
+## Sơ đồ thực thể – liên kết (Sprint 1 – Sprint 3)
 
 ```mermaid
 erDiagram
@@ -17,6 +17,11 @@ erDiagram
     HO_GIA_DINH ||--o{ BIEN_DONG_NHAN_KHAU : "có"
     NHAN_KHAU ||--o{ BIEN_DONG_NHAN_KHAU : "biến động"
     TAI_KHOAN ||--o{ BIEN_DONG_NHAN_KHAU : "ghi"
+    HO_GIA_DINH ||--o{ PHIEU_THU : "nộp"
+    TAI_KHOAN ||--o{ PHIEU_THU : "thu, hủy"
+    PHIEU_THU ||--|{ PHIEU_THU_CHI_TIET : "gồm"
+    KHOAN_PHI ||--o{ PHIEU_THU_CHI_TIET : "theo khoản"
+    PHAI_NOP |o--o{ PHIEU_THU_CHI_TIET : "được thu bởi"
 
     TAI_KHOAN {
         int id PK
@@ -100,7 +105,38 @@ erDiagram
         datetime ngay_sua
         varchar ghi_chu
     }
+    BO_DEM_BIEN_LAI {
+        smallint nam PK
+        int so_cuoi "0 – 99.999"
+    }
+    PHIEU_THU {
+        int id PK
+        smallint nam "UK (nam, so)"
+        int so "1 – 99.999"
+        int ho_id FK
+        decimal tong_tien ">= 0"
+        enum hinh_thuc "TIEN_MAT | CHUYEN_KHOAN, trống khi 0 đ"
+        int nguoi_thu FK
+        datetime thoi_diem
+        int so_lan_in
+        boolean da_huy
+        int nguoi_huy FK
+        datetime thoi_diem_huy
+        varchar ly_do_huy
+    }
+    PHIEU_THU_CHI_TIET {
+        int id PK
+        int phieu_thu_id FK
+        int khoan_phi_id FK
+        int phai_nop_id FK "trống với đóng góp tự nguyện"
+        decimal so_tien ">= 0"
+        boolean con_hieu_luc "= NOT phiếu đã hủy"
+        int phai_nop_da_thu UK "cột sinh"
+    }
 ```
+
+`BO_DEM_BIEN_LAI` không nối khóa ngoại với bảng nào: đây là bộ đếm số
+biên lai của từng năm.
 
 `PHAI_NOP` có `UNIQUE (dot_thu_id, ho_id, khoan_phi_id)`: mỗi hộ có một
 dòng cho mỗi khoản bắt buộc trong một tháng.
@@ -118,7 +154,11 @@ dòng cho mỗi khoản bắt buộc trong một tháng.
 | Tên khoản thu không trùng trong cùng đợt | `UNIQUE (ten, tu_ngay)` trên `khoan_phi` | AC-020 |
 | Khoản tự nguyện được để trống số tiền; khoản bắt buộc luôn tính theo diện tích | `CHECK` trên `cach_tinh`, `don_gia` | AC-021, US-005 |
 | Số tiền phải nộp không âm | `CHECK (so_tien >= 0)` | US-008 |
-| Không xóa cứng dữ liệu nghiệp vụ | Đổi `trang_thai` thay vì `DELETE` | NFR truy vết |
+| Một khoản phải nộp chỉ thuộc một phiếu còn hiệu lực | Cột sinh `phai_nop_da_thu` = `phai_nop_id` khi `con_hieu_luc`, kèm `UNIQUE` | AC-033, AC-041 |
+| Số biên lai không trùng, năm khớp ngày lập | `UNIQUE (nam, so)`, `CHECK (nam = YEAR(thoi_diem))` trên `phieu_thu` | Giả định 31 |
+| Phiếu có tiền phải có hình thức thanh toán | `CHECK (tong_tien = 0 OR hinh_thuc IS NOT NULL)` | AC-038, giả định 30 |
+| Phiếu hủy phải đủ người hủy, thời điểm, lý do | `CHECK` trên bốn cột hủy | AC-043, giả định 28 |
+| Không xóa cứng dữ liệu nghiệp vụ | Đổi `trang_thai` (hộ, nhân khẩu) hoặc `da_huy` (phiếu thu) thay vì `DELETE` | NFR truy vết |
 | Lịch sử biến động không lệch với dữ liệu | Ghi `bien_dong_nhan_khau` trong cùng giao dịch với thêm hộ, thêm nhân khẩu, chuyển đi, ghi tạm trú/tạm vắng; lỗi thì hoàn tác cả hai | US-027 (AC-076 – AC-078) |
 
 Quy tắc cần đọc dữ liệu nhiều dòng (CCCD bắt buộc từ 14 tuổi, các đợt tạm
@@ -141,8 +181,13 @@ góp ghi khi thu (Sprint 3).
 Diện tích và đơn giá được chép vào `phai_nop` lúc chốt, nên đổi đơn giá
 sau đó không làm thay đổi tháng đã chốt. Sửa khoản của một hộ (US-008)
 chỉ đổi `so_tien` và ghi `nguoi_sua`, `ngay_sua`, `ghi_chu`; `so_tien_goc`
-giữ số hệ thống tính. Từ Sprint 3, Service từ chối sửa khi khoản đã có
-phiếu thu (AC-026).
+giữ số hệ thống tính. Khoản đã có phiếu thu còn hiệu lực thì không sửa
+được (AC-026): `suaSoTien` chạy trong một giao dịch, khóa `ho_gia_dinh`
+rồi `phai_nop` (cùng thứ tự với lập phiếu), kiểm tra "chưa thu" dưới khóa
+rồi mới `UPDATE`, nên khoản vừa được thu ở máy khác cũng không bị sửa và
+không deadlock với việc thu. Nếu MySQL vẫn huỷ giao dịch (1213, 1205) thì
+DAO báo `DangBiKhoaException`, Service hiện "Có người khác đang thao tác
+trên hộ này, vui lòng thử lại".
 
 `ho_gia_dinh.dien_tich` là `NOT NULL` và `> 0`, nên trường hợp "hộ chưa
 có diện tích" của AC-029 không xảy ra với dữ liệu nhập qua ứng dụng.
@@ -160,24 +205,41 @@ danh sách biến động gần đây ở Trang chính và báo cáo cho công a
 Lỗi trùng khóa (MySQL 1062) được `TrungKhoaException` đổi thành thông báo
 nghiệp vụ theo tên ràng buộc.
 
-## Bảng dự kiến ở các Sprint sau
+## Phiếu thu (US-007, US-010 – US-014)
 
-Theo `schema.sql` và Product Backlog; thiết kế chi tiết bổ sung khi bắt
-đầu Sprint tương ứng:
+Thiết kế theo giả định 21–32 trong
+[`11-chot-va-gia-dinh.md`](../requirements/11-chot-va-gia-dinh.md).
+
+- **Một phiếu, nhiều khoản (US-011).** Mỗi dòng `phieu_thu_chi_tiet` hoặc
+  thu một khoản phải nộp (`phai_nop_id`, đóng đủ số tiền hiện tại, giả định
+  23), hoặc ghi một lần đóng góp tự nguyện (`phai_nop_id` trống, số bất kỳ).
+  `khoan_phi_id` luôn có để thống kê theo khoản (Sprint 4) không phải nối
+  qua `phai_nop`.
+- **"Đã đóng"** nghĩa là có dòng chi tiết thuộc phiếu chưa hủy. Khoản phải
+  nộp 0 đ (đã sửa về 0) không tính là nợ và không cần thu.
+- **Đóng góp tự nguyện (giả định 29).** Một hộ đóng được nhiều lần cho một
+  quỹ; tổng là cộng các lần trên phiếu chưa hủy. Ghi 0 đ nghĩa là "không
+  đóng" (AC-023), chỉ ghi được khi hộ chưa có lần nào cho quỹ đó.
+- **Số biên lai (giả định 31).** `PT-<năm>-<5 chữ số>`, đánh lại mỗi năm.
+  Trong giao dịch lập phiếu: tạo dòng của năm nếu chưa có, khóa bằng
+  `SELECT so_cuoi … FOR UPDATE`, tăng một. Giao dịch hoàn tác thì số cũng
+  hoàn tác, nên dãy số liên tục; phiếu hủy giữ số của nó.
+- **Lập phiếu** chạy trong một giao dịch, khóa theo thứ tự cố định để không
+  tạo vòng chờ: dòng `ho_gia_dinh` → các dòng `phai_nop` được chọn (kiểm tra
+  lại chưa thu và số tiền không đổi) → bộ đếm của năm. Sửa số tiền khoản
+  phải nộp khóa cùng thứ tự (hộ → khoản). Hai máy thu cùng một
+  khoản thì chỉ một phiếu thành công; máy kia được báo tra cứu lại
+  (`PhieuThuIT`).
+- **Hủy phiếu (US-014, giả định 28)** trong một giao dịch: đặt `da_huy`,
+  người hủy, thời điểm, lý do và đặt `con_hieu_luc = FALSE` cho các dòng, để
+  khoản phải nộp trở lại chưa đóng (AC-041). Quyền và điều kiện "trong ngày"
+  (AC-042) kiểm tra ở Service, theo cùng đồng hồ với lúc lập phiếu: giờ máy chủ
+  MySQL (`DongHoCsdl`), không theo giờ máy thu ngân (giả định 38).
+- **In biên lai (US-013).** `so_lan_in` tăng sau mỗi lần in; từ lần thứ hai
+  biên lai ghi "BẢN IN LẠI" (AC-040). Phiếu 0 đ và phiếu đã hủy không in.
+
+## Bảng dự kiến ở các Sprint sau
 
 | Sprint | Bảng | Phục vụ |
 |---|---|---|
-| Sprint 3 | `phieu_thu`, `phieu_thu_chi_tiet` | US-007, US-010 đến US-014 (thu phí, đóng góp, biên lai, hủy phiếu) |
-
-Hướng thiết kế Sprint 3 (đã chốt, giả định 21–25):
-
-- `phieu_thu`: mã biên lai tăng liên tục, hộ, tổng tiền, hình thức thanh
-  toán, người thu, thời điểm, trạng thái hủy, người hủy, lý do hủy. Hủy
-  không xóa phiếu (AC-043).
-- `phieu_thu_chi_tiet`: mỗi dòng một khoản trong phiếu; trỏ tới `phai_nop`
-  với khoản bắt buộc (đóng đủ số tiền), hoặc tới `khoan_phi` với đóng góp
-  tự nguyện (số tiền bất kỳ, kể cả 0 đ). Một phiếu thu nhiều khoản (US-011).
-- Khoản phải nộp "đã đóng" khi có dòng chi tiết thuộc phiếu chưa hủy; hủy
-  phiếu thì khoản tự trở lại chưa đóng (AC-041).
-- Lập phiếu khóa các dòng `phai_nop` được chọn bằng `SELECT ... FOR UPDATE`
-  để hai máy không thu trùng một khoản.
+| Sprint 4 | `nhat_ky` | Nhật ký thao tác (NFR truy vết), thống kê US-016 – US-019 đọc từ `phieu_thu` |
