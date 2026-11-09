@@ -34,6 +34,9 @@
                           promptText="Chọn hộ đang ở"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="soThanhVienLabel" styleClass="phu-de"/>
+                <Button minWidth="-Infinity" fx:id="tamVangButton"
+                        text="Danh sách tạm vắng"
+                        onAction="#onDanhSachTamVang"/>
             </HBox>
             <BorderPane.margin>
                 <Insets bottom="12"/>

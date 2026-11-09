@@ -5,13 +5,17 @@ import com.bluemoon.dao.CongNoDaoImpl;
 import com.bluemoon.dao.DaoException;
 import com.bluemoon.dao.HoGiaDinhDaoImpl;
 import com.bluemoon.dao.KhoanPhiDaoImpl;
+import com.bluemoon.dao.PhieuThuDaoImpl;
 import com.bluemoon.model.KetQuaTinhCongNo;
 import com.bluemoon.model.PhaiNop;
+import com.bluemoon.model.ThongBaoPhi;
 import com.bluemoon.service.CongNoService;
 import com.bluemoon.service.NghiepVuException;
 import com.bluemoon.service.SoTien;
+import com.bluemoon.service.ThongBaoPhiService;
 import com.bluemoon.util.PhienLamViec;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -44,6 +49,8 @@ public class CongNoController {
     private final CongNoService service = new CongNoService(
             new CongNoDaoImpl(), new KhoanPhiDaoImpl(),
             new HoGiaDinhDaoImpl());
+    private final ThongBaoPhiService thongBaoService = new ThongBaoPhiService(
+            new PhieuThuDaoImpl(), new CongNoDaoImpl());
 
     @FXML
     private ComboBox<YearMonth> thangCombo;
@@ -66,7 +73,11 @@ public class CongNoController {
     @FXML
     private TableColumn<PhaiNop, String> cotSoTien;
     @FXML
+    private TableColumn<PhaiNop, String> cotDaDong;
+    @FXML
     private TableColumn<PhaiNop, String> cotGhiChu;
+    @FXML
+    private MenuButton thongBaoButton;
     @FXML
     private Button suaButton;
     @FXML
@@ -83,6 +94,7 @@ public class CongNoController {
                 .toPlainString() + " m²");
         ganCot(cotDonGia, p -> SoTien.hienThi(p.donGia()));
         ganCot(cotSoTien, p -> SoTien.hienThi(p.soTien()));
+        ganCot(cotDaDong, p -> p.daDong() ? "Đã đóng" : "");
         ganCot(cotGhiChu, CongNoController::ghiChu);
         List<YearMonth> thang = new ArrayList<>();
         YearMonth hienTai = service.thangHienTai();
@@ -127,6 +139,7 @@ public class CongNoController {
                 tomTatLabel.setText("");
             }
             suaButton.setDisable(!dangXemDaChot);
+            thongBaoButton.setDisable(!dangXemDaChot);
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -141,6 +154,7 @@ public class CongNoController {
                     thangCombo.getValue());
             dangXemDaChot = false;
             suaButton.setDisable(true);
+            thongBaoButton.setDisable(true);
             bangKhoan.setItems(FXCollections.observableArrayList(kq.khoan()));
             tomTat(kq.khoan());
             hienBoQua(kq);
@@ -217,10 +231,64 @@ public class CongNoController {
         luoi.setVgap(10);
         luoi.addRow(0, new Label("Số tiền"), soTien);
         luoi.addRow(1, new Label("Ghi chú"), ghiChu);
+        if (p.daDong()) {
+            // AC-026: khoan da co phieu thu thi khoa o, nhac huy phieu truoc.
+            soTien.setDisable(true);
+            ghiChu.setDisable(true);
+            Label daThu = new Label(CongNoService.LOI_DA_THU);
+            daThu.getStyleClass().add("loi");
+            daThu.setWrapText(true);
+            daThu.setMaxWidth(320);
+            luoi.add(daThu, 0, 2, 2, 1);
+            d.getDialogPane().lookupButton(luu).setDisable(true);
+        }
         d.getDialogPane().setContent(luoi);
         d.setResultConverter(b -> b == luu
                 ? new String[] {soTien.getText(), ghiChu.getText()} : null);
         return d.showAndWait();
+    }
+
+    /** US-015: thong bao cho ho cua dong dang chon. */
+    @FXML
+    private void onThongBaoMotHo() {
+        PhaiNop p = bangKhoan.getSelectionModel().getSelectedItem();
+        if (!dangXemDaChot || p == null) {
+            baoLoi("Chọn một dòng của hộ cần in thông báo");
+            return;
+        }
+        try {
+            ThongBaoPhi tb = thongBaoService.motHo(PhienLamViec.hienTai(),
+                    thangCombo.getValue(), p.hoId());
+            inThongBao(List.of(tb));
+        } catch (NghiepVuException e) {
+            baoLoi(e.getMessage());
+        } catch (CauHinhException | DaoException e) {
+            baoLoi(LoiCsdl.thongBao(e));
+        }
+    }
+
+    /** US-015: thong bao cho moi ho dang o con khoan can dong. */
+    @FXML
+    private void onThongBaoTatCa() {
+        try {
+            List<ThongBaoPhi> ds = thongBaoService.tatCa(
+                    PhienLamViec.hienTai(), thangCombo.getValue());
+            inThongBao(ds);
+        } catch (NghiepVuException e) {
+            baoLoi(e.getMessage());
+        } catch (CauHinhException | DaoException e) {
+            baoLoi(LoiCsdl.thongBao(e));
+        }
+    }
+
+    private void inThongBao(List<ThongBaoPhi> ds) {
+        LocalDate homNay = LocalDate.now();
+        boolean daIn = InAn.xemVaIn("Thông báo phí " + tenThang().toLowerCase()
+                + " (" + ds.size() + " hộ)", () -> ds.stream()
+                        .map(tb -> MauIn.thongBao(tb, homNay)).toList());
+        if (daIn) {
+            baoThanhCong("Đã in thông báo cho " + ds.size() + " hộ");
+        }
     }
 
     private void tomTat(List<PhaiNop> ds) {
