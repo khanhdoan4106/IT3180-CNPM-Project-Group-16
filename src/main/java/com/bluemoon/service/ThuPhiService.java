@@ -342,15 +342,6 @@ public class ThuPhiService {
         return dao.theoHo(hoId);
     }
 
-    /**
-     * Ngay hom nay theo dong ho cua dich vu.
-     *
-     * @return ngay hien tai
-     */
-    public LocalDate homNay() {
-        return LocalDate.now(dongHo);
-    }
-
     private static String thongBao(XungDotException e) {
         return switch (e.getLoai()) {
             case DA_THU, SO_TIEN_DOI, KHONG_TIM_THAY -> LOI_DU_LIEU_DOI;
