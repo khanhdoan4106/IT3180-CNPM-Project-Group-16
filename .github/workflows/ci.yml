@@ -18,3 +18,34 @@ jobs:
           cache: maven
       - name: Build và chạy test
         run: mvn -B verify
+
+  # Kiểm thử tích hợp trên MySQL thật (lớp *IT: khóa dòng, deadlock, ràng
+  # buộc CSDL). CSDL có chữ "test" trong tên vì mỗi test xóa và tạo lại bảng.
+  build-mysql:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: bluemoon_ci
+          MYSQL_DATABASE: bluemoon_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pbluemoon_ci"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      BLUEMOON_DB_URL: jdbc:mysql://127.0.0.1:3306/bluemoon_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh&characterEncoding=UTF-8
+      BLUEMOON_DB_USER: root
+      BLUEMOON_DB_PASSWORD: bluemoon_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Build, test và kiểm thử tích hợp MySQL
+        run: mvn -B verify -Pmysql

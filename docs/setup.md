@@ -83,6 +83,8 @@ mvn verify -Pmysql
 
 Thiếu biến này, hoặc tên CSDL không có chữ `test`, thì các lớp `*IT` tự bỏ
 qua. `mvn verify` không có `-Pmysql` không chạy kiểm thử tích hợp.
+Trên GitHub, workflow `CI` có thêm job `build-mysql` (service `mysql:8.0`, CSDL
+`bluemoon_test`) chạy `mvn -B verify -Pmysql` cho mọi Pull Request.
 
 ## 5. Chuẩn bị demo
 
