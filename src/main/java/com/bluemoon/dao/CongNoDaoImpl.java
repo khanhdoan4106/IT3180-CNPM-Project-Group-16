@@ -39,18 +39,26 @@ public class CongNoDaoImpl implements CongNoDao {
             "SELECT 1 FROM dot_thu WHERE thang = ?";
     private static final String CHON = "SELECT p.id, p.ho_id, h.ma_can_ho, "
             + "p.khoan_phi_id, k.ten, p.dien_tich, p.don_gia, p.so_tien_goc, "
-            + "p.so_tien, p.nguoi_sua, p.ngay_sua, p.ghi_chu FROM phai_nop p "
+            + "p.so_tien, p.nguoi_sua, p.ngay_sua, p.ghi_chu, EXISTS (SELECT 1 "
+            + "FROM phieu_thu_chi_tiet ct WHERE ct.phai_nop_da_thu = p.id) "
+            + "AS da_dong FROM phai_nop p "
             + "JOIN ho_gia_dinh h ON h.id = p.ho_id "
             + "JOIN khoan_phi k ON k.id = p.khoan_phi_id ";
     private static final String SQL_THEO_THANG = CHON
             + "JOIN dot_thu d ON d.id = p.dot_thu_id WHERE d.thang = ? "
             + "ORDER BY h.ma_can_ho, k.ten";
     private static final String SQL_THEO_ID = CHON + "WHERE p.id = ?";
-    /** Sprint 3 them dieu kien chua co phieu thu con hieu luc. */
-    private static final String SQL_TONG_NO =
-            "SELECT COALESCE(SUM(so_tien), 0) FROM phai_nop WHERE ho_id = ?";
+    /** Khoan da co phieu thu con hieu luc (cot sinh phai_nop_da_thu). */
+    private static final String DA_THU = "SELECT 1 FROM phieu_thu_chi_tiet "
+            + "ct WHERE ct.phai_nop_da_thu = ";
+    private static final String SQL_TONG_NO = "SELECT COALESCE(SUM(p.so_tien)"
+            + ", 0) FROM phai_nop p WHERE p.ho_id = ? AND NOT EXISTS ("
+            + DA_THU + "p.id)";
+    /** Kiem tra va sua trong mot cau lenh: khong sua khoan vua duoc thu. */
     private static final String SQL_SUA = "UPDATE phai_nop SET so_tien = ?, "
-            + "nguoi_sua = ?, ngay_sua = NOW(), ghi_chu = ? WHERE id = ?";
+            + "nguoi_sua = ?, ngay_sua = NOW(), ghi_chu = ? WHERE id = ? "
+            + "AND NOT EXISTS (" + DA_THU + "?)";
+    private static final String SQL_DA_THU = DA_THU + "?";
 
     @Override
     public int chot(YearMonth thang, int nguoiChot, List<PhaiNop> khoan) {
@@ -155,7 +163,7 @@ public class CongNoDaoImpl implements CongNoDao {
     }
 
     @Override
-    public void suaSoTien(int id, BigDecimal soTien, int nguoiSua,
+    public boolean suaSoTien(int id, BigDecimal soTien, int nguoiSua,
             String ghiChu) {
         try (Connection conn = Database.getConnection();
                 PreparedStatement ps = conn.prepareStatement(SQL_SUA)) {
@@ -167,7 +175,8 @@ public class CongNoDaoImpl implements CongNoDao {
                 ps.setString(3, ghiChu);
             }
             ps.setInt(4, id);
-            ps.executeUpdate();
+            ps.setInt(5, id);
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DaoException("Loi sua khoan phai nop", e);
         }
@@ -175,8 +184,15 @@ public class CongNoDaoImpl implements CongNoDao {
 
     @Override
     public boolean daCoPhieuThu(int id) {
-        // Sprint 3 thay bang truy van bang phieu_thu.
-        return false;
+        try (Connection conn = Database.getConnection();
+                PreparedStatement ps = conn.prepareStatement(SQL_DA_THU)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Loi kiem tra khoan da thu", e);
+        }
     }
 
     private static PhaiNop doc(ResultSet rs) throws SQLException {
@@ -189,7 +205,7 @@ public class CongNoDaoImpl implements CongNoDao {
                 rs.getBigDecimal("don_gia"), rs.getBigDecimal("so_tien_goc"),
                 rs.getBigDecimal("so_tien"), nguoi,
                 ngay == null ? null : ngay.toLocalDateTime(),
-                rs.getString("ghi_chu"));
+                rs.getString("ghi_chu"), rs.getBoolean("da_dong"));
     }
 
     @Override

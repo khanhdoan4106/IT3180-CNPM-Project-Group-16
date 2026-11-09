@@ -19,11 +19,13 @@ import java.time.LocalDateTime;
  * @param nguoiSua id tai khoan sua gan nhat, null neu chua sua
  * @param ngaySua thoi diem sua gan nhat, null neu chua sua
  * @param ghiChu ly do sua, co the null
+ * @param daDong da co phieu thu con hieu luc chua (Sprint 3); khoan da dong
+ *        khong sua duoc (AC-026)
  */
 public record PhaiNop(int id, int hoId, String maCanHo, int khoanPhiId,
         String tenKhoan, BigDecimal dienTich, BigDecimal donGia,
         BigDecimal soTienGoc, BigDecimal soTien, Integer nguoiSua,
-        LocalDateTime ngaySua, String ghiChu) {
+        LocalDateTime ngaySua, String ghiChu, boolean daDong) {
 
     /**
      * Khoan da duoc sua khac so he thong tinh chua.

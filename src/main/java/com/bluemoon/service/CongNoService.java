@@ -140,7 +140,7 @@ public class CongNoService {
                         .setScale(0, RoundingMode.HALF_UP);
                 khoan.add(new PhaiNop(0, ho.getId(), ho.getMaCanHo(), k.id(),
                         k.ten(), dt, k.donGia(), tien, tien, null, null,
-                        null));
+                        null, false));
             }
         }
         return new KetQuaTinhCongNo(thang, khoan, boQua);
@@ -236,7 +236,10 @@ public class CongNoService {
             throw new NghiepVuException(
                     "Ghi chú tối đa " + GHI_CHU_TOI_DA + " ký tự");
         }
-        dao.suaSoTien(id, soTien, nguoi.getId(), ghiChu);
+        // Kiem tra lai trong cau lenh sua: may khac co the vua thu khoan nay.
+        if (!dao.suaSoTien(id, soTien, nguoi.getId(), ghiChu)) {
+            throw new NghiepVuException(LOI_DA_THU);
+        }
         return dao.timTheoId(id).orElseThrow();
     }
 }

@@ -49,18 +49,21 @@ public interface CongNoDao {
 
     /**
      * Sua so tien cua mot khoan (US-008), ghi nguoi sua, thoi diem va ghi
-     * chu; so tien goc giu nguyen.
+     * chu; so tien goc giu nguyen. Kiem tra "chua co phieu thu" nam trong
+     * cung cau lenh UPDATE, nen khoan vua duoc thu o may khac khong bi sua
+     * (AC-026).
      *
      * @param id khoa chinh
      * @param soTien so tien moi
      * @param nguoiSua id tai khoan sua
      * @param ghiChu ly do, co the null
+     * @return false neu khoan da co phieu thu con hieu luc (khong sua)
      */
-    void suaSoTien(int id, BigDecimal soTien, int nguoiSua, String ghiChu);
+    boolean suaSoTien(int id, BigDecimal soTien, int nguoiSua,
+            String ghiChu);
 
     /**
-     * Khoan da co phieu thu chua (AC-026). Bang phieu_thu them o Sprint 3;
-     * truoc do moi khoan deu chua thu.
+     * Khoan da co phieu thu con hieu luc chua (AC-026).
      *
      * @param id khoa chinh khoan phai nop
      * @return true neu da co phieu thu con hieu luc
@@ -68,8 +71,8 @@ public interface CongNoDao {
     boolean daCoPhieuThu(int id);
 
     /**
-     * Tong so tien cac khoan phai nop chua dong cua mot ho, moi thang.
-     * Sprint 3 tru cac khoan da co phieu thu.
+     * Tong so tien cac khoan phai nop chua co phieu thu con hieu luc cua
+     * mot ho, moi thang.
      *
      * @param hoId khoa chinh ho
      * @return tong no, 0 neu khong no

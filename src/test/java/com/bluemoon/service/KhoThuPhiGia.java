@@ -90,7 +90,7 @@ class KhoThuPhiGia {
                     phaiNop.put(id, new PhaiNop(id, p.hoId(), p.maCanHo(),
                             p.khoanPhiId(), p.tenKhoan(), p.dienTich(),
                             p.donGia(), p.soTienGoc(), p.soTien(), null, null,
-                            null));
+                            null, false));
                     thangCuaKhoan.put(id, thang);
                     soMoi++;
                 }
@@ -107,6 +107,11 @@ class KhoThuPhiGia {
         public List<PhaiNop> theoThang(YearMonth thang) {
             return phaiNop.values().stream()
                     .filter(p -> thangCuaKhoan.get(p.id()).equals(thang))
+                    .map(p -> new PhaiNop(p.id(), p.hoId(), p.maCanHo(),
+                            p.khoanPhiId(), p.tenKhoan(), p.dienTich(),
+                            p.donGia(), p.soTienGoc(), p.soTien(),
+                            p.nguoiSua(), p.ngaySua(), p.ghiChu(),
+                            daCoPhieuThu.contains(p.id())))
                     .toList();
         }
 
@@ -116,13 +121,17 @@ class KhoThuPhiGia {
         }
 
         @Override
-        public void suaSoTien(int id, BigDecimal soTien, int nguoiSua,
+        public boolean suaSoTien(int id, BigDecimal soTien, int nguoiSua,
                 String ghiChu) {
+            if (daCoPhieuThu.contains(id)) {
+                return false;
+            }
             PhaiNop p = phaiNop.get(id);
             phaiNop.put(id, new PhaiNop(id, p.hoId(), p.maCanHo(),
                     p.khoanPhiId(), p.tenKhoan(), p.dienTich(), p.donGia(),
                     p.soTienGoc(), soTien, nguoiSua, LocalDateTime.now(),
-                    ghiChu));
+                    ghiChu, false));
+            return true;
         }
 
         @Override
