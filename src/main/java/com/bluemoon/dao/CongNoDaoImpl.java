@@ -54,10 +54,14 @@ public class CongNoDaoImpl implements CongNoDao {
     private static final String SQL_TONG_NO = "SELECT COALESCE(SUM(p.so_tien)"
             + ", 0) FROM phai_nop p WHERE p.ho_id = ? AND NOT EXISTS ("
             + DA_THU + "p.id)";
-    /** Kiem tra va sua trong mot cau lenh: khong sua khoan vua duoc thu. */
+    private static final String SQL_HO_CUA_KHOAN =
+            "SELECT ho_id FROM phai_nop WHERE id = ?";
+    private static final String SQL_KHOA_HO =
+            "SELECT id FROM ho_gia_dinh WHERE id = ? FOR UPDATE";
+    private static final String SQL_KHOA_KHOAN =
+            "SELECT id FROM phai_nop WHERE id = ? FOR UPDATE";
     private static final String SQL_SUA = "UPDATE phai_nop SET so_tien = ?, "
-            + "nguoi_sua = ?, ngay_sua = NOW(), ghi_chu = ? WHERE id = ? "
-            + "AND NOT EXISTS (" + DA_THU + "?)";
+            + "nguoi_sua = ?, ngay_sua = NOW(), ghi_chu = ? WHERE id = ?";
     private static final String SQL_DA_THU = DA_THU + "?";
 
     @Override
@@ -162,23 +166,76 @@ public class CongNoDaoImpl implements CongNoDao {
         }
     }
 
+    /**
+     * Sua trong mot giao dich, khoa theo cung thu tu voi lap phieu thu
+     * (ho_gia_dinh, roi phai_nop) nen khong deadlock voi viec thu; chi sau
+     * khi giu khoa moi kiem tra khoan da thu chua.
+     */
     @Override
     public boolean suaSoTien(int id, BigDecimal soTien, int nguoiSua,
             String ghiChu) {
-        try (Connection conn = Database.getConnection();
-                PreparedStatement ps = conn.prepareStatement(SQL_SUA)) {
-            ps.setBigDecimal(1, soTien);
-            ps.setInt(2, nguoiSua);
-            if (ghiChu == null) {
-                ps.setNull(3, Types.VARCHAR);
-            } else {
-                ps.setString(3, ghiChu);
+        try (Connection conn = Database.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                int hoId = hoCuaKhoan(conn, id);
+                khoa(conn, SQL_KHOA_HO, hoId);
+                khoa(conn, SQL_KHOA_KHOAN, id);
+                try (PreparedStatement ps = conn.prepareStatement(SQL_DA_THU)) {
+                    ps.setInt(1, id);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (rs.next()) {
+                            conn.rollback();
+                            return false;
+                        }
+                    }
+                }
+                try (PreparedStatement ps = conn.prepareStatement(SQL_SUA)) {
+                    ps.setBigDecimal(1, soTien);
+                    ps.setInt(2, nguoiSua);
+                    if (ghiChu == null) {
+                        ps.setNull(3, Types.VARCHAR);
+                    } else {
+                        ps.setString(3, ghiChu);
+                    }
+                    ps.setInt(4, id);
+                    ps.executeUpdate();
+                }
+                conn.commit();
+                return true;
+            } catch (SQLException | RuntimeException e) {
+                conn.rollback();
+                throw e;
             }
-            ps.setInt(4, id);
-            ps.setInt(5, id);
-            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DaoException("Loi sua khoan phai nop", e);
+            throw DangBiKhoaException.boc("Loi sua khoan phai nop", e);
+        }
+    }
+
+    private static int hoCuaKhoan(Connection conn, int id)
+            throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(SQL_HO_CUA_KHOAN)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    throw new XungDotException(
+                            XungDotException.Loai.KHONG_TIM_THAY,
+                            "phai nop " + id);
+                }
+                return rs.getInt(1);
+            }
+        }
+    }
+
+    private static void khoa(Connection conn, String sql, int id)
+            throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    throw new XungDotException(
+                            XungDotException.Loai.KHONG_TIM_THAY, "id " + id);
+                }
+            }
         }
     }
 

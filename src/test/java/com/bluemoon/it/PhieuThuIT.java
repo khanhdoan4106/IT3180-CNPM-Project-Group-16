@@ -233,6 +233,78 @@ class PhieuThuIT {
         assertFalse(ds.isEmpty());
     }
 
+    /**
+     * N1: vua sua so tien vua thu cung mot khoan, nhieu luong, nhieu vong.
+     * Khong deadlock (DaoException), va khoan nao da thu thi so tien tren
+     * phieu bang so tien hien tai (khong thu khoan da sua sai so tien).
+     */
+    @Test
+    void nhieuLuongVuaSuaVuaThuCungMotKhoanKhongDeadlock() throws Exception {
+        int soVong = 25;
+        ExecutorService may = Executors.newFixedThreadPool(4);
+        try {
+            for (int vong = 0; vong < soVong; vong++) {
+                List<Integer> ds = moiKhoan();
+                if (ds.isEmpty()) {
+                    break;
+                }
+                int khoan = ds.get(0);
+                CountDownLatch batDau = new CountDownLatch(1);
+                int vongNay = vong;
+                List<Future<Object>> kq = new java.util.ArrayList<>();
+                for (int i = 0; i < 2; i++) {
+                    kq.add(may.submit(() -> thuHoacLoi(batDau, khoan)));
+                    kq.add(may.submit(() -> suaHoacLoi(batDau, khoan,
+                            10_000 + vongNay)));
+                }
+                batDau.countDown();
+                for (Future<Object> f : kq) {
+                    Object loi = f.get();
+                    assertFalse(loi instanceof Throwable,
+                            () -> "Loi khong mong doi: " + loi);
+                }
+            }
+        } finally {
+            may.shutdown();
+        }
+        try (Connection c = Database.getConnection();
+                PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) "
+                        + "FROM phieu_thu_chi_tiet ct JOIN phai_nop p ON "
+                        + "p.id = ct.phai_nop_id WHERE ct.con_hieu_luc AND "
+                        + "ct.so_tien <> p.so_tien");
+                java.sql.ResultSet rs = ps.executeQuery()) {
+            rs.next();
+            assertEquals(0, rs.getInt(1));
+        }
+    }
+
+    private Object thuHoacLoi(CountDownLatch batDau, int khoan)
+            throws InterruptedException {
+        batDau.await();
+        try {
+            thuPhi.thu(admin, hoId, List.of(khoan), null,
+                    HinhThucThanhToan.TIEN_MAT);
+            return "thu";
+        } catch (NghiepVuException e) {
+            return e.getMessage();
+        } catch (RuntimeException e) {
+            return e;
+        }
+    }
+
+    private Object suaHoacLoi(CountDownLatch batDau, int khoan, int soTien)
+            throws InterruptedException {
+        batDau.await();
+        try {
+            congNo.suaSoTien(admin, khoan, String.valueOf(soTien), "thu");
+            return "sua";
+        } catch (NghiepVuException e) {
+            return e.getMessage();
+        } catch (RuntimeException e) {
+            return e;
+        }
+    }
+
     @Test
     void haiMayCungThuMotKhoanChiMotPhieuThanhCong() throws Exception {
         List<Integer> ds = moiKhoan();

@@ -49,15 +49,16 @@ public interface CongNoDao {
 
     /**
      * Sua so tien cua mot khoan (US-008), ghi nguoi sua, thoi diem va ghi
-     * chu; so tien goc giu nguyen. Kiem tra "chua co phieu thu" nam trong
-     * cung cau lenh UPDATE, nen khoan vua duoc thu o may khac khong bi sua
-     * (AC-026).
+     * chu; so tien goc giu nguyen. Chay trong mot giao dich: khoa ho roi khoan
+     * (cung thu tu voi lap phieu thu), kiem tra "chua co phieu thu" duoi khoa
+     * roi moi sua, nen khoan vua duoc thu o may khac khong bi sua (AC-026).
      *
      * @param id khoa chinh
      * @param soTien so tien moi
      * @param nguoiSua id tai khoan sua
      * @param ghiChu ly do, co the null
      * @return false neu khoan da co phieu thu con hieu luc (khong sua)
+     * @throws DangBiKhoaException neu bi MySQL huy vi nguoi khac dang thao tac
      */
     boolean suaSoTien(int id, BigDecimal soTien, int nguoiSua,
             String ghiChu);

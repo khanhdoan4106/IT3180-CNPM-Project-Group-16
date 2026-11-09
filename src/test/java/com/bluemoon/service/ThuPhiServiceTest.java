@@ -287,6 +287,19 @@ class ThuPhiServiceTest {
     }
 
     @Test
+    void biKhoaKhiThuThiBaoCoNguoiKhacDangThaoTac() {
+        khoPhieu.biKhoa = true;
+        List<Integer> ids = service.thongTin(admin, a0601).khoanChuaDong()
+                .stream().map(KhoanNo::phaiNopId).toList();
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.thu(admin, a0601, ids, null,
+                        HinhThucThanhToan.TIEN_MAT));
+        assertEquals("Có người khác đang thao tác trên hộ này, vui lòng"
+                + " thử lại", e.getMessage());
+        assertEquals(0, service.homNay(admin).size());
+    }
+
+    @Test
     void thuQuyKhongHuyPhieuNguoiKhacQuanTriThiDuoc() {
         PhieuThu p = thuTatCa(thuQuy);
         loi("Thủ quỹ chỉ hủy được phiếu do mình lập",

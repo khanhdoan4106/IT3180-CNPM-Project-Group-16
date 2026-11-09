@@ -1,5 +1,6 @@
 package com.bluemoon.service;
 
+import com.bluemoon.dao.DangBiKhoaException;
 import com.bluemoon.dao.KhoanPhiDao;
 import com.bluemoon.dao.PhieuThuDao;
 import com.bluemoon.dao.XungDotException;
@@ -206,6 +207,8 @@ public class ThuPhiService {
             return dao.lapPhieu(moi);
         } catch (XungDotException e) {
             throw new NghiepVuException(thongBao(e));
+        } catch (DangBiKhoaException e) {
+            throw new NghiepVuException(DangBiKhoaException.THONG_BAO);
         }
     }
 
@@ -280,6 +283,8 @@ public class ThuPhiService {
             dao.huy(id, nguoi.getId(), bayGio, lyDo);
         } catch (XungDotException e) {
             throw new NghiepVuException(thongBao(e));
+        } catch (DangBiKhoaException e) {
+            throw new NghiepVuException(DangBiKhoaException.THONG_BAO);
         }
         return dao.timTheoId(id).orElseThrow();
     }

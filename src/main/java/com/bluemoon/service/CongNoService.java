@@ -1,6 +1,8 @@
 package com.bluemoon.service;
 
 import com.bluemoon.dao.CongNoDao;
+import com.bluemoon.dao.DangBiKhoaException;
+import com.bluemoon.dao.XungDotException;
 import com.bluemoon.dao.HoGiaDinhDao;
 import com.bluemoon.dao.KhoanPhiDao;
 import com.bluemoon.model.HoGiaDinh;
@@ -236,9 +238,15 @@ public class CongNoService {
             throw new NghiepVuException(
                     "Ghi chú tối đa " + GHI_CHU_TOI_DA + " ký tự");
         }
-        // Kiem tra lai trong cau lenh sua: may khac co the vua thu khoan nay.
-        if (!dao.suaSoTien(id, soTien, nguoi.getId(), ghiChu)) {
-            throw new NghiepVuException(LOI_DA_THU);
+        // Kiem tra lai duoi khoa trong DAO: may khac co the vua thu khoan nay.
+        try {
+            if (!dao.suaSoTien(id, soTien, nguoi.getId(), ghiChu)) {
+                throw new NghiepVuException(LOI_DA_THU);
+            }
+        } catch (DangBiKhoaException e) {
+            throw new NghiepVuException(DangBiKhoaException.THONG_BAO);
+        } catch (XungDotException e) {
+            throw new NghiepVuException("Không tìm thấy khoản phải nộp");
         }
         return dao.timTheoId(id).orElseThrow();
     }

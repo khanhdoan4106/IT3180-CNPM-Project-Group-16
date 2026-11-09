@@ -206,6 +206,20 @@ class CongNoServiceTest {
     }
 
     @Test
+    void biKhoaKhiSuaThiBaoCoNguoiKhacDangThaoTac() {
+        service.chot(admin, T12);
+        int id = tim(service.theoThang(admin, T12), "K01", "Phí quản lý")
+                .id();
+        kho.biKhoaKhiSua = true;
+        NghiepVuException e = assertThrows(NghiepVuException.class,
+                () -> service.suaSoTien(admin, id, "1.000", null));
+        assertEquals("Có người khác đang thao tác trên hộ này, vui lòng"
+                + " thử lại", e.getMessage());
+        assertEquals(0, tien("245000").compareTo(
+                kho.phaiNop.get(id).soTien()));
+    }
+
+    @Test
     void tuChoiSoTienSaiHoacKhongDoi() {
         service.chot(admin, T12);
         int id = tim(service.theoThang(admin, T12), "K01", "Phí quản lý")

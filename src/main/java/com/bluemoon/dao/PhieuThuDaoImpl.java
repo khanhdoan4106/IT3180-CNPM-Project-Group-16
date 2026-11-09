@@ -31,8 +31,10 @@ import java.util.Optional;
  * Cai dat JDBC cua {@link PhieuThuDao}. Luon dung PreparedStatement.
  *
  * <p>Thu tu khoa khi lap phieu: dong ho_gia_dinh, cac dong phai_nop, cuoi
- * cung dong bo dem cua nam. Moi giao dich thu deu khoa theo cung thu tu nen
- * khong tao vong cho (deadlock); khoa bo dem sau cung de giu khoa ngan nhat.
+ * cung dong bo dem cua nam. Moi giao dich ghi tren ho (thu, sua so tien
+ * khoan phai nop) deu khoa theo cung thu tu nen khong tao vong cho
+ * (deadlock); khoa bo dem sau cung de giu khoa ngan nhat. Neu van bi MySQL
+ * huy (1213, 1205) thi ra {@link DangBiKhoaException}.
  */
 public class PhieuThuDaoImpl implements PhieuThuDao {
 
@@ -246,7 +248,7 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
                 throw e;
             }
         } catch (SQLException e) {
-            throw TrungKhoaException.boc("Loi lap phieu thu", e);
+            throw DangBiKhoaException.boc("Loi lap phieu thu", e);
         }
         return timTheoId(id).orElseThrow();
     }
@@ -415,7 +417,7 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
                 throw e;
             }
         } catch (SQLException e) {
-            throw new DaoException("Loi huy phieu thu", e);
+            throw DangBiKhoaException.boc("Loi huy phieu thu", e);
         }
     }
 

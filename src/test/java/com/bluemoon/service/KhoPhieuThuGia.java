@@ -13,6 +13,7 @@ import com.bluemoon.model.TaiKhoan;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TongDongGop;
 import com.bluemoon.model.TrangThaiHo;
+import com.bluemoon.dao.DangBiKhoaException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,6 +40,8 @@ class KhoPhieuThuGia implements PhieuThuDao {
     private final KhoThuPhiGia kho;
     /** Gia lap may khac vua doi du lieu: lan lap phieu tiep theo bi tu choi. */
     XungDotException.Loai xungDotKhiLap;
+    /** Gia lap MySQL huy giao dich (deadlock, cho khoa qua han). */
+    boolean biKhoa;
     private int idPhieu = 1;
     private int idDong = 1;
 
@@ -134,6 +137,9 @@ class KhoPhieuThuGia implements PhieuThuDao {
 
     @Override
     public PhieuThu lapPhieu(PhieuThuMoi moi) {
+        if (biKhoa) {
+            throw new DangBiKhoaException("gia lap", null);
+        }
         if (xungDotKhiLap != null) {
             XungDotException.Loai loai = xungDotKhiLap;
             xungDotKhiLap = null;
