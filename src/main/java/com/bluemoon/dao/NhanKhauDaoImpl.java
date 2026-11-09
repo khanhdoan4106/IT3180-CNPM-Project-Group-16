@@ -39,8 +39,9 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
             "UPDATE nhan_khau SET trang_thai = ? WHERE id = ?";
     private static final String SQL_KHOA = "SELECT ho_id, trang_thai "
             + "FROM nhan_khau WHERE id = ? FOR UPDATE";
-    private static final String SQL_KHOA_HAI = "SELECT id, ho_id, ho_ten "
-            + "FROM nhan_khau WHERE id IN (?, ?) FOR UPDATE";
+    private static final String SQL_KHOA_HAI = "SELECT id, ho_id, ho_ten, "
+            + "trang_thai, quan_he FROM nhan_khau WHERE id IN (?, ?) "
+            + "FOR UPDATE";
     private static final String SQL_CHU_HO_CU = "UPDATE nhan_khau SET "
             + "quan_he = ?, trang_thai = ? WHERE id = ?";
     private static final String SQL_CHU_HO_MOI =
@@ -277,8 +278,21 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
                 try (ResultSet rs = khoa.executeQuery()) {
                     while (rs.next()) {
                         hoId = rs.getInt("ho_id");
+                        boolean dangO = TrangThaiNhanKhau.DANG_O.name()
+                                .equals(rs.getString("trang_thai"));
                         if (rs.getInt("id") == chuHoCuId) {
                             tenCu = rs.getString("ho_ten");
+                            // Duoi khoa: chu ho cu van la chu ho dang o.
+                            if (!dangO || !QuanHeChuHo.CHU_HO.name().equals(
+                                    rs.getString("quan_he"))) {
+                                throw new XungDotException(
+                                        XungDotException.Loai.NHAN_KHAU_DOI,
+                                        "chu ho cu " + chuHoCuId);
+                            }
+                        } else if (!dangO) {
+                            throw new XungDotException(
+                                    XungDotException.Loai.NHAN_KHAU_DOI,
+                                    "chu ho moi " + chuHoMoiId);
                         }
                     }
                 }

@@ -3,6 +3,7 @@ package com.bluemoon.service;
 import com.bluemoon.dao.HoGiaDinhDao;
 import com.bluemoon.dao.NhanKhauDao;
 import com.bluemoon.dao.TrungKhoaException;
+import com.bluemoon.dao.XungDotException;
 import com.bluemoon.model.DotCuTru;
 import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiCuTru;
@@ -232,6 +233,9 @@ public class NhanKhauService {
                     quanHeCu == null, nguoi.getId());
         } catch (TrungKhoaException e) {
             throw LoiTrung.doi(e, null, null);
+        } catch (XungDotException e) {
+            throw new NghiepVuException("Nhân khẩu vừa thay đổi ở máy khác."
+                    + " Tải lại danh sách rồi đổi chủ hộ lại");
         }
     }
 

@@ -355,6 +355,7 @@ public class ThuPhiService {
             case HET_SO -> "Đã dùng hết số biên lai của năm. Báo người"
                     + " quản trị hệ thống";
             case DA_HUY -> "Phiếu vừa được hủy ở máy khác";
+            case NHAN_KHAU_DOI -> LOI_DU_LIEU_DOI;
         };
     }
 }
