@@ -27,6 +27,34 @@ Excel/PDF) và mọi nội dung về đóng góp, phân công thành viên.
   (`docs/hoan-thien-tai-lieu`) tách từ `main` sau khi PR mã merge, vì tài
   liệu trích tên test và dữ liệu mẫu mới.
 
+## Xử lý sau khi duyệt
+
+Scrum Master duyệt kế hoạch ngày 09/11/2026 với ba quyết định: (1) chặn đóng
+góp tự nguyện cho hộ đã chuyển đi (giả định 39); (2) chưa gắn tag `v0.3.0`,
+gắn ở Sprint Review sau khi PR này và PR chỉnh màn Thu phí theo Figma merge;
+(3) quỹ mẫu theo ngày chạy seed, tên không chứa năm cứng, kiểm tên có dấu
+bằng Java hoặc `HEX()`, không dựa vào collation `_ci`. Phần mã làm trên nhánh
+`chore/don-muc-ton` (PR 1), mỗi mục một commit, kèm test. PR tài liệu
+(`docs/hoan-thien-tai-lieu`) làm sau cùng.
+
+| Mục | Xử lý | Test |
+|---|---|---|
+| S2-N7, S2-G10, S2-G11, S2-G14, S3-G2, F1, F2 | Đã sửa: `seed.sql` tên, nơi thường trú, lý do có dấu; họ tên tài khoản mẫu là tên người; hai quỹ mẫu mở từ đầu tháng này đến cuối tháng sau, tên không chứa năm cứng ("Quỹ vì người nghèo <năm hiện tại>"), kiểm tra chạy lại theo tên; dòng "Chuyển đến" của người tạm trú lấy ngày bắt đầu đợt đầu. Chạy lại 3 lần: số dòng không đổi | `SeedIT` 4 test (số dòng sau 3 lần chạy, tên so sánh trong Java, quỹ đang mở, ba trường hợp tạm trú/tạm vắng) |
+| S2-N11, F5 | Đã sửa: `LoiKhongMongDoi` đặt bộ xử lý lỗi toàn cục trong `App.start`, hiện hộp thoại thay vì chỉ in console | `LoiKhongMongDoiTest` 3 test (chọn thông báo); hộp thoại kiểm tay |
+| S2-N6 | Đã sửa: hỏi xác nhận khi đổi vai trò và khi khóa tài khoản; thông báo "Đã đổi vai trò của … thành …" | Kiểm tay (Service không đổi) |
+| S2-N5, S2-G7 | Đã sửa: "Biến động nhân khẩu gần đây", tooltip "từ đủ 14 tuổi", gợi ý `vd A0601`/`vd admin`, dòng "Đang xem trước" không còn đỏ | `BoCucFxmlTest` |
+| S2-N10a | Đã sửa: `LoiTrung.trungCccd` dùng chung ba nơi | Test hiện có của `HoGiaDinhServiceTest`, `NhanKhauServiceTest` |
+| S2-G5 | Đã sửa: `doiChuHo` kiểm tra lại dưới khóa (chủ hộ cũ còn là chủ hộ đang ở, người mới còn đang ở), lỗi thì hoàn tác và báo tải lại (`XungDotException.NHAN_KHAU_DOI`) | IT `doiChuHoTuChoiNguoiVuaChuyenDiOMayKhac` |
+| S3-G4, S2-G8 | Đã sửa: `SQL_GHI_IN` thêm `AND NOT da_huy`; Javadoc `TEN_HOP_LE` đặt đúng chỗ | IT `daInKhongDemPhieuDaHuy` |
+| S3-G3 | Đã sửa theo quyết định 1: `thongTin` không trả quỹ nào cho hộ đã chuyển đi, `thu` từ chối dòng đóng góp (kể cả 0 đ) với "Hộ đã chuyển đi chỉ thu các khoản còn nợ", màn Thu phí hiện đúng lý do; giả định 39 ghi vào `11-chot-va-gia-dinh.md` | `ThuPhiServiceTest.hoDaChuyenDiChiThuKhoanNoKhongGhiDongGop`, IT `hoDaChuyenDiKhongGhiDongGopTuNguyen` |
+| F3 | Đã sửa: `CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS` (3 Java, 4 FXML); `javac -Xlint:all` còn 0 cảnh báo | `BoCucFxmlTest`, `MauInTest` |
+| S2-N9 (phần còn lại) | Đã sửa: `BienDongServiceTest` | 3 test |
+| Để Sprint 4, Bỏ, và các mục tài liệu (S2-N12, N13, G2, S3-G1, S3-G10, F4, F6–F9) | Giữ nguyên theo bảng mục 1; phần tài liệu làm ở PR 2 | – |
+
+Sau khi sửa: 240 test đơn vị và 22 kiểm thử tích hợp (MySQL 8.0.46) đều đạt.
+Tài liệu `setup.md` còn nhắc "Quỹ vì người nghèo 2026" và tên cũ; cập nhật ở
+PR 2 cùng kịch bản demo.
+
 ## 1. Bảng mục tồn
 
 Nguồn: S2 = `sprint-2-ra-soat.md` (Nên sửa N, Ghi nhận G), S3 =
@@ -261,16 +289,8 @@ Cả hai PR: commit đứng tên `Khanh Doan <dqkhanh412006@gmail.com>`, thông
 `config/db.properties`, không force push, không push vào `main`; chờ CI
 xanh cả hai job trước khi báo.
 
-### Câu hỏi cần Scrum Master quyết
+### Câu hỏi đã quyết
 
-1. **S3-G3:** chặn ghi đóng góp tự nguyện cho hộ đã chuyển đi (thêm một giả
-   định)? Đề xuất: có, vì giả định 21 chỉ cho thu **nợ** của hộ đã chuyển đi.
-2. **F9 (tag `v0.3.0`):** gắn tag ngay trên `main` hiện tại (đặt `pom.xml` thành
-   `0.3.0`, rồi nâng `0.4.0-SNAPSHOT` ở PR riêng) hay đợi PR 1? Đề xuất: đợi PR
-   1 vì PR 1 sửa dữ liệu mẫu dùng cho Sprint Review; `CHANGELOG.md` ghi `v0.3.0`
-   với ngày gắn tag.
-3. **F2:** chấp nhận cách seed theo ngày chạy (quỹ mẫu luôn đang mở khi demo)?
-   Đổi lại, chạy `seed.sql` ở tháng sau cho quỹ mới cùng tên bị bỏ qua nhờ
-   `NOT EXISTS` theo tên.
-
-Dừng tại đây, chờ duyệt. Chưa sửa mã, chưa commit.
+Xem bảng "Xử lý sau khi duyệt" ở đầu báo cáo: chặn đóng góp cho hộ đã chuyển
+đi (giả định 39), chưa gắn tag `v0.3.0` (gắn ở Sprint Review), quỹ mẫu theo
+ngày chạy seed.
