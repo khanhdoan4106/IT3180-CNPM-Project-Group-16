@@ -140,6 +140,25 @@ class ThuPhiServiceTest {
     }
 
     @Test
+    void hoDaChuyenDiChiThuKhoanNoKhongGhiDongGop() {
+        // Gia dinh 39
+        int cu = khoPhieu.themHo("B0202", TrangThaiHo.DA_CHUYEN_DI, "Hộ cũ");
+        int no = khoPhieu.themPhaiNop(cu, dichVu, T11, "100000");
+        assertTrue(service.thongTin(thuQuy, cu).dongGop().isEmpty());
+        for (String nhap : List.of("50.000", "0")) {
+            NghiepVuException e = assertThrows(NghiepVuException.class,
+                    () -> service.thu(thuQuy, cu, List.of(no),
+                            Map.of(quyNgheo, nhap), TIEN_MAT));
+            assertEquals("Hộ đã chuyển đi chỉ thu các khoản còn nợ",
+                    e.getMessage());
+        }
+        assertEquals(0, service.homNay(admin).size());
+        PhieuThu p = service.thu(thuQuy, cu, List.of(no), Map.of(quyNgheo, ""),
+                TIEN_MAT);
+        assertEquals(0, new BigDecimal("100000").compareTo(p.tongTien()));
+    }
+
+    @Test
     void thongTinGomKhoanChuaDongVaQuyDangMo() {
         ThuPhiService.ThongTinThu tt = service.thongTin(thuQuy, a0601);
         assertEquals(List.of(dv11, dv12, ql12), tt.khoanChuaDong().stream()
