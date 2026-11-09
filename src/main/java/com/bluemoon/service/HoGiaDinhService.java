@@ -116,8 +116,7 @@ public class HoGiaDinhService {
         kiemTraTrungMa(ho);
         if (nk.getSoCccd() != null
                 && nhanKhauDao.tonTaiCccd(nk.getSoCccd(), 0)) {
-            throw new NghiepVuException(
-                    "Số CCCD " + nk.getSoCccd() + " đã tồn tại");
+            throw LoiTrung.trungCccd(nk.getSoCccd());
         }
         try {
             return ho.voiId(dao.them(ho, nk, dot, nguoi.getId()));

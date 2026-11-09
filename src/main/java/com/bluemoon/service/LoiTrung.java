@@ -14,6 +14,17 @@ final class LoiTrung {
     }
 
     /**
+     * Loi so CCCD da co nguoi dang o dung, dung chung cho kiem tra truoc khi
+     * luu va loi trung khoa luc luu.
+     *
+     * @param soCccd so CCCD bi trung
+     * @return loi nghiep vu
+     */
+    static NghiepVuException trungCccd(String soCccd) {
+        return new NghiepVuException("Số CCCD " + soCccd + " đã tồn tại");
+    }
+
+    /**
      * Thong bao ung voi rang buoc bi vi pham.
      *
      * @param e loi trung khoa
@@ -28,8 +39,7 @@ final class LoiTrung {
                 return new NghiepVuException(
                         "Mã căn hộ " + maCanHo + " đã có hộ đang ở");
             case "uq_nk_cccd_dang_o":
-                return new NghiepVuException(
-                        "Số CCCD " + soCccd + " đã tồn tại");
+                return trungCccd(soCccd);
             case "uq_nk_chu_ho":
                 return new NghiepVuException(NhanKhauService.LOI_HAI_CHU_HO);
             case DotCuTruDao.CHONG_NGAY:

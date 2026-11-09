@@ -279,8 +279,7 @@ public class NhanKhauService {
     private void kiemTraTrungCccd(NhanKhau nk) {
         if (nk.getSoCccd() != null
                 && dao.tonTaiCccd(nk.getSoCccd(), nk.getId())) {
-            throw new NghiepVuException(
-                    "Số CCCD " + nk.getSoCccd() + " đã tồn tại");
+            throw LoiTrung.trungCccd(nk.getSoCccd());
         }
     }
 }
