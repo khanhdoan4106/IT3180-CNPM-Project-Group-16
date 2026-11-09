@@ -129,6 +129,11 @@ public class TrangChinhController {
     }
 
     @FXML
+    private void onMoThuPhi() {
+        mo("thu-phi.fxml");
+    }
+
+    @FXML
     private void onMoTaiKhoan() {
         mo("tai-khoan.fxml");
     }

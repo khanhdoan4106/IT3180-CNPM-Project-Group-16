@@ -90,7 +90,7 @@ class BoCucFxmlTest {
     @ParameterizedTest
     @ValueSource(strings = {"dang-nhap.fxml", "trang-chinh.fxml",
             "ho-gia-dinh.fxml", "nhan-khau.fxml", "khoan-thu.fxml",
-            "cong-no.fxml", "tai-khoan.fxml"})
+            "cong-no.fxml", "tai-khoan.fxml", "thu-phi.fxml"})
     void khongCoChuBiCat(String tenFile) throws Exception {
         List<String> loi = trenLuongFx(() -> kiemTra(tenFile));
         assertTrue(loi.isEmpty(), tenFile + " ở " + (int) RONG + "×"
