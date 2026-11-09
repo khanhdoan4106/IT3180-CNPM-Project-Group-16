@@ -11,12 +11,16 @@ File gồm bộ thành phần dùng chung (nút, ô nhập, mục menu, thẻ s�
   mục chức năng, người dùng, Đăng xuất), màn hình chức năng ở phần thân.
   Trang chính thêm phần **đuôi** chứa thao tác nhanh.
 - Kích thước theo Bộ bài tập: Trang chính 1440×1024; đăng nhập và các màn
-  hình chức năng 1120×645.
+  hình chức năng 1120×645. Trong ứng dụng, màn chức năng nằm trong khung
+  Trang chính (cửa sổ phóng to); bố cục được kiểm ở 1120×645 bằng
+  `BoCucFxmlTest` (xem [Trạng thái so với thiết kế](#trạng-thái-so-với-thiết-kế)).
 - Menu chỉ hiện mục mà vai trò được dùng (xem
   [Phân quyền](architecture.md#phân-quyền)).
 - Hộp thoại (sửa khoản thu, xác nhận chốt) mở đè lên màn hình hiện tại, nền
   phía sau làm tối; dùng `Dialog<T>` của JavaFX.
-- Lỗi nhập liệu hiện ngay dưới ô sai, không dồn vào hộp cảnh báo chung.
+- Thiết kế: lỗi nhập liệu hiện ngay dưới ô sai, không dồn vào hộp cảnh báo
+  chung. Hiện tại: mỗi màn có một nhãn thông báo chung (đỏ khi lỗi); hiện
+  dưới từng ô là việc của Sprint 4.
 
 ## Màn hình
 
@@ -42,6 +46,24 @@ nợ khi đánh dấu hộ chuyển đi. Sprint 3 thêm nút "Danh sách tạm v
 Nhân khẩu (US-004), cột "Đã đóng" và nút "In thông báo phí" ở màn Chốt công
 nợ (US-015, AC-026).
 
+### Trạng thái so với thiết kế
+
+Phần thiết kế chưa làm hết được ghi rõ để khỏi nhầm với phần đã có; các mục
+"Sprint 4" nằm trong TS-004 (rà soát giao diện).
+
+| Nội dung thiết kế | Hiện tại | Xử lý |
+|---|---|---|
+| Màn chức năng 1120×645, Trang chính 1440×1024 | Màn chức năng nằm trong khung Trang chính (cửa sổ phóng to); đăng nhập 1120×645 | Giữ; bố cục kiểm ở 1120×645 (`BoCucFxmlTest`) |
+| Lỗi nhập liệu hiện dưới từng ô | Một nhãn thông báo chung mỗi màn | Sprint 4 |
+| Phông Be Vietnam Pro, chữ nội dung 16 px | Đã nhúng Be Vietnam Pro (Sprint 2); cỡ chữ gốc 14 px | Cỡ chữ: Sprint 4 |
+| Ba phương án màu (A, B, C) bằng bộ biến `-mau-*` | Một bộ biến (11 biến) theo phương án A; màn Thu phí dùng toàn biến | Chọn phương án ở Sprint Review; thêm B, C nếu cần ở Sprint 4 |
+| Khoản thu: bộ lọc Tất cả / Bắt buộc / Tự nguyện | Chưa có | Sprint 4 |
+| Sửa khoản thu của hộ: hiện giá trị cũ và tổng mới | Hộp thoại một ô "Số tiền" kèm giá trị cũ ở tiêu đề, khóa ô khi đã có phiếu thu (AC-026); chưa có "tổng mới" | Sprint 4 |
+| Nút hộp thoại | Tiếng Việt: "Đồng ý", "Hủy", "Đóng"; hộp thoại Hủy phiếu dùng "Hủy phiếu" và "Đóng" (`HopThoai`) | Đã làm |
+| Thu phí (Thu tiền, Phiếu thu hôm nay, Hủy phiếu) | Theo Figma; khác: thanh menu/tab giữ kiểu hiện tại, bảng và nút dùng kiểu JavaFX mặc định, "Tiền mặt" không chọn sẵn (AC-038) | Rà soát nhìn ở Sprint 4 |
+| Hộ gia đình, Nhân khẩu | Chưa theo bộ thành phần Figma | Sprint 4 |
+| In ấn (biên lai, thông báo, danh sách tạm vắng) | Xem trước 640×560 rồi chọn máy in; danh sách tạm vắng in khổ ngang; xuất Excel/PDF chưa có | Xuất tệp: Sprint 4 (AC-014) |
+
 ## Phương án màu
 
 Màu khai báo thành biến; mỗi phương án là một chế độ của cùng bộ biến, trong
@@ -60,7 +82,11 @@ code tương ứng biến `-mau-*` của `css/giao-dien.css`.
 | thành công | `#15803D` | `#15803D` | `#166534` |
 
 Phương án C ưu tiên NFR-008 (người lớn tuổi dùng được): chữ gần đen trên nền
-trắng, viền đậm. Nhóm chọn một phương án ở Sprint Review.
+trắng, viền đậm. Nhóm chọn một phương án ở Sprint Review. Code hiện chỉ có
+bộ biến của phương án A (`-mau-chinh`, `-mau-chinh-dam`, `-mau-nen`,
+`-mau-chu`, `-mau-loi`, `-mau-phu`, `-mau-phu-nhat`, `-mau-thanh-cong`,
+`-mau-vien`, `-mau-dai`, `-mau-nhan`); màu "bề mặt" (trắng) viết thẳng
+trong CSS.
 
 ## Chữ
 
@@ -86,7 +112,7 @@ Figma (khung "Đặc tả màn hình").
 
 | Thành phần | Kiểu | Ràng buộc | Nguồn |
 |---|---|---|---|
-| Bộ lọc | Nút chọn | Tất cả / Bắt buộc / Tự nguyện | – |
+| Bộ lọc | Nút chọn | Tất cả / Bắt buộc / Tự nguyện (chưa có, Sprint 4) | – |
 | Danh mục khoản thu | Bảng | Tên, loại, mức thu, trạng thái | AC-019 |
 | Sửa đơn giá | Nút phụ | Phí dịch vụ 2.500–16.500 đ/m²; phí quản lý mặc định 7.000 đ/m² | AC-015 – AC-017 |
 | Tên khoản thu | Ô nhập | Bắt buộc, không trùng trong cùng đợt | AC-020 |
@@ -108,7 +134,7 @@ Figma (khung "Đặc tả màn hình").
 
 | Thành phần | Kiểu | Ràng buộc | Nguồn |
 |---|---|---|---|
-| Phí dịch vụ, Phí quản lý | Ô số | Không âm; hiện giá trị cũ và tổng mới | AC-025 |
+| Số tiền | Ô số | Không âm; tiêu đề hộp thoại ghi khoản và giá trị cũ (tổng mới của hộ: Sprint 4) | AC-025 |
 | Ghi chú | Ô nhập | Không bắt buộc, lưu cùng lần sửa | – |
 | Cảnh báo đã thu | Nhãn đỏ | Đã có phiếu thu thì khóa ô, yêu cầu hủy phiếu trước | AC-026 |
 
