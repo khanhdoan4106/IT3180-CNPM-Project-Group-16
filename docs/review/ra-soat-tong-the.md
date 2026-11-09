@@ -52,8 +52,31 @@ bằng Java hoặc `HEX()`, không dựa vào collation `_ci`. Phần mã làm t
 | Để Sprint 4, Bỏ, và các mục tài liệu (S2-N12, N13, G2, S3-G1, S3-G10, F4, F6–F9) | Giữ nguyên theo bảng mục 1; phần tài liệu làm ở PR 2 | – |
 
 Sau khi sửa: 240 test đơn vị và 22 kiểm thử tích hợp (MySQL 8.0.46) đều đạt.
-Tài liệu `setup.md` còn nhắc "Quỹ vì người nghèo 2026" và tên cũ; cập nhật ở
-PR 2 cùng kịch bản demo.
+Tài liệu `setup.md` còn nhắc "Quỹ vì người nghèo 2026" và tên cũ; đã cập nhật
+ở PR tài liệu (bảng dưới) cùng kịch bản demo.
+
+### Xử lý ở PR tài liệu (`docs/hoan-thien-tai-lieu`)
+
+PR chỉ sửa tài liệu, không đụng mã, mỗi tệp hoặc nhóm tệp một commit. Số test
+ghi trong tài liệu (244 đơn vị, 22 tích hợp) là số sau PR chỉnh màn Thu phí
+theo Figma.
+
+| Mục | Xử lý |
+|---|---|
+| F8 | Thêm `CHANGELOG.md` (v0.1.0, v0.2.0, Chưa phát hành gồm Sprint 3 và PR #28, #29, #30; chỉ thay đổi sản phẩm, không ghi tên người) và `docs/testing.md` (chiến lược, cách chạy, bảng AC → test cho Sprint 1–3, việc còn kiểm tay) |
+| F6 | `README.md`: trạng thái Sprint 3 "chờ gắn tag", liên kết Release `v0.2.0`, FXML `thu-phi`, CI hai job, mục lục có `docs/review`, `docs/meeting-notes`, `docs/testing.md`, `CHANGELOG.md`; không đụng mục Thành viên |
+| S3-G1 | `setup.md`: cảnh báo `USE bluemoon`; mục "Chạy lại `seed.sql`" (an toàn nhiều lần, không làm mới ngày quỹ, muốn quỹ đang mở khi demo thì dựng lại CSDL); bảng nâng cấp từ `v0.2.0` nói rõ dữ liệu mẫu cũ không đổi; kịch bản demo theo dữ liệu mẫu mới |
+| F7, S2-N12 | `use-case.md` bỏ "cần chốt lại" và thêm US-026, US-027 vào bảng trạng thái; `erd.md` `DOI_CHU_HO` ghi khi đổi chủ hộ |
+| S2-N13 | `ui.md`: mục "Trạng thái so với thiết kế" (cửa sổ, lỗi nhập liệu, phông, màu, bộ lọc khoản thu, hộp thoại, in ấn), ghi phần Sprint 4 (TS-004) |
+| S2-G2, F4 | `11-chot-va-gia-dinh.md` giả định 40 (collation `_ci` không phân biệt hoa thường và dấu); giả định 25 ghi khoản 0 đ không tính (khớp giả định 33); giả định 33–38 ghi đã vào `main` |
+| S3-G10 | Kiểm tra 5 sơ đồ Mermaid bằng `mermaid.parse`: đều hợp lệ (`workflow.md` cần môi trường có đủ DOM) |
+| – | `architecture.md`, `class-diagram.md` thêm test mới và lớp tiện ích của controller; `08-product-backlog.md`, `10-definition-of-done.md`, `workflow.md` (hai job CI, báo cáo rà soát, bước phát hành có `CHANGELOG.md`), mẫu Pull Request |
+| F9 | Chưa làm: chưa gắn tag `v0.3.0` (gắn ở Sprint Review); `pom.xml` vẫn `0.3.0-SNAPSHOT` |
+
+Liên kết nội bộ: kiểm 89 liên kết tương đối trong `README.md`, `CHANGELOG.md`,
+`docs/**/*.md`, `.github/**/*.md`; 4 liên kết "hỏng" đều chỉ chạy trên GitHub
+(hai liên kết Release trong `README.md`, hai `../blob/main/...` trong mẫu
+Issue), đúng mục đích.
 
 ## 1. Bảng mục tồn
 

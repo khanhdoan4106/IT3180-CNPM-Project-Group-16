@@ -195,11 +195,11 @@ Service vẫn kiểm tra để bỏ qua và cảnh báo nếu gặp.
 
 ## Lịch sử biến động nhân khẩu (US-027)
 
-Mỗi dòng ghi một nhân khẩu chuyển đến, chuyển đi, đăng ký tạm trú hoặc tạm
-vắng: ngày biến động (ngày chuyển đến của hộ, ngày bắt đầu đợt, hoặc ngày
+Mỗi dòng ghi một nhân khẩu chuyển đến, chuyển đi, đăng ký tạm trú, tạm
+vắng hoặc đổi chủ hộ: ngày biến động (ngày chuyển đến của hộ, ngày bắt đầu đợt, hoặc ngày
 thao tác), người ghi và thời điểm ghi. Đánh dấu cả hộ chuyển đi ghi một dòng
 cho mỗi thành viên còn đang ở. Bảng chỉ thêm, không sửa, không xóa; loại
-`DOI_CHU_HO` để sẵn cho US-026. Dữ liệu dùng cho màn hình lịch sử của hộ,
+`DOI_CHU_HO` ghi khi đổi chủ hộ (US-026). Dữ liệu dùng cho màn hình lịch sử của hộ,
 danh sách biến động gần đây ở Trang chính và báo cáo cho công an (US-004).
 
 Lỗi trùng khóa (MySQL 1062) được `TrungKhoaException` đổi thành thông báo

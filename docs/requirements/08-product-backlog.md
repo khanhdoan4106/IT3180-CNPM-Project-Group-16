@@ -17,7 +17,7 @@
 |---|---|---|---|
 | Sprint 1 | 24 | `v0.1.0` | Hoàn thành |
 | Sprint 2 | 32 | `v0.2.0` | Hoàn thành, trừ AC-026 của US-008 (làm cùng phiếu thu ở Sprint 3) |
-| Sprint 3 | 28 | `v0.3.0` | Hoàn thành, trừ AC-014 của US-004 (xuất tệp, làm cùng Sprint 4) |
+| Sprint 3 | 28 | `v0.3.0` (chưa gắn tag, gắn ở Sprint Review) | Hoàn thành, trừ AC-014 của US-004 (xuất tệp, làm cùng Sprint 4) |
 | Sprint 4 | 28 | `v1.0.0` | Chưa bắt đầu |
 | **Tổng** | **112** | | |
 
@@ -25,8 +25,11 @@ US-026 và US-027 đưa vào Sprint 2 (giả định 20, 26). US-008 đã làm A
 ở Sprint 2; AC-026 (không sửa khoản đã có phiếu thu) cần bảng phiếu thu nên
 hoàn tất cùng US-011, US-014 ở Sprint 3. US-004 in được danh sách tạm vắng
 ở Sprint 3; AC-014 (xuất tệp Excel/PDF) làm cùng US-018 ở Sprint 4 (giả định
-27). Kết quả rà soát cuối Sprint 2:
-[docs/review/sprint-2-ra-soat.md](../review/sprint-2-ra-soat.md).
+27). Kết quả rà soát: Sprint 2
+[docs/review/sprint-2-ra-soat.md](../review/sprint-2-ra-soat.md), Sprint 3
+[docs/review/sprint-3-ra-soat.md](../review/sprint-3-ra-soat.md), tổng thể sau
+Sprint 3 [docs/review/ra-soat-tong-the.md](../review/ra-soat-tong-the.md).
+AC → test tự động: [docs/testing.md](../testing.md).
 
 ## EPIC-01: Quản lý hộ gia đình và nhân khẩu
 

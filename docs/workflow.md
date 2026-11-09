@@ -42,6 +42,24 @@ git config --global user.email "email-tai-khoan-github@example.com"
 5. Người review đọc thay đổi, chạy thử và Approve. CI xanh và có Approve
    thì merge, sau đó xóa nhánh.
 
+CI ([ci.yml](../.github/workflows/ci.yml)) có hai job, **cả hai phải xanh**
+trước khi merge:
+
+| Job | Chạy | Kiểm tra |
+|---|---|---|
+| `build` | `mvn -B verify` | Biên dịch, test đơn vị và test bố cục giao diện |
+| `build-mysql` | `mvn -B verify -Pmysql` trên MySQL 8.0 | Thêm kiểm thử tích hợp: khóa dòng, deadlock, ràng buộc CSDL, dữ liệu mẫu |
+
+Kiểm tra trên máy trước khi đẩy: `mvn verify` (và `mvn verify -Pmysql` nếu
+đổi DAO, `schema.sql`, `seed.sql`; cách chạy ở [testing.md](testing.md)).
+Thêm hoặc đổi chức năng thì cập nhật `CHANGELOG.md` (mục "Chưa phát hành")
+trong cùng Pull Request.
+
+Cuối Sprint (hoặc khi cần) có thể có **báo cáo rà soát** độc lập, lưu ở
+[review](review): đối chiếu AC với mã và test, ghi phát hiện theo mức Lỗi /
+Nên sửa / Ghi nhận. Scrum Master duyệt, phần được duyệt sửa trong Pull Request
+riêng và báo cáo thêm mục "Xử lý sau khi duyệt".
+
 Story được tính là xong khi đạt
 [Definition of Done](requirements/10-definition-of-done.md).
 
@@ -69,13 +87,20 @@ rồi commit, thay vì sửa trên giao diện web GitHub.
 ## 5. Kết thúc Sprint: phát hành
 
 1. Merge các Pull Request của Sprint, cập nhật trạng thái trong
-   [Product Backlog](requirements/08-product-backlog.md).
-2. GitHub → Releases → Draft a new release, tạo tag trên `main`:
+   [Product Backlog](requirements/08-product-backlog.md). Chạy `mvn verify
+   -Pmysql` trên nhánh `main` mới nhất, làm các bước kiểm tay ở
+   [testing.md](testing.md), mục 5.
+2. Trong [CHANGELOG.md](../CHANGELOG.md) đổi "Chưa phát hành" thành bản mới
+   (số phiên bản, ngày), thêm mục "Chưa phát hành" trống bên trên. Ghi chú
+   nâng cấp CSDL ở [setup.md](setup.md) nếu bản này đổi cấu trúc bảng đã có.
+3. GitHub → Releases → Draft a new release, tạo tag trên `main`:
    Sprint 1 `v0.1.0`, Sprint 2 `v0.2.0`, Sprint 3 `v0.3.0`, Sprint 4 `v1.0.0`.
-3. Mô tả gồm story đã xong (kèm AC, Pull Request), kết quả test, hạn chế
-   còn lại; đính kèm `database/schema.sql` và `database/seed.sql`.
-4. Nâng `<version>` trong `pom.xml` cho Sprint tiếp theo
-   (ví dụ `0.2.0-SNAPSHOT` → `0.3.0-SNAPSHOT`).
+4. Mô tả gồm story đã xong (kèm AC, Pull Request), kết quả test, hạn chế
+   còn lại, cách nâng cấp CSDL (lấy từ `CHANGELOG.md`); đính kèm
+   `database/schema.sql` và `database/seed.sql`.
+5. Nâng `<version>` trong `pom.xml` cho Sprint tiếp theo
+   (ví dụ `0.2.0-SNAPSHOT` → `0.3.0-SNAPSHOT`) và cập nhật trạng thái trong
+   [README](../README.md).
 
 Lịch sử của `main` giữ nguyên sau khi đã có Release, để mỗi tag luôn trỏ
 đúng phiên bản.

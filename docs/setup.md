@@ -22,6 +22,27 @@
 4. Sao chép `config/db.properties.example` thành `config/db.properties`,
    điền `user` và `password`. File này nằm trong `.gitignore`, không commit.
 
+> **Cẩn thận:** `schema.sql` và `seed.sql` đều bắt đầu bằng `USE bluemoon;`
+> nên luôn ghi vào CSDL `bluemoon`, dù Workbench đang chọn CSDL khác. Muốn
+> thử trên CSDL khác thì sao chép tệp ra rồi sửa dòng `USE`. Riêng kiểm thử
+> tích hợp (mục 4) tự tạo bảng trong CSDL `*test*` bằng cách bỏ dòng này.
+
+### Chạy lại `seed.sql`
+
+`seed.sql` chạy lại bao nhiêu lần cũng được: không sinh dòng trùng và không
+sửa dữ liệu đã có (dòng đã có theo mã căn hộ, số CCCD, tên khoản thu thì
+được bỏ qua). Hai hệ quả khi chạy trên CSDL đã dùng:
+
+- **Ngày của quỹ mẫu không được làm mới.** Hai quỹ mẫu (Quỹ vì người nghèo
+  `<năm>`, Quỹ biển đảo) được tạo với thời gian thu từ đầu tháng chạy seed
+  đến cuối tháng sau. Chạy lại seed sang tháng khác không kéo dài thời gian
+  này, nên quỹ có thể đã hết hạn và màn Thu phí không còn liệt kê quỹ nào.
+- **Dòng cũ giữ nguyên.** Tên không dấu của bản mẫu cũ ("Nguyen Thi Lan",
+  "Hoang Van Nam") và ngày tạm trú/tạm vắng cũ không bị đổi.
+
+Muốn quỹ đang mở và dữ liệu mẫu có dấu để demo thì **dựng lại CSDL**
+(xem dưới), không chạy lại seed trên CSDL cũ.
+
 ### Dựng lại CSDL khi kéo bản mới
 
 `schema.sql` chỉ tạo bảng **chưa có** (`CREATE TABLE IF NOT EXISTS`), không
@@ -31,7 +52,12 @@ mới đổi cấu trúc bảng đã có, CSDL cũ phải dựng lại từ đ�
 | Từ bản | Lên bản | Thay đổi bảng đã có | Cần dựng lại |
 |---|---|---|---|
 | `v0.1.0` (Sprint 1) | `v0.2.0` (Sprint 2) | Thêm cột `tai_khoan.so_dien_thoai` | Có |
-| `v0.2.0` (Sprint 2) | `v0.3.0` (Sprint 3) | Không. Chỉ thêm bảng mới `bo_dem_bien_lai`, `phieu_thu`, `phieu_thu_chi_tiet` | Không: chạy lại `schema.sql` là đủ, dữ liệu cũ giữ nguyên |
+| `v0.2.0` (Sprint 2) | `v0.3.0` (Sprint 3) | Không. Chỉ thêm bảng mới `bo_dem_bien_lai`, `phieu_thu`, `phieu_thu_chi_tiet` | Không bắt buộc: chạy lại `schema.sql` là đủ để chạy ứng dụng, dữ liệu cũ giữ nguyên |
+
+Nâng từ `v0.2.0` giữ được dữ liệu, nhưng **dữ liệu mẫu cũ không được đổi**: tên
+không dấu ("Nguyen Thi Lan"), quỹ mẫu có ngày cố định (Quỹ biển đảo hết hạn
+30/11/2026, Quỹ vì người nghèo 2026 hết hạn 31/12/2026), họ tên tài khoản
+`admin` vẫn là "Quản trị viên". Máy dùng để demo nên dựng lại CSDL.
 
 Dấu hiệu chưa dựng lại: đăng nhập báo "Có lỗi khi đọc hoặc lưu dữ liệu"
 (CSDL thiếu cột mà ứng dụng đọc).
@@ -83,14 +109,26 @@ mvn verify -Pmysql
 
 Thiếu biến này, hoặc tên CSDL không có chữ `test`, thì các lớp `*IT` tự bỏ
 qua. `mvn verify` không có `-Pmysql` không chạy kiểm thử tích hợp.
-Trên GitHub, workflow `CI` có thêm job `build-mysql` (service `mysql:8.0`, CSDL
-`bluemoon_test`) chạy `mvn -B verify -Pmysql` cho mọi Pull Request.
+Trên GitHub, workflow `CI` có hai job: `build` (`mvn -B verify`) và `build-mysql`
+(service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`), cả hai chạy
+cho mọi Pull Request. Chiến lược kiểm thử, bảng AC → test và các việc còn
+kiểm tay: [testing.md](testing.md).
 
 ## 5. Chuẩn bị demo
 
-Ngày của dữ liệu mẫu tạm trú/tạm vắng được tính lúc chạy `seed.sql` (theo
-`CURDATE()`). Trong vài ngày trước demo, dựng lại CSDL (mục 2) rồi kiểm tra
-màn hình Nhân khẩu:
+Dựng lại CSDL (mục 2, "Dựng lại CSDL") **vào ngày demo hoặc ngày liền trước**,
+không chạy lại `seed.sql` trên CSDL cũ (xem "Chạy lại `seed.sql`"). Dữ liệu
+mẫu tính theo ngày chạy seed (`CURDATE()`):
+
+- đợt tạm trú/tạm vắng lệch so với ngày chạy;
+- hai quỹ tự nguyện mở **từ ngày đầu tháng này đến ngày cuối tháng sau**, nên
+  luôn đang mở khi demo trong khoảng đó;
+- tên "Quỹ vì người nghèo `<năm hiện tại>`" lấy năm của ngày chạy seed.
+
+Đăng nhập `admin` / `Admin@123`: lời chào ở góc trên là "Xin chào, Nguyễn Thị
+Thu Hương (Quản trị viên)". Họ tên, nơi thường trú và lý do mẫu đều có dấu.
+
+Kiểm tra trước màn hình Nhân khẩu:
 
 | Hộ | Kỳ vọng |
 |---|---|
@@ -98,18 +136,33 @@ màn hình Nhân khẩu:
 | K01 | Vũ Văn Toàn tạm trú còn hạn (120 ngày sau khi seed) |
 | PH01 | Đỗ Thị Hoa tạm trú đã quá hạn, cột hạn tạm trú tô đỏ |
 
-Kịch bản thu phí (Sprint 3), sau khi dựng CSDL:
+Màn Khoản thu: có Phí dịch vụ (5.000 đ/m²), Phí quản lý (7.000 đ/m²), "Quỹ vì
+người nghèo `<năm>`" (không cố định số tiền) và "Quỹ biển đảo" (50.000 đ mỗi
+hộ), hai quỹ sau đang mở.
+
+### Kịch bản thu phí (Sprint 3)
+
+Sau khi dựng CSDL, đăng nhập `admin`:
 
 1. **Công nợ:** chọn tháng trước, bấm Chốt công nợ; làm lại với tháng này.
-2. **Thu phí:** nhập `A0601`, Tra cứu; hộ có 4 khoản chưa đóng (2 tháng ×
-   phí dịch vụ, phí quản lý). Nhập 100.000 cho "Quỹ vì người nghèo 2026",
-   chọn Tiền mặt, bấm Thu tất cả, In biên lai (chọn "Microsoft Print to
-   PDF" nếu không có máy in).
-3. **Phiếu thu hôm nay:** in lại phiếu vừa lập (biên lai ghi "BẢN IN LẠI"),
-   rồi Hủy phiếu với lý do; tra cứu lại `A0601` thấy các khoản trở lại chưa
-   đóng.
+2. **Thu phí:** nhập `A0601`, Tra cứu. Hộ có 4 khoản chưa đóng (2 tháng ×
+   phí dịch vụ 377.500 đ và phí quản lý 528.500 đ, tổng nợ 1.812.000 đ), dải
+   thông tin hiện "Căn hộ A0601 · Chủ hộ Nguyễn Thị Lan · Đang ở". Nhập
+   100.000 cho "Quỹ vì người nghèo `<năm>`", chọn Tiền mặt, bấm Thu tất cả
+   (tổng 1.912.000 đ), xác nhận, In biên lai (chọn "Microsoft Print to PDF"
+   nếu không có máy in).
+3. **Phiếu thu hôm nay:** dải tóm tắt hiện "Số phiếu 1", "Đã thu hôm nay
+   1.912.000 đ". In lại phiếu vừa lập (biên lai ghi "BẢN IN LẠI"), rồi Hủy
+   phiếu với lý do; trạng thái thành "Đã hủy: <lý do>" màu đỏ. Tra cứu lại
+   `A0601` thấy các khoản trở lại chưa đóng.
 4. **Công nợ:** cột "Đã đóng"; In thông báo phí cho tất cả hộ.
 5. **Nhân khẩu:** Danh sách tạm vắng hôm nay có Hoàng Văn Nam (A0601).
+6. **Tìm không dấu (tùy chọn):** ở Hộ gia đình, tìm "nguyen" ra chủ hộ
+   Nguyễn Thị Lan (giả định 40).
+
+Đăng nhập thủ quỹ (tạo ở màn Tài khoản) để thử phân quyền: không có menu
+Hộ gia đình, Nhân khẩu, màn Tài khoản chỉ còn tab "Tài khoản của tôi"; hủy
+phiếu chỉ hủy được phiếu do mình lập.
 
 ## 6. Lỗi thường gặp
 

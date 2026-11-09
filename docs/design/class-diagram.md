@@ -208,7 +208,8 @@ classDiagram
 ```
 
 Mỗi `XxxDao` là interface, có `XxxDaoImpl` cài bằng JDBC; test dùng DAO giả
-trong bộ nhớ (`KhoGia`, `KhoThuPhiGia`, `KhoPhieuThuGia`).
+trong bộ nhớ (`KhoGia`, `KhoThuPhiGia`, `KhoPhieuThuGia`); phần cần MySQL thật
+(khóa dòng, deadlock, giao dịch) có thêm các lớp `*IT` ([testing.md](../testing.md)).
 
 ## Ghi chú thiết kế
 
@@ -220,6 +221,13 @@ trong bộ nhớ (`KhoGia`, `KhoThuPhiGia`, `KhoPhieuThuGia`).
   đổi lỗi trùng khóa của CSDL (khi hai máy cùng lưu) thành thông báo nghiệp
   vụ; `SoTien` đọc và hiển thị số tiền kiểu Việt Nam.
 - `PhanQuyen` kiểm tra vai trò ở Service (lớp thứ hai sau việc ẩn menu).
+- Lớp tiện ích của tầng Controller (không phải màn hình): `HopThoai` (nút
+  hộp thoại tiếng Việt: "Đồng ý", "Hủy", "Đóng", và cặp nút chính + "Đóng"
+  cho hộp thoại hủy phiếu), `LoiCsdl` (phân biệt mất kết nối với lỗi dữ liệu
+  để chọn thông báo), `LoiKhongMongDoi` (bộ xử lý lỗi toàn cục, `App` gọi
+  khi khởi động, hiện hộp thoại thay vì chỉ in console),
+  `TomTatPhieuHomNay` (số phiếu, tiền đã thu, số phiếu hủy của dải tóm tắt
+  tab Phiếu thu hôm nay).
 - `NghiepVuException`: lỗi nghiệp vụ hiển thị cho người dùng;
   `DaoException` (và lớp con `TrungKhoaException`): lỗi truy cập CSDL;
   `CauHinhException`: lỗi đọc `config/db.properties`.

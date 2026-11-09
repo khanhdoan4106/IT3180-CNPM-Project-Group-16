@@ -70,8 +70,8 @@ flowchart LR
 
 ## Quan hệ include / extend chính
 
-Đề xuất của nhóm dựa trên mô tả story; cần chốt lại khi thiết kế chi tiết
-module thu phí (Sprint 2–3).
+Nhóm đề xuất dựa trên mô tả story và đã đối chiếu với mã của module thu phí
+đến hết Sprint 3 (chức năng thật nằm ở [architecture.md](architecture.md)).
 
 | Use case | Quan hệ | Use case liên quan | Ý nghĩa |
 |---|---|---|---|
@@ -86,6 +86,6 @@ module thu phí (Sprint 2–3).
 
 | Module | Đã xong (Sprint 1) | Sprint 2 | Sprint 3 | Sprint 4 |
 |---|---|---|---|---|
-| Hộ gia đình | US-001, 002, 003 | | US-004 | |
+| Hộ gia đình | US-001, 002, 003 | US-026, 027 | US-004 | |
 | Thu phí | | US-005, 006, 008, 009 | US-007, 010–015 | US-016–019 |
 | Người dùng | US-020, 021 | US-022, 023 | | |

@@ -34,7 +34,7 @@ kèm lý do.
 22. **Một đơn giá chung cho mọi loại căn hộ:** khoảng 2.500–16.500 đ/m² là phạm vi Ban quản trị được chọn; mỗi thời điểm áp dụng một mức chung cho căn hộ, kiot và penthouse, đổi được khi cần. Tháng đã chốt giữ đơn giá cũ.
 23. **Đóng phí:** khoản bắt buộc phải đóng đủ số tiền của khoản (AC-033: công nợ về 0); khoản tự nguyện đóng bao nhiêu ghi bấy nhiêu, ghi 0 đ là "không đóng", khác "chưa thu" (AC-023).
 24. **Tổng thu tháng (US-016, AC-046):** tính theo ngày thu tiền trên phiếu thu chưa hủy, để khớp sổ quỹ (tiền nợ tháng trước đóng trong tháng này tính vào tháng này). Trang chính hiện thêm tỷ lệ thu của công nợ tháng hiện tại.
-25. **Nợ quá 3 tháng (US-017):** số tháng nợ là số tháng chốt công nợ còn ít nhất một khoản bắt buộc chưa đóng; lọc các hộ có từ 3 tháng trở lên, kể cả hộ đã chuyển đi.
+25. **Nợ quá 3 tháng (US-017):** số tháng nợ là số tháng chốt công nợ còn ít nhất một khoản bắt buộc chưa đóng; lọc các hộ có từ 3 tháng trở lên, kể cả hộ đã chuyển đi. Khoản đã sửa về 0 đ không phải nợ (giả định 33) nên không tính.
 26. **Đổi chủ hộ (US-026):** trong một giao dịch, chủ hộ cũ đổi sang quan hệ Ban quản trị chọn (vợ/chồng, con, khác) hoặc rời hộ, rồi người được chọn mới thành chủ hộ; ghi lịch sử "Đổi chủ hộ" (và "Chuyển đi" nếu chủ hộ cũ rời hộ).
 
 Các giả định 27–32 được Scrum Master chốt ngày 08/11/2026, khi rà soát cuối
@@ -47,8 +47,9 @@ Sprint 2 ([báo cáo rà soát](../review/sprint-2-ra-soat.md), mục 5).
 31. **Số biên lai (AC-039):** có dạng `PT-<năm>-<5 chữ số>`, ví dụ `PT-2026-00001`; năm là năm lập phiếu, mỗi năm đánh lại từ 00001 và tăng liên tục, không có khoảng trống. Số được cấp từ một bảng đếm theo năm, khóa dòng bằng `SELECT … FOR UPDATE` trong cùng giao dịch lưu phiếu, không dùng `AUTO_INCREMENT` (cột tự tăng nhảy số khi giao dịch hoàn tác). Phiếu hủy vẫn giữ số của mình; số đó không được cấp lại.
 32. **Chốt bù tháng cũ (US-009):** được chốt một tháng đã qua (ví dụ quên chốt), hệ thống tính hộ đã chuyển đến không sau ngày cuối tháng đó và khoản bắt buộc có hiệu lực trong tháng đó. Tuy nhiên chỉ tính được các hộ **còn đang ở tại lúc chốt**: CSDL không lưu ngày chuyển đi của hộ, nên hộ đã ở trong tháng đó nhưng chuyển đi trước lúc chốt bù sẽ không có khoản phải nộp của tháng đó. Vì vậy Ban quản trị nên chốt công nợ ngay trong tháng (Trang chính nhắc khi tháng hiện tại chưa chốt, giả định 15).
 
-Các giả định 33–38 do nhóm đề xuất khi làm Sprint 3, chờ Scrum Master
-duyệt cùng Pull Request phiếu thu.
+Các giả định 33–38 do nhóm đề xuất khi làm Sprint 3 và đã vào `main` cùng
+Pull Request phiếu thu (#28); giả định 38 được sửa lại theo kết quả rà soát
+([báo cáo](../review/sprint-3-ra-soat.md), N4).
 
 33. **Khoản phải nộp 0 đ không phải nợ:** khoản đã sửa về 0 đ (US-008, ví dụ miễn phí cho hộ khó khăn) không hiện ở tra cứu phí, không tính vào tổng nợ và không cần thu.
 34. **Thu không đủ thì không thu gì (US-011):** nếu một khoản trong phiếu vừa được thu hoặc vừa bị sửa ở máy khác, cả phiếu bị từ chối và người thu được nhắc tra cứu lại; không lập phiếu thiếu khoản mà người thu không thấy.
@@ -56,4 +57,6 @@ duyệt cùng Pull Request phiếu thu.
 36. **Danh sách tạm vắng (US-004):** tính theo một ngày Ban quản trị chọn (mặc định hôm nay): người đang ở, thuộc hộ đang ở, có đợt tạm vắng chứa ngày đó. Gồm họ tên, ngày sinh, số CCCD, căn hộ, thời gian tạm vắng, lý do.
 37. **Biên lai (US-013):** in số tiền bằng chữ và chỗ ký của người nộp, người thu; tên chủ hộ là chủ hộ tại lúc in. Số lần in được đếm sau khi máy in nhận lệnh, nên đóng hộp thoại xem trước mà không in thì lần sau vẫn là bản in đầu.
 38. **Giờ hệ thống:** Thời điểm lập/hủy phiếu, năm của số biên lai và điều kiện hủy trong ngày lấy theo giờ máy chủ CSDL, không theo giờ máy thu ngân, để chỉnh lịch máy không hủy được phiếu cũ. (Cài đặt: `DongHoCsdl`, đọc `SELECT NOW()`, múi giờ Asia/Ho_Chi_Minh; test dùng `Clock.fixed`.)
-39. **Hộ đã chuyển đi chỉ thu các khoản còn nợ (US-007, US-010):** tra cứu phí vẫn tìm được hộ đã chuyển đi còn nợ để thu tiếp (giả định 21), nhưng hộ đó không còn ở tòa nhà nên không ghi đóng góp tự nguyện: màn Thu phí không liệt kê quỹ nào cho hộ này, và lập phiếu có dòng đóng góp (kể cả 0 đ) bị từ chối với "Hộ đã chuyển đi chỉ thu các khoản còn nợ".
+39. **Hộ đã chuyển đi chỉ thu các khoản còn nợ (US-007, US-010):** tra cứu phí vẫn tìm được hộ đã chuyển đi còn nợ để thu tiếp (giả định 21), nhưng hộ đó không còn ở tòa nhà nên không ghi đóng góp tự nguyện: màn Thu phí không liệt kê quỹ nào cho hộ này, và lập phiếu có dòng đóng góp (kể cả 0 đ) bị từ chối với "Hộ đã chuyển đi chỉ thu các khoản còn nợ". Scrum Master chốt ngày 09/11/2026.
+
+40. **Tìm kiếm và so sánh không phân biệt hoa thường và dấu:** cột chữ của CSDL dùng collation `utf8mb4_unicode_ci`, nên MySQL coi "Nguyễn" và "Nguyen" là một (gõ "nguyen" tìm ra "Nguyễn"; phép `=` cũng khớp). Giữ nguyên vì thuận tiện khi tìm hộ, nhân khẩu bằng bàn phím không gõ dấu. Hệ quả: khi viết test hay truy vấn cần phân biệt dấu thì so sánh trong Java hoặc bằng `HEX()`, không dựa vào `=` trong SQL.
