@@ -32,7 +32,9 @@ final class MauIn {
     /** Ten don vi in tren dau trang. */
     static final String DON_VI = "BAN QUẢN TRỊ CHUNG CƯ BLUEMOON";
 
-    private static final double RONG_DOC = 560;
+    private static final double RONG_DOC = 600;
+    /** Cot so tien du rong cho "1.000.000.000 đ" in dam (so tien toi da). */
+    private static final double RONG_SO_TIEN = 160;
     private static final double RONG_NGANG = 960;
     /** So dong danh sach tam vang tren mot trang ngang. */
     private static final int DONG_MOI_TRANG = 18;
@@ -76,7 +78,7 @@ final class MauIn {
         trang.getChildren().add(tt);
 
         GridPane bang = bang(new String[] {"STT", "Khoản thu", "Số tiền"},
-                new double[] {44, 326, 110}, new boolean[] {false, false,
+                new double[] {44, 316, RONG_SO_TIEN}, new boolean[] {false, false,
                     true});
         int i = 1;
         for (ChiTietPhieuThu d : p.chiTiet()) {
@@ -116,7 +118,7 @@ final class MauIn {
                 + " hộ cần đóng như sau:"));
 
         GridPane bang = bang(new String[] {"STT", "Khoản", "Số tiền"},
-                new double[] {44, 326, 110}, new boolean[] {false, false,
+                new double[] {44, 316, RONG_SO_TIEN}, new boolean[] {false, false,
                     true});
         int i = 1;
         for (KhoanNo k : tb.khoanThang()) {
@@ -251,10 +253,11 @@ final class MauIn {
     private static void dongBang(GridPane g, int hang, String... o) {
         for (int c = 0; c < o.length; c++) {
             ColumnConstraints cot = g.getColumnConstraints().get(c);
-            Label l = o(o[c], "in-o", cot.getHalignment() == HPos.RIGHT);
+            boolean soTien = cot.getHalignment() == HPos.RIGHT;
+            Label l = o(o[c], "in-o", soTien);
             // Ngay, so, ma ngan khong xuong dong; chi cot rong (ten, ly do)
             // moi xuong dong khi qua dai.
-            l.setWrapText(cot.getPrefWidth() >= COT_XUONG_DONG);
+            l.setWrapText(!soTien && cot.getPrefWidth() >= COT_XUONG_DONG);
             g.add(l, c, hang);
         }
     }
@@ -271,6 +274,11 @@ final class MauIn {
         Label l = nhan(chu, lop);
         l.setMaxWidth(Double.MAX_VALUE);
         l.setMaxHeight(Double.MAX_VALUE);
+        if (canPhai) {
+            // So tien khong bao gio xuong dong hay bi cat thanh "...".
+            l.setWrapText(false);
+            l.setMinWidth(Region.USE_PREF_SIZE);
+        }
         l.setAlignment(canPhai ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
         GridPane.setFillWidth(l, true);
         return l;
