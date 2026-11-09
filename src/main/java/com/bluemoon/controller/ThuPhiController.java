@@ -506,7 +506,8 @@ public class ThuPhiController {
                         : p.hinhThuc().getNhan()),
                 cot("Người thu", 130, PhieuThu::tenNguoiThu),
                 cot("Trạng thái", 320, ThuPhiController::trangThai)));
-        bang.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        bang.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
         bang.setRowFactory(t -> new TableRow<>() {
             @Override
             protected void updateItem(PhieuThu p, boolean trong) {
