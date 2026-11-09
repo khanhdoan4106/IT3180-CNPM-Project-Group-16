@@ -14,6 +14,7 @@ import java.util.function.Function;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
+import javafx.print.PageOrientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
@@ -105,7 +106,7 @@ final class DanhSachTamVang {
     private void in() {
         List<TamVang> ds = dangXem;
         LocalDate ngay = NgayUtil.doc(ngayPicker);
-        InAn.xemVaIn("Danh sách tạm vắng",
+        InAn.xemVaIn("Danh sách tạm vắng", PageOrientation.LANDSCAPE,
                 () -> MauIn.danhSachTamVang(ds, ngay));
     }
 

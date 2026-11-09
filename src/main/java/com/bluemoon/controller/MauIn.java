@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
@@ -36,8 +38,12 @@ final class MauIn {
     /** Cot so tien du rong cho "1.000.000.000 đ" in dam (so tien toi da). */
     private static final double RONG_SO_TIEN = 160;
     private static final double RONG_NGANG = 960;
-    /** So dong danh sach tam vang tren mot trang ngang. */
-    private static final int DONG_MOI_TRANG = 18;
+    /**
+     * Chieu cao toi da cua mot trang ngang (cung don vi voi RONG_NGANG):
+     * ti le vung in A4 nam ngang, le mac dinh 0,75 inch (734 x 487 pt).
+     */
+    private static final double CAO_TRANG_NGANG = RONG_NGANG * 487 / 734;
+    private static final String CSS = "/com/bluemoon/css/giao-dien.css";
     /** Cot rong tu muc nay tro len thi cho chu xuong dong. */
     private static final double COT_XUONG_DONG = 150;
     private static final DateTimeFormatter NGAY =
@@ -143,7 +149,10 @@ final class MauIn {
     }
 
     /**
-     * Danh sach nhan khau tam vang (AC-012), chia trang ngang.
+     * Danh sach nhan khau tam vang (AC-012), chia trang ngang. Moi trang chi
+     * them dong khi trang van vua khung giay ngang sau khi bo cuc (ho ten,
+     * ly do dai xuong dong lam hang cao hon), nen khong bi thu nho qua muc.
+     * Goi tren luong JavaFX.
      *
      * @param ds danh sach
      * @param ngay ngay bao cao
@@ -151,37 +160,74 @@ final class MauIn {
      */
     static List<Node> danhSachTamVang(List<TamVang> ds, LocalDate ngay) {
         List<Node> trangIn = new ArrayList<>();
-        int soTrang = (ds.size() + DONG_MOI_TRANG - 1) / DONG_MOI_TRANG;
-        for (int t = 0; t < soTrang; t++) {
-            VBox trang = trang(RONG_NGANG);
-            trang.getChildren().addAll(nhan(DON_VI, "in-dam", "in-nho"),
-                    giua(nhan("DANH SÁCH NHÂN KHẨU TẠM VẮNG", "in-tieu-de")),
-                    giua(nhan("Tính đến ngày " + ngay.format(NGAY)
-                            + " · Tổng số: " + ds.size() + " người",
-                            "in-nghieng")));
-            GridPane bang = bang(new String[] {"STT", "Họ và tên",
-                "Ngày sinh", "Số CCCD", "Căn hộ", "Từ ngày", "Đến ngày",
-                "Lý do"}, new double[] {44, 170, 100, 120, 70, 100, 100, 176},
-                    new boolean[8]);
-            int dau = t * DONG_MOI_TRANG;
-            int cuoi = Math.min(ds.size(), dau + DONG_MOI_TRANG);
-            for (int i = dau; i < cuoi; i++) {
-                TamVang v = ds.get(i);
-                dongBang(bang, i - dau + 1, String.valueOf(i + 1), v.hoTen(),
-                        v.ngaySinh().format(NGAY),
-                        v.soCccd() == null ? "" : v.soCccd(), v.maCanHo(),
-                        v.tuNgay().format(NGAY), v.denNgay().format(NGAY),
-                        v.lyDo() == null ? "" : v.lyDo());
-            }
-            trang.getChildren().addAll(bang, phai(nhan("Trang " + (t + 1)
-                    + "/" + soTrang, "in-nho")));
-            if (t == soTrang - 1) {
-                trang.getChildren().add(chuKy("Người lập danh sách", null,
-                        "TM. Ban quản trị", null));
-            }
-            trangIn.add(trang);
+        List<Integer> moc = chiaTrang(ds, ngay);
+        for (int t = 0; t < moc.size() - 1; t++) {
+            trangIn.add(trangTamVang(ds.subList(moc.get(t), moc.get(t + 1)),
+                    moc.get(t), ds.size(), t + 1, moc.size() - 1, ngay,
+                    t == moc.size() - 2));
         }
         return trangIn;
+    }
+
+    /**
+     * Cac moc chia trang: trang t gom dong tu moc[t] den moc[t+1] (khong
+     * gom). Them dong cho den khi trang do thuc te cao qua khung giay ngang.
+     */
+    private static List<Integer> chiaTrang(List<TamVang> ds, LocalDate ngay) {
+        List<Integer> moc = new ArrayList<>();
+        int dau = 0;
+        moc.add(0);
+        while (dau < ds.size()) {
+            int cuoi = dau + 1;
+            while (cuoi < ds.size() && vuaKhungGiay(ds, dau, cuoi + 1, ngay)) {
+                cuoi++;
+            }
+            moc.add(cuoi);
+            dau = cuoi;
+        }
+        return moc;
+    }
+
+    /** Trang gom dong [dau, cuoi) co vua chieu cao khung giay ngang khong. */
+    private static boolean vuaKhungGiay(List<TamVang> ds, int dau, int cuoi,
+            LocalDate ngay) {
+        VBox thu = trangTamVang(ds.subList(dau, cuoi), dau, ds.size(), 99, 99,
+                ngay, cuoi == ds.size());
+        Scene tam = new Scene(new Group(thu));
+        tam.getStylesheets().add(
+                MauIn.class.getResource(CSS).toExternalForm());
+        thu.applyCss();
+        thu.autosize();
+        thu.layout();
+        return thu.getBoundsInLocal().getHeight() <= CAO_TRANG_NGANG;
+    }
+
+    private static VBox trangTamVang(List<TamVang> dong, int dau, int tong,
+            int trang, int soTrang, LocalDate ngay, boolean cuoiCung) {
+        VBox v = trang(RONG_NGANG);
+        v.getChildren().addAll(nhan(DON_VI, "in-dam", "in-nho"),
+                giua(nhan("DANH SÁCH NHÂN KHẨU TẠM VẮNG", "in-tieu-de")),
+                giua(nhan("Tính đến ngày " + ngay.format(NGAY)
+                        + " · Tổng số: " + tong + " người", "in-nghieng")));
+        GridPane bang = bang(new String[] {"STT", "Họ và tên",
+            "Ngày sinh", "Số CCCD", "Căn hộ", "Từ ngày", "Đến ngày",
+            "Lý do"}, new double[] {44, 170, 100, 120, 70, 100, 100, 176},
+                new boolean[8]);
+        for (int i = 0; i < dong.size(); i++) {
+            TamVang t = dong.get(i);
+            dongBang(bang, i + 1, String.valueOf(dau + i + 1), t.hoTen(),
+                    t.ngaySinh().format(NGAY),
+                    t.soCccd() == null ? "" : t.soCccd(), t.maCanHo(),
+                    t.tuNgay().format(NGAY), t.denNgay().format(NGAY),
+                    t.lyDo() == null ? "" : t.lyDo());
+        }
+        v.getChildren().addAll(bang, phai(nhan("Trang " + trang + "/"
+                + soTrang, "in-nho")));
+        if (cuoiCung) {
+            v.getChildren().add(chuKy("Người lập danh sách", null,
+                    "TM. Ban quản trị", null));
+        }
+        return v;
     }
 
     /**

@@ -10,6 +10,7 @@ import com.bluemoon.model.KhoanNo;
 import com.bluemoon.model.LoaiCanHo;
 import com.bluemoon.model.PhieuThu;
 import com.bluemoon.model.ThongBaoPhi;
+import com.bluemoon.model.TamVang;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiHo;
 import com.bluemoon.service.SoTien;
@@ -159,6 +160,56 @@ class MauInTest {
             for (Node con : p.getChildrenUnmodifiable()) {
                 thuThap(con, kq);
             }
+        }
+    }
+
+    /** Moi trang ngang vua khung giay A4 nam ngang, du moi dong khong sot. */
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void danhSachTamVangChiaTrangTheoChieuCaoThuc(boolean dai)
+            throws Exception {
+        List<TamVang> ds = new ArrayList<>();
+        for (int i = 0; i < 45; i++) {
+            ds.add(new TamVang(dai ? "Nguyễn Thị Hoàng Thanh Thảo " + i
+                    : "Võ Thị Mai " + i, LocalDate.of(1990, 1, 1), "001099001"
+                    + (100 + i), "A06" + (10 + i % 20), LocalDate.of(2026, 11,
+                            1), LocalDate.of(2026, 12, 1), dai
+                                    ? "Đi công tác dài ngày tại thành phố Hồ"
+                                    + " Chí Minh theo quyết định của cơ quan,"
+                                    + " có xác nhận của công ty" : "Về quê"));
+        }
+        double cao = 960 * 487.0 / 734;
+        List<double[]> kq = trenLuongFx(() -> {
+            List<double[]> r = new ArrayList<>();
+            List<Node> trang = MauIn.danhSachTamVang(ds,
+                    LocalDate.of(2026, 11, 9));
+            for (Node n : trang) {
+                Scene tam = new Scene(new Group(n));
+                tam.getStylesheets().add(
+                        MauInTest.class.getResource(CSS).toExternalForm());
+                ((javafx.scene.layout.Region) n).applyCss();
+                ((javafx.scene.layout.Region) n).autosize();
+                ((Parent) n).layout();
+                List<Label> nhan = new ArrayList<>();
+                thuThap((Parent) n, nhan);
+                long dong = nhan.stream().filter(l -> l.getText()
+                        .startsWith(dai ? "Nguyễn Thị Hoàng" : "Võ Thị"))
+                        .count();
+                r.add(new double[] {n.getBoundsInLocal().getHeight(), dong});
+            }
+            return r;
+        });
+        double tong = 0;
+        for (double[] t : kq) {
+            assertTrue(t[0] <= cao + 0.5, "Trang cao " + t[0] + " > " + cao);
+            tong += t[1];
+        }
+        assertEquals(45, (int) tong, "Mọi dòng phải có mặt, không sót");
+        assertTrue(kq.size() > 1);
+        // Ten ngan, ly do ngan: nhieu dong hon ban dai.
+        if (!dai) {
+            assertTrue(kq.get(0)[1] >= 12, "Dòng ngắn nên chứa ≥ 12/trang: "
+                    + kq.get(0)[1]);
         }
     }
 

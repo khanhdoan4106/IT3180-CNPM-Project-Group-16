@@ -5,6 +5,9 @@ import java.util.function.Supplier;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.print.PageLayout;
+import javafx.print.PageOrientation;
+import javafx.print.Paper;
+import javafx.print.Printer;
 import javafx.print.PrinterJob;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -48,6 +51,20 @@ final class InAn {
      * @return true neu da gui lenh in thanh cong
      */
     static boolean xemVaIn(String tieuDe, Supplier<List<Node>> taoTrang) {
+        return xemVaIn(tieuDe, null, taoTrang);
+    }
+
+    /**
+     * Nhu {@link #xemVaIn(String, Supplier)} nhung dat san huong giay trong
+     * hop thoai may in (nguoi dung van doi duoc).
+     *
+     * @param tieuDe tieu de hop thoai
+     * @param huong huong giay mac dinh, null neu de theo may in
+     * @param taoTrang tao cac trang can in
+     * @return true neu da gui lenh in thanh cong
+     */
+    static boolean xemVaIn(String tieuDe, PageOrientation huong,
+            Supplier<List<Node>> taoTrang) {
         VBox xem = new VBox(16);
         xem.setPadding(new Insets(16));
         xem.getStyleClass().add("nen-xem-truoc");
@@ -73,14 +90,21 @@ final class InAn {
         if (d.showAndWait().orElse(HopThoai.DONG) != in) {
             return false;
         }
-        return in(taoTrang.get(), d.getOwner());
+        return in(taoTrang.get(), huong, d.getOwner());
     }
 
-    private static boolean in(List<Node> trang, Window chuSoHuu) {
+    private static boolean in(List<Node> trang, PageOrientation huong,
+            Window chuSoHuu) {
         PrinterJob job = PrinterJob.createPrinterJob();
         if (job == null) {
             HopThoai.canhBao(LOI_KHONG_CO_MAY_IN);
             return false;
+        }
+        if (huong != null) {
+            Printer may = job.getPrinter();
+            Paper giay = may.getDefaultPageLayout().getPaper();
+            job.getJobSettings().setPageLayout(may.createPageLayout(giay,
+                    huong, Printer.MarginType.DEFAULT));
         }
         if (!job.showPrintDialog(chuSoHuu)) {
             job.cancelJob();
