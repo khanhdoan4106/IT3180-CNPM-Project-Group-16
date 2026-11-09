@@ -52,6 +52,18 @@ final class HopThoai {
     }
 
     /**
+     * Dat hai nut cho hop thoai co thao tac mang chu "Huy" (vd Huy phieu):
+     * nut chinh va "Đóng", de khong co hai nut deu bat dau bang "Huy" canh
+     * nhau.
+     *
+     * @param hop hop thoai
+     * @param nutChinh nut chinh; phai co ButtonData OK_DONE
+     */
+    static void datNutChinhVaDong(Dialog<?> hop, ButtonType nutChinh) {
+        hop.getDialogPane().getButtonTypes().setAll(nutChinh, DONG);
+    }
+
+    /**
      * Dat hai nut cho hop thoai nhap lieu: nut chinh va "Hủy".
      *
      * @param hop hop thoai

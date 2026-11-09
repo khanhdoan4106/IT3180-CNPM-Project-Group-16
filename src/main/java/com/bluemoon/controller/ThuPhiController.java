@@ -40,7 +40,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -53,6 +52,7 @@ import javafx.scene.layout.VBox;
  */
 public class ThuPhiController {
 
+    private static final String CSS = "/com/bluemoon/css/giao-dien.css";
     private static final DateTimeFormatter NGAY_GIO =
             DateTimeFormatter.ofPattern("HH:mm dd/MM/uuuu");
 
@@ -476,21 +476,31 @@ public class ThuPhiController {
         }
     }
 
-    /** Hop thoai nhap ly do huy; tra ve null neu bo qua. */
+    /** Hop thoai nhap ly do huy; tra ve null neu dong ma khong huy. */
     private static String hoiLyDoHuy(PhieuThu p) {
         Dialog<String> d = new Dialog<>();
         d.setTitle("Hủy phiếu " + p.soBienLai());
         d.setHeaderText("Căn hộ " + p.maCanHo() + " · "
                 + SoTien.hienThi(p.tongTien())
+                + (p.hinhThuc() == null ? "" : " · " + p.hinhThuc().getNhan())
                 + ". Phiếu hủy vẫn được lưu kèm lý do.");
+        d.getDialogPane().getStylesheets().add(
+                ThuPhiController.class.getResource(CSS).toExternalForm());
         ButtonType huy = new ButtonType("Hủy phiếu",
                 ButtonBar.ButtonData.OK_DONE);
-        HopThoai.datNut(d, huy);
-        TextArea lyDo = new TextArea();
-        lyDo.setPromptText("Lý do hủy (bắt buộc), vd: thu nhầm hộ");
-        lyDo.setPrefRowCount(3);
-        lyDo.setWrapText(true);
-        d.getDialogPane().setContent(new VBox(6, new Label("Lý do"), lyDo));
+        HopThoai.datNutChinhVaDong(d, huy);
+        d.getDialogPane().lookupButton(huy).getStyleClass().add("nut-phu");
+        Label nhan = new Label("Lý do hủy (bắt buộc)");
+        nhan.getStyleClass().add("tieu-de-form");
+        TextField lyDo = new TextField();
+        lyDo.setPromptText("vd thu nhầm hộ");
+        Label luuY = new Label("Chỉ hủy được phiếu lập trong ngày. Thủ quỹ"
+                + " chỉ hủy phiếu do mình lập. Các khoản trong phiếu sẽ trở"
+                + " lại chưa đóng.");
+        luuY.getStyleClass().add("phu-de");
+        luuY.setWrapText(true);
+        luuY.setPrefWidth(420);
+        d.getDialogPane().setContent(new VBox(8, nhan, lyDo, luuY));
         d.setResultConverter(b -> b == huy ? lyDo.getText() : null);
         return d.showAndWait().orElse(null);
     }
