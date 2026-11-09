@@ -28,6 +28,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -36,11 +37,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -53,6 +55,7 @@ import javafx.scene.layout.VBox;
  */
 public class ThuPhiController {
 
+    private static final String CSS = "/com/bluemoon/css/giao-dien.css";
     private static final DateTimeFormatter NGAY_GIO =
             DateTimeFormatter.ofPattern("HH:mm dd/MM/uuuu");
 
@@ -71,6 +74,12 @@ public class ThuPhiController {
     private Button lichSuButton;
     @FXML
     private Label hoLabel;
+    @FXML
+    private Label noLabel;
+    @FXML
+    private Label khoanTieuDe;
+    @FXML
+    private Label quyTieuDe;
     @FXML
     private TableView<DongChon> bangNo;
     @FXML
@@ -95,6 +104,12 @@ public class ThuPhiController {
     private Label thongBaoLabel;
     @FXML
     private TableView<PhieuThu> bangPhieu;
+    @FXML
+    private Label soPhieuLabel;
+    @FXML
+    private Label daThuLabel;
+    @FXML
+    private Label daHuyLabel;
     @FXML
     private Label thongBaoPhieuLabel;
 
@@ -176,9 +191,12 @@ public class ThuPhiController {
             String chuHo = tt.ho().tenChuHo() == null ? ""
                     : " · Chủ hộ " + tt.ho().tenChuHo();
             String trangThai = tt.ho().ho().getTrangThai() == TrangThaiHo.DANG_O
-                    ? "" : " · Đã chuyển đi";
+                    ? "Đang ở" : "Đã chuyển đi";
             hoLabel.setText("Căn hộ " + tt.ho().ho().getMaCanHo() + chuHo
-                    + trangThai + " · Còn nợ " + SoTien.hienThi(tt.tongNo()));
+                    + " · " + trangThai);
+            noLabel.setText("Còn nợ " + SoTien.hienThi(tt.tongNo()));
+            khoanTieuDe.setText("Khoản phải nộp chưa đóng ("
+                    + tt.khoanChuaDong().size() + ")");
             bangNo.setItems(FXCollections.observableArrayList(
                     tt.khoanChuaDong().stream().map(DongChon::new).toList()));
             bangNo.getItems().forEach(d -> d.chon.addListener(
@@ -197,6 +215,8 @@ public class ThuPhiController {
     private void hienQuy(List<DongGopQuy> dsQuy, boolean daChuyenDi) {
         quyGrid.getChildren().clear();
         oQuy.clear();
+        quyTieuDe.setText("Đóng góp tự nguyện (" + dsQuy.size()
+                + " quỹ đang mở)");
         if (dsQuy.isEmpty()) {
             Label khongCo = new Label(daChuyenDi
                     ? ThuPhiService.LOI_HO_DA_CHUYEN_DI
@@ -207,26 +227,29 @@ public class ThuPhiController {
         }
         int hang = 0;
         for (DongGopQuy q : dsQuy) {
+            if (hang > 0) {
+                quyGrid.add(new Separator(), 0, hang * 2 - 1, 3, 1);
+            }
             Label ten = new Label(q.quy().ten());
             ten.setWrapText(true);
-            ten.setPrefWidth(170);
-            Label tinhTrang = new Label(tinhTrang(q));
-            tinhTrang.getStyleClass().add("phu-de");
-            tinhTrang.setWrapText(true);
-            tinhTrang.setPrefWidth(100);
+            Label daDong = new Label(tinhTrang(q));
+            daDong.getStyleClass().add("phu-de");
             TextField o = new TextField();
-            o.setPrefWidth(110);
             o.setPromptText(q.trangThai() == TrangThaiDongGop.CHUA_THU
                     ? "Số tiền" : "Đóng thêm");
             o.textProperty().addListener((ob, cu, moi) -> capNhatTong());
             oQuy.put(q.quy().id(), o);
-            quyGrid.addRow(hang++, ten, tinhTrang, o);
+            GridPane.setMargin(o, new Insets(8, 0, 8, 0));
+            quyGrid.add(ten, 0, hang * 2);
+            quyGrid.add(daDong, 1, hang * 2);
+            quyGrid.add(o, 2, hang * 2);
+            hang++;
         }
     }
 
     private static String tinhTrang(DongGopQuy q) {
         return q.trangThai() == TrangThaiDongGop.DA_DONG
-                ? "Đã đóng " + SoTien.hienThi(q.tongDaDong())
+                ? SoTien.hienThi(q.tongDaDong())
                 : q.trangThai().getNhan();
     }
 
@@ -352,6 +375,9 @@ public class ThuPhiController {
     private void xoaHo() {
         hoDangThu = null;
         hoLabel.setText("Nhập mã phòng rồi bấm Tra cứu");
+        noLabel.setText("");
+        khoanTieuDe.setText("Khoản phải nộp chưa đóng (0)");
+        quyTieuDe.setText("Đóng góp tự nguyện (0 quỹ đang mở)");
         bangNo.getItems().clear();
         quyGrid.getChildren().clear();
         oQuy.clear();
@@ -365,8 +391,12 @@ public class ThuPhiController {
 
     private void taiPhieuHomNay() {
         try {
-            bangPhieu.setItems(FXCollections.observableArrayList(
-                    service.homNay(PhienLamViec.hienTai())));
+            List<PhieuThu> ds = service.homNay(PhienLamViec.hienTai());
+            bangPhieu.setItems(FXCollections.observableArrayList(ds));
+            TomTatPhieuHomNay tt = TomTatPhieuHomNay.tu(ds);
+            soPhieuLabel.setText(String.valueOf(tt.soPhieu()));
+            daThuLabel.setText(SoTien.hienThi(tt.daThu()));
+            daHuyLabel.setText(tt.soHuy() + " phiếu");
         } catch (NghiepVuException e) {
             baoLoi(thongBaoPhieuLabel, e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -476,38 +506,57 @@ public class ThuPhiController {
         }
     }
 
-    /** Hop thoai nhap ly do huy; tra ve null neu bo qua. */
+    /** Hop thoai nhap ly do huy; tra ve null neu dong ma khong huy. */
     private static String hoiLyDoHuy(PhieuThu p) {
+        return taoHopThoaiHuy(p).showAndWait().orElse(null);
+    }
+
+    /** Dung hop thoai huy phieu (chua hien), de hien va de chup bo cuc. */
+    static Dialog<String> taoHopThoaiHuy(PhieuThu p) {
         Dialog<String> d = new Dialog<>();
         d.setTitle("Hủy phiếu " + p.soBienLai());
         d.setHeaderText("Căn hộ " + p.maCanHo() + " · "
                 + SoTien.hienThi(p.tongTien())
+                + (p.hinhThuc() == null ? "" : " · " + p.hinhThuc().getNhan())
                 + ". Phiếu hủy vẫn được lưu kèm lý do.");
+        d.getDialogPane().getStylesheets().add(
+                ThuPhiController.class.getResource(CSS).toExternalForm());
         ButtonType huy = new ButtonType("Hủy phiếu",
                 ButtonBar.ButtonData.OK_DONE);
-        HopThoai.datNut(d, huy);
-        TextArea lyDo = new TextArea();
-        lyDo.setPromptText("Lý do hủy (bắt buộc), vd: thu nhầm hộ");
-        lyDo.setPrefRowCount(3);
-        lyDo.setWrapText(true);
-        d.getDialogPane().setContent(new VBox(6, new Label("Lý do"), lyDo));
+        HopThoai.datNutChinhVaDong(d, huy);
+        d.getDialogPane().lookupButton(huy).getStyleClass().add("nut-phu");
+        Label nhan = new Label("Lý do hủy (bắt buộc)");
+        nhan.getStyleClass().add("tieu-de-form");
+        TextField lyDo = new TextField();
+        lyDo.setPromptText("vd thu nhầm hộ");
+        Label luuY = new Label("Chỉ hủy được phiếu lập trong ngày. Thủ quỹ"
+                + " chỉ hủy phiếu do mình lập. Các khoản trong phiếu sẽ trở"
+                + " lại chưa đóng.");
+        luuY.getStyleClass().add("phu-de");
+        luuY.setWrapText(true);
+        luuY.setPrefWidth(420);
+        d.getDialogPane().setContent(new VBox(8, nhan, lyDo, luuY));
         d.setResultConverter(b -> b == huy ? lyDo.getText() : null);
-        return d.showAndWait().orElse(null);
+        return d;
     }
 
     /** Cot chung cho bang phieu hom nay va lich su thu cua ho. */
     private static void cauHinhBangPhieu(TableView<PhieuThu> bang) {
         bang.getColumns().setAll(List.of(
-                cot("Số biên lai", 120, PhieuThu::soBienLai),
-                cot("Căn hộ", 70, PhieuThu::maCanHo),
-                cot("Thời điểm", 125, p -> p.thoiDiem().format(NGAY_GIO)),
-                cot("Tổng tiền", 110, p -> SoTien.hienThi(p.tongTien())),
+                cot("Số biên lai", 120, PhieuThu::soBienLai,
+                        "-fx-font-weight: bold;"),
+                cot("Căn hộ", 70, PhieuThu::maCanHo, null),
+                cot("Thời điểm", 125, p -> p.thoiDiem().format(NGAY_GIO),
+                        null),
+                cot("Tổng tiền", 110, p -> SoTien.hienThi(p.tongTien()),
+                        "-fx-alignment: CENTER-RIGHT;"),
                 cot("Hình thức", 105, p -> p.hinhThuc() == null ? "–"
-                        : p.hinhThuc().getNhan()),
-                cot("Người thu", 130, PhieuThu::tenNguoiThu),
-                cot("Trạng thái", 320, ThuPhiController::trangThai)));
+                        : p.hinhThuc().getNhan(), null),
+                cot("Người thu", 170, PhieuThu::tenNguoiThu, null),
+                cotTrangThai()));
         bang.setColumnResizePolicy(
                 TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
+        bang.getStyleClass().add("bang-phieu");
         bang.setRowFactory(t -> new TableRow<>() {
             @Override
             protected void updateItem(PhieuThu p, boolean trong) {
@@ -520,18 +569,42 @@ public class ThuPhiController {
         });
     }
 
+    /** Cot trang thai: phieu huy hien "Da huy: ly do" mau do. */
+    private static TableColumn<PhieuThu, String> cotTrangThai() {
+        TableColumn<PhieuThu, String> c = cot("Trạng thái", 280,
+                ThuPhiController::trangThai, null);
+        c.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String chu, boolean trong) {
+                super.updateItem(chu, trong);
+                setText(trong ? null : chu);
+                getStyleClass().remove("trang-thai-huy");
+                if (!trong && chu != null && chu.startsWith(TIEN_TO_HUY)) {
+                    getStyleClass().add("trang-thai-huy");
+                }
+            }
+        });
+        return c;
+    }
+
     private static TableColumn<PhieuThu, String> cot(String ten, double rong,
-            Function<PhieuThu, String> lay) {
+            Function<PhieuThu, String> lay, String kieu) {
         TableColumn<PhieuThu, String> c = new TableColumn<>(ten);
         c.setPrefWidth(rong);
+        if (kieu != null) {
+            c.setStyle(kieu);
+        }
         c.setCellValueFactory(
                 o -> new SimpleStringProperty(lay.apply(o.getValue())));
         return c;
     }
 
-    private static String trangThai(PhieuThu p) {
+    /** Tien to trang thai cua phieu huy; nguoi huy xem o "Xem chi tiet". */
+    static final String TIEN_TO_HUY = "Đã hủy: ";
+
+    static String trangThai(PhieuThu p) {
         if (p.daHuy()) {
-            return "Đã hủy (" + p.tenNguoiHuy() + "): " + p.lyDoHuy();
+            return TIEN_TO_HUY + p.lyDoHuy();
         }
         if (p.khongThuTien()) {
             return "Không thu tiền";

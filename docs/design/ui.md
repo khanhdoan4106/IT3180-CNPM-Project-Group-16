@@ -30,8 +30,9 @@ File gồm bộ thành phần dùng chung (nút, ô nhập, mục menu, thẻ s�
 | Chốt công nợ | 1120×645 | US-009 | Đã có code (Sprint 2) |
 | Sửa khoản thu của hộ (hộp thoại, 2 trạng thái) | 480 rộng | US-008 | Đã có code (Sprint 2) |
 | Lịch sử biến động của hộ (hộp thoại) | 820 rộng | US-027 | Đã có code (Sprint 2) |
-| Thu phí: tab "Thu tiền" và "Phiếu thu hôm nay" | 1120×645 | US-007, US-010 – US-014 | Đã có code (Sprint 3), chưa có trên Figma |
-| Hủy phiếu, lịch sử thu của hộ, chi tiết phiếu (hộp thoại) | – | US-014, AC-043 | Đã có code (Sprint 3) |
+| Thu phí: tab "Thu tiền" và "Phiếu thu hôm nay" | 1120×645 | US-007, US-010 – US-014 | Có trên Figma (frame "Thu phí – Thu tiền – 1120x645", "Thu phí – Phiếu thu hôm nay – 1120x645", thẻ "Đặc tả: Thu phí"); đã có code khớp thiết kế (Sprint 3) |
+| Hủy phiếu (hộp thoại) | 480 rộng | US-014, AC-042 | Có trên Figma (frame "Hủy phiếu thu (US-014)"); đã có code khớp thiết kế (Sprint 3) |
+| Lịch sử thu của hộ, chi tiết phiếu (hộp thoại) | – | US-014, AC-043 | Đã có code (Sprint 3), chưa có trên Figma |
 | Xem trước khi in: biên lai, thông báo phí, danh sách tạm vắng | 640×560 | US-013, US-015, US-004 | Đã có code (Sprint 3) |
 
 Màn hình Hộ gia đình, Nhân khẩu đã có code ở Sprint 1, sẽ đưa về cùng bộ
@@ -133,14 +134,15 @@ là phần sau khi đã lập phiếu: thêm "In biên lai" → "In…" → hộ
 |---|---|---|---|
 | Mã phòng | Ô nhập + nút Tra cứu (Enter cũng tra cứu) | Không phân biệt hoa thường; không có thì báo "Không tìm thấy phòng" | AC-030, AC-031 |
 | Chọn hộ | Danh sách chọn, chỉ hiện khi mã phòng có hộ đã chuyển đi còn nợ | Hộ đang ở đứng đầu | Giả định 21 |
-| Thông tin hộ | Nhãn | Căn hộ, chủ hộ, trạng thái, tổng còn nợ | AC-030 |
-| Khoản phải nộp chưa đóng | Bảng có ô chọn | Chọn sẵn tất cả; số tiền là số hiện tại, không sửa ở đây | AC-033, AC-034 |
-| Đóng góp tự nguyện | Mỗi quỹ đang mở một dòng: tên, tình trạng, ô số tiền | Trống: chưa thu. 0: không đóng (chỉ khi chưa có lần nào). Đã đóng thì ghi "Đã đóng 100.000 đ", ô gợi ý "Đóng thêm" | AC-022 – AC-024, giả định 29 |
+| Thông tin hộ | Dải nền xanh nhạt | Bên trái "Căn hộ A0601 · Chủ hộ … · Đang ở" (hoặc "Đã chuyển đi"), bên phải "Còn nợ … đ" | AC-030 |
+| Khoản phải nộp chưa đóng | Tiêu đề "Khoản phải nộp chưa đóng (n)", hai liên kết "Chọn tất cả" / "Bỏ chọn tất cả" bên phải tiêu đề, bảng có ô chọn (Thu, Tháng, Khoản, Số tiền căn phải) | Chọn sẵn tất cả; số tiền là số hiện tại, không sửa ở đây | AC-033, AC-034 |
+| Đóng góp tự nguyện | Tiêu đề "Đóng góp tự nguyện (n quỹ đang mở)", dòng gợi ý, khung có viền với hàng tiêu đề "Quỹ / Đã đóng / Lần này" | Cột "Đã đóng" hiện "Chưa thu", "Không đóng" hoặc số tiền (vd "100.000 đ"). Ô gợi ý "Số tiền" khi chưa thu, "Đóng thêm" khi đã có lần ghi. Trống: chưa thu. 0: không đóng (chỉ khi chưa có lần nào). Hộ đã chuyển đi không có quỹ nào (giả định 39) | AC-022 – AC-024, giả định 29, giả định 39 |
 | Hình thức | Hai nút chọn | Không chọn sẵn; phiếu có tiền mà chưa chọn thì báo lỗi | AC-036, AC-038 |
 | Tổng thu | Nhãn đậm | Cộng ngay khi chọn hoặc nhập | AC-035 |
 | Thu tất cả / Thu các khoản đã chọn | Nút chính | Chữ đổi theo lựa chọn; hỏi xác nhận; xong thì hỏi "In biên lai" / "Để sau" | AC-033, AC-037 |
-| Phiếu thu hôm nay | Bảng | Số biên lai, căn hộ, thời điểm, tổng, hình thức, người thu, trạng thái; phiếu hủy chữ xám | AC-043 |
-| Hủy phiếu | Nút viền đỏ + hộp thoại lý do | Thủ quỹ: phiếu của mình; trong ngày; lý do bắt buộc | AC-041, AC-042, giả định 28 |
+| Dải tóm tắt (tab Phiếu thu hôm nay) | Ba nhãn bo tròn | "Số phiếu n", "Đã thu hôm nay x đ" (cộng các phiếu chưa hủy, chữ xanh), "Đã hủy n phiếu" (chữ đỏ) | AC-043 |
+| Phiếu thu hôm nay | Bảng | Số biên lai (đậm), căn hộ, thời điểm, tổng (căn phải), hình thức, người thu, trạng thái. Phiếu hủy chữ xám cả dòng, cột trạng thái "Đã hủy: <lý do>" màu đỏ; người hủy và thời điểm hủy xem ở "Xem chi tiết". Trạng thái khác: "Chưa in biên lai", "Đã in n lần", "Không thu tiền" | AC-043 |
+| Hủy phiếu | Nút viền đỏ ở tab Phiếu thu hôm nay; hộp thoại "Hủy phiếu <số>" có ô "Lý do hủy (bắt buộc)", dòng lưu ý, hai nút "Hủy phiếu" (viền đỏ) và "Đóng" | Thủ quỹ: phiếu của mình; trong ngày; lý do bắt buộc. Nút bỏ qua là "Đóng" (không dùng "Hủy" để khỏi nhầm với "Hủy phiếu") | AC-041, AC-042, giả định 28 |
 
 ### Biên lai (US-013)
 

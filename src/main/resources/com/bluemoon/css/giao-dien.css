@@ -32,6 +32,12 @@
     -mau-nen: #f1f5f9;
     -mau-chu: #0f172a;
     -mau-loi: #dc2626;
+    -mau-phu: #64748b;
+    -mau-phu-nhat: #94a3b8;
+    -mau-thanh-cong: #15803d;
+    -mau-vien: #cbd5e1;
+    -mau-dai: #eff6ff;
+    -mau-nhan: #e2e8f0;
     -fx-font-family: "Be Vietnam Pro";
     -fx-font-size: 14px;
     -fx-text-fill: -mau-chu;
@@ -55,7 +61,7 @@
 }
 
 .phu-de {
-    -fx-text-fill: #64748b;
+    -fx-text-fill: -mau-phu;
 }
 
 .loi {
@@ -90,7 +96,7 @@
 }
 
 .thanh-cong {
-    -fx-text-fill: #15803d;
+    -fx-text-fill: -mau-thanh-cong;
 }
 
 .tieu-de-trang {
@@ -196,5 +202,97 @@
 }
 
 .table-row-cell.phieu-da-huy .table-cell {
-    -fx-text-fill: #94a3b8;
+    -fx-text-fill: -mau-phu-nhat;
+}
+
+/* Man Thu phi theo Figma (frame "Thu phi - Thu tien"). */
+.dai-thong-tin {
+    -fx-background-color: -mau-dai;
+    -fx-background-radius: 6;
+    -fx-padding: 6 14 6 14;
+    -fx-alignment: center-left;
+}
+
+.dai-thong-tin .label {
+    -fx-text-fill: -mau-chinh;
+}
+
+.dai-tieu-de {
+    -fx-alignment: center-left;
+    -fx-spacing: 14;
+}
+
+.lien-ket {
+    -fx-text-fill: -mau-chinh;
+    -fx-underline: false;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.lien-ket:hover {
+    -fx-underline: true;
+}
+
+.khung-bang {
+    -fx-background-color: white;
+    -fx-border-color: -mau-vien;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.hang-tieu-de {
+    -fx-background-color: -mau-nen;
+    -fx-background-radius: 6 6 0 0;
+}
+
+.hang-tieu-de .label {
+    -fx-text-fill: -mau-phu;
+}
+
+.khung-bang .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.khung-bang .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Tab Phieu thu hom nay: dai tom tat, dong chon, trang thai phieu huy. */
+.nhan-tom-tat {
+    -fx-background-color: -mau-nhan;
+    -fx-background-radius: 14;
+    -fx-padding: 4 12 4 12;
+    -fx-spacing: 6;
+    -fx-alignment: center-left;
+}
+
+.so-dam {
+    -fx-font-weight: bold;
+}
+
+.so-xanh {
+    -fx-font-weight: bold;
+    -fx-text-fill: -mau-thanh-cong;
+}
+
+.so-do {
+    -fx-font-weight: bold;
+    -fx-text-fill: -mau-loi;
+}
+
+.bang-phieu .table-row-cell:filled:selected {
+    -fx-background: -mau-dai;
+    -fx-background-color: -mau-dai;
+}
+
+.bang-phieu .table-row-cell:filled:selected .table-cell {
+    -fx-text-fill: -mau-chu;
+}
+
+.bang-phieu .table-row-cell.phieu-da-huy:filled:selected .table-cell {
+    -fx-text-fill: -mau-phu-nhat;
+}
+
+.bang-phieu .table-row-cell.phieu-da-huy .table-cell.trang-thai-huy {
+    -fx-text-fill: -mau-loi;
 }
