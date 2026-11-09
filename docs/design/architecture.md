@@ -64,15 +64,19 @@ hộ, các khoản chưa đóng, các quỹ tự nguyện đang mở.
 | Hộ gia đình | US-001 | `HoGiaDinhController`, `ho-gia-dinh.fxml` | `HoGiaDinhService` | `HoGiaDinhDao` | `HoGiaDinhServiceTest` |
 | Nhân khẩu, đổi chủ hộ | US-002, US-026 | `NhanKhauController`, `nhan-khau.fxml` | `NhanKhauService`, `KiemTraNhanKhau` | `NhanKhauDao` | `NhanKhauServiceTest` |
 | Tạm trú, tạm vắng | US-003 | `NhanKhauController` | `DotCuTruService` | `DotCuTruDao` | `DotCuTruServiceTest` |
-| Lịch sử biến động nhân khẩu | US-027 | `HoGiaDinhController`, `TrangChinhController`, `BangLichSu` | `BienDongService` | `BienDongDao` (ghi trong giao dịch của DAO hộ, nhân khẩu, đợt) | `HoGiaDinhServiceTest`, `NhanKhauServiceTest`, `DotCuTruServiceTest` |
+| Lịch sử biến động nhân khẩu | US-027 | `HoGiaDinhController`, `TrangChinhController`, `BangLichSu` | `BienDongService` | `BienDongDao` (ghi trong giao dịch của DAO hộ, nhân khẩu, đợt) | `BienDongServiceTest`, `HoGiaDinhServiceTest`, `NhanKhauServiceTest`, `DotCuTruServiceTest`, `GiaoDichHoGiaDinhIT` |
 | Khung ứng dụng, menu theo vai trò | US-022 | `TrangChinhController`, `trang-chinh.fxml` | `PhanQuyen` | – | – |
 | Khoản thu | US-005, US-006 | `KhoanThuController`, `khoan-thu.fxml` | `KhoanPhiService` | `KhoanPhiDao` | `KhoanPhiServiceTest` |
 | Chốt, sửa công nợ | US-009, US-008 | `CongNoController`, `cong-no.fxml` | `CongNoService` | `CongNoDao` | `CongNoServiceTest`, `CongNoIT` |
-| Tra cứu, thu phí, đóng góp, biên lai, hủy phiếu | US-007, US-010 – US-014 | `ThuPhiController`, `thu-phi.fxml`, `MauIn`, `InAn` | `ThuPhiService` | `PhieuThuDao`, `KhoanPhiDao` | `ThuPhiServiceTest`, `SoTienTest`, `MauInTest`, `DangBiKhoaExceptionTest`, `DongHoCsdlTest`, `PhieuThuIT`, `DongHoCsdlIT` |
+| Tra cứu, thu phí, đóng góp, biên lai, hủy phiếu | US-007, US-010 – US-014 | `ThuPhiController`, `thu-phi.fxml`, `TomTatPhieuHomNay`, `HopThoai`, `MauIn`, `InAn` | `ThuPhiService` | `PhieuThuDao`, `KhoanPhiDao` | `ThuPhiServiceTest`, `SoTienTest`, `MauInTest`, `TomTatPhieuHomNayTest`, `HopThoaiHuyPhieuTest`, `DangBiKhoaExceptionTest`, `DongHoCsdlTest`, `PhieuThuIT`, `DongHoCsdlIT` |
 | Thông báo phí hằng tháng | US-015 | `CongNoController` (nút "In thông báo phí"), `MauIn` | `ThongBaoPhiService` | `PhieuThuDao`, `CongNoDao` | `ThongBaoPhiServiceTest`, `MauInTest`, `PhieuThuIT` |
 | Danh sách nhân khẩu tạm vắng | US-004 | `NhanKhauController`, `DanhSachTamVang`, `MauIn` | `BaoCaoNhanKhauService` | `BaoCaoNhanKhauDao` | `BaoCaoNhanKhauServiceTest`, `MauInTest`, `PhieuThuIT` |
+| Báo lỗi không lường trước | – | `App`, `LoiKhongMongDoi`, `LoiCsdl` | – | – | `LoiKhongMongDoiTest`, `LoiCsdlTest` |
+| Dữ liệu mẫu | US-001 – US-003, US-005, US-006, US-027 | – | – | `database/seed.sql` | `SeedIT` |
+| Bố cục các màn hình | NFR-008 | 8 tệp FXML, `giao-dien.css` | – | – | `BoCucFxmlTest` |
 
 Thêm chức năng mới thì thêm một dòng vào bảng này trong cùng Pull Request.
+Chiến lược kiểm thử và bảng AC → test: [../testing.md](../testing.md).
 
 ## Giao diện
 
