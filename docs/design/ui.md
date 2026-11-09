@@ -30,12 +30,16 @@ File gồm bộ thành phần dùng chung (nút, ô nhập, mục menu, thẻ s�
 | Chốt công nợ | 1120×645 | US-009 | Đã có code (Sprint 2) |
 | Sửa khoản thu của hộ (hộp thoại, 2 trạng thái) | 480 rộng | US-008 | Đã có code (Sprint 2) |
 | Lịch sử biến động của hộ (hộp thoại) | 820 rộng | US-027 | Đã có code (Sprint 2) |
-| Thu phí | 1120×645 | US-010 – US-014 | Sprint 3 |
+| Thu phí: tab "Thu tiền" và "Phiếu thu hôm nay" | 1120×645 | US-007, US-010 – US-014 | Đã có code (Sprint 3), chưa có trên Figma |
+| Hủy phiếu, lịch sử thu của hộ, chi tiết phiếu (hộp thoại) | – | US-014, AC-043 | Đã có code (Sprint 3) |
+| Xem trước khi in: biên lai, thông báo phí, danh sách tạm vắng | 640×560 | US-013, US-015, US-004 | Đã có code (Sprint 3) |
 
 Màn hình Hộ gia đình, Nhân khẩu đã có code ở Sprint 1, sẽ đưa về cùng bộ
 thành phần khi rà soát giao diện (Sprint 4). Sprint 2 thêm vào hai màn này:
 nút "Lịch sử biến động" (US-027), nút "Đặt làm chủ hộ" (US-026) và cảnh báo
-nợ khi đánh dấu hộ chuyển đi.
+nợ khi đánh dấu hộ chuyển đi. Sprint 3 thêm nút "Danh sách tạm vắng" ở màn
+Nhân khẩu (US-004), cột "Đã đóng" và nút "In thông báo phí" ở màn Chốt công
+nợ (US-015, AC-026).
 
 ## Phương án màu
 
@@ -116,3 +120,40 @@ Figma (khung "Đặc tả màn hình").
 | Mật khẩu mới, Nhập lại | Ô nhập ẩn | Hai ô phải khớp | AC-063 |
 | Danh sách tài khoản | Bảng | Tên đăng nhập, họ tên, vai trò, trạng thái; chỉ Quản trị viên thấy | AC-061 |
 | Khóa | Nút phụ | Không xóa, giữ lịch sử thu | – |
+
+### Thu phí (US-007, US-010 – US-014)
+
+Mục tiêu: thu xong một hộ trong tối đa 5 bước (AC-072): nhập mã phòng →
+Tra cứu → (bỏ chọn khoản không thu, nhập đóng góp) → chọn hình thức → Thu.
+
+| Thành phần | Kiểu | Ràng buộc | Nguồn |
+|---|---|---|---|
+| Mã phòng | Ô nhập + nút Tra cứu (Enter cũng tra cứu) | Không phân biệt hoa thường; không có thì báo "Không tìm thấy phòng" | AC-030, AC-031 |
+| Chọn hộ | Danh sách chọn, chỉ hiện khi mã phòng có hộ đã chuyển đi còn nợ | Hộ đang ở đứng đầu | Giả định 21 |
+| Thông tin hộ | Nhãn | Căn hộ, chủ hộ, trạng thái, tổng còn nợ | AC-030 |
+| Khoản phải nộp chưa đóng | Bảng có ô chọn | Chọn sẵn tất cả; số tiền là số hiện tại, không sửa ở đây | AC-033, AC-034 |
+| Đóng góp tự nguyện | Mỗi quỹ đang mở một dòng: tên, tình trạng, ô số tiền | Trống: chưa thu. 0: không đóng (chỉ khi chưa có lần nào). Đã đóng thì ghi "Đã đóng 100.000 đ", ô gợi ý "Đóng thêm" | AC-022 – AC-024, giả định 29 |
+| Hình thức | Hai nút chọn | Không chọn sẵn; phiếu có tiền mà chưa chọn thì báo lỗi | AC-036, AC-038 |
+| Tổng thu | Nhãn đậm | Cộng ngay khi chọn hoặc nhập | AC-035 |
+| Thu tất cả / Thu các khoản đã chọn | Nút chính | Chữ đổi theo lựa chọn; hỏi xác nhận; xong thì hỏi "In biên lai" / "Để sau" | AC-033, AC-037 |
+| Phiếu thu hôm nay | Bảng | Số biên lai, căn hộ, thời điểm, tổng, hình thức, người thu, trạng thái; phiếu hủy chữ xám | AC-043 |
+| Hủy phiếu | Nút viền đỏ + hộp thoại lý do | Thủ quỹ: phiếu của mình; trong ngày; lý do bắt buộc | AC-041, AC-042, giả định 28 |
+
+### Biên lai (US-013)
+
+Khổ dọc, in qua hộp thoại xem trước rồi chọn máy in (trên Windows có thể
+chọn "Microsoft Print to PDF"). Gồm: đơn vị, "BIÊN LAI THU TIỀN", số biên
+lai, căn hộ, chủ hộ, thời điểm thu, hình thức, bảng khoản (khoản bắt buộc
+kèm tháng), tổng cộng, số tiền bằng chữ, chỗ ký người nộp và người thu (in
+sẵn tên người thu). Từ lần in thứ hai có khung "BẢN IN LẠI" (AC-040). Phiếu
+"Không thu tiền" và phiếu đã hủy không in.
+
+### Thông báo phí (US-015) và danh sách tạm vắng (US-004)
+
+- Thông báo phí: in cho hộ đang chọn hoặc cho mọi hộ đang ở còn khoản cần
+  đóng, mỗi hộ một trang; liệt kê khoản của tháng, khoản các tháng trước
+  chưa đóng, tổng và số tiền bằng chữ. Tháng chưa chốt thì không in.
+- Danh sách tạm vắng: chọn ngày (mặc định hôm nay), xem trên bảng rồi in khổ
+  ngang 18 người một trang, có số trang và chỗ ký. Xuất tệp Excel/PDF làm ở
+  Sprint 4 (AC-014).
+

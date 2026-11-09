@@ -45,13 +45,15 @@ phiên), `CongNoService.thangHienTai` (chỉ đọc đồng hồ, không đọc 
 | Xem danh mục khoản thu | Có | Có | US-005 |
 | Sửa đơn giá, tạo khoản thu tự nguyện | Có | Không | AC-016, US-006 |
 | Chốt công nợ, sửa khoản thu của hộ | Có | Có | US-009, US-008 |
-| Tra cứu phí, thu phí, biên lai, hủy phiếu | Có | Có | AC-060, US-010 – US-014 |
+| Tra cứu phí, thu phí, đóng góp tự nguyện, biên lai | Có | Có | AC-060, US-007, US-010 – US-013 |
+| Hủy phiếu thu | Mọi phiếu, trong ngày | Phiếu do mình lập, trong ngày | US-014, giả định 28 |
+| In thông báo phí | Có | Có | US-015 |
 | Thống kê, xuất Excel | Có | Có | US-016 – US-019 |
 | Đăng ký và quản lý tài khoản | Có | Không | US-020, AC-061 |
 | Tài khoản của tôi | Có | Có | US-023 |
 
 Tra cứu phí (US-010) chỉ hiện thông tin hộ cần cho việc thu: mã phòng, chủ
-hộ, các khoản chưa đóng.
+hộ, các khoản chưa đóng, các quỹ tự nguyện đang mở.
 
 ## Chức năng và mã nguồn
 
@@ -65,7 +67,10 @@ hộ, các khoản chưa đóng.
 | Lịch sử biến động nhân khẩu | US-027 | `HoGiaDinhController`, `TrangChinhController`, `BangLichSu` | `BienDongService` | `BienDongDao` (ghi trong giao dịch của DAO hộ, nhân khẩu, đợt) | `HoGiaDinhServiceTest`, `NhanKhauServiceTest`, `DotCuTruServiceTest` |
 | Khung ứng dụng, menu theo vai trò | US-022 | `TrangChinhController`, `trang-chinh.fxml` | `PhanQuyen` | – | – |
 | Khoản thu | US-005, US-006 | `KhoanThuController`, `khoan-thu.fxml` | `KhoanPhiService` | `KhoanPhiDao` | `KhoanPhiServiceTest` |
-| Chốt, sửa công nợ | US-009, US-008 | `CongNoController`, `cong-no.fxml` | `CongNoService` | `CongNoDao` | `CongNoServiceTest` |
+| Chốt, sửa công nợ | US-009, US-008 | `CongNoController`, `cong-no.fxml` | `CongNoService` | `CongNoDao` | `CongNoServiceTest`, `CongNoIT` |
+| Tra cứu, thu phí, đóng góp, biên lai, hủy phiếu | US-007, US-010 – US-014 | `ThuPhiController`, `thu-phi.fxml`, `MauIn`, `InAn` | `ThuPhiService` | `PhieuThuDao`, `KhoanPhiDao` | `ThuPhiServiceTest`, `SoTienTest`, `PhieuThuIT` |
+| Thông báo phí hằng tháng | US-015 | `CongNoController` (nút "In thông báo phí"), `MauIn` | `ThongBaoPhiService` | `PhieuThuDao`, `CongNoDao` | `ThongBaoPhiServiceTest`, `PhieuThuIT` |
+| Danh sách nhân khẩu tạm vắng | US-004 | `NhanKhauController`, `DanhSachTamVang`, `MauIn` | `BaoCaoNhanKhauService` | `BaoCaoNhanKhauDao` | `BaoCaoNhanKhauServiceTest`, `PhieuThuIT` |
 
 Thêm chức năng mới thì thêm một dòng vào bảng này trong cùng Pull Request.
 

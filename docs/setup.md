@@ -31,6 +31,7 @@ mới đổi cấu trúc bảng đã có, CSDL cũ phải dựng lại từ đ�
 | Từ bản | Lên bản | Thay đổi bảng đã có | Cần dựng lại |
 |---|---|---|---|
 | `v0.1.0` (Sprint 1) | `v0.2.0` (Sprint 2) | Thêm cột `tai_khoan.so_dien_thoai` | Có |
+| `v0.2.0` (Sprint 2) | `v0.3.0` (Sprint 3) | Không. Chỉ thêm bảng mới `bo_dem_bien_lai`, `phieu_thu`, `phieu_thu_chi_tiet` | Không: chạy lại `schema.sql` là đủ, dữ liệu cũ giữ nguyên |
 
 Dấu hiệu chưa dựng lại: đăng nhập báo "Có lỗi khi đọc hoặc lưu dữ liệu"
 (CSDL thiếu cột mà ứng dụng đọc).
@@ -94,6 +95,19 @@ màn hình Nhân khẩu:
 | A0601 | Hoàng Văn Nam đang tạm vắng (còn hạn 25 ngày sau khi seed) |
 | K01 | Vũ Văn Toàn tạm trú còn hạn (120 ngày sau khi seed) |
 | PH01 | Đỗ Thị Hoa tạm trú đã quá hạn, cột hạn tạm trú tô đỏ |
+
+Kịch bản thu phí (Sprint 3), sau khi dựng CSDL:
+
+1. **Công nợ:** chọn tháng trước, bấm Chốt công nợ; làm lại với tháng này.
+2. **Thu phí:** nhập `A0601`, Tra cứu; hộ có 4 khoản chưa đóng (2 tháng ×
+   phí dịch vụ, phí quản lý). Nhập 100.000 cho "Quỹ vì người nghèo 2026",
+   chọn Tiền mặt, bấm Thu tất cả, In biên lai (chọn "Microsoft Print to
+   PDF" nếu không có máy in).
+3. **Phiếu thu hôm nay:** in lại phiếu vừa lập (biên lai ghi "BẢN IN LẠI"),
+   rồi Hủy phiếu với lý do; tra cứu lại `A0601` thấy các khoản trở lại chưa
+   đóng.
+4. **Công nợ:** cột "Đã đóng"; In thông báo phí cho tất cả hộ.
+5. **Nhân khẩu:** Danh sách tạm vắng hôm nay có Hoàng Văn Nam (A0601).
 
 ## 6. Lỗi thường gặp
 
