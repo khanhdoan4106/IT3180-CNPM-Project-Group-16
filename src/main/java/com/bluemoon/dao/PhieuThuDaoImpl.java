@@ -105,7 +105,8 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
     private static final String SQL_HUY_DONG = "UPDATE phieu_thu_chi_tiet "
             + "SET con_hieu_luc = FALSE WHERE phieu_thu_id = ?";
     private static final String SQL_GHI_IN =
-            "UPDATE phieu_thu SET so_lan_in = so_lan_in + 1 WHERE id = ?";
+            "UPDATE phieu_thu SET so_lan_in = so_lan_in + 1 WHERE id = ? "
+            + "AND NOT da_huy";
 
     private static final String CHON_PHIEU = "SELECT pt.id, pt.nam, pt.so, "
             + "pt.ho_id, h.ma_can_ho, c.ho_ten AS ten_chu_ho, pt.tong_tien, "

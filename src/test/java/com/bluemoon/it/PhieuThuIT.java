@@ -306,6 +306,17 @@ class PhieuThuIT {
     }
 
     @Test
+    void daInKhongDemPhieuDaHuy() {
+        PhieuThu p = thuPhi.thu(admin, hoId, moiKhoan(), null,
+                HinhThucThanhToan.TIEN_MAT);
+        phieuDao.ghiLanIn(p.id());
+        assertEquals(1, phieuDao.timTheoId(p.id()).orElseThrow().soLanIn());
+        thuPhi.huy(admin, p.id(), "Thu nhầm");
+        phieuDao.ghiLanIn(p.id());
+        assertEquals(1, phieuDao.timTheoId(p.id()).orElseThrow().soLanIn());
+    }
+
+    @Test
     void haiMayCungThuMotKhoanChiMotPhieuThanhCong() throws Exception {
         List<Integer> ds = moiKhoan();
         CountDownLatch batDau = new CountDownLatch(1);
