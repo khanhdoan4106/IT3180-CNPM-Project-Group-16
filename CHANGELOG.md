@@ -35,8 +35,8 @@ Review, sau khi các Pull Request #28, #29, #30 đã merge.
 - **Khóa sửa khoản đã thu (US-008, AC-026):** khoản đã có phiếu thu thì
   không sửa số tiền cho đến khi hủy phiếu (#28).
 - **Giờ máy chủ CSDL:** thời điểm lập và hủy phiếu, năm của số biên lai, điều
-  kiện "hủy trong ngày" lấy theo giờ máy chủ MySQL, không theo giờ máy thu
-  ngân (giả định 38) (#28).
+  kiện "hủy trong ngày" lấy theo giờ máy chủ MySQL, không theo giờ máy của
+  người thu (giả định 38) (#28).
 - **Báo lỗi không lường trước:** lỗi không xử lý hiện hộp thoại "Có lỗi
   không mong muốn", không chỉ in ra console (#29).
 - **Kiểm thử tích hợp trên MySQL của CI:** thêm job `build-mysql` chạy
