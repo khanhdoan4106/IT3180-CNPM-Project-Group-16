@@ -76,7 +76,7 @@
                     <items>
                         <MenuItem text="Cho hộ đang chọn"
                                   onAction="#onThongBaoMotHo"/>
-                        <MenuItem text="Cho tất cả hộ còn khoản cần đóng"
+                        <MenuItem text="Cho tất cả hộ đang ở còn khoản cần đóng"
                                   onAction="#onThongBaoTatCa"/>
                     </items>
                 </MenuButton>

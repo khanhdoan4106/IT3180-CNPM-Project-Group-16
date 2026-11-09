@@ -123,8 +123,11 @@ Figma (khung "Đặc tả màn hình").
 
 ### Thu phí (US-007, US-010 – US-014)
 
-Mục tiêu: thu xong một hộ trong tối đa 5 bước (AC-072): nhập mã phòng →
-Tra cứu → (bỏ chọn khoản không thu, nhập đóng góp) → chọn hình thức → Thu.
+Mục tiêu: thu xong một hộ trong tối đa 5 bước (AC-072): nhập mã phòng và
+nhấn Enter (hoặc bấm Tra cứu) → (bỏ chọn khoản không thu, nhập đóng góp, nếu
+cần) → chọn hình thức → Thu tất cả → Đồng ý trên hộp xác nhận. Đó là 4 thao
+tác, 5 nếu bấm nút Tra cứu thay vì Enter; hộp xác nhận đã tính. In biên lai
+là phần sau khi đã lập phiếu: thêm "In biên lai" → "In…" → hộp thoại máy in.
 
 | Thành phần | Kiểu | Ràng buộc | Nguồn |
 |---|---|---|---|
@@ -154,6 +157,8 @@ sẵn tên người thu). Từ lần in thứ hai có khung "BẢN IN LẠI" (AC
   đóng, mỗi hộ một trang; liệt kê khoản của tháng, khoản các tháng trước
   chưa đóng, tổng và số tiền bằng chữ. Tháng chưa chốt thì không in.
 - Danh sách tạm vắng: chọn ngày (mặc định hôm nay), xem trên bảng rồi in khổ
-  ngang 18 người một trang, có số trang và chỗ ký. Xuất tệp Excel/PDF làm ở
+  ngang (đặt sẵn trong hộp thoại máy in, đổi được), chia trang theo chiều
+  cao thực sau khi bố cục nên họ tên, lý do dài không làm trang bị thu nhỏ;
+  có số trang và chỗ ký. Xuất tệp Excel/PDF làm ở
   Sprint 4 (AC-014).
 

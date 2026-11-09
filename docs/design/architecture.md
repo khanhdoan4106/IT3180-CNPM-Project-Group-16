@@ -68,9 +68,9 @@ hộ, các khoản chưa đóng, các quỹ tự nguyện đang mở.
 | Khung ứng dụng, menu theo vai trò | US-022 | `TrangChinhController`, `trang-chinh.fxml` | `PhanQuyen` | – | – |
 | Khoản thu | US-005, US-006 | `KhoanThuController`, `khoan-thu.fxml` | `KhoanPhiService` | `KhoanPhiDao` | `KhoanPhiServiceTest` |
 | Chốt, sửa công nợ | US-009, US-008 | `CongNoController`, `cong-no.fxml` | `CongNoService` | `CongNoDao` | `CongNoServiceTest`, `CongNoIT` |
-| Tra cứu, thu phí, đóng góp, biên lai, hủy phiếu | US-007, US-010 – US-014 | `ThuPhiController`, `thu-phi.fxml`, `MauIn`, `InAn` | `ThuPhiService` | `PhieuThuDao`, `KhoanPhiDao` | `ThuPhiServiceTest`, `SoTienTest`, `PhieuThuIT` |
-| Thông báo phí hằng tháng | US-015 | `CongNoController` (nút "In thông báo phí"), `MauIn` | `ThongBaoPhiService` | `PhieuThuDao`, `CongNoDao` | `ThongBaoPhiServiceTest`, `PhieuThuIT` |
-| Danh sách nhân khẩu tạm vắng | US-004 | `NhanKhauController`, `DanhSachTamVang`, `MauIn` | `BaoCaoNhanKhauService` | `BaoCaoNhanKhauDao` | `BaoCaoNhanKhauServiceTest`, `PhieuThuIT` |
+| Tra cứu, thu phí, đóng góp, biên lai, hủy phiếu | US-007, US-010 – US-014 | `ThuPhiController`, `thu-phi.fxml`, `MauIn`, `InAn` | `ThuPhiService` | `PhieuThuDao`, `KhoanPhiDao` | `ThuPhiServiceTest`, `SoTienTest`, `MauInTest`, `DangBiKhoaExceptionTest`, `DongHoCsdlTest`, `PhieuThuIT`, `DongHoCsdlIT` |
+| Thông báo phí hằng tháng | US-015 | `CongNoController` (nút "In thông báo phí"), `MauIn` | `ThongBaoPhiService` | `PhieuThuDao`, `CongNoDao` | `ThongBaoPhiServiceTest`, `MauInTest`, `PhieuThuIT` |
+| Danh sách nhân khẩu tạm vắng | US-004 | `NhanKhauController`, `DanhSachTamVang`, `MauIn` | `BaoCaoNhanKhauService` | `BaoCaoNhanKhauDao` | `BaoCaoNhanKhauServiceTest`, `MauInTest`, `PhieuThuIT` |
 
 Thêm chức năng mới thì thêm một dòng vào bảng này trong cùng Pull Request.
 

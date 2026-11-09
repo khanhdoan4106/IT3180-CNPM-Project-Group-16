@@ -230,5 +230,11 @@ trong bộ nhớ (`KhoGia`, `KhoThuPhiGia`, `KhoPhieuThuGia`).
 - `XungDotException` (con của `DaoException`): DAO kiểm tra lại dưới khóa
   dòng và phát hiện dữ liệu vừa đổi ở máy khác (khoản vừa được thu, số tiền
   vừa sửa, hết số biên lai); Service đổi thành thông báo nghiệp vụ.
+- `DangBiKhoaException` (con của `DaoException`): MySQL huỷ giao dịch vì
+  deadlock (1213) hoặc chờ khóa quá hạn (1205); Service hiện "Có người khác
+  đang thao tác trên hộ này, vui lòng thử lại".
+- `DongHoCsdl` (extends `Clock`): giờ máy chủ MySQL (`SELECT NOW()`), dùng
+  cho `ThuPhiService`, `CongNoService` khi chạy thật; test dùng
+  `Clock.fixed` (giả định 38).
 - `ThongTinThu` (record lồng trong `ThuPhiService`): hộ, khoản chưa đóng và
   các quỹ đang mở kèm tình trạng đóng góp của hộ (`DongGopQuy`).

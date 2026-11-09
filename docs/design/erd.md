@@ -182,8 +182,12 @@ Diện tích và đơn giá được chép vào `phai_nop` lúc chốt, nên đ�
 sau đó không làm thay đổi tháng đã chốt. Sửa khoản của một hộ (US-008)
 chỉ đổi `so_tien` và ghi `nguoi_sua`, `ngay_sua`, `ghi_chu`; `so_tien_goc`
 giữ số hệ thống tính. Khoản đã có phiếu thu còn hiệu lực thì không sửa
-được (AC-026): điều kiện "chưa thu" nằm ngay trong câu `UPDATE … WHERE
-NOT EXISTS (…)`, nên khoản vừa được thu ở máy khác cũng không bị sửa.
+được (AC-026): `suaSoTien` chạy trong một giao dịch, khóa `ho_gia_dinh`
+rồi `phai_nop` (cùng thứ tự với lập phiếu), kiểm tra "chưa thu" dưới khóa
+rồi mới `UPDATE`, nên khoản vừa được thu ở máy khác cũng không bị sửa và
+không deadlock với việc thu. Nếu MySQL vẫn huỷ giao dịch (1213, 1205) thì
+DAO báo `DangBiKhoaException`, Service hiện "Có người khác đang thao tác
+trên hộ này, vui lòng thử lại".
 
 `ho_gia_dinh.dien_tich` là `NOT NULL` và `> 0`, nên trường hợp "hộ chưa
 có diện tích" của AC-029 không xảy ra với dữ liệu nhập qua ứng dụng.
@@ -222,7 +226,8 @@ Thiết kế theo giả định 21–32 trong
   hoàn tác, nên dãy số liên tục; phiếu hủy giữ số của nó.
 - **Lập phiếu** chạy trong một giao dịch, khóa theo thứ tự cố định để không
   tạo vòng chờ: dòng `ho_gia_dinh` → các dòng `phai_nop` được chọn (kiểm tra
-  lại chưa thu và số tiền không đổi) → bộ đếm của năm. Hai máy thu cùng một
+  lại chưa thu và số tiền không đổi) → bộ đếm của năm. Sửa số tiền khoản
+  phải nộp khóa cùng thứ tự (hộ → khoản). Hai máy thu cùng một
   khoản thì chỉ một phiếu thành công; máy kia được báo tra cứu lại
   (`PhieuThuIT`).
 - **Hủy phiếu (US-014, giả định 28)** trong một giao dịch: đặt `da_huy`,
