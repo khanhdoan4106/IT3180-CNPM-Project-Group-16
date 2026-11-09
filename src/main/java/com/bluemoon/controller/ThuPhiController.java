@@ -508,6 +508,11 @@ public class ThuPhiController {
 
     /** Hop thoai nhap ly do huy; tra ve null neu dong ma khong huy. */
     private static String hoiLyDoHuy(PhieuThu p) {
+        return taoHopThoaiHuy(p).showAndWait().orElse(null);
+    }
+
+    /** Dung hop thoai huy phieu (chua hien), de hien va de chup bo cuc. */
+    static Dialog<String> taoHopThoaiHuy(PhieuThu p) {
         Dialog<String> d = new Dialog<>();
         d.setTitle("Hủy phiếu " + p.soBienLai());
         d.setHeaderText("Căn hộ " + p.maCanHo() + " · "
@@ -532,7 +537,7 @@ public class ThuPhiController {
         luuY.setPrefWidth(420);
         d.getDialogPane().setContent(new VBox(8, nhan, lyDo, luuY));
         d.setResultConverter(b -> b == huy ? lyDo.getText() : null);
-        return d.showAndWait().orElse(null);
+        return d;
     }
 
     /** Cot chung cho bang phieu hom nay va lich su thu cua ho. */
