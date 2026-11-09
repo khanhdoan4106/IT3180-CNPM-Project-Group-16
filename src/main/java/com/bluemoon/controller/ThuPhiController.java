@@ -28,6 +28,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -36,6 +37,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -71,6 +73,12 @@ public class ThuPhiController {
     private Button lichSuButton;
     @FXML
     private Label hoLabel;
+    @FXML
+    private Label noLabel;
+    @FXML
+    private Label khoanTieuDe;
+    @FXML
+    private Label quyTieuDe;
     @FXML
     private TableView<DongChon> bangNo;
     @FXML
@@ -176,9 +184,12 @@ public class ThuPhiController {
             String chuHo = tt.ho().tenChuHo() == null ? ""
                     : " · Chủ hộ " + tt.ho().tenChuHo();
             String trangThai = tt.ho().ho().getTrangThai() == TrangThaiHo.DANG_O
-                    ? "" : " · Đã chuyển đi";
+                    ? "Đang ở" : "Đã chuyển đi";
             hoLabel.setText("Căn hộ " + tt.ho().ho().getMaCanHo() + chuHo
-                    + trangThai + " · Còn nợ " + SoTien.hienThi(tt.tongNo()));
+                    + " · " + trangThai);
+            noLabel.setText("Còn nợ " + SoTien.hienThi(tt.tongNo()));
+            khoanTieuDe.setText("Khoản phải nộp chưa đóng ("
+                    + tt.khoanChuaDong().size() + ")");
             bangNo.setItems(FXCollections.observableArrayList(
                     tt.khoanChuaDong().stream().map(DongChon::new).toList()));
             bangNo.getItems().forEach(d -> d.chon.addListener(
@@ -197,6 +208,8 @@ public class ThuPhiController {
     private void hienQuy(List<DongGopQuy> dsQuy, boolean daChuyenDi) {
         quyGrid.getChildren().clear();
         oQuy.clear();
+        quyTieuDe.setText("Đóng góp tự nguyện (" + dsQuy.size()
+                + " quỹ đang mở)");
         if (dsQuy.isEmpty()) {
             Label khongCo = new Label(daChuyenDi
                     ? ThuPhiService.LOI_HO_DA_CHUYEN_DI
@@ -207,26 +220,29 @@ public class ThuPhiController {
         }
         int hang = 0;
         for (DongGopQuy q : dsQuy) {
+            if (hang > 0) {
+                quyGrid.add(new Separator(), 0, hang * 2 - 1, 3, 1);
+            }
             Label ten = new Label(q.quy().ten());
             ten.setWrapText(true);
-            ten.setPrefWidth(170);
-            Label tinhTrang = new Label(tinhTrang(q));
-            tinhTrang.getStyleClass().add("phu-de");
-            tinhTrang.setWrapText(true);
-            tinhTrang.setPrefWidth(100);
+            Label daDong = new Label(tinhTrang(q));
+            daDong.getStyleClass().add("phu-de");
             TextField o = new TextField();
-            o.setPrefWidth(110);
             o.setPromptText(q.trangThai() == TrangThaiDongGop.CHUA_THU
                     ? "Số tiền" : "Đóng thêm");
             o.textProperty().addListener((ob, cu, moi) -> capNhatTong());
             oQuy.put(q.quy().id(), o);
-            quyGrid.addRow(hang++, ten, tinhTrang, o);
+            GridPane.setMargin(o, new Insets(8, 0, 8, 0));
+            quyGrid.add(ten, 0, hang * 2);
+            quyGrid.add(daDong, 1, hang * 2);
+            quyGrid.add(o, 2, hang * 2);
+            hang++;
         }
     }
 
     private static String tinhTrang(DongGopQuy q) {
         return q.trangThai() == TrangThaiDongGop.DA_DONG
-                ? "Đã đóng " + SoTien.hienThi(q.tongDaDong())
+                ? SoTien.hienThi(q.tongDaDong())
                 : q.trangThai().getNhan();
     }
 
@@ -352,6 +368,9 @@ public class ThuPhiController {
     private void xoaHo() {
         hoDangThu = null;
         hoLabel.setText("Nhập mã phòng rồi bấm Tra cứu");
+        noLabel.setText("");
+        khoanTieuDe.setText("Khoản phải nộp chưa đóng (0)");
+        quyTieuDe.setText("Đóng góp tự nguyện (0 quỹ đang mở)");
         bangNo.getItems().clear();
         quyGrid.getChildren().clear();
         oQuy.clear();
