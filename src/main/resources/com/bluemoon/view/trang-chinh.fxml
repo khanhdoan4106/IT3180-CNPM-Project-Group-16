@@ -43,7 +43,7 @@
                 </HBox>
                 <VBox fx:id="bienDongBox" styleClass="the" spacing="10"
                       maxWidth="900" visible="false" managed="false">
-                    <Label text="Biến động dân cư gần đây"
+                    <Label text="Biến động nhân khẩu gần đây"
                            styleClass="tieu-de-form"/>
                 </VBox>
                 <Label text="Chọn chức năng trên thanh menu"

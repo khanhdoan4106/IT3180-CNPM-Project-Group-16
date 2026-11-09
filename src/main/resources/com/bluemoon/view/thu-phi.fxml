@@ -42,7 +42,7 @@
                             <HBox spacing="10" alignment="CENTER_LEFT">
                                 <Label text="Mã phòng" minWidth="-Infinity"/>
                                 <TextField fx:id="maField" prefWidth="140"
-                                           promptText="VD: A0601"
+                                           promptText="vd A0601"
                                            onAction="#onTraCuu"/>
                                 <Button minWidth="-Infinity" text="Tra cứu"
                                         onAction="#onTraCuu"/>

@@ -127,7 +127,7 @@
                                    GridPane.rowIndex="3"
                                    GridPane.columnIndex="1">
                             <tooltip>
-                                <Tooltip text="Số CCCD gồm 12 chữ số, bắt buộc với người từ 14 tuổi"/>
+                                <Tooltip text="Số CCCD gồm 12 chữ số, bắt buộc với người từ đủ 14 tuổi"/>
                             </tooltip>
                         </TextField>
                         <Label text="Cư trú *" GridPane.rowIndex="4"/>
