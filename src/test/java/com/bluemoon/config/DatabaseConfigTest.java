@@ -28,7 +28,7 @@ class DatabaseConfigTest {
     void docNhieuLanChiDocFileMotLan(@TempDir Path thuMuc)
             throws IOException {
         Path file = thuMuc.resolve("db.properties");
-        Files.writeString(file, "url=jdbc:mysql://x/y\nuser=u\n");
+        Files.writeString(file, "url=jdbc:mysql://x/y\nghichu=u\n");
         Database.datLaiChoTest(file);
 
         Database.docCauHinh();
@@ -36,19 +36,19 @@ class DatabaseConfigTest {
         Database.docCauHinh();
 
         assertEquals(1, Database.soLanDocFileChoTest());
-        assertEquals("u", Database.docCauHinh().getProperty("user"));
+        assertEquals("u", Database.docCauHinh().getProperty("ghichu"));
     }
 
     @Test
     void suaBanSaoKhongLamDoiCauHinhDaNho(@TempDir Path thuMuc)
             throws IOException {
         Path file = thuMuc.resolve("db.properties");
-        Files.writeString(file, "user=u\n");
+        Files.writeString(file, "ghichu=u\n");
         Database.datLaiChoTest(file);
 
-        Database.docCauHinh().setProperty("user", "khac");
+        Database.docCauHinh().setProperty("ghichu", "khac");
 
-        assertEquals("u", Database.docCauHinh().getProperty("user"));
+        assertEquals("u", Database.docCauHinh().getProperty("ghichu"));
     }
 
     @Test
