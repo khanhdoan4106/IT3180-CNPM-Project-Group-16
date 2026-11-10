@@ -78,6 +78,25 @@ hộ, các khoản chưa đóng, các quỹ tự nguyện đang mở.
 Thêm chức năng mới thì thêm một dòng vào bảng này trong cùng Pull Request.
 Chiến lược kiểm thử và bảng AC → test: [../testing.md](../testing.md).
 
+## Kết nối CSDL
+
+`Database` đọc `config/db.properties` rồi biến môi trường
+`BLUEMOON_DB_URL`, `BLUEMOON_DB_USER`, `BLUEMOON_DB_PASSWORD` (biến môi
+trường ghi đè file) **một lần** ở lần dùng đầu, giữ trong bộ nhớ; mỗi
+`getConnection()` chỉ mở một kết nối mới. Đổi cấu hình thì khởi động lại ứng
+dụng. Đọc lỗi thì không lưu, lần sau thử đọc lại. Test đặt lại cấu hình bằng
+`Database.datLaiChoTest`.
+
+### Những điểm chưa làm
+
+| Điểm | Lý do chưa làm |
+|---|---|
+| Pool kết nối, chạy tác vụ CSDL ở luồng nền, rút thời gian chờ khóa | Chưa có dữ liệu và tải nhiều người dùng để đo. Xem xét lại khi có số liệu thật. |
+| Controller tạo DAO trực tiếp | Nghiệp vụ nằm ở Service và đã được test bằng DAO giả. |
+| Bộ đếm biên lai khóa dòng | Cố ý để số biên lai liên tục (giả định 31). |
+| Phân trang | Quy mô vài trăm hộ. Thống kê Sprint 4 phải tổng hợp bằng SQL, không tải hết dữ liệu lên bộ nhớ. |
+| Phiên làm việc | Mỗi máy một người dùng, đã đọc lại tài khoản trước mỗi màn hình. Tự đăng xuất khi không thao tác để sau. |
+
 ## Giao diện
 
 Bố cục, màn hình, phương án màu và đặc tả: [ui.md](ui.md). Màu dùng biến
