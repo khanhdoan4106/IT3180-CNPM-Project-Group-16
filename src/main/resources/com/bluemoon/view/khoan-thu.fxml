@@ -47,17 +47,22 @@
                 </placeholder>
             </TableView>
             <HBox fx:id="suaDonGiaBox" spacing="10">
+                <!-- Enter trong khung nay chi chay "Sua don gia" (PhimEnter). -->
+                <properties enterChay="suaDonGiaButton"/>
                 <Label fx:id="dangChonLabel" styleClass="phu-de"
                        wrapText="true"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <TextField fx:id="donGiaField" promptText="Đơn giá đ/m²"
                            prefWidth="140"/>
-                <Button minWidth="-Infinity" text="Sửa đơn giá" onAction="#onSuaDonGia"/>
+                <Button minWidth="-Infinity" fx:id="suaDonGiaButton" text="Sửa đơn giá"
+                        onAction="#onSuaDonGia"/>
             </HBox>
         </VBox>
     </center>
     <right>
         <VBox fx:id="taoBox" styleClass="the" spacing="10" prefWidth="340">
+            <!-- Enter trong khung nay chi chay "Tao khoan thu" (PhimEnter). -->
+            <properties enterChay="taoButton"/>
             <BorderPane.margin>
                 <Insets left="16"/>
             </BorderPane.margin>
@@ -81,8 +86,8 @@
                    styleClass="phu-de" wrapText="true"/>
             <Region VBox.vgrow="ALWAYS"/>
             <HBox spacing="10">
-                <Button minWidth="-Infinity" text="Tạo khoản thu" styleClass="nut-chinh"
-                        defaultButton="true" onAction="#onTao"/>
+                <Button minWidth="-Infinity" fx:id="taoButton" text="Tạo khoản thu"
+                        styleClass="nut-chinh" onAction="#onTao"/>
                 <Button minWidth="-Infinity" text="Nhập mới" onAction="#onNhapMoi"/>
             </HBox>
         </VBox>

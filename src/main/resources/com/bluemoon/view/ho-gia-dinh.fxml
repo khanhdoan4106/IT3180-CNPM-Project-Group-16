@@ -29,7 +29,8 @@
             <Label text="Quản lý hộ gia đình" styleClass="tieu-de-trang"/>
             <HBox spacing="12" alignment="CENTER_LEFT">
                 <TextField fx:id="timKiemField" prefWidth="320"
-                           promptText="Tìm theo mã căn hộ hoặc tên chủ hộ"/>
+                           promptText="Tìm theo mã căn hộ hoặc tên chủ hộ"
+                           onAction="#onTimKiem"/>
                 <CheckBox fx:id="gomChuyenDiCheck"
                           text="Hiện cả hộ đã chuyển đi"/>
                 <Region HBox.hgrow="ALWAYS"/>
@@ -75,7 +76,9 @@
             <BorderPane.margin>
                 <Insets left="20"/>
             </BorderPane.margin>
-            <VBox spacing="10">
+            <VBox fx:id="hoForm" spacing="10">
+                <!-- Enter trong khung nay chi chay "Luu" (PhimEnter). -->
+                <properties enterChay="luuButton"/>
                 <Label fx:id="tieuDeFormLabel" text="Thêm hộ gia đình"
                        styleClass="tieu-de-form"/>
                 <GridPane hgap="10" vgap="10">
@@ -159,7 +162,7 @@
                 <Label fx:id="thongBaoLabel" wrapText="true"/>
                 <!-- Hai hang: khung 380px khong du cho 4 nut tren mot hang. -->
                 <HBox spacing="10">
-                    <Button minWidth="-Infinity" fx:id="luuButton" text="Lưu" defaultButton="true"
+                    <Button minWidth="-Infinity" fx:id="luuButton" text="Lưu"
                             styleClass="nut-chinh" onAction="#onLuu"/>
                     <Button minWidth="-Infinity" text="Nhập mới" onAction="#onNhapMoi"/>
                 </HBox>
