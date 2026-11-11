@@ -253,29 +253,46 @@ public class ThuPhiController {
                 : q.trangThai().getNhan();
     }
 
+    /**
+     * Tong cac khoan dang chon va dong gop da nhap, null neu co o so tien
+     * chua hop le.
+     */
+    private BigDecimal tongDangChon() {
+        BigDecimal tong = BigDecimal.ZERO;
+        for (DongChon d : bangNo.getItems()) {
+            if (d.chon.get()) {
+                tong = tong.add(d.khoan.soTien());
+            }
+        }
+        for (TextField o : oQuy.values()) {
+            if (o.getText() == null || o.getText().isBlank()) {
+                continue;
+            }
+            try {
+                tong = tong.add(SoTien.doc(o.getText(), "Số tiền"));
+            } catch (NghiepVuException e) {
+                return null;
+            }
+        }
+        return tong;
+    }
+
     /** Cong tong de nguoi thu doi chieu truoc khi bam Thu. */
     private void capNhatTong() {
-        BigDecimal tong = BigDecimal.ZERO;
+        BigDecimal tong = tongDangChon();
+        boolean soSai = tong == null;
         boolean tatCa = !bangNo.getItems().isEmpty();
         boolean coChon = false;
         for (DongChon d : bangNo.getItems()) {
             if (d.chon.get()) {
-                tong = tong.add(d.khoan.soTien());
                 coChon = true;
             } else {
                 tatCa = false;
             }
         }
-        boolean soSai = false;
         for (TextField o : oQuy.values()) {
-            if (o.getText() == null || o.getText().isBlank()) {
-                continue;
-            }
-            coChon = true;
-            try {
-                tong = tong.add(SoTien.doc(o.getText(), "Số tiền"));
-            } catch (NghiepVuException e) {
-                soSai = true;
+            if (o.getText() != null && !o.getText().isBlank()) {
+                coChon = true;
             }
         }
         tongLabel.setText(soSai ? "Tổng thu: số tiền chưa hợp lệ"
@@ -309,6 +326,17 @@ public class ThuPhiController {
         HinhThucThanhToan hinhThuc = hinhThucGroup.getSelectedToggle() == null
                 ? null : (HinhThucThanhToan) hinhThucGroup
                         .getSelectedToggle().getUserData();
+        // AC-038: bao thieu hinh thuc ngay, truoc khi hoi xac nhan.
+        BigDecimal tong = tongDangChon();
+        if (tong != null) {
+            try {
+                ThuPhiService.kiemTraHinhThuc(tong, hinhThuc);
+            } catch (NghiepVuException e) {
+                baoLoi(thongBaoLabel, e.getMessage());
+                tienMatRadio.requestFocus();
+                return;
+            }
+        }
         String ma = hoDangThu.ho().getMaCanHo();
         if (!HopThoai.xacNhan("Lập phiếu thu cho căn hộ " + ma + "?\n"
                 + tongLabel.getText()

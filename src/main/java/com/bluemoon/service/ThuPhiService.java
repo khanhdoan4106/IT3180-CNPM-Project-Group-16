@@ -206,9 +206,7 @@ public class ThuPhiService {
         }
         BigDecimal tong = dong.stream().map(PhieuThuMoi.Dong::soTien)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        if (tong.signum() > 0 && hinhThuc == null) {
-            throw new NghiepVuException(LOI_CHUA_CHON_HINH_THUC);
-        }
+        kiemTraHinhThuc(tong, hinhThuc);
         PhieuThuMoi moi = new PhieuThuMoi(hoId,
                 tong.signum() == 0 ? null : hinhThuc, nguoi.getId(),
                 LocalDateTime.now(dongHo).truncatedTo(ChronoUnit.SECONDS),
@@ -219,6 +217,22 @@ public class ThuPhiService {
             throw new NghiepVuException(thongBao(e));
         } catch (DangBiKhoaException e) {
             throw new NghiepVuException(DangBiKhoaException.THONG_BAO);
+        }
+    }
+
+    /**
+     * Phiếu có thu tiền thì bắt buộc chọn hình thức thanh toán (AC-038).
+     * Màn Thu phí gọi hàm này trước khi hỏi xác nhận, để không bắt người thu
+     * xác nhận rồi mới báo lỗi.
+     *
+     * @param tong tổng tiền của phiếu
+     * @param hinhThuc hình thức đã chọn, có thể null
+     * @throws NghiepVuException nếu tổng lớn hơn 0 mà chưa chọn hình thức
+     */
+    public static void kiemTraHinhThuc(BigDecimal tong,
+            HinhThucThanhToan hinhThuc) {
+        if (tong.signum() > 0 && hinhThuc == null) {
+            throw new NghiepVuException(LOI_CHUA_CHON_HINH_THUC);
         }
     }
 
