@@ -18,31 +18,62 @@ import java.util.Properties;
  */
 public final class Database {
 
-    private static final Path FILE_CAU_HINH =
+    private static final Path FILE_MAC_DINH =
             Path.of("config", "db.properties");
+
+    private static Path fileCauHinh = FILE_MAC_DINH;
+    private static Properties cauHinh;
+    private static int soLanDocFile;
 
     private Database() {
     }
 
     /**
-     * Doc cau hinh ket noi.
+     * Doc cau hinh ket noi. File va bien moi truong chi duoc doc o lan goi
+     * dau, cac lan sau dung ban luu trong bo nho. Doc loi thi khong luu,
+     * lan sau thu doc lai.
      *
-     * @return thuoc tinh url, user, password
+     * @return ban sao thuoc tinh url, user, password
      */
-    public static Properties docCauHinh() {
+    public static synchronized Properties docCauHinh() {
+        if (cauHinh == null) {
+            cauHinh = napCauHinh();
+        }
+        Properties banSao = new Properties();
+        banSao.putAll(cauHinh);
+        return banSao;
+    }
+
+    private static Properties napCauHinh() {
         Properties props = new Properties();
-        if (Files.exists(FILE_CAU_HINH)) {
-            try (InputStream in = Files.newInputStream(FILE_CAU_HINH)) {
+        if (Files.exists(fileCauHinh)) {
+            soLanDocFile++;
+            try (InputStream in = Files.newInputStream(fileCauHinh)) {
                 props.load(in);
             } catch (IOException e) {
                 throw new CauHinhException(
-                        "Không đọc được " + FILE_CAU_HINH, e);
+                        "Không đọc được " + fileCauHinh, e);
             }
         }
         ghiDeTuMoiTruong(props, "url", "BLUEMOON_DB_URL");
         ghiDeTuMoiTruong(props, "user", "BLUEMOON_DB_USER");
         ghiDeTuMoiTruong(props, "password", "BLUEMOON_DB_PASSWORD");
         return props;
+    }
+
+    /**
+     * Xoa cau hinh da nho va doi file cau hinh. Chi dung cho test.
+     *
+     * @param file file cau hinh thay the, null de dung file mac dinh
+     */
+    static synchronized void datLaiChoTest(Path file) {
+        fileCauHinh = file == null ? FILE_MAC_DINH : file;
+        cauHinh = null;
+        soLanDocFile = 0;
+    }
+
+    static synchronized int soLanDocFileChoTest() {
+        return soLanDocFile;
     }
 
     private static void ghiDeTuMoiTruong(Properties props, String khoa,
