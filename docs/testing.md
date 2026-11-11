@@ -12,6 +12,8 @@ còn phải kiểm tay. Quy tắc chung khi hoàn thành một story nằm ở
 | Test đơn vị (Service) | `src/test/java/com/bluemoon/service` | Quy tắc nghiệp vụ, kiểm tra dữ liệu, phân quyền (`PhanQuyen`), thông báo lỗi | Không cần MySQL: Service nhận DAO qua constructor, test dùng DAO giả trong bộ nhớ (`KhoGia`, `KhoThuPhiGia`, `KhoPhieuThuGia`) |
 | Test đơn vị (tiện ích, DAO không cần CSDL) | `util`, `dao`, `config`, `controller` | Băm mật khẩu, đọc ngày, đổi mã lỗi MySQL thành lỗi nghiệp vụ (`DangBiKhoaException`, `TrungKhoaException`), đồng hồ `DongHoCsdl` với `Clock.fixed`, chọn thông báo lỗi (`LoiCsdl`, `LoiKhongMongDoi`), số tiền bằng chữ | Không |
 | Test bố cục giao diện | `BoCucFxmlTest`, `MauInTest`, `HopThoaiHuyPhieuTest` | Nạp từng FXML ở cửa sổ 1120×645 bằng JavaFX chạy không màn hình (Monocle), kiểm không nút hay nhãn nào bị cắt thành "…", chữ gợi ý nằm trọn trong ô, mọi nút nằm trong vùng thấy được hoặc cuộn được, dùng đúng phông Be Vietnam Pro; số tiền lớn nhất vẫn vừa cột biên lai; hộp thoại hủy phiếu có đúng nút | Không cần màn hình, chạy được trên CI |
+| Test hành vi giao diện | `PhimEnterTest`, `TrangChinhMenuTest`, `MauPhuTest` | Tải FXML thật trên cửa sổ ảo (Monocle), gửi sự kiện Enter vào từng ô và xem nút nào chạy; bấm logo về Trang chính, nút menu đang chọn có nền `#1d4ed8` do JavaFX vẽ; màu chữ phụ, tiêu đề cột và tương phản WCAG AA | Không cần màn hình, chạy được trên CI |
+| Test tài liệu | `TruyVetTaiLieuTest`, `UiMdTest`, `TestingMdTest` | Mã RAW trích trong chú thích khớp bảng truy vết, `ui.md` giữ đủ quy tắc biểu đồ và bảng màu, mọi `Lớp#phương_thức` trong bảng AC → test ở đây còn tồn tại | Không |
 | Kiểm thử tích hợp (`*IT`) | `src/test/java/com/bluemoon/it` | Phần chỉ MySQL thật mới chứng minh được: khóa dòng, deadlock, ràng buộc CSDL, giao dịch hoàn tác, giờ máy chủ, dữ liệu mẫu | MySQL 8, CSDL riêng có chữ `test` trong tên, profile `-Pmysql` |
 | Kiểm tay | Theo bảng ở mục 5 | In thật qua máy in, hộp thoại máy in, nhìn bằng mắt, hai máy cùng dùng | Máy có giao diện |
 
@@ -42,7 +44,7 @@ không có chữ `test`, để không xóa nhầm CSDL `bluemoon` đang dùng.
 | IntelliJ | Maven → bluemoon → Lifecycle → `test` |
 | Dòng lệnh | `mvn test` hoặc `mvn verify` (cần Maven 3.9+ trong PATH) |
 
-Kết quả mong đợi: `BUILD SUCCESS`, 248 test. `mvn verify` không có
+Kết quả mong đợi: `BUILD SUCCESS`, 269 test. `mvn verify` không có
 `-Pmysql` không chạy lớp `*IT`.
 
 Chạy riêng test bố cục sau khi sửa FXML hoặc CSS:
@@ -67,8 +69,9 @@ mvn test -Dtest=BoCucFxmlTest
    Nếu user không phải `bluemoon`, đặt thêm `BLUEMOON_DB_USER` và
    `BLUEMOON_DB_PASSWORD`.
 
-Kết quả mong đợi: 248 test đơn vị và 22 kiểm thử tích hợp đều đạt (MySQL
-8.0).
+Kết quả mong đợi: 269 test đơn vị và 29 kiểm thử tích hợp đều đạt (MySQL
+8.0). Hai test cấu hình (`DatabaseConfigTest`) tự bỏ qua khi đã đặt
+`BLUEMOON_DB_*`, nên log hiện "Skipped: 2" ở lần chạy này.
 
 ### Trên GitHub
 
@@ -79,7 +82,7 @@ hai xanh:
 | Job | Làm gì |
 |---|---|
 | `build` | JDK 21, `mvn -B verify`: test đơn vị và test bố cục |
-| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 22 kiểm thử tích hợp |
+| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 29 kiểm thử tích hợp |
 
 ## 3. Số test hiện tại
 
@@ -87,7 +90,7 @@ hai xanh:
 |---|---|---|
 | `v0.1.0` | 97 | – |
 | `v0.2.0` | 169 | có (`mvn verify -Pmysql`) |
-| `v0.3.0` (Sprint 3 và các sửa #28 – #32) | 248 | 22 |
+| `v0.3.0` (Sprint 3 và các sửa #28 – #34) | 269 | 29 |
 
 ## 4. Ánh xạ AC → test tự động
 
@@ -119,7 +122,7 @@ Sprint 4 là chưa làm.
 | AC-057 đăng nhập đúng | `TaiKhoanServiceTest#dangNhapDungThanhCong` | ✓ |
 | AC-058 sai mật khẩu | `TaiKhoanServiceTest#saiMatKhauBiTuChoi`, `#khongCoTaiKhoanThongBaoGiongSaiMatKhau`, `MatKhauUtilTest#saiMatKhauKhongKhop` | ✓ |
 | AC-059 chưa đăng nhập thì yêu cầu | `ThuPhiServiceTest#canDangNhap`, `CongNoServiceTest#canDangNhapMoiChotDuoc`, `BienDongServiceTest#chuaDangNhapBiChan` | ✓ |
-| AC-070 ứng dụng kết nối MySQL | `DatabaseConfigTest#docCauHinhKhongNem`, `LoiCsdlTest` (phân biệt mất kết nối, thiếu cấu hình), mọi `*IT` | ◐ khởi động ứng dụng thật kiểm tay |
+| AC-070 ứng dụng kết nối MySQL | `DatabaseConfigTest#thieuFileKhongNemMaTraCauHinhRong`, `LoiCsdlTest` (phân biệt mất kết nối, thiếu cấu hình), mọi `*IT` | ◐ khởi động ứng dụng thật kiểm tay |
 | AC-071 hai máy thấy cùng dữ liệu | `PhieuThuIT#haiMayCungThuMotKhoanChiMotPhieuThanhCong`, `HoGiaDinhServiceTest#haiMayCungThemMotMaCanHoThiBaoTrungChuKhongBaoLoiCsdl` (hai kết nối cùng CSDL) | ◐ hai máy thật kiểm tay |
 
 ### Sprint 2
@@ -169,7 +172,7 @@ Sprint 4 là chưa làm.
 | AC-035 tổng tự cộng, có ngày thu | `ThuPhiServiceTest#thuTatCaDuaCongNoVe0VaGhiNguoiThu` | ◐ nhãn tổng trên màn hình kiểm tay |
 | AC-036 lưu hình thức thanh toán | `ThuPhiServiceTest#thuTatCaDuaCongNoVe0VaGhiNguoiThu` | ✓ |
 | AC-037 lưu người thu và thời điểm | `ThuPhiServiceTest#thuTatCaDuaCongNoVe0VaGhiNguoiThu`, `DongHoCsdlTest`, `DongHoCsdlIT` | ✓ |
-| AC-038 chưa chọn hình thức thì báo lỗi | `ThuPhiServiceTest#chuaChonHinhThucThiBaoLoi` | ✓ |
+| AC-038 chưa chọn hình thức thì báo lỗi | `ThuPhiServiceTest#chuaChonHinhThucThiBaoLoi`, `#kiemTraHinhThucChoManHinhTruocKhiXacNhan` (màn Thu phí báo trước hộp xác nhận) | ✓ |
 | AC-039 nội dung biên lai | `SoTienTest` (số tiền bằng chữ), `ThuPhiServiceTest#soBienLaiLienTucVaDanhLaiKhiSangNam`, `MauInTest#soTienLonNhatDuocKiemLaMucTranNghiepVu` (cột tiền) | ◐ trang in xem tận mắt |
 | AC-040 "bản in lại" | `ThuPhiServiceTest#inLanHaiLaBanInLai`, `PhieuThuIT#inBienLaiDemSoLanIn`, `#daInKhongDemPhieuDaHuy` | ◐ khung "BẢN IN LẠI" trên trang in kiểm tay |
 | AC-041 hủy trong ngày, khôi phục công nợ | `ThuPhiServiceTest#thuQuyHuyPhieuMinhLapKhoanTroVeChuaDong`, `PhieuThuIT#thuTatCaRoiHuyKhoiPhucCongNo`, `HopThoaiHuyPhieuTest` | ✓ |
