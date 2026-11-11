@@ -41,7 +41,7 @@ không có chữ `test`, để không xóa nhầm CSDL `bluemoon` đang dùng.
 | IntelliJ | Maven → bluemoon → Lifecycle → `test` |
 | Dòng lệnh | `mvn test` hoặc `mvn verify` (cần Maven 3.9+ trong PATH) |
 
-Kết quả mong đợi: `BUILD SUCCESS`, 244 test. `mvn verify` không có
+Kết quả mong đợi: `BUILD SUCCESS`, 248 test. `mvn verify` không có
 `-Pmysql` không chạy lớp `*IT`.
 
 Chạy riêng test bố cục sau khi sửa FXML hoặc CSS:
@@ -66,7 +66,7 @@ mvn test -Dtest=BoCucFxmlTest
    Nếu user không phải `bluemoon`, đặt thêm `BLUEMOON_DB_USER` và
    `BLUEMOON_DB_PASSWORD`.
 
-Kết quả mong đợi: 244 test đơn vị và 22 kiểm thử tích hợp đều đạt (MySQL
+Kết quả mong đợi: 248 test đơn vị và 22 kiểm thử tích hợp đều đạt (MySQL
 8.0).
 
 ### Trên GitHub
@@ -86,7 +86,7 @@ hai xanh:
 |---|---|---|
 | `v0.1.0` | 97 | – |
 | `v0.2.0` | 169 | có (`mvn verify -Pmysql`) |
-| Sau Sprint 3 và các sửa (#28, #29, #30) | 244 | 22 |
+| `v0.3.0` (Sprint 3 và các sửa #28 – #32) | 248 | 22 |
 
 ## 4. Ánh xạ AC → test tự động
 

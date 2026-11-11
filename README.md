@@ -32,7 +32,7 @@ trực tiếp phần mềm.
 |---|---|---|
 | Sprint 1 – [`v0.1.0`](../../releases/tag/v0.1.0) | Đăng nhập, đăng ký tài khoản, hộ gia đình, nhân khẩu, tạm trú/tạm vắng | Hoàn thành |
 | Sprint 2 – [`v0.2.0`](../../releases/tag/v0.2.0) | Khoản thu, chốt và sửa công nợ, phân quyền hai lớp, quản lý tài khoản, đổi mật khẩu, đổi chủ hộ, lịch sử biến động nhân khẩu | Hoàn thành (AC-026 của US-008 làm cùng phiếu thu ở Sprint 3) |
-| Sprint 3 – `v0.3.0` | Ghi nhận đóng góp, thu phí, biên lai, hủy phiếu, thông báo, báo cáo nhân khẩu | Hoàn thành, chờ gắn tag `v0.3.0` ở Sprint Review (xuất tệp danh sách tạm vắng, AC-014, làm cùng Sprint 4) |
+| Sprint 3 – [`v0.3.0`](../../releases/tag/v0.3.0) | Ghi nhận đóng góp, thu phí, biên lai, hủy phiếu, thông báo, báo cáo nhân khẩu | Hoàn thành (xuất tệp danh sách tạm vắng, AC-014, làm cùng Sprint 4) |
 | Sprint 4 – `v1.0.0` | Thống kê, xuất Excel, sao lưu, nhật ký thao tác, rà soát giao diện | Chưa bắt đầu |
 
 Chi tiết từng story: [Product Backlog](docs/requirements/08-product-backlog.md).

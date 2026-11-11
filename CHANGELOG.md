@@ -6,10 +6,11 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
 [Product Backlog](docs/requirements/08-product-backlog.md) và
 [User Story](docs/requirements/07-user-stories.md); số `#` là Pull Request.
 
-## [Chưa phát hành] – Sprint 3 (dự kiến `v0.3.0`)
+## [Chưa phát hành]
 
-Hoàn thành thu phí từ tra cứu đến biên lai. Chưa gắn tag: gắn ở Sprint
-Review, sau khi các Pull Request #28, #29, #30 đã merge.
+## [v0.3.0] – 11/11/2026 – Sprint 3
+
+Hoàn thành thu phí từ tra cứu đến biên lai. Gồm các Pull Request #28 – #32.
 
 ### Thêm
 
@@ -64,6 +65,11 @@ Review, sau khi các Pull Request #28, #29, #30 đã merge.
 - **Biên lai và thông báo (#28):** cột tiền không bị cắt với số lớn (đến
   1.000.000.000 đ); danh sách tạm vắng in khổ ngang, chia trang theo chiều
   cao thực.
+- **Cấu hình CSDL chỉ đọc một lần (#32):** `config/db.properties` và biến
+  môi trường được đọc khi ứng dụng kết nối lần đầu rồi giữ nguyên. Sửa
+  `config/db.properties` khi ứng dụng đang chạy, kể cả tạo file sau khi thấy
+  báo thiếu cấu hình, không có tác dụng: tắt và mở lại ứng dụng. Thứ tự ưu
+  tiên và các thông báo lỗi giữ nguyên.
 - **Chính sách đổi kích thước cột bảng (#29):** chuyển sang kiểu không
   deprecated của JavaFX 20+, hành vi không đổi.
 
@@ -84,7 +90,7 @@ giữ nguyên ([setup.md](docs/setup.md), mục 2).
 
 ### Kiểm thử
 
-244 test đơn vị và 22 kiểm thử tích hợp trên MySQL 8.0
+248 test đơn vị và 22 kiểm thử tích hợp trên MySQL 8.0
 ([testing.md](docs/testing.md)).
 
 ## [v0.2.0] – 09/11/2026 – Sprint 2
@@ -149,6 +155,7 @@ biến động. **Phải dựng lại CSDL** khi nâng từ `v0.1.0`.
 
 97 test JUnit 5; CI chạy `mvn verify` cho mỗi Pull Request.
 
-[Chưa phát hành]: https://github.com/khanhdoan4106/IT3180-CNPM-Project-Group-16/compare/v0.2.0...main
+[Chưa phát hành]: https://github.com/khanhdoan4106/IT3180-CNPM-Project-Group-16/compare/v0.3.0...main
+[v0.3.0]: https://github.com/khanhdoan4106/IT3180-CNPM-Project-Group-16/releases/tag/v0.3.0
 [v0.2.0]: https://github.com/khanhdoan4106/IT3180-CNPM-Project-Group-16/releases/tag/v0.2.0
 [v0.1.0]: https://github.com/khanhdoan4106/IT3180-CNPM-Project-Group-16/releases/tag/v0.1.0
