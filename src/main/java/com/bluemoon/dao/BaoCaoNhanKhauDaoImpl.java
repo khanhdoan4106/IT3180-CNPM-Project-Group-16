@@ -21,8 +21,9 @@ public class BaoCaoNhanKhauDaoImpl implements BaoCaoNhanKhauDao {
             + "FROM tam_tru_tam_vang t "
             + "JOIN nhan_khau n ON n.id = t.nhan_khau_id "
             + "JOIN ho_gia_dinh h ON h.id = n.ho_id "
-            + "WHERE t.loai = 'TAM_VANG' AND t.tu_ngay <= ? AND t.den_ngay >= ? "
-            + "AND n.trang_thai = 'DANG_O' AND h.trang_thai = 'DANG_O' "
+            + "WHERE t.loai = 'TAM_VANG' AND t.tu_ngay <= ? "
+            + "AND t.den_ngay >= ? AND n.trang_thai = 'DANG_O' "
+            + "AND h.trang_thai = 'DANG_O' "
             + "ORDER BY h.ma_can_ho, n.ho_ten";
 
     @Override

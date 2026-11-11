@@ -53,6 +53,7 @@ erDiagram
         date ngay_chuyen_den
         enum trang_thai "DANG_O | DA_CHUYEN_DI"
         varchar ma_dang_o UK "sinh tự động"
+        datetime ngay_tao
     }
     NHAN_KHAU {
         int id PK
@@ -67,6 +68,7 @@ erDiagram
         varchar noi_thuong_tru
         int chu_ho_cua UK "sinh tự động"
         char cccd_dang_o UK "sinh tự động"
+        datetime ngay_tao
     }
     TAM_TRU_TAM_VANG {
         int id PK
@@ -75,6 +77,7 @@ erDiagram
         date tu_ngay
         date den_ngay ">= tu_ngay"
         varchar ly_do
+        datetime ngay_tao
     }
     KHOAN_PHI {
         int id PK
@@ -85,6 +88,7 @@ erDiagram
         date tu_ngay
         date den_ngay "bắt buộc với khoản tự nguyện"
         enum trang_thai "DANG_THU | DA_DONG"
+        datetime ngay_tao
     }
     DOT_THU {
         int id PK

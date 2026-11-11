@@ -113,7 +113,8 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
             + "pt.thoi_diem, pt.so_lan_in, pt.da_huy, th.ho_ten AS "
             + "ten_nguoi_huy, pt.thoi_diem_huy, pt.ly_do_huy FROM phieu_thu pt "
             + "JOIN ho_gia_dinh h ON h.id = pt.ho_id "
-            + "LEFT JOIN nhan_khau c ON c.ho_id = h.id AND c.quan_he = 'CHU_HO' "
+            + "LEFT JOIN nhan_khau c ON c.ho_id = h.id "
+            + "AND c.quan_he = 'CHU_HO' "
             + "JOIN tai_khoan tt ON tt.id = pt.nguoi_thu "
             + "LEFT JOIN tai_khoan th ON th.id = pt.nguoi_huy ";
     private static final String SQL_PHIEU_THEO_ID = CHON_PHIEU
