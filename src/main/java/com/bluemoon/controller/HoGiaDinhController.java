@@ -218,6 +218,12 @@ public class HoGiaDinhController {
         }
     }
 
+    /** Enter trong ô tìm kiếm: tìm lại, không lưu form (xem PhimEnter). */
+    @FXML
+    private void onTimKiem() {
+        taiLai();
+    }
+
     @FXML
     private void onNhapMoi() {
         bangHo.getSelectionModel().clearSelection();

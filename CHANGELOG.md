@@ -10,7 +10,7 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
 
 ## [v0.3.0] – 11/11/2026 – Sprint 3
 
-Hoàn thành thu phí từ tra cứu đến biên lai. Gồm các Pull Request #28 – #32.
+Hoàn thành thu phí từ tra cứu đến biên lai. Gồm các Pull Request #28 – #34.
 
 ### Thêm
 
@@ -70,11 +70,32 @@ Hoàn thành thu phí từ tra cứu đến biên lai. Gồm các Pull Request #
   `config/db.properties` khi ứng dụng đang chạy, kể cả tạo file sau khi thấy
   báo thiếu cấu hình, không có tác dụng: tắt và mở lại ứng dụng. Thứ tự ưu
   tiên và các thông báo lỗi giữ nguyên.
+- **Thông báo lỗi cấu hình (#34):** thông báo "Không kết nối được cơ sở dữ
+  liệu" và "Thiếu hoặc sai cấu hình" nói rõ: sửa `config/db.properties` xong
+  thì tắt và mở lại ứng dụng; thông báo mất kết nối gợi ý kiểm tra user, mật
+  khẩu.
+- **Logo và menu (#34):** bấm logo "BlueMoon" (con trỏ bàn tay, gợi ý "Về
+  trang chủ") để về Trang chính; nút menu của màn đang mở có nền đậm.
+- **Chữ phụ (#34):** màu `#526077` (tương phản 5,8:1 trên nền, đạt WCAG AA);
+  tiêu đề cột bảng dùng cùng màu.
 - **Chính sách đổi kích thước cột bảng (#29):** chuyển sang kiểu không
   deprecated của JavaFX 20+, hành vi không đổi.
 
 ### Sửa
 
+- **Phím Enter bấm nhầm nút (#34):** Enter trong ô của khung đợt tạm trú/tạm
+  vắng không còn lưu form nhân khẩu, Enter ở ô đơn giá không còn tạo khoản
+  thu mới, Enter ở ô tìm kiếm hộ không còn bấm "Lưu". Mỗi khung chỉ chạy nút
+  của mình; Enter ở màn Tài khoản gửi đúng form (họ tên, số điện thoại → "Lưu
+  thay đổi"; mật khẩu → "Đổi mật khẩu"; đăng ký → "Đăng ký").
+- **Thu phí (#34):** chưa chọn "Tiền mặt/Chuyển khoản" thì báo ngay, không
+  còn hỏi xác nhận rồi mới báo lỗi.
+- **Giờ lưu theo múi giờ máy (#34):** máy chạy ứng dụng không đặt múi giờ
+  Việt Nam làm giờ lập phiếu bị dịch (phiếu 23:30 ngày 31/12 bị từ chối vì
+  rơi sang năm sau). Cột do MySQL tự điền (giờ biến động, giờ sửa khoản) lệch
+  7 giờ khi máy chủ MySQL chạy giờ UTC (Docker, máy chủ đám mây). Giờ ghi và
+  đọc CSDL không còn phụ thuộc múi giờ máy chạy ứng dụng hay máy chủ MySQL:
+  mỗi phiên MySQL đặt giờ Việt Nam (`+07:00`).
 - Sửa số tiền khoản phải nộp ở máy này đồng thời với thu phí ở máy khác không
   còn gây deadlock; khi MySQL hủy giao dịch vì khóa, người dùng thấy "Có người
   khác đang thao tác trên hộ này, vui lòng thử lại" (#28).
@@ -90,7 +111,7 @@ giữ nguyên ([setup.md](docs/setup.md), mục 2).
 
 ### Kiểm thử
 
-248 test đơn vị và 22 kiểm thử tích hợp trên MySQL 8.0
+269 test đơn vị và 30 kiểm thử tích hợp trên MySQL 8.0
 ([testing.md](docs/testing.md)).
 
 ## [v0.2.0] – 09/11/2026 – Sprint 2

@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS tai_khoan (
     ngay_tao      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- US-001: quan ly ho gia dinh (RAW-001, RAW-010, RAW-030, RAW-033).
+-- US-001: quan ly ho gia dinh (RAW-001).
 -- Ho chuyen di chi doi trang_thai, khong xoa. Ma can ho chi duy nhat trong
 -- cac ho DANG_O (cot sinh ma_dang_o), nen can ho cu nhan duoc ho moi.
 CREATE TABLE IF NOT EXISTS ho_gia_dinh (

@@ -11,12 +11,15 @@ final class LoiCsdl {
 
     /** Khong mo duoc, hoac mat, ket noi toi MySQL. */
     static final String MAT_KET_NOI = "Không kết nối được cơ sở dữ liệu."
-            + " Kiểm tra máy chủ MySQL và mạng, hoặc báo người quản trị"
-            + " hệ thống.";
+            + " Kiểm tra MySQL đã chạy chưa, mạng, và user, mật khẩu trong"
+            + " config/db.properties. Sửa file xong thì tắt và mở lại ứng"
+            + " dụng (cấu hình chỉ được đọc một lần khi khởi động). Nếu vẫn"
+            + " lỗi, báo người quản trị hệ thống.";
     /** Thieu hoac khong doc duoc config/db.properties. */
     static final String SAI_CAU_HINH = "Thiếu hoặc sai cấu hình kết nối cơ"
-            + " sở dữ liệu (config/db.properties). Báo người quản trị hệ"
-            + " thống.";
+            + " sở dữ liệu (config/db.properties). Sửa file xong thì tắt và"
+            + " mở lại ứng dụng (cấu hình chỉ được đọc một lần khi khởi"
+            + " động). Nếu không tự sửa được, báo người quản trị hệ thống.";
     /** Co ket noi nhung cau lenh bi CSDL tu choi. */
     static final String LOI_DU_LIEU = "Có lỗi khi đọc hoặc lưu dữ liệu."
             + " Thử lại; nếu vẫn lỗi, báo người quản trị hệ thống.";

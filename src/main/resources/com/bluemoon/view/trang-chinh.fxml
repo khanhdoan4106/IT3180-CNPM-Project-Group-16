@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -12,18 +13,25 @@
             fx:controller="com.bluemoon.controller.TrangChinhController">
     <top>
         <HBox styleClass="thanh-dau" spacing="12">
-            <Label text="BlueMoon" styleClass="logo" minWidth="-Infinity"/>
+            <!-- Bam logo ve Trang chinh (khong co muc "Trang chu" rieng). -->
+            <Button fx:id="logoButton" text="BlueMoon" styleClass="logo"
+                    minWidth="-Infinity" onAction="#onVeTrangChu">
+                    <!-- Con tro ban tay dat bang CSS (.thanh-dau .logo). -->
+                <tooltip>
+                    <Tooltip text="Về trang chủ"/>
+                </tooltip>
+            </Button>
             <Button minWidth="-Infinity" fx:id="hoGiaDinhButton" text="Hộ gia đình"
                     styleClass="nut-menu" onAction="#onMoHoGiaDinh"/>
             <Button minWidth="-Infinity" fx:id="nhanKhauButton" text="Nhân khẩu"
                     styleClass="nut-menu" onAction="#onMoNhanKhau"/>
-            <Button minWidth="-Infinity" text="Khoản thu" styleClass="nut-menu"
+            <Button minWidth="-Infinity" fx:id="khoanThuButton" text="Khoản thu" styleClass="nut-menu"
                     onAction="#onMoKhoanThu"/>
-            <Button minWidth="-Infinity" text="Công nợ" styleClass="nut-menu"
+            <Button minWidth="-Infinity" fx:id="congNoButton" text="Công nợ" styleClass="nut-menu"
                     onAction="#onMoCongNo"/>
-            <Button minWidth="-Infinity" text="Thu phí" styleClass="nut-menu"
+            <Button minWidth="-Infinity" fx:id="thuPhiButton" text="Thu phí" styleClass="nut-menu"
                     onAction="#onMoThuPhi"/>
-            <Button minWidth="-Infinity" text="Tài khoản" styleClass="nut-menu"
+            <Button minWidth="-Infinity" fx:id="taiKhoanButton" text="Tài khoản" styleClass="nut-menu"
                     onAction="#onMoTaiKhoan"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="chaoLabel" styleClass="chao"/>

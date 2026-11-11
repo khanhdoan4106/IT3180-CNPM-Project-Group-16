@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +138,7 @@ public class BienDongDaoImpl implements BienDongDao {
                             rs.getDate("ngay").toLocalDate(),
                             rs.getString("ghi_chu"),
                             rs.getString("nguoi_ghi"),
-                            rs.getTimestamp("thoi_diem").toLocalDateTime()));
+                            rs.getObject("thoi_diem", LocalDateTime.class)));
                 }
             }
             return kq;

@@ -393,6 +393,18 @@ class ThuPhiServiceTest {
     }
 
     @Test
+    void kiemTraHinhThucChoManHinhTruocKhiXacNhan() {
+        // AC-038: man Thu phi goi ham nay truoc hop xac nhan.
+        loi(ThuPhiService.LOI_CHUA_CHON_HINH_THUC, () -> ThuPhiService
+                .kiemTraHinhThuc(new BigDecimal("1"), null));
+        loi(ThuPhiService.LOI_CHUA_CHON_HINH_THUC, () -> ThuPhiService
+                .kiemTraHinhThuc(new BigDecimal("906000"), null));
+        // Co hinh thuc, hoac phieu khong thu tien (gia dinh 30): khong loi.
+        ThuPhiService.kiemTraHinhThuc(new BigDecimal("906000"), TIEN_MAT);
+        ThuPhiService.kiemTraHinhThuc(BigDecimal.ZERO, null);
+    }
+
+    @Test
     void canDangNhap() {
         loi(PhanQuyen.LOI_CHUA_DANG_NHAP,
                 () -> service.traCuu(null, "A0601"));

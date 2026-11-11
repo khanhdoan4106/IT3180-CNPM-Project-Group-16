@@ -91,7 +91,9 @@
                             <Label text="Chưa có đợt nào"/>
                         </placeholder>
                     </TableView>
-                    <VBox spacing="8" prefWidth="330">
+                    <VBox fx:id="dotForm" spacing="8" prefWidth="330">
+                        <!-- Enter trong khung nay chi chay "Ghi nhan" (PhimEnter). -->
+                        <properties enterChay="ghiDotButton"/>
                         <GridPane hgap="10" vgap="8">
                             <columnConstraints>
                                 <ColumnConstraints minWidth="-Infinity"/>
@@ -137,7 +139,9 @@
             <BorderPane.margin>
                 <Insets left="20"/>
             </BorderPane.margin>
-            <VBox spacing="10">
+            <VBox fx:id="nhanKhauForm" spacing="10">
+                <!-- Enter trong khung nay chi chay "Luu" (PhimEnter). -->
+                <properties enterChay="luuButton"/>
                 <Label fx:id="tieuDeFormLabel" text="Thêm nhân khẩu"
                        styleClass="tieu-de-form"/>
                 <GridPane hgap="10" vgap="10">
@@ -190,7 +194,7 @@
                 <Label fx:id="thongBaoLabel" wrapText="true"/>
                 <!-- Hai hang: khung 380px khong du cho 4 nut tren mot hang. -->
                 <HBox spacing="10">
-                    <Button minWidth="-Infinity" fx:id="luuButton" text="Lưu" defaultButton="true"
+                    <Button minWidth="-Infinity" fx:id="luuButton" text="Lưu"
                             styleClass="nut-chinh" onAction="#onLuu"/>
                     <Button minWidth="-Infinity" text="Nhập mới" onAction="#onNhapMoi"/>
                 </HBox>

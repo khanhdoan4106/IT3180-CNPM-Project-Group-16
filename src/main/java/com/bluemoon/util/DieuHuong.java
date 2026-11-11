@@ -47,19 +47,26 @@ public final class DieuHuong {
      */
     public static Parent taiManHinh(String tenFile) {
         try {
-            return FXMLLoader.load(
-                    DieuHuong.class.getResource(THU_MUC_VIEW + tenFile));
+            return tai(DieuHuong.class.getResource(THU_MUC_VIEW + tenFile));
         } catch (IOException e) {
             throw new IllegalStateException(
                     "Không tải được màn hình " + tenFile, e);
         }
     }
 
+    /** Tải FXML rồi gắn Enter theo từng khung ({@link PhimEnter}). */
+    private static Parent tai(URL url) throws IOException {
+        FXMLLoader loader = new FXMLLoader(url);
+        Parent goc = loader.load();
+        PhimEnter.apDung(loader.getNamespace());
+        return goc;
+    }
+
     private static void hien(String tenFile, double rong, double cao,
             boolean phongTo) {
         try {
             URL url = DieuHuong.class.getResource(THU_MUC_VIEW + tenFile);
-            Parent goc = FXMLLoader.load(url);
+            Parent goc = tai(url);
             Scene scene = new Scene(goc, rong, cao);
             scene.getStylesheets().add(
                     DieuHuong.class.getResource(CSS).toExternalForm());

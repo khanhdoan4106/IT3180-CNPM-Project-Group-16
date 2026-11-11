@@ -17,6 +17,7 @@ import com.bluemoon.service.NghiepVuException;
 import com.bluemoon.service.TaiKhoanService;
 import com.bluemoon.util.DieuHuong;
 import com.bluemoon.util.PhienLamViec;
+import com.bluemoon.util.ThanhMenu;
 import java.time.YearMonth;
 import java.util.List;
 import javafx.fxml.FXML;
@@ -47,11 +48,24 @@ public class TrangChinhController {
     @FXML
     private Button nhanKhauButton;
     @FXML
+    private Button khoanThuButton;
+    @FXML
+    private Button congNoButton;
+    @FXML
+    private Button thuPhiButton;
+    @FXML
+    private Button taiKhoanButton;
+    @FXML
     private HBox nhacChotBox;
     @FXML
     private Label nhacChotLabel;
     @FXML
     private VBox bienDongBox;
+
+    /** Nut menu cua man hinh dang mo (nen dam), khong nut nao o Trang chinh. */
+    private ThanhMenu menu;
+    /** Noi dung Trang chinh luc moi vao, de hien lai khi bam logo. */
+    private List<Node> trangChu;
 
     @FXML
     private void initialize() {
@@ -70,8 +84,26 @@ public class TrangChinhController {
             n.setVisible(quanTri);
             n.setManaged(quanTri);
         }
+        menu = new ThanhMenu(hoGiaDinhButton, nhanKhauButton, khoanThuButton,
+                congNoButton, thuPhiButton, taiKhoanButton);
+        trangChu = List.copyOf(noiDung.getChildren());
         nhacChotCongNo();
         if (quanTri) {
+            hienBienDongGanDay();
+        }
+    }
+
+    /**
+     * Bam logo: hien lai Trang chinh, bo chon moi nut menu, lam moi nhac chot
+     * va bien dong gan day.
+     */
+    @FXML
+    private void onVeTrangChu() {
+        noiDung.getChildren().setAll(trangChu);
+        menu.boChonTatCa();
+        nhacChotCongNo();
+        TaiKhoan tk = PhienLamViec.hienTai();
+        if (tk != null && tk.getVaiTro() == VaiTro.QUAN_TRI) {
             hienBienDongGanDay();
         }
     }
@@ -83,6 +115,11 @@ public class TrangChinhController {
                     .ganDay(PhienLamViec.hienTai());
             TableView<BienDong> bang = BangLichSu.taoBang(ds, true);
             bang.setPrefHeight(200);
+            // Giu tieu de (phan tu dau), bo bang cu khi lam moi.
+            if (bienDongBox.getChildren().size() > 1) {
+                bienDongBox.getChildren().remove(1,
+                        bienDongBox.getChildren().size());
+            }
             bienDongBox.getChildren().add(bang);
             bienDongBox.setVisible(true);
             bienDongBox.setManaged(true);
@@ -104,6 +141,9 @@ public class TrangChinhController {
                         + " khoản phải nộp cho các hộ đang ở.");
                 nhacChotBox.setVisible(true);
                 nhacChotBox.setManaged(true);
+            } else {
+                nhacChotBox.setVisible(false);
+                nhacChotBox.setManaged(false);
             }
         } catch (NghiepVuException | CauHinhException | DaoException e) {
             // Khong nhac duoc thi bo qua; man hinh chuc nang se bao loi.
@@ -112,39 +152,39 @@ public class TrangChinhController {
 
     @FXML
     private void onMoHoGiaDinh() {
-        mo("ho-gia-dinh.fxml");
+        mo("ho-gia-dinh.fxml", hoGiaDinhButton);
     }
 
     @FXML
     private void onMoNhanKhau() {
-        mo("nhan-khau.fxml");
+        mo("nhan-khau.fxml", nhanKhauButton);
     }
 
     @FXML
     private void onMoKhoanThu() {
-        mo("khoan-thu.fxml");
+        mo("khoan-thu.fxml", khoanThuButton);
     }
 
     @FXML
     private void onMoCongNo() {
-        mo("cong-no.fxml");
+        mo("cong-no.fxml", congNoButton);
     }
 
     @FXML
     private void onMoThuPhi() {
-        mo("thu-phi.fxml");
+        mo("thu-phi.fxml", thuPhiButton);
     }
 
     @FXML
     private void onMoTaiKhoan() {
-        mo("tai-khoan.fxml");
+        mo("tai-khoan.fxml", taiKhoanButton);
     }
 
     /**
      * Mo man hinh chuc nang sau khi doc lai tai khoan tu CSDL: bi khoa thi
      * dang xuat, doi vai tro thi dung lai menu theo vai tro moi.
      */
-    private void mo(String tenFile) {
+    private void mo(String tenFile, Button nut) {
         TaiKhoan cu = PhienLamViec.hienTai();
         try {
             TaiKhoan moi = taiKhoanService.lamMoiPhien(cu);
@@ -161,6 +201,7 @@ public class TrangChinhController {
             // Mat ket noi: van mo man hinh, man hinh se bao loi CSDL.
         }
         noiDung.getChildren().setAll(DieuHuong.taiManHinh(tenFile));
+        menu.chon(nut);
     }
 
     @FXML
