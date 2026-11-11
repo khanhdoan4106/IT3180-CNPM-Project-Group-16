@@ -103,6 +103,16 @@ class PhimEnterTest {
         goc.applyCss();
         goc.layout();
 
+        // Dua noi dung moi tab vao cay cua so de tim thay nut cua tab do.
+        for (Object o : loader.getNamespace().values()) {
+            if (o instanceof javafx.scene.control.TabPane tp) {
+                for (int i = tp.getTabs().size() - 1; i >= 0; i--) {
+                    tp.getSelectionModel().select(i);
+                    goc.applyCss();
+                    goc.layout();
+                }
+            }
+        }
         List<String> chay = new ArrayList<>();
         List<String> sai = new ArrayList<>();
         for (Node n : goc.lookupAll(".button")) {
@@ -172,6 +182,18 @@ class PhimEnterTest {
         mong.putAll(tatCa("Tạo khoản thu", "tenField", "tuNgayPicker",
                 "denNgayPicker", "soTienField"));
         kiem("khoan-thu.fxml", mong, true);
+    }
+
+    @Test
+    void taiKhoanMoiFormGuiDungNutCuaMinh() throws Exception {
+        Map<String, String> mong = new LinkedHashMap<>();
+        mong.putAll(tatCa("Lưu thay đổi", "hoTenCuaToiField",
+                "sdtCuaToiField"));
+        mong.putAll(tatCa("Đổi mật khẩu", "matKhauCuField",
+                "matKhauMoiField", "nhapLaiMoiField"));
+        mong.putAll(tatCa("Đăng ký", "tenDangNhapField", "hoTenField",
+                "matKhauField", "nhapLaiField", "vaiTroCombo"));
+        kiem("tai-khoan.fxml", mong, true);
     }
 
     @Test

@@ -31,8 +31,10 @@
                     <padding>
                         <Insets top="16"/>
                     </padding>
-                    <VBox styleClass="the" spacing="10" prefWidth="420"
-                          maxHeight="-Infinity">
+                    <VBox fx:id="thongTinForm" styleClass="the" spacing="10"
+                          prefWidth="420" maxHeight="-Infinity">
+                        <!-- Enter trong khung nay chi chay "Luu thay doi" (PhimEnter). -->
+                        <properties enterChay="luuHoTenButton"/>
                         <Label text="Thông tin cá nhân"
                                styleClass="tieu-de-form"/>
                         <GridPane hgap="10" vgap="10">
@@ -59,11 +61,14 @@
                         </GridPane>
                         <Label text="Tên đăng nhập và vai trò do Quản trị viên quản lý."
                                styleClass="phu-de" wrapText="true"/>
-                        <Button minWidth="-Infinity" text="Lưu thay đổi" styleClass="nut-chinh"
+                        <Button minWidth="-Infinity" fx:id="luuHoTenButton"
+                                text="Lưu thay đổi" styleClass="nut-chinh"
                                 onAction="#onLuuHoTen"/>
                     </VBox>
-                    <VBox styleClass="the" spacing="10" prefWidth="420"
-                          maxHeight="-Infinity">
+                    <VBox fx:id="matKhauForm" styleClass="the" spacing="10"
+                          prefWidth="420" maxHeight="-Infinity">
+                        <!-- Enter trong khung nay chi chay "Doi mat khau" (PhimEnter). -->
+                        <properties enterChay="doiMatKhauButton"/>
                         <Label text="Đổi mật khẩu" styleClass="tieu-de-form"/>
                         <Label text="Mật khẩu hiện tại *"/>
                         <PasswordField fx:id="matKhauCuField"/>
@@ -72,7 +77,8 @@
                                        promptText="ít nhất 8 ký tự"/>
                         <Label text="Nhập lại mật khẩu mới *"/>
                         <PasswordField fx:id="nhapLaiMoiField"/>
-                        <Button minWidth="-Infinity" text="Đổi mật khẩu" styleClass="nut-chinh"
+                        <Button minWidth="-Infinity" fx:id="doiMatKhauButton"
+                                text="Đổi mật khẩu" styleClass="nut-chinh"
                                 onAction="#onDoiMatKhau"/>
                     </VBox>
                 </HBox>
@@ -108,8 +114,10 @@
                                     onAction="#onDatLaiMatKhau"/>
                         </HBox>
                     </VBox>
-                    <VBox styleClass="the" spacing="10" prefWidth="380"
-                          maxHeight="-Infinity">
+                    <VBox fx:id="dangKyForm" styleClass="the" spacing="10"
+                          prefWidth="380" maxHeight="-Infinity">
+                        <!-- Enter trong khung nay chi chay "Dang ky" (PhimEnter). -->
+                        <properties enterChay="dangKyButton"/>
                         <Label text="Đăng ký tài khoản"
                                styleClass="tieu-de-form"/>
                         <GridPane hgap="10" vgap="10">
@@ -142,7 +150,8 @@
                                       GridPane.columnIndex="1"/>
                         </GridPane>
                         <HBox spacing="10">
-                            <Button minWidth="-Infinity" text="Đăng ký" styleClass="nut-chinh"
+                            <Button minWidth="-Infinity" fx:id="dangKyButton"
+                                    text="Đăng ký" styleClass="nut-chinh"
                                     onAction="#onDangKy"/>
                             <Button minWidth="-Infinity" text="Nhập mới" onAction="#onNhapMoi"/>
                         </HBox>
