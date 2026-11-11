@@ -32,7 +32,7 @@
     -mau-nen: #f1f5f9;
     -mau-chu: #0f172a;
     -mau-loi: #dc2626;
-    -mau-phu: #64748b;
+    -mau-phu: #526077;
     -mau-phu-nhat: #94a3b8;
     -mau-thanh-cong: #15803d;
     -mau-vien: #cbd5e1;
@@ -133,6 +133,11 @@
 .thanh-dau .nut-menu.dang-chon {
     -fx-background-color: -mau-chinh-dam;
     -fx-background-radius: 8;
+}
+
+/* Tieu de cot bang dung mau chu phu (tuong phan AA tren nen). */
+.table-view .column-header .label {
+    -fx-text-fill: -mau-phu;
 }
 
 /* US-003: han tam tru da qua ma chua gia han. */

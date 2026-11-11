@@ -76,10 +76,16 @@ code tương ứng biến `-mau-*` của `css/giao-dien.css`.
 | nền | `#F1F5F9` | `#F0FDFA` | `#F8FAFC` |
 | bề mặt | `#FFFFFF` | `#FFFFFF` | `#FFFFFF` |
 | chữ | `#0F172A` | `#134E4A` | `#020617` |
-| chữ phụ | `#64748B` | `#475569` | `#334155` |
+| chữ phụ | `#526077` | `#475569` | `#334155` |
 | viền | `#CBD5E1` | `#99D5CC` | `#64748B` |
 | lỗi | `#DC2626` | `#DC2626` | `#B91C1C` |
 | thành công | `#15803D` | `#15803D` | `#166534` |
+
+Chữ phụ của phương án A là `#526077` (biến `-mau-phu`): tương phản 5,8:1 trên
+nền `#F1F5F9` và 6,4:1 trên trắng, đạt WCAG AA (≥ 4,5:1). Màu cũ `#64748B` chỉ
+đạt 4,3:1 trên nền nên bị thay. Biến này dùng cho mọi chữ phụ (`.phu-de`,
+nhãn phụ, tiêu đề cột bảng); không viết thẳng mã màu xám vào CSS
+(`MauPhuTest` kiểm màu, tương phản và màu JavaFX thực vẽ).
 
 Phương án C ưu tiên NFR-008 (người lớn tuổi dùng được): chữ gần đen trên nền
 trắng, viền đậm. Nhóm chọn một phương án ở Sprint Review. Code hiện chỉ có
