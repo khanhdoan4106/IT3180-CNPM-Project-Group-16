@@ -168,8 +168,8 @@ phiếu chỉ hủy được phiếu do mình lập.
 
 | Hiện tượng | Cách xử lý |
 |---|---|
-| "Không kết nối được cơ sở dữ liệu" | Sai `user`/`password` trong `config/db.properties`, hoặc MySQL chưa chạy |
-| "Thiếu hoặc sai cấu hình kết nối cơ sở dữ liệu" | Chưa có `config/db.properties` (mục 2, bước 4) |
+| "Không kết nối được cơ sở dữ liệu" | Sai `user`/`password` trong `config/db.properties`, hoặc MySQL chưa chạy. Sửa file xong thì tắt và mở lại ứng dụng |
+| "Thiếu hoặc sai cấu hình kết nối cơ sở dữ liệu" | Chưa có `config/db.properties` (mục 2, bước 4). Tạo hoặc sửa xong thì tắt và mở lại ứng dụng |
 | "Có lỗi khi đọc hoặc lưu dữ liệu" ngay khi đăng nhập, sau khi kéo bản mới | CSDL tạo từ bản cũ, thiếu cột mới: [dựng lại CSDL](#dựng-lại-csdl-khi-kéo-bản-mới) |
 | `release version 21 not supported` | Chọn JDK 21 trong Project Structure |
 | `'mvn' is not recognized` | Chạy bằng bảng Maven trong IntelliJ |

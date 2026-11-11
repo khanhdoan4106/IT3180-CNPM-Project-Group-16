@@ -1,6 +1,7 @@
 package com.bluemoon.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.bluemoon.config.CauHinhException;
 import com.bluemoon.dao.DaoException;
@@ -21,6 +22,19 @@ class LoiCsdlTest {
     void thieuCauHinhKhongPhaiMatKetNoi() {
         assertEquals(LoiCsdl.SAI_CAU_HINH, LoiCsdl.thongBao(
                 new CauHinhException("Thiếu cấu hình CSDL")));
+    }
+
+    @Test
+    void thongBaoCauHinhNoiRoPhaiMoLaiUngDung() {
+        // Tu #32 cau hinh chi doc mot lan: sua file ma khong mo lai ung dung
+        // thi van loi cu, nen thong bao phai noi dieu do.
+        for (String thongBao : new String[] {LoiCsdl.MAT_KET_NOI,
+            LoiCsdl.SAI_CAU_HINH}) {
+            assertTrue(thongBao.contains("tắt và mở lại ứng dụng"), thongBao);
+            assertTrue(thongBao.contains("config/db.properties"), thongBao);
+        }
+        // Sai user/mat khau cung roi vao MAT_KET_NOI (Access denied).
+        assertTrue(LoiCsdl.MAT_KET_NOI.contains("user, mật khẩu"));
     }
 
     @Test

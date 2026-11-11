@@ -95,7 +95,8 @@ public final class Database {
         if (url == null || url.isBlank()) {
             throw new CauHinhException(
                     "Thiếu cấu hình CSDL. Sao chép config/db.properties.example"
-                            + " thành config/db.properties và điền thông tin.");
+                            + " thành config/db.properties và điền thông tin,"
+                            + " rồi tắt và mở lại ứng dụng.");
         }
         try {
             return DriverManager.getConnection(url,
