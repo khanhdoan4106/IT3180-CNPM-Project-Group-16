@@ -16,6 +16,13 @@ File gồm bộ thành phần dùng chung (nút, ô nhập, mục menu, thẻ s�
   `BoCucFxmlTest` (xem [Trạng thái so với thiết kế](#trạng-thái-so-với-thiết-kế)).
 - Menu chỉ hiện mục mà vai trò được dùng (xem
   [Phân quyền](architecture.md#phân-quyền)).
+- Bấm logo "BlueMoon" (con trỏ bàn tay, gợi ý "Về trang chủ") để hiện lại
+  Trang chính; không có mục "Trang chủ" riêng. Nút menu của màn đang mở có
+  nền đậm (`-mau-chinh-dam`); ở Trang chính không nút nào được chọn.
+- Phím Enter trong ô nhập chỉ chạy nút của khung chứa ô đó (đợt tạm trú →
+  "Ghi nhận", đơn giá → "Sửa đơn giá", đổi mật khẩu → "Đổi mật khẩu"…), khai
+  báo bằng `<properties enterChay="…"/>` trên khung trong FXML. Chỉ màn đăng
+  nhập (một khung duy nhất) dùng nút mặc định của cả màn.
 - Hộp thoại (sửa khoản thu, xác nhận chốt) mở đè lên màn hình hiện tại, nền
   phía sau làm tối; dùng `Dialog<T>` của JavaFX.
 - Thiết kế: lỗi nhập liệu hiện ngay dưới ô sai, không dồn vào hộp cảnh báo
@@ -108,6 +115,23 @@ CSS bằng `@font-face`. Chữ nội dung 16 px để người lớn tuổi dễ
 | Nhãn | 15 / Medium | Nhãn ô nhập, cột đầu bảng |
 | Chú thích | 14 / Regular | Ghi chú, gợi ý dưới ô |
 | Nút | 16 / SemiBold | Chữ trên nút |
+
+## Quy tắc biểu đồ
+
+Mọi biểu đồ (Trang chính, thống kê ở Sprint 4) theo các quy tắc sau. Mẫu là
+biểu đồ "Thu phí 6 tháng gần nhất" ở frame "Trang chính – 1440x1024" trên
+Figma.
+
+- **Trục X:** có tên trục (vd "Tháng (năm 2026)") và nhãn ở từng mốc (T6 …
+  T11).
+- **Trục Y:** có tên trục kèm đơn vị (vd "Triệu đồng"); với biểu đồ cột, thang
+  chia đều và bắt đầu từ 0; có vạch chia ở mỗi mốc và lưới ngang mờ.
+- **Cột đúng tỷ lệ** so với thang Y (không cắt gốc, không phóng đại); mẫu ghi
+  số liệu trên đầu cột.
+- **Chú giải** khi có từ hai chuỗi dữ liệu trở lên; một chuỗi thì không cần.
+- **Kỳ chưa kết thúc** tô khác các kỳ đã chốt (đậm hơn) kèm chú thích dưới
+  biểu đồ (vd "Cột đậm: tháng 11 chưa kết thúc, số liệu tính đến hôm nay").
+- **Không dùng hai trục Y.**
 
 ## Đặc tả màn hình
 
