@@ -175,3 +175,4 @@ phiếu chỉ hủy được phiếu do mình lập.
 | `'mvn' is not recognized` | Chạy bằng bảng Maven trong IntelliJ |
 | Không thấy cửa sổ ứng dụng | Cửa sổ nằm sau IntelliJ, dùng Alt+Tab |
 | `CREATE USER` báo user đã tồn tại | Bỏ qua, chạy tiếp `GRANT` |
+| Sửa `config/db.properties` khi ứng dụng đang chạy (kể cả vừa tạo file sau khi thấy báo thiếu cấu hình) mà vẫn báo lỗi cũ | Tắt và mở lại ứng dụng: cấu hình chỉ được đọc một lần khi khởi động |

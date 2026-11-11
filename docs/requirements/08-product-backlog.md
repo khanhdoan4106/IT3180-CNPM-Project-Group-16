@@ -17,7 +17,7 @@
 |---|---|---|---|
 | Sprint 1 | 24 | `v0.1.0` | Hoàn thành |
 | Sprint 2 | 32 | `v0.2.0` | Hoàn thành, trừ AC-026 của US-008 (làm cùng phiếu thu ở Sprint 3) |
-| Sprint 3 | 28 | `v0.3.0` (chưa gắn tag, gắn ở Sprint Review) | Hoàn thành, trừ AC-014 của US-004 (xuất tệp, làm cùng Sprint 4) |
+| Sprint 3 | 28 | `v0.3.0` (đã phát hành) | Hoàn thành, trừ AC-014 của US-004 (xuất tệp, làm cùng Sprint 4) |
 | Sprint 4 | 28 | `v1.0.0` | Chưa bắt đầu |
 | **Tổng** | **112** | | |
 
