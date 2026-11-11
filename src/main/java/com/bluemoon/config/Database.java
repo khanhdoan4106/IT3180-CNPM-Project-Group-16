@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 /**
@@ -17,6 +18,12 @@ import java.util.Properties;
  * {@code BLUEMOON_DB_USER}, {@code BLUEMOON_DB_PASSWORD}.
  */
 public final class Database {
+
+    /**
+     * Mui gio cua moi phien MySQL: Viet Nam, +07:00 khong doi theo mua nen
+     * khong can bang mui gio ten (mysql.time_zone_name) tren may chu.
+     */
+    public static final String MUI_GIO_PHIEN = "+07:00";
 
     private static final Path FILE_MAC_DINH =
             Path.of("config", "db.properties");
@@ -99,8 +106,18 @@ public final class Database {
                             + " rồi tắt và mở lại ứng dụng.");
         }
         try {
-            return DriverManager.getConnection(url,
+            Connection conn = DriverManager.getConnection(url,
                     props.getProperty("user"), props.getProperty("password"));
+            try (Statement st = conn.createStatement()) {
+                // Cot do CSDL tu dien (DEFAULT CURRENT_TIMESTAMP, NOW()) va
+                // CURDATE() theo gio Viet Nam du may chu MySQL dat mui gio
+                // khac (vd UTC tren may chu cloud, Docker).
+                st.execute("SET time_zone = '" + MUI_GIO_PHIEN + "'");
+            } catch (SQLException e) {
+                conn.close();
+                throw e;
+            }
+            return conn;
         } catch (SQLException e) {
             throw new CauHinhException("Không kết nối được MySQL", e);
         }

@@ -29,7 +29,7 @@ chứng minh trên MySQL thật, vì DAO giả không tái hiện được.
 | `PhieuThuIT` | Thu tất cả rồi hủy khôi phục công nợ, hai máy cùng thu một khoản chỉ một phiếu thành công, sửa và thu song song không deadlock, đếm lần in, thông báo phí, danh sách tạm vắng, hộ đã chuyển đi không ghi đóng góp |
 | `GiaoDichHoGiaDinhIT` | Lỗi giữa giao dịch thì không ghi hộ lẫn lịch sử; đổi chủ hộ từ chối người vừa chuyển đi ở máy khác |
 | `DongHoCsdlIT` | Giờ đọc từ MySQL gần giờ máy, múi giờ Việt Nam |
-| `MuiGioIT` | JVM đặt UTC, New York, Kiritimati: phiếu lập 23:30 ngày 31/12 vẫn là 23:30 cùng ngày (không sang năm sau), giờ hủy phiếu, giờ biến động và giờ sửa khoản do CSDL điền đọc lại đúng giờ Việt Nam |
+| `MuiGioIT` | JVM đặt UTC, New York, Kiritimati: phiếu lập 23:30 ngày 31/12 vẫn là 23:30 cùng ngày (không sang năm sau), giờ hủy phiếu, giờ biến động và giờ sửa khoản do CSDL điền đọc lại đúng giờ Việt Nam; phiên MySQL luôn ở `+07:00` dù máy chủ đặt UTC (chạy thử bằng `mysqld --default-time-zone=+00:00`, như máy chủ trên CI) |
 | `SeedIT` | Dựng CSDL từ `schema.sql`, chạy `seed.sql` ba lần: số dòng không đổi, tên có dấu (so trong Java, không dựa `=` của MySQL), hai quỹ mẫu đang mở, ba trường hợp tạm trú/tạm vắng |
 
 Mỗi lớp `*IT` bỏ qua (không lỗi) nếu chưa đặt biến môi trường hoặc tên CSDL
@@ -69,7 +69,7 @@ mvn test -Dtest=BoCucFxmlTest
    Nếu user không phải `bluemoon`, đặt thêm `BLUEMOON_DB_USER` và
    `BLUEMOON_DB_PASSWORD`.
 
-Kết quả mong đợi: 269 test đơn vị và 29 kiểm thử tích hợp đều đạt (MySQL
+Kết quả mong đợi: 269 test đơn vị và 30 kiểm thử tích hợp đều đạt (MySQL
 8.0). Hai test cấu hình (`DatabaseConfigTest`) tự bỏ qua khi đã đặt
 `BLUEMOON_DB_*`, nên log hiện "Skipped: 2" ở lần chạy này.
 
@@ -82,7 +82,7 @@ hai xanh:
 | Job | Làm gì |
 |---|---|
 | `build` | JDK 21, `mvn -B verify`: test đơn vị và test bố cục |
-| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 29 kiểm thử tích hợp |
+| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 30 kiểm thử tích hợp |
 
 ## 3. Số test hiện tại
 
@@ -90,7 +90,7 @@ hai xanh:
 |---|---|---|
 | `v0.1.0` | 97 | – |
 | `v0.2.0` | 169 | có (`mvn verify -Pmysql`) |
-| `v0.3.0` (Sprint 3 và các sửa #28 – #34) | 269 | 29 |
+| `v0.3.0` (Sprint 3 và các sửa #28 – #34) | 269 | 30 |
 
 ## 4. Ánh xạ AC → test tự động
 

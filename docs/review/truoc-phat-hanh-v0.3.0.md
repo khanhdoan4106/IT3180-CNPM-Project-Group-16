@@ -55,14 +55,14 @@ mã cũ hoặc mã cố ý sai để chứng minh nó trượt.
 | N3 | Hai thông báo hiện cho người dùng và thông báo `CauHinhException` thêm "tắt và mở lại ứng dụng"; `MAT_KET_NOI` gợi ý user, mật khẩu; sửa mục lỗi thường gặp ở `setup.md` (`fbcbddf`) | `LoiCsdlTest#thongBaoCauHinhNoiRoPhaiMoLaiUngDung`, `DatabaseConfigTest`: bản cũ trượt 2 |
 | N4 | Sửa chú thích giả định 14 và `schema.sql` (`0f474f0`) | `TruyVetTaiLieuTest` (RAW khớp bảng truy vết): bản cũ trượt 2/2 |
 | G1 | Enter ở màn Tài khoản: họ tên, số điện thoại → "Lưu thay đổi"; mật khẩu → "Đổi mật khẩu"; đăng ký → "Đăng ký" (`531f360`) | `PhimEnterTest#taiKhoanMoiFormGuiDungNutCuaMinh`: bản cũ trượt |
-| G2 | DAO ghi và đọc `DATETIME` bằng `LocalDateTime` (`setObject`/`getObject`), không qua `Timestamp`; `Launcher` đặt múi giờ mặc định `Asia/Ho_Chi_Minh`; bỏ câu "máy nên đặt múi giờ" ở `sprint-3-ra-soat.md` (`ec7634f`) | `MuiGioIT` (JVM UTC, New York, Kiritimati, Việt Nam: lập phiếu 23:30 ngày 31/12, hủy 23:45, giờ biến động, giờ sửa khoản): bản cũ trượt 5/7, trong đó `chk_pt_nam` từ chối; `LauncherTest` |
+| G2 | DAO ghi và đọc `DATETIME` bằng `LocalDateTime` (`setObject`/`getObject`), không qua `Timestamp`; `Launcher` đặt múi giờ mặc định `Asia/Ho_Chi_Minh`; bỏ câu "máy nên đặt múi giờ" ở `sprint-3-ra-soat.md` (`ec7634f`). CI `build-mysql` phát hiện thêm: máy chủ MySQL chạy UTC làm cột `DEFAULT NOW()` lệch 7 giờ, nên `Database.getConnection` đặt `SET time_zone = '+07:00'` cho mỗi phiên | `MuiGioIT` (JVM UTC, New York, Kiritimati, Việt Nam: lập phiếu 23:30 ngày 31/12, hủy 23:45, giờ biến động, giờ sửa khoản): bản cũ trượt 5/7, trong đó `chk_pt_nam` từ chối; thêm test phiên `+07:00` và chạy trên MySQL đặt UTC (trượt 3 test giờ cột mặc định trước khi đặt `time_zone`); `LauncherTest` |
 | G3 | Thay `docCauHinhKhongNem` (chỉ `assertNotNull`, đọc file thật của máy) bằng `thieuFileKhongNemMaTraCauHinhRong` (`c299296`) | Mã cố ý sai (ném lỗi khi thiếu file): test mới trượt |
 | G4 | Giữ nguyên (ô tích đầu cột bảng Thu phí, Sprint 4) | – |
 | Figma 5, 6 | Logo là nút (tay, gợi ý "Về trang chủ"), bấm về Trang chính và làm mới; `ThanhMenu` đặt nền `-mau-chinh-dam` cho nút của màn đang mở, về trang chủ bỏ chọn (`c4b657a`) | `TrangChinhMenuTest`: 3 bản sai (không thêm lớp, không hiện lại, không bỏ chọn) đều trượt |
 | Figma 7 | `-mau-phu` đổi `#64748b` → `#526077` (5,8:1 trên `#F1F5F9`); tiêu đề cột bảng dùng cùng màu; bảng màu phương án A ở `ui.md` (`8e611e6`) | `MauPhuTest`: CSS cũ trượt 2/3 |
 | Figma 8 | Thêm mục "Quy tắc biểu đồ" và ghi logo, nút đang chọn, phím Enter vào `ui.md` (`def207b`) | `UiMdTest`: bản cũ trượt 2/3 |
 
-Số test sau khi sửa: **269 test đơn vị** (trước 248) và **29 kiểm thử tích hợp**
+Số test sau khi sửa: **269 test đơn vị** (trước 248) và **30 kiểm thử tích hợp**
 (trước 22). CHANGELOG, `docs/releases/v0.3.0.md` và `docs/testing.md` đã cập
 nhật cùng PR; `testing.md` có thêm `TestingMdTest` kiểm mọi tham chiếu test
 trong bảng AC → test còn tồn tại (bắt được tham chiếu `docCauHinhKhongNem`

@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.TimeZone;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -119,6 +120,18 @@ class MuiGioIT {
                 "Thu nhầm hộ bên cạnh");
         assertEquals(LocalDateTime.of(2026, 12, 31, 23, 45),
                 huy.thoiDiemHuy());
+    }
+
+    @Test
+    void moiPhienMysqlODatGioVietNamDuMayChuODatGioKhac() throws Exception {
+        try (java.sql.Connection conn = com.bluemoon.config.Database
+                .getConnection();
+                java.sql.Statement st = conn.createStatement();
+                java.sql.ResultSet rs = st.executeQuery(
+                        "SELECT @@session.time_zone")) {
+            rs.next();
+            assertEquals("+07:00", rs.getString(1));
+        }
     }
 
     @ParameterizedTest

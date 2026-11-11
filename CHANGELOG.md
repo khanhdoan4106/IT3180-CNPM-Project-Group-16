@@ -92,7 +92,10 @@ Hoàn thành thu phí từ tra cứu đến biên lai. Gồm các Pull Request #
   còn hỏi xác nhận rồi mới báo lỗi.
 - **Giờ lưu theo múi giờ máy (#34):** máy chạy ứng dụng không đặt múi giờ
   Việt Nam làm giờ lập phiếu bị dịch (phiếu 23:30 ngày 31/12 bị từ chối vì
-  rơi sang năm sau). Giờ ghi và đọc CSDL không còn phụ thuộc múi giờ máy.
+  rơi sang năm sau). Cột do MySQL tự điền (giờ biến động, giờ sửa khoản) lệch
+  7 giờ khi máy chủ MySQL chạy giờ UTC (Docker, máy chủ đám mây). Giờ ghi và
+  đọc CSDL không còn phụ thuộc múi giờ máy chạy ứng dụng hay máy chủ MySQL:
+  mỗi phiên MySQL đặt giờ Việt Nam (`+07:00`).
 - Sửa số tiền khoản phải nộp ở máy này đồng thời với thu phí ở máy khác không
   còn gây deadlock; khi MySQL hủy giao dịch vì khóa, người dùng thấy "Có người
   khác đang thao tác trên hộ này, vui lòng thử lại" (#28).
@@ -108,7 +111,7 @@ giữ nguyên ([setup.md](docs/setup.md), mục 2).
 
 ### Kiểm thử
 
-269 test đơn vị và 29 kiểm thử tích hợp trên MySQL 8.0
+269 test đơn vị và 30 kiểm thử tích hợp trên MySQL 8.0
 ([testing.md](docs/testing.md)).
 
 ## [v0.2.0] – 09/11/2026 – Sprint 2
