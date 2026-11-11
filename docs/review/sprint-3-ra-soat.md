@@ -41,9 +41,10 @@ nhánh `feature/sprint-3-thu-phi` (PR #28), mỗi mục một commit, kèm test.
 | G1 – G11 | Giữ nguyên theo yêu cầu | – |
 
 Sau khi sửa: 233 test đơn vị và 15 kiểm thử tích hợp (MySQL 8.0.46) đều đạt.
-Lưu ý còn lại của N4: thời điểm được ghi vào cột `DATETIME` bằng
-`Timestamp.valueOf`, nên máy chạy ứng dụng nên đặt múi giờ Việt Nam
-(`Asia/Ho_Chi_Minh`, như URL kết nối) để giờ lưu khớp giờ máy chủ.
+Lưu ý còn lại của N4 (thời điểm ghi vào cột `DATETIME` bằng
+`Timestamp.valueOf` lệch khi máy không ở múi giờ Việt Nam) đã được xử lý ở
+mục G2 của [rà soát trước phát hành v0.3.0](truoc-phat-hanh-v0.3.0.md): DAO
+ghi và đọc `DATETIME` bằng `LocalDateTime`, không còn cần đặt múi giờ máy.
 
 ## 1. Build và cơ sở dữ liệu
 

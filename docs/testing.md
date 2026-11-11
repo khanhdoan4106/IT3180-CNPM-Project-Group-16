@@ -27,6 +27,7 @@ chứng minh trên MySQL thật, vì DAO giả không tái hiện được.
 | `PhieuThuIT` | Thu tất cả rồi hủy khôi phục công nợ, hai máy cùng thu một khoản chỉ một phiếu thành công, sửa và thu song song không deadlock, đếm lần in, thông báo phí, danh sách tạm vắng, hộ đã chuyển đi không ghi đóng góp |
 | `GiaoDichHoGiaDinhIT` | Lỗi giữa giao dịch thì không ghi hộ lẫn lịch sử; đổi chủ hộ từ chối người vừa chuyển đi ở máy khác |
 | `DongHoCsdlIT` | Giờ đọc từ MySQL gần giờ máy, múi giờ Việt Nam |
+| `MuiGioIT` | JVM đặt UTC, New York, Kiritimati: phiếu lập 23:30 ngày 31/12 vẫn là 23:30 cùng ngày (không sang năm sau), giờ hủy phiếu, giờ biến động và giờ sửa khoản do CSDL điền đọc lại đúng giờ Việt Nam |
 | `SeedIT` | Dựng CSDL từ `schema.sql`, chạy `seed.sql` ba lần: số dòng không đổi, tên có dấu (so trong Java, không dựa `=` của MySQL), hai quỹ mẫu đang mở, ba trường hợp tạm trú/tạm vắng |
 
 Mỗi lớp `*IT` bỏ qua (không lỗi) nếu chưa đặt biến môi trường hoặc tên CSDL

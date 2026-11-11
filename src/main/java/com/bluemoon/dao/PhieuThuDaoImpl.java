@@ -15,7 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -352,7 +351,7 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
                 ps.setString(5, phieu.hinhThuc().name());
             }
             ps.setInt(6, phieu.nguoiThu());
-            ps.setTimestamp(7, Timestamp.valueOf(phieu.thoiDiem()));
+            ps.setObject(7, phieu.thoiDiem());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
@@ -402,7 +401,7 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
                 try (PreparedStatement ps =
                         conn.prepareStatement(SQL_HUY_PHIEU)) {
                     ps.setInt(1, nguoiHuy);
-                    ps.setTimestamp(2, Timestamp.valueOf(luc));
+                    ps.setObject(2, luc);
                     ps.setString(3, lyDo);
                     ps.setInt(4, id);
                     ps.executeUpdate();
@@ -436,9 +435,8 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
     @Override
     public List<PhieuThu> trongNgay(LocalDate ngay) {
         return docPhieu(SQL_PHIEU_TRONG_NGAY, ps -> {
-            ps.setTimestamp(1, Timestamp.valueOf(ngay.atStartOfDay()));
-            ps.setTimestamp(2,
-                    Timestamp.valueOf(ngay.plusDays(1).atStartOfDay()));
+            ps.setObject(1, ngay.atStartOfDay());
+            ps.setObject(2, ngay.plusDays(1).atStartOfDay());
         });
     }
 
@@ -486,17 +484,17 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
 
     private static PhieuThu docDauPhieu(ResultSet rs) throws SQLException {
         String hinhThuc = rs.getString("hinh_thuc");
-        Timestamp huy = rs.getTimestamp("thoi_diem_huy");
+        LocalDateTime huy = rs.getObject("thoi_diem_huy", LocalDateTime.class);
         return new PhieuThu(rs.getInt("id"), rs.getInt("nam"),
                 rs.getInt("so"), rs.getInt("ho_id"),
                 rs.getString("ma_can_ho"), rs.getString("ten_chu_ho"),
                 rs.getBigDecimal("tong_tien"),
                 hinhThuc == null ? null : HinhThucThanhToan.valueOf(hinhThuc),
                 rs.getInt("nguoi_thu"), rs.getString("ten_nguoi_thu"),
-                rs.getTimestamp("thoi_diem").toLocalDateTime(),
+                rs.getObject("thoi_diem", LocalDateTime.class),
                 rs.getInt("so_lan_in"), rs.getBoolean("da_huy"),
                 rs.getString("ten_nguoi_huy"),
-                huy == null ? null : huy.toLocalDateTime(),
+                huy,
                 rs.getString("ly_do_huy"), Collections.emptyList());
     }
 

@@ -8,8 +8,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -255,13 +255,13 @@ public class CongNoDaoImpl implements CongNoDao {
     private static PhaiNop doc(ResultSet rs) throws SQLException {
         int nguoiSua = rs.getInt("nguoi_sua");
         Integer nguoi = rs.wasNull() ? null : nguoiSua;
-        Timestamp ngay = rs.getTimestamp("ngay_sua");
+        LocalDateTime ngay = rs.getObject("ngay_sua", LocalDateTime.class);
         return new PhaiNop(rs.getInt("id"), rs.getInt("ho_id"),
                 rs.getString("ma_can_ho"), rs.getInt("khoan_phi_id"),
                 rs.getString("ten"), rs.getBigDecimal("dien_tich"),
                 rs.getBigDecimal("don_gia"), rs.getBigDecimal("so_tien_goc"),
                 rs.getBigDecimal("so_tien"), nguoi,
-                ngay == null ? null : ngay.toLocalDateTime(),
+                ngay,
                 rs.getString("ghi_chu"), rs.getBoolean("da_dong"));
     }
 
