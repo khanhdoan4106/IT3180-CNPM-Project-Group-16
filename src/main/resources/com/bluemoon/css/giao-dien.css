@@ -86,6 +86,8 @@
 }
 
 .thanh-dau .logo {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
     -fx-text-fill: white;
     -fx-font-size: 18px;
     -fx-font-weight: bold;
@@ -125,6 +127,12 @@
 
 .thanh-dau .nut-menu:hover {
     -fx-background-color: -mau-chinh-dam;
+}
+
+/* Nut menu cua man hinh dang mo (ThanhMenu); ve trang chu thi bo chon. */
+.thanh-dau .nut-menu.dang-chon {
+    -fx-background-color: -mau-chinh-dam;
+    -fx-background-radius: 8;
 }
 
 /* US-003: han tam tru da qua ma chua gia han. */
