@@ -17,8 +17,11 @@ View (FXML + CSS) -> Controller -> Service -> DAO -> MySQL
 | Model | Dữ liệu thuần | Truy cập CSDL, in ấn |
 
 ## Quy ước
-- Mỗi chức năng: `KhoanThu` (model), `KhoanThuDao`/`KhoanThuDaoImpl`,
-  `KhoanThuService`, `KhoanThuController`, `khoan-thu.fxml`.
+- Mỗi chức năng: `HoGiaDinh` (model), `HoGiaDinhDao`/`HoGiaDinhDaoImpl`,
+  `HoGiaDinhService`, `HoGiaDinhController`, `ho-gia-dinh.fxml`.
+- Ngoại lệ: "khoản thu" trên giao diện ứng với `KhoanPhi`, `KhoanPhiDao`,
+  `KhoanPhiService` (bảng `khoan_phi`); controller và FXML vẫn là
+  `KhoanThuController`, `khoan-thu.fxml` (đúng [thuật ngữ](../thuat-ngu.md)).
 - Service nhận DAO qua constructor để test bằng DAO giả (xem
   `TaiKhoanServiceTest`).
 - Luôn viết test cho service trước khi sửa/refactor.
@@ -35,9 +38,11 @@ Kiểm tra ở hai lớp (NFR-002, NFR-009):
    chặn cả khi màn hình mở bằng đường khác (AC-062).
 
 Mọi hàm public của Service nhận `TaiKhoan nguoi` và gọi
-`PhanQuyen.yeuCau`, trừ ba hàm: `TaiKhoanService.dangNhap` và
+`PhanQuyen.yeuCau`, trừ bốn hàm: `TaiKhoanService.dangNhap` và
 `TaiKhoanService.lamMoiPhien` (chạy khi chưa có hoặc đang kiểm tra lại
-phiên), `CongNoService.thangHienTai` (chỉ đọc đồng hồ, không đọc dữ liệu nghiệp vụ).
+phiên), `CongNoService.thangHienTai` (chỉ đọc đồng hồ, không đọc dữ liệu
+nghiệp vụ), `ThuPhiService.kiemTraHinhThuc` (hàm tĩnh, chỉ kiểm tra dữ liệu
+nhập, không đọc dữ liệu).
 
 | Chức năng | Quản trị viên | Thủ quỹ | Căn cứ |
 |---|---|---|---|
@@ -86,6 +91,19 @@ trường ghi đè file) **một lần** ở lần dùng đầu, giữ trong b�
 `getConnection()` chỉ mở một kết nối mới. Đổi cấu hình thì khởi động lại ứng
 dụng. Đọc lỗi thì không lưu, lần sau thử đọc lại. Test đặt lại cấu hình bằng
 `Database.datLaiChoTest`.
+
+Giờ ghi vào CSDL không phụ thuộc máy chạy ứng dụng hay múi giờ của máy chủ
+MySQL (máy chủ trên CI chạy UTC), nên múi giờ được cố định ở ba chỗ:
+
+- `Database.getConnection` chạy `SET time_zone = '+07:00'` cho mỗi phiên, để
+  các cột `DEFAULT CURRENT_TIMESTAMP`, `NOW()` và `CURDATE()` do MySQL điền
+  luôn theo giờ Việt Nam;
+- `Launcher` đặt múi giờ mặc định của JVM là `Asia/Ho_Chi_Minh`;
+- DAO ghi và đọc `DATETIME` bằng `LocalDateTime` (`setObject`/`getObject`),
+  không qua `Timestamp` vốn dịch giờ theo múi giờ của JVM.
+
+Lý do: phiếu lập 23:30 ngày 31/12 từng bị lưu sang năm sau và ràng buộc
+`chk_pt_nam` từ chối (kiểm bằng `MuiGioIT`).
 
 ### Những điểm chưa làm
 

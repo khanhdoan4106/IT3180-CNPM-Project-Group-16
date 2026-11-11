@@ -71,8 +71,9 @@ class DatabaseConfigTest {
 
         CauHinhException loi = assertThrows(CauHinhException.class,
                 Database::getConnection);
-        assertEquals("Thiếu cấu hình CSDL. Sao chép config/db.properties.example"
-                + " thành config/db.properties và điền thông tin,"
+        assertEquals("Thiếu cấu hình CSDL. Sao chép "
+                + "config/db.properties.example thành "
+                + "config/db.properties và điền thông tin,"
                 + " rồi tắt và mở lại ứng dụng.", loi.getMessage());
         // Thieu cau hinh khong bi nho: goi lai van bao dung loi.
         assertThrows(CauHinhException.class, Database::getConnection);

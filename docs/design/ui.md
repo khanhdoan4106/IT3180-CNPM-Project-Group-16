@@ -67,7 +67,8 @@ Phần thiết kế chưa làm hết được ghi rõ để khỏi nhầm với 
 | Khoản thu: bộ lọc Tất cả / Bắt buộc / Tự nguyện | Chưa có | Sprint 4 |
 | Sửa khoản thu của hộ: hiện giá trị cũ và tổng mới | Hộp thoại một ô "Số tiền" kèm giá trị cũ ở tiêu đề, khóa ô khi đã có phiếu thu (AC-026); chưa có "tổng mới" | Sprint 4 |
 | Nút hộp thoại | Tiếng Việt: "Đồng ý", "Hủy", "Đóng"; hộp thoại Hủy phiếu dùng "Hủy phiếu" và "Đóng" (`HopThoai`) | Đã làm |
-| Thu phí (Thu tiền, Phiếu thu hôm nay, Hủy phiếu) | Theo Figma; khác: thanh menu/tab giữ kiểu hiện tại, bảng và nút dùng kiểu JavaFX mặc định, "Tiền mặt" không chọn sẵn (AC-038) | Rà soát nhìn ở Sprint 4 |
+| Thu phí (Thu tiền, Phiếu thu hôm nay, Hủy phiếu) | Theo Figma; menu có trạng thái "đang chọn" và logo BlueMoon về Trang chính (#34); "Tiền mặt" không chọn sẵn (AC-038) khớp Figma đã sửa. Còn khác: tab, bảng và nút dùng kiểu JavaFX mặc định | Rà soát nhìn ở Sprint 4 |
+| Thanh menu chung | Figma đã có mục "Tài khoản của tôi" trong khung chung và mục Công nợ, khớp menu trong code | Đã làm |
 | Hộ gia đình, Nhân khẩu | Chưa theo bộ thành phần Figma | Sprint 4 |
 | In ấn (biên lai, thông báo, danh sách tạm vắng) | Xem trước 640×560 rồi chọn máy in; danh sách tạm vắng in khổ ngang; xuất Excel/PDF chưa có | Xuất tệp: Sprint 4 (AC-014) |
 

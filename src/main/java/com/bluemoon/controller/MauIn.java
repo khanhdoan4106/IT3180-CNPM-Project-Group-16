@@ -84,8 +84,8 @@ final class MauIn {
         trang.getChildren().add(tt);
 
         GridPane bang = bang(new String[] {"STT", "Khoản thu", "Số tiền"},
-                new double[] {44, 316, RONG_SO_TIEN}, new boolean[] {false, false,
-                    true});
+                new double[] {44, 316, RONG_SO_TIEN},
+                new boolean[] {false, false, true});
         int i = 1;
         for (ChiTietPhieuThu d : p.chiTiet()) {
             dongBang(bang, i, String.valueOf(i), d.moTa(),
@@ -124,8 +124,8 @@ final class MauIn {
                 + " hộ cần đóng như sau:"));
 
         GridPane bang = bang(new String[] {"STT", "Khoản", "Số tiền"},
-                new double[] {44, 316, RONG_SO_TIEN}, new boolean[] {false, false,
-                    true});
+                new double[] {44, 316, RONG_SO_TIEN},
+                new boolean[] {false, false, true});
         int i = 1;
         for (KhoanNo k : tb.khoanThang()) {
             dongBang(bang, i, String.valueOf(i), k.moTa(),

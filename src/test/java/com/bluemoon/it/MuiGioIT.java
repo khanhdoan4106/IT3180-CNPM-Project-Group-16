@@ -154,7 +154,7 @@ class MuiGioIT {
                 + " so với " + bayGio);
     }
 
-    /** Hai thoi diem gan nhau: cach nhau khong qua 5 phut (khoang chay test). */
+    /** Hai thoi diem gan nhau: cach nhau khong qua 5 phut (luc chay test). */
     private static boolean gan(LocalDateTime a, LocalDateTime b) {
         return Duration.between(a, b).abs().compareTo(Duration.ofMinutes(5))
                 < 0;
