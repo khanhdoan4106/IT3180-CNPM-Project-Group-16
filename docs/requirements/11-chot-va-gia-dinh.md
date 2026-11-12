@@ -60,3 +60,12 @@ Pull Request phiếu thu (#28); giả định 38 được sửa lại theo kết
 39. **Hộ đã chuyển đi chỉ thu các khoản còn nợ (US-007, US-010):** tra cứu phí vẫn tìm được hộ đã chuyển đi còn nợ để thu tiếp (giả định 21), nhưng hộ đó không còn ở tòa nhà nên không ghi đóng góp tự nguyện: màn Thu phí không liệt kê quỹ nào cho hộ này, và lập phiếu có dòng đóng góp (kể cả 0 đ) bị từ chối với "Hộ đã chuyển đi chỉ thu các khoản còn nợ". Scrum Master chốt ngày 09/11/2026.
 
 40. **Tìm kiếm và so sánh không phân biệt hoa thường và dấu:** cột chữ của CSDL dùng collation `utf8mb4_unicode_ci`, nên MySQL coi "Nguyễn" và "Nguyen" là một (gõ "nguyen" tìm ra "Nguyễn"; phép `=` cũng khớp). Giữ nguyên vì thuận tiện khi tìm hộ, nhân khẩu bằng bàn phím không gõ dấu. Hệ quả: khi viết test hay truy vấn cần phân biệt dấu thì so sánh trong Java hoặc bằng `HEX()`, không dựa vào `=` trong SQL.
+
+Các giả định 41–45 được Scrum Master chốt ngày 12/11/2026, khi lập kế hoạch
+Sprint 4.
+
+41. **Báo cáo thu Excel (US-018, AC-050, AC-051):** theo tháng chọn; mỗi phiếu thu chưa hủy trong tháng một dòng, theo sổ thu (RAW-031): STT, mã căn hộ, chủ hộ, mỗi khoản/quỹ có tiền trong tháng một cột, tổng, ngày thu, số biên lai; dòng cuối cộng từng cột. Tháng không có phiếu thì báo "không có dữ liệu" và không tạo tệp.
+42. **Xuất tệp (AC-014, US-018):** chỉ xuất `.xlsx` bằng Apache POI, dùng chung cho danh sách tạm vắng và báo cáo thu. Cần PDF thì in qua máy in PDF từ màn xem trước đã có (giả định 27).
+43. **Sao lưu (TS-001, AC-066, AC-067):** script `mysqldump` (`--single-transaction`) chạy hằng ngày bằng Windows Task Scheduler, tên tệp có ngày giờ, ghi log thời điểm và kết quả, giữ các bản gần nhất; mật khẩu không ghi trong script hay repo (`mysql_config_editor` hoặc tệp tùy chọn ngoài repo). Khôi phục theo hướng dẫn trong `setup.md`, kiểm thử bằng cách khôi phục vào một CSDL riêng.
+44. **Nhật ký thao tác (TS-002, AC-068, AC-069):** ghi trong cùng giao dịch với thao tác: lập/hủy phiếu thu, sửa số tiền phải nộp, tạo khoản thu và đổi đơn giá, chốt công nợ, thêm/sửa/chuyển đi hộ và nhân khẩu, đổi vai trò/khóa/mở khóa/đặt lại mật khẩu. Mỗi dòng có người làm, thời điểm (giờ CSDL), thao tác, đối tượng, nội dung thay đổi. Bảng nhật ký chỉ thêm: trigger chặn `UPDATE` và `DELETE`. Chỉ Quản trị viên xem, mới nhất ở trên.
+45. **Thống kê theo khoản (US-019, AC-052, AC-053):** "đợt" của khoản bắt buộc là tháng đã chốt; của khoản tự nguyện là khoảng thời gian thu của khoản (từ ngày – đến ngày). Chỉ tính phiếu chưa hủy; chưa có giao dịch thì tổng là 0 đ.
