@@ -90,7 +90,7 @@ hai xanh:
 |---|---|---|
 | `v0.1.0` | 97 | – |
 | `v0.2.0` | 169 | có (`mvn verify -Pmysql`) |
-| `v0.3.0` (Sprint 3 và các sửa #28 – #34) | 269 | 30 |
+| `v0.3.0` (Sprint 3 và các sửa #28 – #35) | 269 | 30 |
 
 ## 4. Ánh xạ AC → test tự động
 

@@ -8,9 +8,9 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
 
 ## [Chưa phát hành]
 
-## [v0.3.0] – 11/11/2026 – Sprint 3
+## [v0.3.0] – 12/11/2026 – Sprint 3
 
-Hoàn thành thu phí từ tra cứu đến biên lai. Gồm các Pull Request #28 – #34.
+Hoàn thành thu phí từ tra cứu đến biên lai. Gồm các Pull Request #28 – #35.
 
 ### Thêm
 
