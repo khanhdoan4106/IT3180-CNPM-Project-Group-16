@@ -35,7 +35,7 @@ File gồm bộ thành phần dùng chung (nút, ô nhập, mục menu, thẻ s�
 |---|---|---|---|
 | Đăng nhập | 1120×645 | US-021 | Đã có code (Sprint 1) |
 | Trang chính | 1440×1024 | US-016, US-027, nhắc chốt công nợ | Đã có code: nhắc chốt, biến động gần đây (Sprint 2); tiêu đề "Tổng quan tháng …", thẻ "Đã thu tháng này", "Hộ còn nợ", biểu đồ "Thu phí 6 tháng gần nhất" (Sprint 4) |
-| Thống kê theo khoản | 1120×645 | US-019 | Đã có code (Sprint 4), mục menu "Thống kê" như Figma; chưa có frame riêng trên Figma |
+| Thống kê theo khoản, báo cáo thu theo tháng | 1120×645 | US-019, US-018 | Đã có code (Sprint 4), mục menu "Thống kê" như Figma; chưa có frame riêng trên Figma |
 | Tài khoản của tôi (tab) | 1120×645 | US-023 | Đã có code (Sprint 2) |
 | Quản lý tài khoản (tab, chỉ Quản trị viên) | 1120×645 | US-020, US-022 | Đã có code (Sprint 2) |
 | Khoản thu (danh mục, tạo khoản tự nguyện) | 1120×645 | US-005, US-006 | Đã có code (Sprint 2) |
@@ -73,7 +73,7 @@ Phần thiết kế chưa làm hết được ghi rõ để khỏi nhầm với 
 | Trang chính (frame "Trang chính – 1440x1024") | Có tiêu đề tháng, thẻ "Đã thu tháng này" và "Hộ còn nợ" (bấm để mở tab "Hộ nợ đọng"), biểu đồ 6 tháng theo quy tắc biểu đồ (`BieuDoThuPhi`), nhắc chốt, biến động gần đây bên phải biểu đồ; nội dung cuộn được khi cửa sổ thấp. Chưa có: thẻ "Hộ đang ở", "Nhân khẩu", khung "Khoản thu mới cập nhật" và dải "Thao tác nhanh" | Xét ở TS-004 |
 | Thống kê theo khoản | Chọn khoản; khoản bắt buộc chọn tháng đã chốt (mặc định tháng gần nhất), quỹ tự nguyện hiện "Thu từ … đến …" chỉ đọc; kết quả: tổng đã thu chữ lớn, số phụ. Chưa có frame trên Figma, dựng theo kiểu các màn 1120×645 | Vẽ frame ở TS-004 nếu cần |
 | Hộ gia đình, Nhân khẩu | Chưa theo bộ thành phần Figma | Sprint 4 |
-| In ấn (biên lai, thông báo, danh sách tạm vắng) | Xem trước 640×560 rồi chọn máy in; danh sách tạm vắng in khổ ngang; xuất Excel/PDF chưa có | Xuất tệp: Sprint 4 (AC-014) |
+| In ấn (biên lai, thông báo, danh sách tạm vắng) | Xem trước 640×560 rồi chọn máy in; danh sách tạm vắng in khổ ngang và xuất Excel (AC-014); báo cáo thu tháng xuất Excel ở màn Thống kê (US-018); cần PDF thì in qua máy in PDF | Đã làm |
 
 ## Phương án màu
 
@@ -253,6 +253,18 @@ sẵn tên người thu). Từ lần in thứ hai có khung "BẢN IN LẠI" (AC
 - Danh sách tạm vắng: chọn ngày (mặc định hôm nay), xem trên bảng rồi in khổ
   ngang (đặt sẵn trong hộp thoại máy in, đổi được), chia trang theo chiều
   cao thực sau khi bố cục nên họ tên, lý do dài không làm trang bị thu nhỏ;
-  có số trang và chỗ ký. Xuất tệp Excel/PDF làm ở
-  Sprint 4 (AC-014).
+  có số trang và chỗ ký. Nút "Xuất Excel" cạnh "In danh sách" ghi tệp
+  `.xlsx` cùng các trường (tên gợi ý `danh-sach-tam-vang-2026-11-12.xlsx`),
+  bị vô hiệu khi chưa có danh sách (AC-014). Cần PDF thì in qua máy in PDF.
+
+### Báo cáo thu theo tháng (US-018)
+
+Phần dưới của màn Thống kê.
+
+| Thành phần | Kiểu | Ràng buộc | Nguồn |
+|---|---|---|---|
+| Tháng | Danh sách chọn | 12 tháng gần nhất, mặc định tháng hiện tại theo giờ CSDL | US-018 |
+| Xuất Excel | Nút chính | Tháng chưa có phiếu thu: báo "Tháng 11/2026 chưa có phiếu thu nào, không có dữ liệu để xuất." và không mở hộp chọn tệp; có thì hỏi chỗ lưu (lọc `*.xlsx`, tên gợi ý `bao-cao-thu-2026-11.xlsx`) | AC-050, AC-051 |
+| Tệp | `.xlsx` | Tiêu đề "BÁO CÁO THU TIỀN THÁNG 11/2026", "Lập ngày …"; cột STT, mã căn hộ, chủ hộ, mỗi khoản/quỹ một cột (bắt buộc trước, theo tên), tổng, ngày thu, số biên lai; dòng "Tổng cộng" | giả định 41, 42 |
+| Tệp đang mở | Nhãn đỏ | "Tệp đang được mở trong chương trình khác. Đóng tệp rồi thử lại." | giả định 42 |
 

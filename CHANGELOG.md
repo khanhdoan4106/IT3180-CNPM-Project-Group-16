@@ -44,6 +44,24 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
   "Hộ còn nợ" (số hộ còn nợ, số hộ nợ từ 3 tháng trở lên), bấm để mở tab
   này.
 
+- **Báo cáo thu ra Excel (US-018, AC-050, AC-051):** màn Thống kê có thêm
+  phần "Báo cáo thu theo tháng": chọn tháng, "Xuất Excel" ra tệp `.xlsx`
+  theo mẫu sổ thu (giả định 41): mỗi phiếu thu chưa hủy một dòng, mỗi
+  khoản/quỹ một cột, tổng, ngày thu, số biên lai, dòng "Tổng cộng". Tiền
+  là ô số, ngày là ô ngày nên Excel cộng, lọc được. Tháng chưa có phiếu
+  thì báo ngay, không tạo tệp.
+- **Xuất danh sách tạm vắng (US-004, AC-014):** nút "Xuất Excel" cạnh "In
+  danh sách", cùng các trường như bản in.
+- Ghi tệp an toàn: ghi tệp tạm rồi đổi tên, lỗi giữa chừng không để lại
+  tệp hỏng; tệp đang mở trong Excel thì nhắc đóng tệp rồi thử lại.
+
+### Thư viện
+
+- Thêm Apache POI `poi-ooxml` 5.5.1 (ghi `.xlsx`, giả định 42) và
+  `log4j-to-jul` 2.24.3 (runtime) để log của POI đi qua
+  `java.util.logging`, không in cảnh báo log4j ra console
+  ([architecture.md](docs/design/architecture.md#quy-ước)).
+
 ### Sửa
 
 - Tab "Nhật ký thao tác": "Rê chuột lên một ô…" đổi thành "Di chuột lên một
@@ -59,10 +77,12 @@ root, dữ liệu cũ giữ nguyên. Khi MySQL bật binary log, tạo trigger c
 
 ### Kiểm thử
 
-326 test đơn vị và 53 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
+347 test đơn vị và 57 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
 `NhatKyServiceTest`, `ThaoTacTest`, `NoiDungNhatKyTest`, `ThongKeIT`,
 `ThongKeServiceTest`, `ThangTrucYTest`, `BieuDoThuPhiTest`, `DongTyLeTest`,
-`NoDongIT`, `NoDongServiceTest`, `TheHoConNoTest`).
+`NoDongIT`, `NoDongServiceTest`, `TheHoConNoTest`, `BaoCaoThuIT`,
+`BaoCaoThuServiceTest`, `BaoCaoThuExcelTest`, `TamVangExcelTest`,
+`TepExcelTest`, `DanhSachTamVangTest`).
 
 ## [v0.3.0] – 12/11/2026 – Sprint 3
 
