@@ -18,7 +18,7 @@
 | Sprint 1 | 24 | `v0.1.0` | Hoàn thành |
 | Sprint 2 | 32 | `v0.2.0` | Hoàn thành, trừ AC-026 của US-008 (làm cùng phiếu thu ở Sprint 3) |
 | Sprint 3 | 28 | `v0.3.0` (đã phát hành) | Hoàn thành, trừ AC-014 của US-004 (xuất tệp, làm cùng Sprint 4) |
-| Sprint 4 | 28 | `v1.0.0` | Chưa bắt đầu |
+| Sprint 4 | 28 | `v1.0.0` | Đang làm |
 | **Tổng** | **112** | | |
 
 US-026 và US-027 đưa vào Sprint 2 (giả định 20, 26). US-008 đã làm AC-025
@@ -75,10 +75,10 @@ AC → test tự động: [docs/testing.md](../testing.md).
 
 | ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
 |---|---|---|---|---|---|
-| US-016 | Xem tổng tiền đã thu trong tháng ngay trên màn hình chính | Should | Sprint 4 | Chưa bắt đầu | 5 |
-| US-017 | Lọc danh sách hộ nợ phí quá 3 tháng | Should | Sprint 4 | Chưa bắt đầu | 3 |
-| US-018 | Xuất báo cáo thu tiền ra Excel theo mẫu thủ công cũ | Could | Sprint 4 | Chưa bắt đầu | 5 |
-| US-019 | Xem tổng thu của từng khoản/quỹ theo đợt | Should | Sprint 4 | Chưa bắt đầu | 3 |
+| US-016 | Xem tổng tiền đã thu trong tháng ngay trên màn hình chính | Should | Sprint 4 | Đang làm | 5 |
+| US-017 | Lọc danh sách hộ nợ phí quá 3 tháng | Should | Sprint 4 | Đang làm | 3 |
+| US-018 | Xuất báo cáo thu tiền ra Excel theo mẫu thủ công cũ | Could | Sprint 4 | Đang làm | 5 |
+| US-019 | Xem tổng thu của từng khoản/quỹ theo đợt | Should | Sprint 4 | Đang làm | 3 |
 
 ## EPIC-05: Tài khoản, bảo mật và nền tảng hệ thống
 
@@ -90,10 +90,10 @@ AC → test tự động: [docs/testing.md](../testing.md).
 | US-021 | Đăng nhập bằng tên đăng nhập và mật khẩu | Must | Sprint 1 | Hoàn thành | 3 |
 | US-022 | Phân quyền Quản trị viên và Thủ quỹ | Should | Sprint 2 | Hoàn thành | 5 |
 | US-023 | Đổi mật khẩu và cập nhật thông tin cá nhân | Should | Sprint 2 | Hoàn thành | 3 |
-| TS-001 | Sao lưu dữ liệu MySQL định kỳ (hàng ngày/tuần) để tránh mất dữ liệu. | Should | Sprint 4 | Chưa bắt đầu | 5 |
-| TS-002 | Ghi nhật ký mọi thao tác thay đổi dữ liệu quan trọng. | Should | Sprint 4 | Chưa bắt đầu | 5 |
+| TS-001 | Sao lưu dữ liệu MySQL định kỳ (hàng ngày/tuần) để tránh mất dữ liệu. | Should | Sprint 4 | Đang làm | 5 |
+| TS-002 | Ghi nhật ký mọi thao tác thay đổi dữ liệu quan trọng. | Should | Sprint 4 | Đang làm | 5 |
 | TS-003 | Thiết lập ứng dụng Java máy tính để bàn kết nối CSDL MySQL tập trung. | Must | Sprint 1 | Hoàn thành | 5 |
-| TS-004 | Rà soát giao diện dễ dùng cho người lớn tuổi (chữ rõ, ít bước thao tác). | Could | Sprint 4 | Chưa bắt đầu | 2 |
+| TS-004 | Rà soát giao diện dễ dùng cho người lớn tuổi (chữ rõ, ít bước thao tác). | Could | Sprint 4 | Đang làm | 2 |
 
 ## EPIC-06: Phí gửi xe (v2.0, chưa làm ở v1.0)
 
