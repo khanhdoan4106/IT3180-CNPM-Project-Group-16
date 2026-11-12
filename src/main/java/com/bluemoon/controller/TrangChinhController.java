@@ -8,13 +8,16 @@ import com.bluemoon.dao.DongHoCsdl;
 import com.bluemoon.dao.HoGiaDinhDaoImpl;
 import com.bluemoon.dao.KhoanPhiDaoImpl;
 import com.bluemoon.dao.TaiKhoanDaoImpl;
+import com.bluemoon.dao.ThongKeDaoImpl;
 import com.bluemoon.model.BienDong;
 import com.bluemoon.model.TaiKhoan;
 import com.bluemoon.model.VaiTro;
 import com.bluemoon.service.BienDongService;
 import com.bluemoon.service.CongNoService;
 import com.bluemoon.service.NghiepVuException;
+import com.bluemoon.service.SoTien;
 import com.bluemoon.service.TaiKhoanService;
+import com.bluemoon.service.ThongKeService;
 import com.bluemoon.util.DieuHuong;
 import com.bluemoon.util.PhienLamViec;
 import com.bluemoon.util.ThanhMenu;
@@ -38,6 +41,8 @@ public class TrangChinhController {
 
     private final TaiKhoanService taiKhoanService =
             new TaiKhoanService(new TaiKhoanDaoImpl());
+    /** Gio CSDL (gia dinh 38), dung chung cho nhac chot va so lieu thu. */
+    private final DongHoCsdl dongHo = new DongHoCsdl();
 
     @FXML
     private Label chaoLabel;
@@ -54,6 +59,8 @@ public class TrangChinhController {
     @FXML
     private Button thuPhiButton;
     @FXML
+    private Button thongKeButton;
+    @FXML
     private Button taiKhoanButton;
     @FXML
     private HBox nhacChotBox;
@@ -61,6 +68,16 @@ public class TrangChinhController {
     private Label nhacChotLabel;
     @FXML
     private VBox bienDongBox;
+    @FXML
+    private Label tieuDeLabel;
+    @FXML
+    private Label daThuLabel;
+    @FXML
+    private Label tyLeLabel;
+    @FXML
+    private BieuDoThuPhi bieuDo;
+    @FXML
+    private Label chuThichLabel;
 
     /** Nut menu cua man hinh dang mo (nen dam), khong nut nao o Trang chinh. */
     private ThanhMenu menu;
@@ -85,8 +102,9 @@ public class TrangChinhController {
             n.setManaged(quanTri);
         }
         menu = new ThanhMenu(hoGiaDinhButton, nhanKhauButton, khoanThuButton,
-                congNoButton, thuPhiButton, taiKhoanButton);
+                congNoButton, thuPhiButton, thongKeButton, taiKhoanButton);
         trangChu = List.copyOf(noiDung.getChildren());
+        hienTongQuan();
         nhacChotCongNo();
         if (quanTri) {
             hienBienDongGanDay();
@@ -94,13 +112,15 @@ public class TrangChinhController {
     }
 
     /**
-     * Bam logo: hien lai Trang chinh, bo chon moi nut menu, lam moi nhac chot
-     * va bien dong gan day.
+     * Bam logo: hien lai Trang chinh, bo chon moi nut menu, lam moi so lieu
+     * thu, nhac chot va bien dong gan day. Khong dung luong nen hay hen gio:
+     * so lieu chi doc lai khi vao Trang chinh.
      */
     @FXML
     private void onVeTrangChu() {
         noiDung.getChildren().setAll(trangChu);
         menu.boChonTatCa();
+        hienTongQuan();
         nhacChotCongNo();
         TaiKhoan tk = PhienLamViec.hienTai();
         if (tk != null && tk.getVaiTro() == VaiTro.QUAN_TRI) {
@@ -128,12 +148,50 @@ public class TrangChinhController {
         }
     }
 
+    /**
+     * US-016: tong thu thang hien tai (gia dinh 24), ty le thu cua cong no
+     * thang nay va bieu do 6 thang. Chua dang nhap (test) thi bo qua.
+     */
+    private void hienTongQuan() {
+        TaiKhoan tk = PhienLamViec.hienTai();
+        if (tk == null) {
+            return;
+        }
+        try {
+            ThongKeService.TongQuan tq = new ThongKeService(
+                    new ThongKeDaoImpl(), new KhoanPhiDaoImpl(), dongHo)
+                    .tongQuan(tk);
+            YearMonth t = tq.thang();
+            tieuDeLabel.setText("Tổng quan tháng " + t.getMonthValue() + "/"
+                    + t.getYear());
+            daThuLabel.setText(SoTien.hienThi(tq.daThu()));
+            tyLeLabel.setText(dongTyLe(tq));
+            bieuDo.hien(tq.sauThang(), t);
+            chuThichLabel.setText("Cột đậm: tháng " + t.getMonthValue()
+                    + " chưa kết thúc, số liệu tính đến hôm nay.");
+        } catch (NghiepVuException | CauHinhException | DaoException e) {
+            daThuLabel.setText("–");
+            tyLeLabel.setText("Chưa đọc được số liệu thu phí");
+        }
+    }
+
+    /** Dong phu cua the "Da thu thang nay". */
+    static String dongTyLe(ThongKeService.TongQuan tq) {
+        int thang = tq.thang().getMonthValue();
+        if (!tq.daChot()) {
+            return "Tháng " + thang + " chưa chốt công nợ";
+        }
+        if (tq.phanTram() == null) {
+            return "Tháng " + thang + " không có khoản phải thu";
+        }
+        return tq.phanTram() + "% tổng phải thu";
+    }
+
     /** Thay lich tu chay: nhac khi da sang thang moi ma chua chot. */
     private void nhacChotCongNo() {
         try {
             CongNoService congNo = new CongNoService(new CongNoDaoImpl(),
-                    new KhoanPhiDaoImpl(), new HoGiaDinhDaoImpl(),
-                    new DongHoCsdl());
+                    new KhoanPhiDaoImpl(), new HoGiaDinhDaoImpl(), dongHo);
             if (congNo.canNhacChot(PhienLamViec.hienTai())) {
                 YearMonth t = congNo.thangHienTai();
                 nhacChotLabel.setText("Tháng " + t.getMonthValue() + "/"
@@ -173,6 +231,11 @@ public class TrangChinhController {
     @FXML
     private void onMoThuPhi() {
         mo("thu-phi.fxml", thuPhiButton);
+    }
+
+    @FXML
+    private void onMoThongKe() {
+        mo("thong-ke.fxml", thongKeButton);
     }
 
     @FXML

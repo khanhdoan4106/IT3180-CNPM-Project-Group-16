@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.bluemoon.controller.BieuDoThuPhi?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -31,6 +34,8 @@
                     onAction="#onMoCongNo"/>
             <Button minWidth="-Infinity" fx:id="thuPhiButton" text="Thu phí" styleClass="nut-menu"
                     onAction="#onMoThuPhi"/>
+            <Button minWidth="-Infinity" fx:id="thongKeButton" text="Thống kê" styleClass="nut-menu"
+                    onAction="#onMoThongKe"/>
             <Button minWidth="-Infinity" fx:id="taiKhoanButton" text="Tài khoản" styleClass="nut-menu"
                     onAction="#onMoTaiKhoan"/>
             <Region HBox.hgrow="ALWAYS"/>
@@ -40,23 +45,51 @@
     </top>
     <center>
         <StackPane fx:id="noiDung" styleClass="nen">
-            <VBox spacing="16" alignment="CENTER">
-                <HBox fx:id="nhacChotBox" styleClass="the" spacing="16"
-                      alignment="CENTER_LEFT" maxWidth="640"
-                      visible="false" managed="false">
-                    <Label fx:id="nhacChotLabel" HBox.hgrow="ALWAYS"
-                           wrapText="true"/>
-                    <Button text="Chốt công nợ" styleClass="nut-chinh"
-                            minWidth="-Infinity" onAction="#onMoCongNo"/>
-                </HBox>
-                <VBox fx:id="bienDongBox" styleClass="the" spacing="10"
-                      maxWidth="900" visible="false" managed="false">
-                    <Label text="Biến động nhân khẩu gần đây"
-                           styleClass="tieu-de-form"/>
+            <!-- US-016 theo frame "Trang chính – 1440x1024" (Figma). Cuộn
+                 được khi cửa sổ thấp. -->
+            <ScrollPane fitToWidth="true" styleClass="cuon-trang">
+                <VBox spacing="20">
+                    <padding>
+                        <Insets top="28" right="40" bottom="28" left="40"/>
+                    </padding>
+                    <Label fx:id="tieuDeLabel" text="Tổng quan"
+                           styleClass="tieu-de-trang"/>
+                    <HBox fx:id="nhacChotBox" styleClass="the" spacing="16"
+                          alignment="CENTER_LEFT"
+                          visible="false" managed="false">
+                        <Label fx:id="nhacChotLabel" HBox.hgrow="ALWAYS"
+                               wrapText="true"/>
+                        <Button text="Chốt công nợ" styleClass="nut-chinh"
+                                minWidth="-Infinity" onAction="#onMoCongNo"/>
+                    </HBox>
+                    <HBox spacing="20">
+                        <VBox styleClass="the, the-so" spacing="6"
+                              minWidth="330">
+                            <Label text="Đã thu tháng này"
+                                   styleClass="phu-de"/>
+                            <Label fx:id="daThuLabel" text="0 đ"
+                                   styleClass="so-lon"/>
+                            <Label fx:id="tyLeLabel" styleClass="phu-de"/>
+                        </VBox>
+                    </HBox>
+                    <HBox spacing="20">
+                        <VBox styleClass="the" spacing="8" HBox.hgrow="ALWAYS">
+                            <Label text="Thu phí 6 tháng gần nhất"
+                                   styleClass="tieu-de-form"/>
+                            <BieuDoThuPhi fx:id="bieuDo" prefHeight="420"
+                                          minHeight="320"/>
+                            <Label fx:id="chuThichLabel" styleClass="phu-de"
+                                   wrapText="true"/>
+                        </VBox>
+                        <VBox fx:id="bienDongBox" styleClass="the"
+                              spacing="10" prefWidth="460" minWidth="380"
+                              visible="false" managed="false">
+                            <Label text="Biến động nhân khẩu gần đây"
+                                   styleClass="tieu-de-form"/>
+                        </VBox>
+                    </HBox>
                 </VBox>
-                <Label text="Chọn chức năng trên thanh menu"
-                       styleClass="phu-de"/>
-            </VBox>
+            </ScrollPane>
         </StackPane>
     </center>
 </BorderPane>

@@ -21,6 +21,24 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
 - **Xem nhật ký:** tab "Nhật ký thao tác" trong màn Tài khoản, chỉ Quản trị
   viên thấy; lọc theo khoảng ngày (mặc định 7 ngày gần nhất) và loại thao
   tác, mới nhất ở trên, chỉ đọc.
+- **Tổng thu tháng ở Trang chính (US-016, AC-046, AC-047):** tiêu đề "Tổng
+  quan tháng …", thẻ "Đã thu tháng này" (tổng phiếu chưa hủy lập trong
+  tháng, giả định 24; tháng chưa có phiếu là 0 đ) kèm tỷ lệ đã thu của công
+  nợ tháng này, hoặc "chưa chốt công nợ". Biểu đồ cột "Thu phí 6 tháng gần
+  nhất" theo quy tắc biểu đồ trong `ui.md`: tên hai trục, trục Y từ 0 chia
+  theo mốc tròn, đơn vị triệu hoặc nghìn đồng, số trên đầu cột, cột tháng
+  chưa kết thúc tô đậm kèm chú thích. Số liệu đọc lại khi đăng nhập và khi
+  bấm logo.
+- **Thống kê theo khoản (US-019, AC-052, AC-053):** mục menu "Thống kê"
+  giữa Thu phí và Tài khoản. Chọn khoản bắt buộc và tháng đã chốt, hoặc một
+  quỹ tự nguyện (trong thời gian thu của quỹ, giả định 45); xem tổng đã thu,
+  tổng phải thu và số hộ đã đóng, hoặc số hộ đã đóng góp và số hộ ghi không
+  đóng. Chưa có giao dịch thì tổng là 0 đ.
+
+### Sửa
+
+- Tab "Nhật ký thao tác": "Rê chuột lên một ô…" đổi thành "Di chuột lên một
+  ô…".
 
 ### Cơ sở dữ liệu
 
@@ -32,8 +50,9 @@ root, dữ liệu cũ giữ nguyên. Khi MySQL bật binary log, tạo trigger c
 
 ### Kiểm thử
 
-279 test đơn vị và 40 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
-`NhatKyServiceTest`, `ThaoTacTest`, `NoiDungNhatKyTest`).
+318 test đơn vị và 47 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
+`NhatKyServiceTest`, `ThaoTacTest`, `NoiDungNhatKyTest`, `ThongKeIT`,
+`ThongKeServiceTest`, `ThangTrucYTest`, `BieuDoThuPhiTest`, `DongTyLeTest`).
 
 ## [v0.3.0] – 12/11/2026 – Sprint 3
 

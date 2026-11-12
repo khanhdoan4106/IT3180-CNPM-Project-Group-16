@@ -202,7 +202,7 @@
                                              prefWidth="380"/>
                             </columns>
                         </TableView>
-                        <Label text="Nhật ký chỉ để xem: không sửa, không xóa được. Rê chuột lên một ô để xem đủ nội dung."
+                        <Label text="Nhật ký chỉ để xem: không sửa, không xóa được. Di chuột lên một ô để xem đủ nội dung."
                                styleClass="phu-de" wrapText="true"/>
                     </VBox>
                 </VBox>
