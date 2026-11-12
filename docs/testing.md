@@ -12,7 +12,7 @@ còn phải kiểm tay. Quy tắc chung khi hoàn thành một story nằm ở
 | Test đơn vị (Service) | `src/test/java/com/bluemoon/service` | Quy tắc nghiệp vụ, kiểm tra dữ liệu, phân quyền (`PhanQuyen`), thông báo lỗi | Không cần MySQL: Service nhận DAO qua constructor, test dùng DAO giả trong bộ nhớ (`KhoGia`, `KhoThuPhiGia`, `KhoPhieuThuGia`) |
 | Test đơn vị (tiện ích, DAO không cần CSDL) | `util`, `dao`, `config`, `controller` | Băm mật khẩu, đọc ngày, đổi mã lỗi MySQL thành lỗi nghiệp vụ (`DangBiKhoaException`, `TrungKhoaException`), đồng hồ `DongHoCsdl` với `Clock.fixed`, chọn thông báo lỗi (`LoiCsdl`, `LoiKhongMongDoi`), số tiền bằng chữ | Không |
 | Test bố cục giao diện | `BoCucFxmlTest`, `MauInTest`, `HopThoaiHuyPhieuTest` | Nạp từng FXML ở cửa sổ 1120×645 bằng JavaFX chạy không màn hình (Monocle), kiểm không nút hay nhãn nào bị cắt thành "…", chữ gợi ý nằm trọn trong ô, mọi nút nằm trong vùng thấy được hoặc cuộn được, dùng đúng phông Be Vietnam Pro; số tiền lớn nhất vẫn vừa cột biên lai; hộp thoại hủy phiếu có đúng nút | Không cần màn hình, chạy được trên CI |
-| Test hành vi giao diện | `PhimEnterTest`, `TrangChinhMenuTest`, `MauPhuTest` | Tải FXML thật trên cửa sổ ảo (Monocle), gửi sự kiện Enter vào từng ô và xem nút nào chạy; bấm logo về Trang chính, nút menu đang chọn có nền `#1d4ed8` do JavaFX vẽ; màu chữ phụ, tiêu đề cột và tương phản WCAG AA | Không cần màn hình, chạy được trên CI |
+| Test hành vi giao diện | `PhimEnterTest`, `TrangChinhMenuTest`, `MauPhuTest`, `BieuDoThuPhiTest` | Tải FXML thật trên cửa sổ ảo (Monocle), gửi sự kiện Enter vào từng ô và xem nút nào chạy; bấm logo về Trang chính, nút menu đang chọn có nền `#1d4ed8` do JavaFX vẽ, mục "Thống kê" nằm giữa Thu phí và Tài khoản; màu chữ phụ, tiêu đề cột và tương phản WCAG AA; biểu đồ thu phí vẽ thật đúng quy tắc biểu đồ (tên trục, trục Y từ 0, cột tháng hiện tại khác màu, số trên đầu cột) | Không cần màn hình, chạy được trên CI |
 | Test tài liệu | `TruyVetTaiLieuTest`, `UiMdTest`, `TestingMdTest` | Mã RAW trích trong chú thích khớp bảng truy vết, `ui.md` giữ đủ quy tắc biểu đồ và bảng màu, mọi `Lớp#phương_thức` trong bảng AC → test ở đây còn tồn tại | Không |
 | Kiểm thử tích hợp (`*IT`) | `src/test/java/com/bluemoon/it` | Phần chỉ MySQL thật mới chứng minh được: khóa dòng, deadlock, ràng buộc CSDL, giao dịch hoàn tác, giờ máy chủ, dữ liệu mẫu | MySQL 8, CSDL riêng có chữ `test` trong tên, profile `-Pmysql` |
 | Kiểm tay | Theo bảng ở mục 5 | In thật qua máy in, hộp thoại máy in, nhìn bằng mắt, hai máy cùng dùng | Máy có giao diện |
@@ -31,6 +31,7 @@ chứng minh trên MySQL thật, vì DAO giả không tái hiện được.
 | `DongHoCsdlIT` | Giờ đọc từ MySQL gần giờ máy, múi giờ Việt Nam |
 | `MuiGioIT` | JVM đặt UTC, New York, Kiritimati: phiếu lập 23:30 ngày 31/12 vẫn là 23:30 cùng ngày (không sang năm sau), giờ hủy phiếu, giờ biến động và giờ sửa khoản do CSDL điền đọc lại đúng giờ Việt Nam; phiên MySQL luôn ở `+07:00` dù máy chủ đặt UTC (chạy thử bằng `mysqld --default-time-zone=+00:00`, như máy chủ trên CI) |
 | `NhatKyIT` | Mỗi nhóm thao tác (hộ, nhân khẩu, tạm trú/tạm vắng, khoản thu, công nợ, phiếu thu, tài khoản) ghi đúng một dòng nhật ký với người làm, thao tác, đối tượng, nội dung đúng; sửa hộ, nhân khẩu chỉ ghi trường thật sự đổi; không ghi mã băm, không ghi tự đổi mật khẩu; thao tác xung đột hoặc trùng khóa không để lại dòng; ghi nhật ký lỗi thì thao tác hoàn tác; MySQL từ chối `UPDATE`, `DELETE` trên `nhat_ky`; chạy lại `schema.sql` không mất nhật ký; thời điểm theo giờ Việt Nam dù máy chủ chạy UTC; lọc theo khoảng ngày, loại thao tác, mới nhất ở trên |
+| `ThongKeIT` | Tổng thu tháng không tính phiếu đã hủy; ranh giới tháng (23:59:59 ngày cuối tháng, 00:00:00 ngày đầu tháng sau); nợ tháng trước đóng tháng này tính tháng này; 6 tháng có tháng trống là 0; khoản bắt buộc theo tháng chốt (khoản sửa về 0 đ không tính phải đóng) và tỷ lệ thu tháng hiện tại; khoản tự nguyện đếm hộ đã đóng và hộ ghi 0 đ; chưa có giao dịch thì 0 đ |
 | `SeedIT` | Dựng CSDL từ `schema.sql`, chạy `seed.sql` ba lần: số dòng không đổi, tên có dấu (so trong Java, không dựa `=` của MySQL), hai quỹ mẫu đang mở, ba trường hợp tạm trú/tạm vắng |
 
 Mỗi lớp `*IT` bỏ qua (không lỗi) nếu chưa đặt biến môi trường hoặc tên CSDL
@@ -45,7 +46,7 @@ không có chữ `test`, để không xóa nhầm CSDL `bluemoon` đang dùng.
 | IntelliJ | Maven → bluemoon → Lifecycle → `test` |
 | Dòng lệnh | `mvn test` hoặc `mvn verify` (cần Maven 3.9+ trong PATH) |
 
-Kết quả mong đợi: `BUILD SUCCESS`, 279 test. `mvn verify` không có
+Kết quả mong đợi: `BUILD SUCCESS`, 318 test. `mvn verify` không có
 `-Pmysql` không chạy lớp `*IT`.
 
 Chạy riêng test bố cục sau khi sửa FXML hoặc CSS:
@@ -70,7 +71,7 @@ mvn test -Dtest=BoCucFxmlTest
    Nếu user không phải `bluemoon`, đặt thêm `BLUEMOON_DB_USER` và
    `BLUEMOON_DB_PASSWORD`.
 
-Kết quả mong đợi: 279 test đơn vị và 40 kiểm thử tích hợp đều đạt (MySQL
+Kết quả mong đợi: 318 test đơn vị và 47 kiểm thử tích hợp đều đạt (MySQL
 8.0). Hai test cấu hình (`DatabaseConfigTest`) tự bỏ qua khi đã đặt
 `BLUEMOON_DB_*`, nên log hiện "Skipped: 2" ở lần chạy này.
 
@@ -83,7 +84,7 @@ hai xanh:
 | Job | Làm gì |
 |---|---|
 | `build` | JDK 21, `mvn -B verify`: test đơn vị và test bố cục |
-| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 40 kiểm thử tích hợp |
+| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 47 kiểm thử tích hợp |
 
 ## 3. Số test hiện tại
 
@@ -92,7 +93,8 @@ hai xanh:
 | `v0.1.0` | 97 | – |
 | `v0.2.0` | 169 | có (`mvn verify -Pmysql`) |
 | `v0.3.0` (Sprint 3 và các sửa #28 – #35) | 269 | 30 |
-| Sprint 4, sau TS-002 (chưa phát hành) | 279 | 40 |
+| Sprint 4, sau TS-002 | 279 | 40 |
+| Sprint 4, sau US-016, US-019 (chưa phát hành) | 318 | 47 |
 
 ## 4. Ánh xạ AC → test tự động
 
@@ -198,10 +200,15 @@ Khác ở Sprint 3, không gắn một AC riêng: chặn thu trùng và deadlock
 | AC-068 ghi nhật ký người sửa, nội dung, thời điểm | `NhatKyIT#hoGiaDinhGhiThemSuaChuyenDiVaChiGhiTruongThucSuDoi`, `#nhanKhauGhiThemSuaChuyenDiDoiChuHoVaDotCuTru`, `#khoanThuCongNoVaPhieuThuGhiDungNguoiLam`, `#taiKhoanGhiTaoDoiVaiTroKhoaMoKhoaDatLaiKhongGhiMatKhau`, `#thaoTacXungDotHoacTrungKhoaKhongDeLaiDong`, `#ghiNhatKyLoiThiThaoTacCungHoanTac`, `#thoiDiemLaGioVietNam`, `ThaoTacTest#maKhopRangBuocCheckTrongSchema`, `NoiDungNhatKyTest#chiGhiTruongThucSuDoi` | ✓ |
 | AC-069 xem theo thời gian, không sửa/xóa | `NhatKyServiceTest#thuQuyBiTuChoi`, `#locTheoKhoangNgayVaLoaiThaoTac`, `#tuNgaySauDenNgayBaoLoi`, `#thieuNgayBaoLoi`, `NhatKyIT#locTheoKhoangNgayVaLoaiThaoTacMoiNhatTruoc`, `#mysqlTuChoiSuaVaXoaNhatKy`, `#chayLaiSchemaKhongMatNhatKyVaVanChanSua`, `BoCucFxmlTest#khongCoChuBiCat` cho tab "Nhật ký thao tác" của `tai-khoan.fxml` | ◐ tab chỉ hiện với Quản trị viên kiểm tay |
 
+| AC-046 tổng đã thu trong tháng ở Trang chính | `ThongKeServiceTest#tongQuanThangHienTaiCoTyLeKhiDaChot`, `#sauThangCoThangTrongBangKhongVaChiMotLanDoc`, `#caHaiVaiTroDeuXemDuocNguoiKhacBiTuChoi`, `ThongKeIT#phieuDaHuyKhongTinh`, `#ranhGioiThang`, `#noThangTruocDongThangNayTinhThangNay`, `#sauThangCoThangTrong`, `DongTyLeTest#daChotHienPhanTram`, `#chuaChotBaoRo`, `ThangTrucYTest#mauFigma`, `#moiGiaTriNamTrongThangMocTron`, `BieuDoThuPhiTest#coTenHaiTrucVaNhanThang`, `#trucYBatDauTuKhongTheoMocTronCoLuoiNgang`, `#cotThangHienTaiKhacKieu`, `#soLieuTrenDauCot` | ◐ Trang chính với dữ liệu thật xem bằng mắt |
+| AC-047 tháng chưa có giao dịch thì 0 | `ThongKeServiceTest#thangKhongCoGiaoDichLaKhong`, `ThangTrucYTest#toanKhongVanCoThangMacDinh`, `BieuDoThuPhiTest#toanKhongVanVeTruc`, `ThongKeIT#phieuDaHuyKhongTinh` | ✓ |
+| AC-052 tổng thu một khoản theo đợt | `ThongKeServiceTest#khoanBatBuocTheoThangDaChot`, `#khoanBatBuocCanThangDaChot`, `#khoanTuNguyenKhongCanThang`, `#cacKhoanBatBuocTruoc`, `ThongKeIT#khoanBatBuocTheoThangChot`, `#tuNguyenDemDungHoDongVaHoGhiKhong`, `BoCucFxmlTest#khongCoChuBiCat` cho `thong-ke.fxml` | ◐ màn Thống kê xem bằng mắt |
+| AC-053 khoản chưa có giao dịch thì 0 | `ThongKeIT#chuaCoGiaoDichLaKhong` | ✓ |
+
 ### Chưa làm (Sprint 4)
 
-AC-014 (xuất tệp danh sách tạm vắng), AC-046 – AC-053 (thống kê, báo cáo
-Excel), AC-066, AC-067 (sao lưu). Test sẽ thêm cùng story; bảng này cập
+AC-014 (xuất tệp danh sách tạm vắng), AC-048 – AC-051 (nợ quá 3 tháng,
+báo cáo Excel), AC-066, AC-067 (sao lưu). Test sẽ thêm cùng story; bảng này cập
 nhật khi Sprint 4 hoàn thành.
 
 ## 5. Việc còn kiểm tay
@@ -218,6 +225,7 @@ Làm trước mỗi lần demo hoặc phát hành, theo thứ tự:
 | Menu theo vai trò | Đăng nhập từng vai trò, đối chiếu menu với bảng phân quyền ở [architecture.md](design/architecture.md); Thủ quỹ không thấy tab "Quản lý tài khoản" và "Nhật ký thao tác" trong màn Tài khoản | AC-060, AC-061, AC-069 |
 | Hộp thoại lỗi không lường trước | Khó tái hiện có chủ ý; phần chọn thông báo đã có `LoiKhongMongDoiTest`, hộp thoại hiện ra thì xem bằng mắt | `LoiKhongMongDoi` |
 | Hai máy cùng dùng một CSDL | Mở hai bản ứng dụng, thao tác một hộ ở cả hai | AC-071 |
+| Trang chính và màn Thống kê với dữ liệu thật | Đăng nhập bằng dữ liệu mẫu; xem thẻ "Đã thu tháng này", biểu đồ 6 tháng (cột tháng này đậm, số trên đầu cột), lập một phiếu rồi bấm logo thấy số đổi; mở Thống kê, xem một khoản bắt buộc và một quỹ | AC-046, AC-052 |
 | Giao diện so với Figma | Mở từng màn ở 1120×645 và đối chiếu thiết kế ([ui.md](design/ui.md)) | NFR |
 
 ## 6. Viết test mới

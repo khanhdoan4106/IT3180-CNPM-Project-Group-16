@@ -309,3 +309,55 @@
 .bang-phieu .table-row-cell.phieu-da-huy .table-cell.trang-thai-huy {
     -fx-text-fill: -mau-loi;
 }
+
+/* Trang chinh (US-016) theo Figma: trang cuon duoc, the so lieu, bieu do. */
+.cuon-trang,
+.cuon-trang > .viewport {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.so-lon {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+/* Bieu do cot (docs/design/ui.md, Quy tac bieu do): luoi ngang mo, khong
+   luoi doc, cot thang da qua nhat, cot thang hien tai dam. */
+.bieu-do-thu .chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.bieu-do-thu .chart-horizontal-grid-lines {
+    -fx-stroke: #e2e8f0;
+}
+
+.bieu-do-thu .chart-horizontal-zero-line,
+.bieu-do-thu .chart-vertical-zero-line {
+    -fx-stroke: transparent;
+}
+
+.bieu-do-thu .axis {
+    -fx-tick-label-fill: -mau-phu;
+    -fx-tick-label-font: 13px "Be Vietnam Pro";
+}
+
+.bieu-do-thu .axis-label {
+    -fx-text-fill: -mau-phu;
+}
+
+.bieu-do-thu .chart-bar.cot-da-qua {
+    -fx-background-color: #93b4f5;
+    -fx-background-radius: 4 4 0 0;
+}
+
+.bieu-do-thu .chart-bar.cot-hien-tai {
+    -fx-background-color: -mau-chinh-dam;
+    -fx-background-radius: 4 4 0 0;
+}
+
+.bieu-do-thu .nhan-cot {
+    -fx-fill: -mau-chu;
+    -fx-font-family: "Be Vietnam Pro";
+    -fx-font-size: 13px;
+}

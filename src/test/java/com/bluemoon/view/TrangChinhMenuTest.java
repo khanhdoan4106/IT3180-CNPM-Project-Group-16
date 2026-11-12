@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.bluemoon.util.PhienLamViec;
 import com.bluemoon.util.ThanhMenu;
@@ -109,10 +110,26 @@ class TrangChinhMenuTest {
                     "Bấm logo phải hiện lại nội dung Trang chính");
             for (String id : List.of("hoGiaDinhButton", "nhanKhauButton",
                     "khoanThuButton", "congNoButton", "thuPhiButton",
-                    "taiKhoanButton")) {
+                    "thongKeButton", "taiKhoanButton")) {
                 assertFalse(m.nut(id).getStyleClass()
                         .contains(ThanhMenu.DANG_CHON), id);
             }
+            m.stage().close();
+            return null;
+        });
+    }
+
+    @Test
+    void mucThongKeNamGiuaThuPhiVaTaiKhoan() throws Exception {
+        FxTest.chay(() -> {
+            Man m = tai();
+            Button thongKe = m.nut("thongKeButton");
+            assertEquals("Thống kê", thongKe.getText());
+            List<Node> menu = thongKe.getParent().getChildrenUnmodifiable();
+            int i = menu.indexOf(thongKe);
+            assertSame(m.nut("thuPhiButton"), menu.get(i - 1));
+            assertSame(m.nut("taiKhoanButton"), menu.get(i + 1));
+            assertTrue(thongKe.getStyleClass().contains("nut-menu"));
             m.stage().close();
             return null;
         });

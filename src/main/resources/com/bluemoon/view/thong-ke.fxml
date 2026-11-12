@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- US-019: tong thu cua tung khoan/quy theo dot (gia dinh 45). -->
+<BorderPane xmlns:fx="http://javafx.com/fxml" styleClass="nen"
+            fx:controller="com.bluemoon.controller.ThongKeController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <top>
+        <VBox spacing="2">
+            <Label text="Thống kê theo khoản thu" styleClass="tieu-de-trang"/>
+            <Label text="Khoản bắt buộc xem theo tháng đã chốt công nợ; quỹ tự nguyện xem trong thời gian thu của quỹ."
+                   styleClass="phu-de" wrapText="true"/>
+            <BorderPane.margin>
+                <Insets bottom="16"/>
+            </BorderPane.margin>
+        </VBox>
+    </top>
+    <center>
+        <VBox spacing="16">
+            <HBox styleClass="the" spacing="16" alignment="BOTTOM_LEFT">
+                <VBox spacing="4">
+                    <Label text="Khoản thu"/>
+                    <ComboBox fx:id="khoanCombo" prefWidth="340"/>
+                </VBox>
+                <VBox fx:id="thangBox" spacing="4">
+                    <Label text="Tháng đã chốt"/>
+                    <ComboBox fx:id="thangCombo" prefWidth="170"/>
+                </VBox>
+                <VBox fx:id="khoangBox" spacing="4" visible="false"
+                      managed="false">
+                    <Label text="Thời gian thu"/>
+                    <Label fx:id="khoangLabel" styleClass="dai-thong-tin"
+                           text="Thu từ 01/10/2026 đến 31/12/2026"/>
+                </VBox>
+                <Button fx:id="xemButton" text="Xem" styleClass="nut-chinh"
+                        minWidth="-Infinity" onAction="#onXem"/>
+            </HBox>
+            <Label fx:id="thongBaoLabel" wrapText="true"/>
+            <VBox fx:id="ketQuaBox" styleClass="the" spacing="8"
+                  visible="false" managed="false">
+                <Label fx:id="ketQuaTieuDeLabel" styleClass="tieu-de-form"
+                       wrapText="true"/>
+                <Label text="Tổng đã thu" styleClass="phu-de"/>
+                <Label fx:id="tongThuLabel" text="0 đ" styleClass="so-lon"/>
+                <Label fx:id="phu1Label"/>
+                <Label fx:id="phu2Label"/>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

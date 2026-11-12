@@ -50,10 +50,32 @@ class BoCucFxmlTest {
     private static final double CAO = 645;
 
     /** Chu do controller dat luc chay, lay ban dai nhat co the gap. */
-    private static final Map<String, String> CHU_DONG = Map.of(
-            "chaoLabel", "Xin chào, Nguyễn Thị Thu Hương (Quản trị viên)",
-            "khoaButton", "Mở khóa",
-            "soDongNhatKyLabel", "12345 thao tác");
+    private static final Map<String, String> CHU_DONG = Map.ofEntries(
+            Map.entry("chaoLabel",
+                    "Xin chào, Nguyễn Thị Thu Hương (Quản trị viên)"),
+            Map.entry("khoaButton", "Mở khóa"),
+            Map.entry("soDongNhatKyLabel", "12345 thao tác"),
+            Map.entry("tieuDeLabel", "Tổng quan tháng 12/2026"),
+            Map.entry("daThuLabel", "999.999.999.999 đ"),
+            Map.entry("tyLeLabel", "Tháng 12 không có khoản phải thu"),
+            Map.entry("chuThichLabel", "Cột đậm: tháng 12 chưa kết thúc,"
+                    + " số liệu tính đến hôm nay."),
+            Map.entry("nhacChotLabel", "Tháng 12/2026 chưa chốt công nợ."
+                    + " Chốt để tạo khoản phải nộp cho các hộ đang ở."),
+            Map.entry("ketQuaTieuDeLabel", "Quỹ ủng hộ đồng bào bị ảnh"
+                    + " hưởng bão lũ 2026 – thu từ 01/10/2026 đến"
+                    + " 31/12/2026"),
+            Map.entry("tongThuLabel", "999.999.999.999 đ"),
+            Map.entry("phu1Label", "Tổng phải thu: 999.999.999.999 đ"),
+            Map.entry("phu2Label", "Hộ ghi không đóng (0 đ): 1234 hộ"));
+
+    /**
+     * Khung controller chi hien luc chay (ket qua thong ke, khoang thu cua
+     * quy, nhac chot, bien dong gan day): hien het de kiem ca truong hop
+     * nhieu chu nhat.
+     */
+    private static final Set<String> HIEN_LUC_CHAY = Set.of("ketQuaBox",
+            "khoangBox", "nhacChotBox", "bienDongBox");
 
     /**
      * Nhan duoc phep rut gon "...". Loi chao tren thanh menu chua ten nguoi
@@ -91,7 +113,8 @@ class BoCucFxmlTest {
     @ParameterizedTest
     @ValueSource(strings = {"dang-nhap.fxml", "trang-chinh.fxml",
             "ho-gia-dinh.fxml", "nhan-khau.fxml", "khoan-thu.fxml",
-            "cong-no.fxml", "tai-khoan.fxml", "thu-phi.fxml"})
+            "cong-no.fxml", "tai-khoan.fxml", "thu-phi.fxml",
+            "thong-ke.fxml"})
     void khongCoChuBiCat(String tenFile) throws Exception {
         List<String> loi = trenLuongFx(() -> kiemTra(tenFile));
         assertTrue(loi.isEmpty(), tenFile + " ở " + (int) RONG + "×"
@@ -110,6 +133,12 @@ class BoCucFxmlTest {
         CHU_DONG.forEach((id, chu) -> {
             if (loader.getNamespace().get(id) instanceof Labeled l) {
                 l.setText(chu);
+            }
+        });
+        HIEN_LUC_CHAY.forEach(id -> {
+            if (loader.getNamespace().get(id) instanceof Node n) {
+                n.setVisible(true);
+                n.setManaged(true);
             }
         });
         Scene scene = new Scene(goc, RONG, CAO);
