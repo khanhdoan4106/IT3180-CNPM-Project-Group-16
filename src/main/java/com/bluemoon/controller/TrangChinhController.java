@@ -7,6 +7,8 @@ import com.bluemoon.dao.DaoException;
 import com.bluemoon.dao.DongHoCsdl;
 import com.bluemoon.dao.HoGiaDinhDaoImpl;
 import com.bluemoon.dao.KhoanPhiDaoImpl;
+import com.bluemoon.dao.NoDongDao.TomTatNo;
+import com.bluemoon.dao.NoDongDaoImpl;
 import com.bluemoon.dao.TaiKhoanDaoImpl;
 import com.bluemoon.dao.ThongKeDaoImpl;
 import com.bluemoon.model.BienDong;
@@ -15,6 +17,7 @@ import com.bluemoon.model.VaiTro;
 import com.bluemoon.service.BienDongService;
 import com.bluemoon.service.CongNoService;
 import com.bluemoon.service.NghiepVuException;
+import com.bluemoon.service.NoDongService;
 import com.bluemoon.service.SoTien;
 import com.bluemoon.service.TaiKhoanService;
 import com.bluemoon.service.ThongKeService;
@@ -23,8 +26,10 @@ import com.bluemoon.util.PhienLamViec;
 import com.bluemoon.util.ThanhMenu;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.function.Function;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -41,6 +46,12 @@ public class TrangChinhController {
 
     private final TaiKhoanService taiKhoanService =
             new TaiKhoanService(new TaiKhoanDaoImpl());
+    /**
+     * Tai man hinh chuc nang theo ten tep FXML. Test thay bang ham tai FXML
+     * khong controller de khong dung CSDL.
+     */
+    static Function<String, Parent> taiManHinh = DieuHuong::taiManHinh;
+
     /** Gio CSDL (gia dinh 38), dung chung cho nhac chot va so lieu thu. */
     private final DongHoCsdl dongHo = new DongHoCsdl();
 
@@ -78,6 +89,10 @@ public class TrangChinhController {
     private BieuDoThuPhi bieuDo;
     @FXML
     private Label chuThichLabel;
+    @FXML
+    private Label soHoNoLabel;
+    @FXML
+    private Label noDongLabel;
 
     /** Nut menu cua man hinh dang mo (nen dam), khong nut nao o Trang chinh. */
     private ThanhMenu menu;
@@ -173,6 +188,23 @@ public class TrangChinhController {
             daThuLabel.setText("–");
             tyLeLabel.setText("Chưa đọc được số liệu thu phí");
         }
+        try {
+            TomTatNo no = new NoDongService(new NoDongDaoImpl()).tomTat(tk);
+            soHoNoLabel.setText(String.valueOf(no.soHoConNo()));
+            noDongLabel.setText(dongNoDong(no));
+        } catch (NghiepVuException | CauHinhException | DaoException e) {
+            soHoNoLabel.setText("–");
+            noDongLabel.setText("Chưa đọc được số liệu nợ");
+        }
+    }
+
+    /** Dong phu cua the "Ho con no" (US-017). */
+    static String dongNoDong(TomTatNo no) {
+        return no.soHoNoDong() == 0
+                ? "Không hộ nào nợ từ " + NoDongService.NGUONG_NO_DONG
+                        + " tháng"
+                : no.soHoNoDong() + " hộ nợ từ " + NoDongService.NGUONG_NO_DONG
+                        + " tháng trở lên";
     }
 
     /** Dong phu cua the "Da thu thang nay". */
@@ -233,6 +265,22 @@ public class TrangChinhController {
         mo("thu-phi.fxml", thuPhiButton);
     }
 
+    /**
+     * Bam the "Ho con no": mo man Cong no o tab "Ho no dong", menu Cong no
+     * o trang thai dang chon.
+     */
+    @FXML
+    private void onMoNoDong() {
+        if (lamMoiPhien()) {
+            moNoDong();
+        }
+    }
+
+    /** Mo man Cong no o tab "Ho no dong" (khong kiem tra lai phien). */
+    void moNoDong() {
+        CongNoController.chonTabNoDong(hien("cong-no.fxml", congNoButton));
+    }
+
     @FXML
     private void onMoThongKe() {
         mo("thong-ke.fxml", thongKeButton);
@@ -248,23 +296,42 @@ public class TrangChinhController {
      * dang xuat, doi vai tro thi dung lai menu theo vai tro moi.
      */
     private void mo(String tenFile, Button nut) {
+        if (lamMoiPhien()) {
+            hien(tenFile, nut);
+        }
+    }
+
+    /**
+     * Doc lai tai khoan tu CSDL truoc khi mo man hinh.
+     *
+     * @return true neu duoc mo tiep; false neu da dang xuat hoac dung lai
+     *         Trang chinh vi doi vai tro
+     */
+    private boolean lamMoiPhien() {
         TaiKhoan cu = PhienLamViec.hienTai();
         try {
             TaiKhoan moi = taiKhoanService.lamMoiPhien(cu);
             PhienLamViec.dat(moi);
             if (cu.getVaiTro() != moi.getVaiTro()) {
                 DieuHuong.hienTrangChinh();
-                return;
+                return false;
             }
         } catch (NghiepVuException e) {
             HopThoai.canhBao(e.getMessage());
             onDangXuat();
-            return;
+            return false;
         } catch (CauHinhException | DaoException e) {
             // Mat ket noi: van mo man hinh, man hinh se bao loi CSDL.
         }
-        noiDung.getChildren().setAll(DieuHuong.taiManHinh(tenFile));
+        return true;
+    }
+
+    /** Dat man hinh vao phan than va chon nut menu cua no. */
+    private Parent hien(String tenFile, Button nut) {
+        Parent man = taiManHinh.apply(tenFile);
+        noiDung.getChildren().setAll(man);
         menu.chon(nut);
+        return man;
     }
 
     @FXML

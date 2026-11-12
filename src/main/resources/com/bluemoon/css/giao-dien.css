@@ -317,6 +317,15 @@
     -fx-background: transparent;
 }
 
+/* The bam duoc (the "Ho con no" mo man Cong no). */
+.the-bam {
+    -fx-cursor: hand;
+}
+
+.the-bam:hover {
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.35), 18, 0, 0, 4);
+}
+
 .so-lon {
     -fx-font-size: 30px;
     -fx-font-weight: bold;

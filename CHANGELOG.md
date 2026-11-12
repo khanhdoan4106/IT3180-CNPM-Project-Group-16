@@ -35,6 +35,15 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
   tổng phải thu và số hộ đã đóng, hoặc số hộ đã đóng góp và số hộ ghi không
   đóng. Chưa có giao dịch thì tổng là 0 đ.
 
+- **Hộ nợ đọng (US-017, AC-048, AC-049):** màn Công nợ chia hai tab, "Chốt
+  công nợ" (giữ nguyên chức năng) và "Hộ nợ đọng": lọc "Nợ từ 3 tháng trở
+  lên" hoặc "Tất cả hộ còn nợ"; bảng căn hộ, chủ hộ, số tháng nợ, nợ từ
+  tháng, tổng tiền nợ, kèm dòng tổng. Số tháng nợ là số tháng chốt còn khoản
+  chưa đóng (giả định 25); khoản đã sửa về 0 đ không phải nợ; phiếu đã hủy
+  thì khoản trở lại nợ; tính cả hộ đã chuyển đi. Trang chính có thêm thẻ
+  "Hộ còn nợ" (số hộ còn nợ, số hộ nợ từ 3 tháng trở lên), bấm để mở tab
+  này.
+
 ### Sửa
 
 - Tab "Nhật ký thao tác": "Rê chuột lên một ô…" đổi thành "Di chuột lên một
@@ -50,9 +59,10 @@ root, dữ liệu cũ giữ nguyên. Khi MySQL bật binary log, tạo trigger c
 
 ### Kiểm thử
 
-318 test đơn vị và 47 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
+326 test đơn vị và 53 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
 `NhatKyServiceTest`, `ThaoTacTest`, `NoiDungNhatKyTest`, `ThongKeIT`,
-`ThongKeServiceTest`, `ThangTrucYTest`, `BieuDoThuPhiTest`, `DongTyLeTest`).
+`ThongKeServiceTest`, `ThangTrucYTest`, `BieuDoThuPhiTest`, `DongTyLeTest`,
+`NoDongIT`, `NoDongServiceTest`, `TheHoConNoTest`).
 
 ## [v0.3.0] – 12/11/2026 – Sprint 3
 

@@ -34,12 +34,12 @@ File gồm bộ thành phần dùng chung (nút, ô nhập, mục menu, thẻ s�
 | Màn hình | Kích thước | Story | Trạng thái |
 |---|---|---|---|
 | Đăng nhập | 1120×645 | US-021 | Đã có code (Sprint 1) |
-| Trang chính | 1440×1024 | US-016, US-027, nhắc chốt công nợ | Đã có code: nhắc chốt, biến động gần đây (Sprint 2); tiêu đề "Tổng quan tháng …", thẻ "Đã thu tháng này", biểu đồ "Thu phí 6 tháng gần nhất" (Sprint 4) |
+| Trang chính | 1440×1024 | US-016, US-027, nhắc chốt công nợ | Đã có code: nhắc chốt, biến động gần đây (Sprint 2); tiêu đề "Tổng quan tháng …", thẻ "Đã thu tháng này", "Hộ còn nợ", biểu đồ "Thu phí 6 tháng gần nhất" (Sprint 4) |
 | Thống kê theo khoản | 1120×645 | US-019 | Đã có code (Sprint 4), mục menu "Thống kê" như Figma; chưa có frame riêng trên Figma |
 | Tài khoản của tôi (tab) | 1120×645 | US-023 | Đã có code (Sprint 2) |
 | Quản lý tài khoản (tab, chỉ Quản trị viên) | 1120×645 | US-020, US-022 | Đã có code (Sprint 2) |
 | Khoản thu (danh mục, tạo khoản tự nguyện) | 1120×645 | US-005, US-006 | Đã có code (Sprint 2) |
-| Chốt công nợ | 1120×645 | US-009 | Đã có code (Sprint 2) |
+| Công nợ: tab "Chốt công nợ" và "Hộ nợ đọng" | 1120×645 | US-009, US-017 | Chốt công nợ: đã có code (Sprint 2); tab "Hộ nợ đọng": đã có code (Sprint 4), chưa có frame riêng trên Figma |
 | Sửa khoản thu của hộ (hộp thoại, 2 trạng thái) | 480 rộng | US-008 | Đã có code (Sprint 2) |
 | Lịch sử biến động của hộ (hộp thoại) | 820 rộng | US-027 | Đã có code (Sprint 2) |
 | Thu phí: tab "Thu tiền" và "Phiếu thu hôm nay" | 1120×645 | US-007, US-010 – US-014 | Có trên Figma (frame "Thu phí – Thu tiền – 1120x645", "Thu phí – Phiếu thu hôm nay – 1120x645", thẻ "Đặc tả: Thu phí"); đã có code khớp thiết kế (Sprint 3) |
@@ -70,7 +70,7 @@ Phần thiết kế chưa làm hết được ghi rõ để khỏi nhầm với 
 | Nút hộp thoại | Tiếng Việt: "Đồng ý", "Hủy", "Đóng"; hộp thoại Hủy phiếu dùng "Hủy phiếu" và "Đóng" (`HopThoai`) | Đã làm |
 | Thu phí (Thu tiền, Phiếu thu hôm nay, Hủy phiếu) | Theo Figma; menu có trạng thái "đang chọn" và logo BlueMoon về Trang chính (#34); "Tiền mặt" không chọn sẵn (AC-038) khớp Figma đã sửa. Còn khác: tab, bảng và nút dùng kiểu JavaFX mặc định | Rà soát nhìn ở Sprint 4 |
 | Thanh menu chung | Figma đã có mục "Tài khoản của tôi" trong khung chung và mục Công nợ, khớp menu trong code; mục "Thống kê" giữa Thu phí và Tài khoản (Sprint 4) | Đã làm |
-| Trang chính (frame "Trang chính – 1440x1024") | Có tiêu đề tháng, thẻ "Đã thu tháng này", biểu đồ 6 tháng theo quy tắc biểu đồ (`BieuDoThuPhi`), nhắc chốt, biến động gần đây bên phải biểu đồ; nội dung cuộn được khi cửa sổ thấp. Chưa có: thẻ "Hộ đang ở", "Nhân khẩu", "Hộ còn nợ" (US-017), khung "Khoản thu mới cập nhật" và dải "Thao tác nhanh" | Thẻ "Hộ còn nợ" cùng US-017; phần còn lại xét ở TS-004 |
+| Trang chính (frame "Trang chính – 1440x1024") | Có tiêu đề tháng, thẻ "Đã thu tháng này" và "Hộ còn nợ" (bấm để mở tab "Hộ nợ đọng"), biểu đồ 6 tháng theo quy tắc biểu đồ (`BieuDoThuPhi`), nhắc chốt, biến động gần đây bên phải biểu đồ; nội dung cuộn được khi cửa sổ thấp. Chưa có: thẻ "Hộ đang ở", "Nhân khẩu", khung "Khoản thu mới cập nhật" và dải "Thao tác nhanh" | Xét ở TS-004 |
 | Thống kê theo khoản | Chọn khoản; khoản bắt buộc chọn tháng đã chốt (mặc định tháng gần nhất), quỹ tự nguyện hiện "Thu từ … đến …" chỉ đọc; kết quả: tổng đã thu chữ lớn, số phụ. Chưa có frame trên Figma, dựng theo kiểu các màn 1120×645 | Vẽ frame ở TS-004 nếu cần |
 | Hộ gia đình, Nhân khẩu | Chưa theo bộ thành phần Figma | Sprint 4 |
 | In ấn (biên lai, thông báo, danh sách tạm vắng) | Xem trước 640×560 rồi chọn máy in; danh sách tạm vắng in khổ ngang; xuất Excel/PDF chưa có | Xuất tệp: Sprint 4 (AC-014) |
@@ -149,6 +149,7 @@ Figma (khung "Đặc tả màn hình").
 | Tiêu đề | Nhãn | "Tổng quan tháng 11/2026", tháng theo giờ CSDL | US-016 |
 | Đã thu tháng này | Thẻ số liệu | Tổng phiếu chưa hủy lập trong tháng, dạng "186.450.000 đ"; tháng chưa có phiếu là "0 đ" | AC-046, AC-047, giả định 24 |
 | Dòng phụ của thẻ | Nhãn phụ | "72% tổng phải thu" (làm tròn xuống); tháng chưa chốt: "Tháng 11 chưa chốt công nợ" | giả định 24 |
+| Hộ còn nợ | Thẻ số liệu, bấm được (con trỏ bàn tay) | Số hộ còn ít nhất một tháng nợ; dòng phụ "8 hộ nợ từ 3 tháng trở lên", không có thì "Không hộ nào nợ từ 3 tháng"; bấm thẻ mở Công nợ ở tab "Hộ nợ đọng" | US-017, giả định 25 |
 | Thu phí 6 tháng gần nhất | Biểu đồ cột | Theo [Quy tắc biểu đồ](#quy-tắc-biểu-đồ); đơn vị "Triệu đồng", dưới 1 triệu thì "Nghìn đồng"; trải hai năm thì nhãn "T12/25" | US-016 |
 | Làm mới | – | Đọc lại số liệu khi đăng nhập và khi bấm logo, không hẹn giờ | – |
 
@@ -183,6 +184,17 @@ Figma (khung "Đặc tả màn hình").
 | Thông báo đã chốt | Nhãn xanh | Chốt lại chỉ thêm hộ/khoản còn thiếu | AC-028 |
 | Bảng xem trước | Bảng | Diện tích × đơn giá từng phòng | AC-018, AC-027 |
 | Chốt công nợ | Nút chính | Hỏi xác nhận trước khi lưu | AC-027 |
+
+### Hộ nợ đọng (US-017)
+
+Tab "Hộ nợ đọng" của màn Công nợ, cạnh tab "Chốt công nợ".
+
+| Thành phần | Kiểu | Ràng buộc | Nguồn |
+|---|---|---|---|
+| Lọc | Nút chọn | "Nợ từ 3 tháng trở lên" (mặc định) / "Tất cả hộ còn nợ"; tải lại khi đổi | AC-048 |
+| Danh sách hộ | Bảng | Căn hộ (hộ đã chuyển đi ghi "(đã chuyển đi)"), chủ hộ, số tháng nợ, nợ từ tháng, tổng tiền nợ; nợ nhiều tháng nhất ở trên | AC-049, giả định 21, 25 |
+| Dòng tổng | Nhãn đậm | "x hộ, tổng nợ y đ"; không có hộ nào thì bảng báo "Không có hộ nào nợ từ 3 tháng trở lên" | AC-049 |
+| Ghi chú | Nhãn phụ | Số tháng nợ tính cả tháng này nếu tháng này đã chốt | giả định 25 |
 
 ### Sửa khoản thu của hộ (US-008)
 

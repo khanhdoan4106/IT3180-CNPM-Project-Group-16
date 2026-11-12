@@ -54,7 +54,8 @@ nhập, không đọc dữ liệu).
 | Hủy phiếu thu | Mọi phiếu, trong ngày | Phiếu do mình lập, trong ngày | US-014, giả định 28 |
 | In thông báo phí | Có | Có | US-015 |
 | Tổng thu tháng ở Trang chính, thống kê theo khoản | Có | Có | US-016, US-019 |
-| Lọc hộ nợ, xuất Excel | Có | Có | US-017, US-018 |
+| Hộ nợ đọng (màn Công nợ, thẻ "Hộ còn nợ") | Có | Có | US-017 |
+| Xuất Excel | Có | Có | US-018 |
 | Đăng ký và quản lý tài khoản | Có | Không | US-020, AC-061 |
 | Tài khoản của tôi | Có | Có | US-023 |
 | Xem nhật ký thao tác | Có | Không | TS-002, AC-069 |
@@ -77,7 +78,8 @@ hộ, các khoản chưa đóng, các quỹ tự nguyện đang mở.
 | Tổng thu tháng, biểu đồ 6 tháng ở Trang chính | US-016 | `TrangChinhController`, `BieuDoThuPhi`, `trang-chinh.fxml` | `ThongKeService`, `ThangTrucY` | `ThongKeDao` | `ThongKeServiceTest`, `ThangTrucYTest`, `DongTyLeTest`, `BieuDoThuPhiTest`, `ThongKeIT` |
 | Thống kê theo khoản | US-019 | `ThongKeController`, `thong-ke.fxml` | `ThongKeService` | `ThongKeDao`, `KhoanPhiDao` | `ThongKeServiceTest`, `ThongKeIT`, `BoCucFxmlTest` |
 | Khoản thu | US-005, US-006 | `KhoanThuController`, `khoan-thu.fxml` | `KhoanPhiService` | `KhoanPhiDao` | `KhoanPhiServiceTest` |
-| Chốt, sửa công nợ | US-009, US-008 | `CongNoController`, `cong-no.fxml` | `CongNoService` | `CongNoDao` | `CongNoServiceTest`, `CongNoIT` |
+| Chốt, sửa công nợ | US-009, US-008 | `CongNoController`, `cong-no.fxml` (tab "Chốt công nợ") | `CongNoService` | `CongNoDao` | `CongNoServiceTest`, `CongNoIT` |
+| Hộ nợ đọng, thẻ "Hộ còn nợ" | US-017 | `CongNoController`, `cong-no.fxml` (tab "Hộ nợ đọng"), `TrangChinhController` | `NoDongService` | `NoDongDao` | `NoDongServiceTest`, `TheHoConNoTest`, `NoDongIT`, `BoCucFxmlTest` |
 | Tra cứu, thu phí, đóng góp, biên lai, hủy phiếu | US-007, US-010 – US-014 | `ThuPhiController`, `thu-phi.fxml`, `TomTatPhieuHomNay`, `HopThoai`, `MauIn`, `InAn` | `ThuPhiService` | `PhieuThuDao`, `KhoanPhiDao` | `ThuPhiServiceTest`, `SoTienTest`, `MauInTest`, `TomTatPhieuHomNayTest`, `HopThoaiHuyPhieuTest`, `DangBiKhoaExceptionTest`, `DongHoCsdlTest`, `PhieuThuIT`, `DongHoCsdlIT` |
 | Thông báo phí hằng tháng | US-015 | `CongNoController` (nút "In thông báo phí"), `MauIn` | `ThongBaoPhiService` | `PhieuThuDao`, `CongNoDao` | `ThongBaoPhiServiceTest`, `MauInTest`, `PhieuThuIT` |
 | Danh sách nhân khẩu tạm vắng | US-004 | `NhanKhauController`, `DanhSachTamVang`, `MauIn` | `BaoCaoNhanKhauService` | `BaoCaoNhanKhauDao` | `BaoCaoNhanKhauServiceTest`, `MauInTest`, `PhieuThuIT` |

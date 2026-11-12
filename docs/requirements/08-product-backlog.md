@@ -76,7 +76,7 @@ AC → test tự động: [docs/testing.md](../testing.md).
 | ID | Mô tả ngắn | Ưu tiên | Sprint | Trạng thái | SP |
 |---|---|---|---|---|---|
 | US-016 | Xem tổng tiền đã thu trong tháng ngay trên màn hình chính | Should | Sprint 4 | Hoàn thành | 5 |
-| US-017 | Lọc danh sách hộ nợ phí quá 3 tháng | Should | Sprint 4 | Đang làm | 3 |
+| US-017 | Lọc danh sách hộ nợ phí quá 3 tháng | Should | Sprint 4 | Hoàn thành | 3 |
 | US-018 | Xuất báo cáo thu tiền ra Excel theo mẫu thủ công cũ | Could | Sprint 4 | Đang làm | 5 |
 | US-019 | Xem tổng thu của từng khoản/quỹ theo đợt | Should | Sprint 4 | Hoàn thành | 3 |
 

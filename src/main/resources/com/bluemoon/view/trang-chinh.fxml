@@ -71,6 +71,15 @@
                                    styleClass="so-lon"/>
                             <Label fx:id="tyLeLabel" styleClass="phu-de"/>
                         </VBox>
+                        <!-- US-017: bam the mo man Cong no, tab "Ho no dong". -->
+                        <VBox fx:id="hoConNoBox" styleClass="the, the-so, the-bam"
+                              spacing="6" minWidth="330"
+                              onMouseClicked="#onMoNoDong">
+                            <Label text="Hộ còn nợ" styleClass="phu-de"/>
+                            <Label fx:id="soHoNoLabel" text="0"
+                                   styleClass="so-lon"/>
+                            <Label fx:id="noDongLabel" styleClass="phu-de"/>
+                        </VBox>
                     </HBox>
                     <HBox spacing="20">
                         <VBox styleClass="the" spacing="8" HBox.hgrow="ALWAYS">
