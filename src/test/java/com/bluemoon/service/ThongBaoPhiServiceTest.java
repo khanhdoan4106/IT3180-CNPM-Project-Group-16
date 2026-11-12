@@ -44,7 +44,7 @@ class ThongBaoPhiServiceTest {
         dichVu = kho.khoanPhiDao.them(new KhoanPhi(0,
                 KhoanPhiService.PHI_DICH_VU, LoaiKhoanPhi.BAT_BUOC,
                 CachTinhPhi.THEO_DIEN_TICH, new BigDecimal("5000"),
-                LocalDate.of(2026, 1, 1), null, TrangThaiKhoanPhi.DANG_THU));
+                LocalDate.of(2026, 1, 1), null, TrangThaiKhoanPhi.DANG_THU), 1);
         a0601 = khoPhieu.themHo("A0601", TrangThaiHo.DANG_O, "Nguyễn Thị Lan");
         b0202 = khoPhieu.themHo("B0202", TrangThaiHo.DANG_O, "Trần Văn Bình");
         khoPhieu.themPhaiNop(a0601, dichVu, T11, "377500");

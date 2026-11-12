@@ -43,7 +43,7 @@ class KhoThuPhiGia {
     private class KpDao implements KhoanPhiDao {
 
         @Override
-        public int them(KhoanPhi k) {
+        public int them(KhoanPhi k, int nguoiId) {
             if (trungKhiThem) {
                 throw new TrungKhoaException(TRUNG_TEN_DOT, null);
             }
@@ -53,7 +53,8 @@ class KhoThuPhiGia {
         }
 
         @Override
-        public void capNhatDonGia(int id, BigDecimal donGia) {
+        public void capNhatDonGia(int id, BigDecimal donGia,
+                int nguoiId) {
             khoan.put(id, khoan.get(id).voiDonGia(donGia));
         }
 

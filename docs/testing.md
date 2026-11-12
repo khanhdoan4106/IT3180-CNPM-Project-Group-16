@@ -30,6 +30,7 @@ chứng minh trên MySQL thật, vì DAO giả không tái hiện được.
 | `GiaoDichHoGiaDinhIT` | Lỗi giữa giao dịch thì không ghi hộ lẫn lịch sử; đổi chủ hộ từ chối người vừa chuyển đi ở máy khác |
 | `DongHoCsdlIT` | Giờ đọc từ MySQL gần giờ máy, múi giờ Việt Nam |
 | `MuiGioIT` | JVM đặt UTC, New York, Kiritimati: phiếu lập 23:30 ngày 31/12 vẫn là 23:30 cùng ngày (không sang năm sau), giờ hủy phiếu, giờ biến động và giờ sửa khoản do CSDL điền đọc lại đúng giờ Việt Nam; phiên MySQL luôn ở `+07:00` dù máy chủ đặt UTC (chạy thử bằng `mysqld --default-time-zone=+00:00`, như máy chủ trên CI) |
+| `NhatKyIT` | Mỗi nhóm thao tác (hộ, nhân khẩu, tạm trú/tạm vắng, khoản thu, công nợ, phiếu thu, tài khoản) ghi đúng một dòng nhật ký với người làm, thao tác, đối tượng, nội dung đúng; sửa hộ, nhân khẩu chỉ ghi trường thật sự đổi; không ghi mã băm, không ghi tự đổi mật khẩu; thao tác xung đột hoặc trùng khóa không để lại dòng; ghi nhật ký lỗi thì thao tác hoàn tác; MySQL từ chối `UPDATE`, `DELETE` trên `nhat_ky`; chạy lại `schema.sql` không mất nhật ký; thời điểm theo giờ Việt Nam dù máy chủ chạy UTC; lọc theo khoảng ngày, loại thao tác, mới nhất ở trên |
 | `SeedIT` | Dựng CSDL từ `schema.sql`, chạy `seed.sql` ba lần: số dòng không đổi, tên có dấu (so trong Java, không dựa `=` của MySQL), hai quỹ mẫu đang mở, ba trường hợp tạm trú/tạm vắng |
 
 Mỗi lớp `*IT` bỏ qua (không lỗi) nếu chưa đặt biến môi trường hoặc tên CSDL
@@ -44,7 +45,7 @@ không có chữ `test`, để không xóa nhầm CSDL `bluemoon` đang dùng.
 | IntelliJ | Maven → bluemoon → Lifecycle → `test` |
 | Dòng lệnh | `mvn test` hoặc `mvn verify` (cần Maven 3.9+ trong PATH) |
 
-Kết quả mong đợi: `BUILD SUCCESS`, 269 test. `mvn verify` không có
+Kết quả mong đợi: `BUILD SUCCESS`, 279 test. `mvn verify` không có
 `-Pmysql` không chạy lớp `*IT`.
 
 Chạy riêng test bố cục sau khi sửa FXML hoặc CSS:
@@ -69,7 +70,7 @@ mvn test -Dtest=BoCucFxmlTest
    Nếu user không phải `bluemoon`, đặt thêm `BLUEMOON_DB_USER` và
    `BLUEMOON_DB_PASSWORD`.
 
-Kết quả mong đợi: 269 test đơn vị và 30 kiểm thử tích hợp đều đạt (MySQL
+Kết quả mong đợi: 279 test đơn vị và 40 kiểm thử tích hợp đều đạt (MySQL
 8.0). Hai test cấu hình (`DatabaseConfigTest`) tự bỏ qua khi đã đặt
 `BLUEMOON_DB_*`, nên log hiện "Skipped: 2" ở lần chạy này.
 
@@ -82,7 +83,7 @@ hai xanh:
 | Job | Làm gì |
 |---|---|
 | `build` | JDK 21, `mvn -B verify`: test đơn vị và test bố cục |
-| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 30 kiểm thử tích hợp |
+| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 40 kiểm thử tích hợp |
 
 ## 3. Số test hiện tại
 
@@ -91,6 +92,7 @@ hai xanh:
 | `v0.1.0` | 97 | – |
 | `v0.2.0` | 169 | có (`mvn verify -Pmysql`) |
 | `v0.3.0` (Sprint 3 và các sửa #28 – #35) | 269 | 30 |
+| Sprint 4, sau TS-002 (chưa phát hành) | 279 | 40 |
 
 ## 4. Ánh xạ AC → test tự động
 
@@ -98,8 +100,8 @@ Mỗi AC đã làm đều có ít nhất một test; cột "Kiểm tay" ghi ph�
 được. Tên test viết tắt dạng `Lớp#hàm`; lớp `*ServiceTest` nằm ở
 `src/test/java/com/bluemoon/service`, `*IT` ở `.../it`.
 
-Ký hiệu: ✓ có test tự động đủ; ◐ có test nhưng một phần còn kiểm tay;
-Sprint 4 là chưa làm.
+Ký hiệu: ✓ có test tự động đủ; ◐ có test nhưng một phần còn kiểm tay.
+AC của Sprint 4 chưa làm liệt kê ở cuối mục.
 
 ### Sprint 1
 
@@ -189,11 +191,18 @@ Khác ở Sprint 3, không gắn một AC riêng: chặn thu trùng và deadlock
 `PhieuThuIT#hoDaChuyenDiKhongGhiDongGopTuNguyen`, giả định 39), dữ liệu mẫu
 (`SeedIT`), thông báo cho lỗi không lường trước (`LoiKhongMongDoiTest`).
 
+### Sprint 4
+
+| AC | Test tự động | Kết quả |
+|---|---|---|
+| AC-068 ghi nhật ký người sửa, nội dung, thời điểm | `NhatKyIT#hoGiaDinhGhiThemSuaChuyenDiVaChiGhiTruongThucSuDoi`, `#nhanKhauGhiThemSuaChuyenDiDoiChuHoVaDotCuTru`, `#khoanThuCongNoVaPhieuThuGhiDungNguoiLam`, `#taiKhoanGhiTaoDoiVaiTroKhoaMoKhoaDatLaiKhongGhiMatKhau`, `#thaoTacXungDotHoacTrungKhoaKhongDeLaiDong`, `#ghiNhatKyLoiThiThaoTacCungHoanTac`, `#thoiDiemLaGioVietNam`, `ThaoTacTest#maKhopRangBuocCheckTrongSchema`, `NoiDungNhatKyTest#chiGhiTruongThucSuDoi` | ✓ |
+| AC-069 xem theo thời gian, không sửa/xóa | `NhatKyServiceTest#thuQuyBiTuChoi`, `#locTheoKhoangNgayVaLoaiThaoTac`, `#tuNgaySauDenNgayBaoLoi`, `#thieuNgayBaoLoi`, `NhatKyIT#locTheoKhoangNgayVaLoaiThaoTacMoiNhatTruoc`, `#mysqlTuChoiSuaVaXoaNhatKy`, `#chayLaiSchemaKhongMatNhatKyVaVanChanSua`, `BoCucFxmlTest#khongCoChuBiCat` cho tab "Nhật ký thao tác" của `tai-khoan.fxml` | ◐ tab chỉ hiện với Quản trị viên kiểm tay |
+
 ### Chưa làm (Sprint 4)
 
 AC-014 (xuất tệp danh sách tạm vắng), AC-046 – AC-053 (thống kê, báo cáo
-Excel), AC-066, AC-067 (sao lưu), AC-068, AC-069 (nhật ký thao tác). Test sẽ
-thêm cùng story; bảng này cập nhật khi Sprint 4 hoàn thành.
+Excel), AC-066, AC-067 (sao lưu). Test sẽ thêm cùng story; bảng này cập
+nhật khi Sprint 4 hoàn thành.
 
 ## 5. Việc còn kiểm tay
 
@@ -206,7 +215,7 @@ Làm trước mỗi lần demo hoặc phát hành, theo thứ tự:
 | Hộp thoại máy in và xem trước | Xem bằng mắt, hộp thoại hệ điều hành không tự động được | US-013, US-015, US-004 |
 | Số bước thu tiền cho một hộ | Một người chưa dùng thử thao tác từ nhập mã phòng đến phiếu thu, đếm bước | AC-072 |
 | Tốc độ tra cứu | Tra cứu một hộ, kết quả trong dưới 3 giây | AC-032 |
-| Menu theo vai trò | Đăng nhập từng vai trò, đối chiếu menu với bảng phân quyền ở [architecture.md](design/architecture.md) | AC-060, AC-061 |
+| Menu theo vai trò | Đăng nhập từng vai trò, đối chiếu menu với bảng phân quyền ở [architecture.md](design/architecture.md); Thủ quỹ không thấy tab "Quản lý tài khoản" và "Nhật ký thao tác" trong màn Tài khoản | AC-060, AC-061, AC-069 |
 | Hộp thoại lỗi không lường trước | Khó tái hiện có chủ ý; phần chọn thông báo đã có `LoiKhongMongDoiTest`, hộp thoại hiện ra thì xem bằng mắt | `LoiKhongMongDoi` |
 | Hai máy cùng dùng một CSDL | Mở hai bản ứng dụng, thao tác một hộ ở cả hai | AC-071 |
 | Giao diện so với Figma | Mở từng màn ở 1120×645 và đối chiếu thiết kế ([ui.md](design/ui.md)) | NFR |

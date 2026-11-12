@@ -2,6 +2,7 @@ package com.bluemoon.dao;
 
 import com.bluemoon.config.Database;
 import com.bluemoon.model.TaiKhoan;
+import com.bluemoon.model.ThaoTac;
 import com.bluemoon.model.VaiTro;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Cai dat JDBC cua {@link TaiKhoanDao}. Luon dung PreparedStatement.
@@ -23,6 +25,7 @@ public class TaiKhoanDaoImpl implements TaiKhoanDao {
             + "FROM tai_khoan ";
     private static final String SQL_TIM = COT + "WHERE ten_dang_nhap = ?";
     private static final String SQL_THEO_ID = COT + "WHERE id = ?";
+    private static final String SQL_KHOA_ID = SQL_THEO_ID + " FOR UPDATE";
     private static final String SQL_DANH_SACH = COT + "ORDER BY ten_dang_nhap";
     private static final String SQL_THONG_TIN = "UPDATE tai_khoan SET "
             + "ho_ten = ?, so_dien_thoai = ? WHERE id = ?";
@@ -95,22 +98,79 @@ public class TaiKhoanDaoImpl implements TaiKhoanDao {
     }
 
     @Override
-    public void capNhatVaiTro(int id, VaiTro vaiTro) {
-        capNhat(SQL_VAI_TRO, id, vaiTro.name(), "Loi doi vai tro");
+    public void capNhatVaiTro(int id, VaiTro vaiTro, int nguoiId) {
+        capNhatCoNhatKy(SQL_VAI_TRO, id, vaiTro.name(), nguoiId,
+                "Loi doi vai tro", cu -> new NhatKyDong(ThaoTac.DOI_VAI_TRO,
+                        "Vai trò: " + cu.getVaiTro().getNhan() + " → "
+                                + vaiTro.getNhan()));
     }
 
     @Override
-    public void capNhatHoatDong(int id, boolean hoatDong) {
-        capNhat(SQL_HOAT_DONG, id, hoatDong, "Loi khoa tai khoan");
+    public void capNhatHoatDong(int id, boolean hoatDong, int nguoiId) {
+        capNhatCoNhatKy(SQL_HOAT_DONG, id, hoatDong, nguoiId,
+                "Loi khoa tai khoan", cu -> new NhatKyDong(hoatDong
+                        ? ThaoTac.MO_KHOA_TAI_KHOAN : ThaoTac.KHOA_TAI_KHOAN,
+                        "Trạng thái: " + trangThai(cu.isHoatDong()) + " → "
+                                + trangThai(hoatDong)));
     }
 
-    private static void capNhat(String sql, int id, Object giaTri,
-            String loi) {
-        try (Connection conn = Database.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, giaTri);
-            ps.setInt(2, id);
-            ps.executeUpdate();
+    @Override
+    public void datLaiMatKhau(int id, String matKhauBam, int nguoiId) {
+        // Khong bao gio dua mat khau hay ma bam vao nhat ky.
+        capNhatCoNhatKy(SQL_DOI_MAT_KHAU, id, matKhauBam, nguoiId,
+                "Loi dat lai mat khau", cu -> new NhatKyDong(
+                        ThaoTac.DAT_LAI_MAT_KHAU, "Đặt mật khẩu tạm"));
+    }
+
+    private static String trangThai(boolean hoatDong) {
+        return hoatDong ? "Hoạt động" : "Đã khóa";
+    }
+
+    /** Doi tuong nhat ky cua mot tai khoan, vd "Tài khoản thuquy1". */
+    private static String doiTuong(String tenDangNhap) {
+        return "Tài khoản " + tenDangNhap;
+    }
+
+    /** Thao tac va noi dung nhat ky, tinh tu tai khoan truoc khi doi. */
+    private record NhatKyDong(ThaoTac thaoTac, String noiDung) {
+    }
+
+    /**
+     * Doi mot cot trong mot giao dich: khoa dong tai khoan, doc gia tri cu,
+     * cap nhat roi ghi nhat ky.
+     */
+    private static void capNhatCoNhatKy(String sql, int id, Object giaTri,
+            int nguoiId, String loi,
+            Function<TaiKhoan, NhatKyDong> nhatKy) {
+        try (Connection conn = Database.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                TaiKhoan cu;
+                try (PreparedStatement ps =
+                        conn.prepareStatement(SQL_KHOA_ID)) {
+                    ps.setInt(1, id);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (!rs.next()) {
+                            throw new XungDotException(
+                                    XungDotException.Loai.KHONG_TIM_THAY,
+                                    "tai khoan " + id);
+                        }
+                        cu = doc(rs);
+                    }
+                }
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setObject(1, giaTri);
+                    ps.setInt(2, id);
+                    ps.executeUpdate();
+                }
+                NhatKyDong dong = nhatKy.apply(cu);
+                NhatKyDaoImpl.ghi(conn, nguoiId, dong.thaoTac(),
+                        doiTuong(cu.getTenDangNhap()), dong.noiDung());
+                conn.commit();
+            } catch (SQLException | RuntimeException e) {
+                conn.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
             throw new DaoException(loi, e);
         }
@@ -141,21 +201,37 @@ public class TaiKhoanDaoImpl implements TaiKhoanDao {
     }
 
     @Override
-    public int them(TaiKhoan tk) {
-        try (Connection conn = Database.getConnection();
-                PreparedStatement ps = conn.prepareStatement(SQL_THEM,
+    public int them(TaiKhoan tk, int nguoiId) {
+        try (Connection conn = Database.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                int id;
+                try (PreparedStatement ps = conn.prepareStatement(SQL_THEM,
                         Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, tk.getTenDangNhap());
-            ps.setString(2, tk.getMatKhauBam());
-            ps.setString(3, tk.getHoTen());
-            ps.setString(4, tk.getVaiTro().name());
-            ps.setBoolean(5, tk.isHoatDong());
-            ps.executeUpdate();
-            try (ResultSet keys = ps.getGeneratedKeys()) {
-                if (!keys.next()) {
-                    throw new SQLException("Khong lay duoc id tai khoan moi");
+                    ps.setString(1, tk.getTenDangNhap());
+                    ps.setString(2, tk.getMatKhauBam());
+                    ps.setString(3, tk.getHoTen());
+                    ps.setString(4, tk.getVaiTro().name());
+                    ps.setBoolean(5, tk.isHoatDong());
+                    ps.executeUpdate();
+                    try (ResultSet keys = ps.getGeneratedKeys()) {
+                        if (!keys.next()) {
+                            throw new SQLException(
+                                    "Khong lay duoc id tai khoan moi");
+                        }
+                        id = keys.getInt(1);
+                    }
                 }
-                return keys.getInt(1);
+                // Chi ghi ho ten va vai tro, khong ghi mat khau.
+                NhatKyDaoImpl.ghi(conn, nguoiId, ThaoTac.TAO_TAI_KHOAN,
+                        doiTuong(tk.getTenDangNhap()), "Họ tên: "
+                        + tk.getHoTen() + "; vai trò: "
+                        + tk.getVaiTro().getNhan());
+                conn.commit();
+                return id;
+            } catch (SQLException | RuntimeException e) {
+                conn.rollback();
+                throw e;
             }
         } catch (SQLException e) {
             throw TrungKhoaException.boc("Loi them tai khoan", e);

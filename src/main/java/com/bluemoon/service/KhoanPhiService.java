@@ -77,7 +77,7 @@ public class KhoanPhiService {
             throw new NghiepVuException("Chưa nhập đơn giá");
         }
         kiemTraDonGia(khoan.ten(), donGia);
-        dao.capNhatDonGia(id, donGia);
+        dao.capNhatDonGia(id, donGia, nguoi.getId());
         return khoan.voiDonGia(donGia);
     }
 
@@ -142,7 +142,7 @@ public class KhoanPhiService {
                         : CachTinhPhi.CO_DINH_THEO_HO,
                 soTien, tuNgay, denNgay, TrangThaiKhoanPhi.DANG_THU);
         try {
-            return khoan.voiId(dao.them(khoan));
+            return khoan.voiId(dao.them(khoan, nguoi.getId()));
         } catch (TrungKhoaException e) {
             if (KhoanPhiDao.TRUNG_TEN_DOT.equals(e.getTenRangBuoc())) {
                 throw new NghiepVuException(loiTrung);

@@ -8,6 +8,33 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
 
 ## [Chưa phát hành]
 
+### Thêm
+
+- **Nhật ký thao tác (TS-002, AC-068, AC-069):** mọi thao tác thay đổi dữ
+  liệu quan trọng (lập/hủy phiếu thu, sửa số tiền phải nộp, tạo khoản thu tự
+  nguyện, sửa đơn giá, chốt công nợ, thêm/sửa/chuyển đi hộ và nhân khẩu, đổi
+  chủ hộ, ghi tạm trú/tạm vắng, tạo tài khoản, đổi vai trò, khóa/mở khóa,
+  đặt lại mật khẩu) được ghi cùng người làm, thời điểm, đối tượng và nội
+  dung thay đổi, trong cùng giao dịch với thao tác (giả định 44). Sửa hộ,
+  nhân khẩu chỉ ghi trường thật sự đổi, vd "Diện tích: 75,50 m² → 80,00 m²".
+  Không ghi mật khẩu, đăng nhập hay việc tự đổi mật khẩu.
+- **Xem nhật ký:** tab "Nhật ký thao tác" trong màn Tài khoản, chỉ Quản trị
+  viên thấy; lọc theo khoảng ngày (mặc định 7 ngày gần nhất) và loại thao
+  tác, mới nhất ở trên, chỉ đọc.
+
+### Cơ sở dữ liệu
+
+Thêm bảng `nhat_ky` và hai trigger chặn `UPDATE`, `DELETE` trên bảng này;
+không đổi bảng đã có. Nâng từ `v0.3.0` chỉ cần chạy lại `schema.sql` bằng
+root, dữ liệu cũ giữ nguyên. Khi MySQL bật binary log, tạo trigger cần quyền
+`SUPER` hoặc `log_bin_trust_function_creators = 1`
+([setup.md](docs/setup.md), mục 2 và mục 4).
+
+### Kiểm thử
+
+279 test đơn vị và 40 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
+`NhatKyServiceTest`, `ThaoTacTest`, `NoiDungNhatKyTest`).
+
 ## [v0.3.0] – 12/11/2026 – Sprint 3
 
 Hoàn thành thu phí từ tra cứu đến biên lai. Gồm các Pull Request #28 – #35.

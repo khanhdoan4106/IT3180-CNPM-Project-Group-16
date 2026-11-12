@@ -98,7 +98,8 @@ public class TaiKhoanService {
         String bam = MatKhauUtil.bam(matKhau);
         try {
             int id = dao.them(
-                    new TaiKhoan(0, ten, bam, hoTenSach, vaiTro, true));
+                    new TaiKhoan(0, ten, bam, hoTenSach, vaiTro, true),
+                    nguoiTao.getId());
             return new TaiKhoan(id, ten, bam, hoTenSach, vaiTro, true);
         } catch (TrungKhoaException e) {
             // ten_dang_nhap la rang buoc UNIQUE duy nhat cua bang; loi nay
@@ -194,7 +195,7 @@ public class TaiKhoanService {
         if (vaiTro == null) {
             throw new NghiepVuException("Vui lòng chọn vai trò");
         }
-        dao.capNhatVaiTro(id, vaiTro);
+        dao.capNhatVaiTro(id, vaiTro, nguoi.getId());
         return tk.voiVaiTro(vaiTro);
     }
 
@@ -209,7 +210,7 @@ public class TaiKhoanService {
     public TaiKhoan datHoatDong(TaiKhoan nguoi, int id, boolean hoatDong) {
         TaiKhoan tk = taiKhoanKhac(nguoi, id,
                 hoatDong ? "mở khóa" : "khóa");
-        dao.capNhatHoatDong(id, hoatDong);
+        dao.capNhatHoatDong(id, hoatDong, nguoi.getId());
         return tk.voiHoatDong(hoatDong);
     }
 
@@ -228,7 +229,7 @@ public class TaiKhoanService {
         if (!matKhauMoi.equals(nhapLai)) {
             throw new NghiepVuException("Mật khẩu nhập lại không khớp");
         }
-        dao.capNhatMatKhau(id, MatKhauUtil.bam(matKhauMoi));
+        dao.datLaiMatKhau(id, MatKhauUtil.bam(matKhauMoi), nguoi.getId());
     }
 
     /**

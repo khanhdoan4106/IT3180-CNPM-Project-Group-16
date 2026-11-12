@@ -52,7 +52,8 @@ class BoCucFxmlTest {
     /** Chu do controller dat luc chay, lay ban dai nhat co the gap. */
     private static final Map<String, String> CHU_DONG = Map.of(
             "chaoLabel", "Xin chào, Nguyễn Thị Thu Hương (Quản trị viên)",
-            "khoaButton", "Mở khóa");
+            "khoaButton", "Mở khóa",
+            "soDongNhatKyLabel", "12345 thao tác");
 
     /**
      * Nhan duoc phep rut gon "...". Loi chao tren thanh menu chua ten nguoi

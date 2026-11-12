@@ -19,7 +19,8 @@ public interface TaiKhoanDao {
     Optional<TaiKhoan> timTheoTenDangNhap(String tenDangNhap);
 
     /**
-     * Cap nhat mat khau da bam.
+     * Cap nhat mat khau da bam khi nguoi dung tu doi mat khau. Khong ghi
+     * nhat ky (gia dinh 44).
      *
      * @param id khoa chinh tai khoan
      * @param matKhauBam mat khau moi da bam
@@ -27,13 +28,15 @@ public interface TaiKhoanDao {
     void capNhatMatKhau(int id, String matKhauBam);
 
     /**
-     * Them tai khoan moi.
+     * Them tai khoan moi va ghi nhat ky (ho ten, vai tro; khong ghi mat
+     * khau) trong cung giao dich.
      *
      * @param tk tai khoan can them (id bo qua), mat khau da bam
+     * @param nguoiId id Quan tri vien tao, ghi vao nhat ky
      * @return id cua tai khoan vua them
      * @throws TrungKhoaException neu ten dang nhap da ton tai
      */
-    int them(TaiKhoan tk);
+    int them(TaiKhoan tk, int nguoiId);
 
     /**
      * Tim tai khoan theo khoa chinh.
@@ -60,18 +63,31 @@ public interface TaiKhoanDao {
     void capNhatThongTin(int id, String hoTen, String soDienThoai);
 
     /**
-     * Doi vai tro (US-022).
+     * Doi vai tro (US-022) va ghi nhat ky vai tro cu, moi.
      *
      * @param id khoa chinh
      * @param vaiTro vai tro moi
+     * @param nguoiId id Quan tri vien thao tac, ghi vao nhat ky
      */
-    void capNhatVaiTro(int id, VaiTro vaiTro);
+    void capNhatVaiTro(int id, VaiTro vaiTro, int nguoiId);
 
     /**
-     * Khoa hoac mo khoa tai khoan; khong xoa de giu lich su thu.
+     * Khoa hoac mo khoa tai khoan; khong xoa de giu lich su thu. Ghi nhat
+     * ky trong cung giao dich.
      *
      * @param id khoa chinh
      * @param hoatDong false de khoa
+     * @param nguoiId id Quan tri vien thao tac, ghi vao nhat ky
      */
-    void capNhatHoatDong(int id, boolean hoatDong);
+    void capNhatHoatDong(int id, boolean hoatDong, int nguoiId);
+
+    /**
+     * Quan tri vien dat lai mat khau cho tai khoan khac (RAW-035). Ghi nhat
+     * ky viec dat lai, khong ghi mat khau hay ma bam.
+     *
+     * @param id khoa chinh tai khoan duoc dat lai
+     * @param matKhauBam mat khau tam da bam
+     * @param nguoiId id Quan tri vien thao tac, ghi vao nhat ky
+     */
+    void datLaiMatKhau(int id, String matKhauBam, int nguoiId);
 }

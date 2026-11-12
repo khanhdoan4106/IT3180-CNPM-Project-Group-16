@@ -92,7 +92,7 @@ class ThuPhiServiceTest {
                 batBuoc ? CachTinhPhi.THEO_DIEN_TICH
                         : CachTinhPhi.KHONG_CO_DINH,
                 batBuoc ? new BigDecimal("5000") : null, tu, den,
-                TrangThaiKhoanPhi.DANG_THU));
+                TrangThaiKhoanPhi.DANG_THU), 1);
     }
 
     private PhieuThu thuTatCa(TaiKhoan nguoi) {

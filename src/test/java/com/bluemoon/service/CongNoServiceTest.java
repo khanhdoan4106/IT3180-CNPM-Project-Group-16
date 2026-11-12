@@ -62,7 +62,7 @@ class CongNoServiceTest {
                 loai == LoaiKhoanPhi.BAT_BUOC ? CachTinhPhi.THEO_DIEN_TICH
                         : CachTinhPhi.CO_DINH_THEO_HO,
                 new BigDecimal(donGia), DAU_NAM, null,
-                TrangThaiKhoanPhi.DANG_THU));
+                TrangThaiKhoanPhi.DANG_THU), 1);
     }
 
     private int themHo(String ma, String dienTich, TrangThaiHo trangThai) {
@@ -99,7 +99,7 @@ class CongNoServiceTest {
     @Test
     void lamTronDenDong() {
         int id = themHo("B0303", "33.33", TrangThaiHo.DANG_O);
-        kho.khoanPhiDao.capNhatDonGia(1, tien("5555"));
+        kho.khoanPhiDao.capNhatDonGia(1, tien("5555"), 1);
         PhaiNop p = service.xemTruoc(admin, T12).khoan().stream()
                 .filter(x -> x.hoId() == id && x.khoanPhiId() == 1)
                 .findFirst().orElseThrow();
@@ -171,7 +171,7 @@ class CongNoServiceTest {
     @Test
     void doiDonGiaSauKhiChotKhongDoiThangDaChot() {
         service.chot(admin, T12);
-        kho.khoanPhiDao.capNhatDonGia(1, tien("6000"));
+        kho.khoanPhiDao.capNhatDonGia(1, tien("6000"), 1);
         assertEquals(0, tien("377500").compareTo(tim(
                 service.theoThang(admin, T12), "A0601", "Phí dịch vụ")
                 .soTien()));
@@ -278,7 +278,7 @@ class CongNoServiceTest {
     private void themKhoanBatBuoc(String ten, LocalDate tu, LocalDate den) {
         kho.khoanPhiDao.them(new KhoanPhi(0, ten, LoaiKhoanPhi.BAT_BUOC,
                 CachTinhPhi.THEO_DIEN_TICH, tien("1000"), tu, den,
-                TrangThaiKhoanPhi.DANG_THU));
+                TrangThaiKhoanPhi.DANG_THU), 1);
     }
 
     private static boolean coHo(KetQuaTinhCongNo kq, String ma) {

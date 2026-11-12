@@ -6,6 +6,7 @@ import com.bluemoon.model.HinhThucThanhToan;
 import com.bluemoon.model.KhoanNo;
 import com.bluemoon.model.PhieuThu;
 import com.bluemoon.model.PhieuThuMoi;
+import com.bluemoon.model.ThaoTac;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TongDongGop;
 import java.math.BigDecimal;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -97,7 +99,8 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
             + "so_tien) VALUES (?, ?, ?, ?)";
 
     private static final String SQL_KHOA_PHIEU =
-            "SELECT da_huy FROM phieu_thu WHERE id = ? FOR UPDATE";
+            "SELECT da_huy, nam, so, ho_id FROM phieu_thu WHERE id = ? "
+            + "FOR UPDATE";
     private static final String SQL_HUY_PHIEU = "UPDATE phieu_thu SET "
             + "da_huy = TRUE, nguoi_huy = ?, thoi_diem_huy = ?, ly_do_huy = ? "
             + "WHERE id = ?";
@@ -243,6 +246,14 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
                 int so = capSo(conn, nam);
                 id = themPhieu(conn, phieu, nam, so);
                 themDong(conn, id, phieu.dong());
+                NhatKyDaoImpl.ghi(conn, phieu.nguoiThu(), ThaoTac.LAP_PHIEU_THU,
+                        doiTuong(nam, so), HoGiaDinhDaoImpl.doiTuong(
+                                HoGiaDinhDaoImpl.maCanHo(conn, phieu.hoId()))
+                        + "; " + phieu.dong().size() + " khoản, tổng "
+                        + NoiDungNhatKy.tien(phieu.tongTien()) + ", "
+                        + (phieu.hinhThuc() == null ? "không thu tiền"
+                                : phieu.hinhThuc().getNhan()
+                                        .toLowerCase(Locale.ROOT)));
                 conn.commit();
             } catch (SQLException | RuntimeException e) {
                 conn.rollback();
@@ -252,6 +263,11 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
             throw DangBiKhoaException.boc("Loi lap phieu thu", e);
         }
         return timTheoId(id).orElseThrow();
+    }
+
+    /** Doi tuong nhat ky cua mot phieu, vd "Phiếu PT-2026-00012". */
+    private static String doiTuong(int nam, int so) {
+        return "Phiếu " + PhieuThu.soBienLai(nam, so);
     }
 
     private static void khoaHo(Connection conn, int hoId)
@@ -383,6 +399,9 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
         try (Connection conn = Database.getConnection()) {
             conn.setAutoCommit(false);
             try {
+                int nam;
+                int so;
+                int hoId;
                 try (PreparedStatement ps =
                         conn.prepareStatement(SQL_KHOA_PHIEU)) {
                     ps.setInt(1, id);
@@ -397,6 +416,9 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
                                     XungDotException.Loai.DA_HUY,
                                     "phieu " + id);
                         }
+                        nam = rs.getInt("nam");
+                        so = rs.getInt("so");
+                        hoId = rs.getInt("ho_id");
                     }
                 }
                 try (PreparedStatement ps =
@@ -412,6 +434,10 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
                     ps.setInt(1, id);
                     ps.executeUpdate();
                 }
+                NhatKyDaoImpl.ghi(conn, nguoiHuy, ThaoTac.HUY_PHIEU_THU,
+                        doiTuong(nam, so), HoGiaDinhDaoImpl.doiTuong(
+                                HoGiaDinhDaoImpl.maCanHo(conn, hoId))
+                        + "; lý do: " + lyDo);
                 conn.commit();
             } catch (SQLException | RuntimeException e) {
                 conn.rollback();

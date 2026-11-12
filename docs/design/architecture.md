@@ -56,6 +56,7 @@ nhập, không đọc dữ liệu).
 | Thống kê, xuất Excel | Có | Có | US-016 – US-019 |
 | Đăng ký và quản lý tài khoản | Có | Không | US-020, AC-061 |
 | Tài khoản của tôi | Có | Có | US-023 |
+| Xem nhật ký thao tác | Có | Không | TS-002, AC-069 |
 
 Tra cứu phí (US-010) chỉ hiện thông tin hộ cần cho việc thu: mã phòng, chủ
 hộ, các khoản chưa đóng, các quỹ tự nguyện đang mở.
@@ -69,6 +70,7 @@ hộ, các khoản chưa đóng, các quỹ tự nguyện đang mở.
 | Hộ gia đình | US-001 | `HoGiaDinhController`, `ho-gia-dinh.fxml` | `HoGiaDinhService` | `HoGiaDinhDao` | `HoGiaDinhServiceTest` |
 | Nhân khẩu, đổi chủ hộ | US-002, US-026 | `NhanKhauController`, `nhan-khau.fxml` | `NhanKhauService`, `KiemTraNhanKhau` | `NhanKhauDao` | `NhanKhauServiceTest` |
 | Tạm trú, tạm vắng | US-003 | `NhanKhauController` | `DotCuTruService` | `DotCuTruDao` | `DotCuTruServiceTest` |
+| Nhật ký thao tác | TS-002 | `TaiKhoanController` (tab "Nhật ký thao tác"), `tai-khoan.fxml` | `NhatKyService` | `NhatKyDao` (ghi trong giao dịch của từng DAO thao tác, `NoiDungNhatKy`) | `NhatKyServiceTest`, `ThaoTacTest`, `NoiDungNhatKyTest`, `NhatKyIT`, `BoCucFxmlTest` |
 | Lịch sử biến động nhân khẩu | US-027 | `HoGiaDinhController`, `TrangChinhController`, `BangLichSu` | `BienDongService` | `BienDongDao` (ghi trong giao dịch của DAO hộ, nhân khẩu, đợt) | `BienDongServiceTest`, `HoGiaDinhServiceTest`, `NhanKhauServiceTest`, `DotCuTruServiceTest`, `GiaoDichHoGiaDinhIT` |
 | Khung ứng dụng, menu theo vai trò | US-022 | `TrangChinhController`, `trang-chinh.fxml` | `PhanQuyen` | – | – |
 | Khoản thu | US-005, US-006 | `KhoanThuController`, `khoan-thu.fxml` | `KhoanPhiService` | `KhoanPhiDao` | `KhoanPhiServiceTest` |
@@ -82,6 +84,33 @@ hộ, các khoản chưa đóng, các quỹ tự nguyện đang mở.
 
 Thêm chức năng mới thì thêm một dòng vào bảng này trong cùng Pull Request.
 Chiến lược kiểm thử và bảng AC → test: [../testing.md](../testing.md).
+
+## Nhật ký thao tác
+
+TS-002, giả định 44. Mỗi thao tác thay đổi dữ liệu quan trọng ghi một dòng
+vào bảng `nhat_ky` bằng `NhatKyDaoImpl.ghi(conn, nguoiId, ThaoTac,
+doiTuong, noiDung)`, gọi **trên kết nối của giao dịch thao tác**, cùng cách
+`BienDongDaoImpl.ghi`. Thao tác lỗi hoặc hoàn tác thì không còn dòng nhật
+ký; ghi nhật ký lỗi thì thao tác cũng hoàn tác.
+
+- Danh sách thao tác là enum `ThaoTac` (mã lưu CSDL, nhãn có dấu), khớp
+  ràng buộc `chk_nky_thao_tac` (`ThaoTacTest` kiểm tra). Khoản bắt buộc
+  có sẵn từ `seed.sql`, ứng dụng không tạo, nên không có mã nhật ký.
+- DAO cần biết người làm nhận thêm `nguoiId` (vd `HoGiaDinhDao.capNhat`,
+  `KhoanPhiDao.capNhatDonGia`, `TaiKhoanDao.capNhatVaiTro`); Quản trị viên
+  đặt lại mật khẩu dùng `TaiKhoanDao.datLaiMatKhau`, còn tự đổi mật khẩu
+  (`capNhatMatKhau`) và đăng nhập không ghi.
+- Sửa hộ, nhân khẩu: khóa dòng (`FOR UPDATE`), đọc giá trị cũ trong cùng
+  giao dịch, chỉ ghi trường thật sự đổi, vd "Diện tích: 75,50 m² → 80,00
+  m²"; không đổi gì thì không ghi. Đổi đơn giá, vai trò, trạng thái tài
+  khoản, số tiền phải nộp ghi "cũ → mới" đọc dưới khóa.
+- Không bao giờ ghi mật khẩu hay mã băm.
+- Bảng chỉ thêm: trigger `trg_nky_chan_sua`, `trg_nky_chan_xoa` trả
+  `SQLSTATE 45000` cho mọi `UPDATE`, `DELETE`. Thân trigger là một câu
+  `SIGNAL`, không `BEGIN…END`, để `schema.sql` không cần `DELIMITER`
+  và `CsdlThu` vẫn tách lệnh theo dấu `;`.
+- Xem: `NhatKyService.theoKhoang` (chỉ Quản trị viên, từ ngày ≤ đến ngày,
+  lọc theo loại), mới nhất ở trên, không phân trang (quy mô vài trăm hộ).
 
 ## Kết nối CSDL
 

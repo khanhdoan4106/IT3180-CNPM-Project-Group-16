@@ -37,9 +37,9 @@ class KhoanPhiServiceTest {
         thuQuy = new TaiKhoan(2, "thuquy", "x", "Thủ quỹ", VaiTro.THU_QUY,
                 true);
         dichVu = kho.khoanPhiDao.them(batBuoc(KhoanPhiService.PHI_DICH_VU,
-                "5000"));
+                "5000"), 1);
         quanLy = kho.khoanPhiDao.them(batBuoc(KhoanPhiService.PHI_QUAN_LY,
-                "7000"));
+                "7000"), 1);
     }
 
     private static KhoanPhi batBuoc(String ten, String donGia) {

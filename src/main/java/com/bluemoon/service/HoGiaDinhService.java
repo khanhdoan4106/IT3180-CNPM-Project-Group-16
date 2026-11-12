@@ -146,7 +146,7 @@ public class HoGiaDinhService {
         }
         kiemTraTrungMa(moi);
         try {
-            dao.capNhat(moi);
+            dao.capNhat(moi, nguoi.getId());
         } catch (TrungKhoaException e) {
             throw LoiTrung.doi(e, moi.getMaCanHo(), null);
         }

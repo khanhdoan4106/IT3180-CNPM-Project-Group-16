@@ -38,6 +38,11 @@ class TaiKhoanServiceTest {
         }
 
         @Override
+        public void datLaiMatKhau(int id, String matKhauBam, int nguoiId) {
+            matKhauMoiNhat = matKhauBam;
+        }
+
+        @Override
         public Optional<TaiKhoan> timTheoId(int id) {
             return theoTen.values().stream().filter(t -> t.getId() == id)
                     .findFirst();
@@ -56,7 +61,7 @@ class TaiKhoanServiceTest {
         }
 
         @Override
-        public void capNhatVaiTro(int id, VaiTro vaiTro) {
+        public void capNhatVaiTro(int id, VaiTro vaiTro, int nguoiId) {
             TaiKhoan t = timTheoId(id).orElseThrow();
             theoTen.put(t.getTenDangNhap(), new TaiKhoan(id,
                     t.getTenDangNhap(), t.getMatKhauBam(), t.getHoTen(),
@@ -64,7 +69,8 @@ class TaiKhoanServiceTest {
         }
 
         @Override
-        public void capNhatHoatDong(int id, boolean hoatDong) {
+        public void capNhatHoatDong(int id, boolean hoatDong,
+                int nguoiId) {
             TaiKhoan t = timTheoId(id).orElseThrow();
             theoTen.put(t.getTenDangNhap(), new TaiKhoan(id,
                     t.getTenDangNhap(), t.getMatKhauBam(), t.getHoTen(),
@@ -72,7 +78,7 @@ class TaiKhoanServiceTest {
         }
 
         @Override
-        public int them(TaiKhoan tk) {
+        public int them(TaiKhoan tk, int nguoiId) {
             if (trungKhiThem) {
                 throw new TrungKhoaException("ten_dang_nhap", null);
             }
