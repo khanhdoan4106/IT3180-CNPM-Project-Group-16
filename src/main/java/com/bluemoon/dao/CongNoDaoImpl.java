@@ -2,6 +2,7 @@ package com.bluemoon.dao;
 
 import com.bluemoon.config.Database;
 import com.bluemoon.model.PhaiNop;
+import com.bluemoon.model.ThaoTac;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
@@ -13,7 +14,9 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Cai dat JDBC cua {@link CongNoDao}. Luon dung PreparedStatement.
@@ -59,7 +62,13 @@ public class CongNoDaoImpl implements CongNoDao {
     private static final String SQL_KHOA_HO =
             "SELECT id FROM ho_gia_dinh WHERE id = ? FOR UPDATE";
     private static final String SQL_KHOA_KHOAN =
-            "SELECT id FROM phai_nop WHERE id = ? FOR UPDATE";
+            "SELECT so_tien FROM phai_nop WHERE id = ? FOR UPDATE";
+    /** Ten khoan, thang, ma can ho de ghi nhat ky (doc thuong, khong khoa). */
+    private static final String SQL_MO_TA_KHOAN = "SELECT k.ten, d.thang, "
+            + "h.ma_can_ho FROM phai_nop p "
+            + "JOIN khoan_phi k ON k.id = p.khoan_phi_id "
+            + "JOIN dot_thu d ON d.id = p.dot_thu_id "
+            + "JOIN ho_gia_dinh h ON h.id = p.ho_id WHERE p.id = ?";
     private static final String SQL_SUA = "UPDATE phai_nop SET so_tien = ?, "
             + "nguoi_sua = ?, ngay_sua = NOW(), ghi_chu = ? WHERE id = ?";
     private static final String SQL_DA_THU = DA_THU + "?";
@@ -71,7 +80,13 @@ public class CongNoDaoImpl implements CongNoDao {
             conn.setAutoCommit(false);
             try {
                 int dotId = layDot(conn, ngayDau, nguoiChot);
-                int soMoi = themKhoan(conn, dotId, khoan);
+                Set<Integer> hoCoKhoanMoi = new HashSet<>();
+                int soMoi = themKhoan(conn, dotId, khoan, hoCoKhoanMoi);
+                NhatKyDaoImpl.ghi(conn, nguoiChot, ThaoTac.CHOT_CONG_NO,
+                        "Tháng " + NoiDungNhatKy.thang(thang), soMoi == 0
+                        ? "Không có khoản mới (các hộ đã đủ khoản của tháng)"
+                        : "Thêm " + soMoi + " khoản phải nộp cho "
+                                + hoCoKhoanMoi.size() + " hộ");
                 conn.commit();
                 return soMoi;
             } catch (SQLException | RuntimeException e) {
@@ -102,7 +117,8 @@ public class CongNoDaoImpl implements CongNoDao {
     }
 
     private static int themKhoan(Connection conn, int dotId,
-            List<PhaiNop> khoan) throws SQLException {
+            List<PhaiNop> khoan, Set<Integer> hoCoKhoanMoi)
+            throws SQLException {
         int soMoi = 0;
         try (PreparedStatement ps = conn.prepareStatement(SQL_THEM_KHOAN)) {
             for (PhaiNop p : khoan) {
@@ -116,7 +132,10 @@ public class CongNoDaoImpl implements CongNoDao {
                 ps.setInt(8, dotId);
                 ps.setInt(9, p.hoId());
                 ps.setInt(10, p.khoanPhiId());
-                soMoi += ps.executeUpdate();
+                if (ps.executeUpdate() > 0) {
+                    soMoi++;
+                    hoCoKhoanMoi.add(p.hoId());
+                }
             }
         }
         return soMoi;
@@ -179,7 +198,7 @@ public class CongNoDaoImpl implements CongNoDao {
             try {
                 int hoId = hoCuaKhoan(conn, id);
                 khoa(conn, SQL_KHOA_HO, hoId);
-                khoa(conn, SQL_KHOA_KHOAN, id);
+                BigDecimal cu = (BigDecimal) khoa(conn, SQL_KHOA_KHOAN, id);
                 try (PreparedStatement ps = conn.prepareStatement(SQL_DA_THU)) {
                     ps.setInt(1, id);
                     try (ResultSet rs = ps.executeQuery()) {
@@ -200,6 +219,7 @@ public class CongNoDaoImpl implements CongNoDao {
                     ps.setInt(4, id);
                     ps.executeUpdate();
                 }
+                ghiNhatKySua(conn, id, nguoiSua, cu, soTien, ghiChu);
                 conn.commit();
                 return true;
             } catch (SQLException | RuntimeException e) {
@@ -226,7 +246,8 @@ public class CongNoDaoImpl implements CongNoDao {
         }
     }
 
-    private static void khoa(Connection conn, String sql, int id)
+    /** Khoa mot dong; tra ve cot dau tien, doc duoi khoa. */
+    private static Object khoa(Connection conn, String sql, int id)
             throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -235,6 +256,29 @@ public class CongNoDaoImpl implements CongNoDao {
                     throw new XungDotException(
                             XungDotException.Loai.KHONG_TIM_THAY, "id " + id);
                 }
+                return rs.getObject(1);
+            }
+        }
+    }
+
+    private static void ghiNhatKySua(Connection conn, int id, int nguoiSua,
+            BigDecimal cu, BigDecimal moi, String ghiChu)
+            throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(SQL_MO_TA_KHOAN)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next();
+                YearMonth thang = YearMonth.from(
+                        rs.getDate("thang").toLocalDate());
+                NhatKyDaoImpl.ghi(conn, nguoiSua,
+                        ThaoTac.SUA_SO_TIEN_PHAI_NOP,
+                        HoGiaDinhDaoImpl.doiTuong(rs.getString("ma_can_ho")),
+                        rs.getString("ten") + " tháng "
+                                + NoiDungNhatKy.thang(thang) + ": "
+                                + NoiDungNhatKy.tien(cu) + " → "
+                                + NoiDungNhatKy.tien(moi)
+                                + (ghiChu == null || ghiChu.isBlank() ? ""
+                                        : ". Lý do: " + ghiChu));
             }
         }
     }

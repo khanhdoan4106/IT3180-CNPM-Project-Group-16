@@ -89,7 +89,7 @@ class KhoGia {
         }
 
         @Override
-        public void capNhat(HoGiaDinh h) {
+        public void capNhat(HoGiaDinh h, int nguoiId) {
             kiemTraTrung();
             ho.put(h.getId(), h);
         }
@@ -154,7 +154,7 @@ class KhoGia {
         }
 
         @Override
-        public void capNhat(NhanKhau nk) {
+        public void capNhat(NhanKhau nk, int nguoiId) {
             kiemTraTrung();
             TrangThaiNhanKhau cu = nhanKhau.get(nk.getId()).getTrangThai();
             nhanKhau.put(nk.getId(), nk.voiTrangThai(cu));

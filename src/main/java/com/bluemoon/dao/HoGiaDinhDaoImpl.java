@@ -6,6 +6,7 @@ import com.bluemoon.model.HoGiaDinh;
 import com.bluemoon.model.LoaiBienDong;
 import com.bluemoon.model.LoaiCanHo;
 import com.bluemoon.model.NhanKhau;
+import com.bluemoon.model.ThaoTac;
 import com.bluemoon.model.TomTatHo;
 import com.bluemoon.model.TrangThaiHo;
 import java.sql.Connection;
@@ -42,6 +43,9 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
                     + "WHERE ho_id = ? AND trang_thai = 'DANG_O'";
     private static final String SQL_TIM_ID =
             "SELECT " + COT + " FROM ho_gia_dinh WHERE id = ?";
+    private static final String SQL_KHOA_ID = SQL_TIM_ID + " FOR UPDATE";
+    private static final String SQL_MA =
+            "SELECT ma_can_ho FROM ho_gia_dinh WHERE id = ?";
     private static final String SQL_TRUNG_MA =
             "SELECT 1 FROM ho_gia_dinh WHERE ma_can_ho = ? "
                     + "AND trang_thai = 'DANG_O' AND id <> ? LIMIT 1";
@@ -73,6 +77,13 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
                     DotCuTruDaoImpl.them(conn, dot);
                     BienDongDaoImpl.ghiDot(conn, id, dot, nguoiGhi);
                 }
+                NhatKyDaoImpl.ghi(conn, nguoiGhi, ThaoTac.THEM_HO,
+                        doiTuong(ho.getMaCanHo()), "Chủ hộ "
+                        + chuHo.getHoTen() + "; " + ho.getLoaiCanHo()
+                                .getNhan() + ", tầng " + ho.getTang() + ", "
+                        + NoiDungNhatKy.dienTich(ho.getDienTich())
+                        + ", chuyển đến "
+                        + NoiDungNhatKy.ngay(ho.getNgayChuyenDen()));
                 conn.commit();
                 return id;
             } catch (SQLException | RuntimeException e) {
@@ -100,15 +111,82 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
         }
     }
 
+    /**
+     * Sua trong mot giao dich: khoa dong ho, doc gia tri cu, cap nhat roi
+     * ghi nhat ky cac truong thuc su doi (khong doi gi thi khong ghi).
+     */
     @Override
-    public void capNhat(HoGiaDinh ho) {
-        try (Connection conn = Database.getConnection();
-                PreparedStatement ps = conn.prepareStatement(SQL_SUA)) {
-            ganThongTin(ps, ho);
-            ps.setInt(7, ho.getId());
-            ps.executeUpdate();
+    public void capNhat(HoGiaDinh ho, int nguoiId) {
+        try (Connection conn = Database.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                HoGiaDinh cu;
+                try (PreparedStatement ps =
+                        conn.prepareStatement(SQL_KHOA_ID)) {
+                    ps.setInt(1, ho.getId());
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (!rs.next()) {
+                            throw new XungDotException(
+                                    XungDotException.Loai.KHONG_TIM_THAY,
+                                    "ho " + ho.getId());
+                        }
+                        cu = docDong(rs);
+                    }
+                }
+                try (PreparedStatement ps = conn.prepareStatement(SQL_SUA)) {
+                    ganThongTin(ps, ho);
+                    ps.setInt(7, ho.getId());
+                    ps.executeUpdate();
+                }
+                NoiDungNhatKy.ThayDoi doi = thayDoi(cu, ho);
+                if (!doi.rong()) {
+                    NhatKyDaoImpl.ghi(conn, nguoiId, ThaoTac.SUA_HO,
+                            doiTuong(ho.getMaCanHo()), doi.toString());
+                }
+                conn.commit();
+            } catch (SQLException | RuntimeException e) {
+                conn.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
             throw TrungKhoaException.boc("Loi cap nhat ho gia dinh", e);
+        }
+    }
+
+    private static NoiDungNhatKy.ThayDoi thayDoi(HoGiaDinh cu,
+            HoGiaDinh moi) {
+        return new NoiDungNhatKy.ThayDoi()
+                .them("Mã căn hộ", cu.getMaCanHo(), moi.getMaCanHo())
+                .them("Loại căn hộ", cu.getLoaiCanHo().getNhan(),
+                        moi.getLoaiCanHo().getNhan())
+                .them("Tầng", String.valueOf(cu.getTang()),
+                        String.valueOf(moi.getTang()))
+                .them("Diện tích", NoiDungNhatKy.dienTich(cu.getDienTich()),
+                        NoiDungNhatKy.dienTich(moi.getDienTich()))
+                .them("Điện thoại", NoiDungNhatKy.chu(cu.getSoDienThoai()),
+                        NoiDungNhatKy.chu(moi.getSoDienThoai()))
+                .them("Ngày chuyển đến",
+                        NoiDungNhatKy.ngay(cu.getNgayChuyenDen()),
+                        NoiDungNhatKy.ngay(moi.getNgayChuyenDen()));
+    }
+
+    /** Doi tuong nhat ky cua mot ho, vd "Hộ A-1203". */
+    static String doiTuong(String maCanHo) {
+        return "Hộ " + maCanHo;
+    }
+
+    /** Ma can ho cua ho, doc tren ket noi cua giao dich goc. */
+    static String maCanHo(Connection conn, int hoId) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(SQL_MA)) {
+            ps.setInt(1, hoId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    throw new XungDotException(
+                            XungDotException.Loai.KHONG_TIM_THAY,
+                            "ho " + hoId);
+                }
+                return rs.getString(1);
+            }
         }
     }
 
@@ -125,7 +203,10 @@ public class HoGiaDinhDaoImpl implements HoGiaDinhDao {
                 BienDongDaoImpl.ghiCaHoChuyenDi(conn, id, "Cả hộ chuyển đi",
                         nguoiGhi);
                 tv.setInt(1, id);
-                tv.executeUpdate();
+                int soNguoi = tv.executeUpdate();
+                NhatKyDaoImpl.ghi(conn, nguoiGhi, ThaoTac.HO_CHUYEN_DI,
+                        doiTuong(maCanHo(conn, id)), "Cả hộ chuyển đi, "
+                        + soNguoi + " nhân khẩu");
                 conn.commit();
             } catch (SQLException | RuntimeException e) {
                 conn.rollback();

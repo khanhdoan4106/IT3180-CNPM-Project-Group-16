@@ -139,7 +139,7 @@ public class NhanKhauService {
         }
         kiemTraTrungCccd(moi);
         try {
-            dao.capNhat(moi);
+            dao.capNhat(moi, nguoi.getId());
         } catch (TrungKhoaException e) {
             throw LoiTrung.doi(e, null, moi.getSoCccd());
         }

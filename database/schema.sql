@@ -249,4 +249,39 @@ CREATE TABLE IF NOT EXISTS phieu_thu_chi_tiet (
     INDEX idx_ptct_khoan (khoan_phi_id)
 );
 
+-- TS-002, giả định 44: nhật ký thao tác. Ghi trong cùng giao dịch với thao
+-- tác, nên thao tác lỗi hoặc hoàn tác thì không còn dòng nào. thoi_diem là
+-- giờ CSDL (mỗi phiên MySQL đặt +07:00). Mã thao_tac khớp enum ThaoTac.
+-- Bảng chỉ thêm: hai trigger dưới đây chặn UPDATE và DELETE.
+CREATE TABLE IF NOT EXISTS nhat_ky (
+    id           INT AUTO_INCREMENT PRIMARY KEY,
+    thoi_diem    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    tai_khoan_id INT           NOT NULL,
+    thao_tac     VARCHAR(30)   NOT NULL,
+    doi_tuong    VARCHAR(150)  NOT NULL,
+    noi_dung     VARCHAR(1000) NULL,
+    CONSTRAINT fk_nky_tai_khoan FOREIGN KEY (tai_khoan_id)
+        REFERENCES tai_khoan (id),
+    CONSTRAINT chk_nky_thao_tac CHECK (thao_tac IN (
+        'LAP_PHIEU_THU', 'HUY_PHIEU_THU', 'SUA_SO_TIEN_PHAI_NOP',
+        'TAO_KHOAN_TU_NGUYEN', 'SUA_DON_GIA', 'CHOT_CONG_NO',
+        'THEM_HO', 'SUA_HO', 'HO_CHUYEN_DI',
+        'THEM_NHAN_KHAU', 'SUA_NHAN_KHAU', 'NHAN_KHAU_CHUYEN_DI',
+        'DOI_CHU_HO', 'GHI_TAM_TRU_TAM_VANG',
+        'TAO_TAI_KHOAN', 'DOI_VAI_TRO', 'KHOA_TAI_KHOAN',
+        'MO_KHOA_TAI_KHOAN', 'DAT_LAI_MAT_KHAU')),
+    INDEX idx_nky_thoi_diem (thoi_diem)
+);
+
+-- Thân trigger chỉ một câu SIGNAL, không BEGIN...END, nên không cần
+-- DELIMITER. DROP trước CREATE để chạy lại tệp này được.
+DROP TRIGGER IF EXISTS trg_nky_chan_sua;
+CREATE TRIGGER trg_nky_chan_sua BEFORE UPDATE ON nhat_ky FOR EACH ROW
+    SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nhật ký không được sửa hoặc xóa';
+DROP TRIGGER IF EXISTS trg_nky_chan_xoa;
+CREATE TRIGGER trg_nky_chan_xoa BEFORE DELETE ON nhat_ky FOR EACH ROW
+    SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nhật ký không được sửa hoặc xóa';
+
 -- Quy ước: không dùng ON DELETE CASCADE; hộ ngừng quản lý chỉ đổi trạng thái.

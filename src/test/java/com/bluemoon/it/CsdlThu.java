@@ -61,6 +61,21 @@ final class CsdlThu {
                 VaiTro.QUAN_TRI, true);
     }
 
+    /**
+     * Chay lai database/schema.sql tren CSDL dang co du lieu, nhu khi nang
+     * cap (setup.md): khong xoa bang nao truoc.
+     */
+    static void chayLaiSchema() {
+        try (Connection conn = Database.getConnection();
+                Statement st = conn.createStatement()) {
+            for (String lenh : lenhTaoBang()) {
+                st.execute(lenh);
+            }
+        } catch (SQLException | IOException e) {
+            throw new IllegalStateException("Khong chay lai duoc schema", e);
+        }
+    }
+
     /** Chay database/seed.sql (bo chu thich va USE) tren CSDL thu. */
     static void chaySeed() {
         try (Connection conn = Database.getConnection();

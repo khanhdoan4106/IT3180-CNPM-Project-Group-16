@@ -15,21 +15,23 @@ public interface KhoanPhiDao {
     String TRUNG_TEN_DOT = "uq_kp_ten_dot";
 
     /**
-     * Them khoan thu moi.
+     * Them khoan thu moi va ghi nhat ky trong cung giao dich (TS-002).
      *
      * @param khoan khoan thu chua co id
+     * @param nguoiId id tai khoan thao tac, ghi vao nhat ky
      * @return khoa chinh vua sinh
      */
-    int them(KhoanPhi khoan);
+    int them(KhoanPhi khoan, int nguoiId);
 
     /**
      * Doi don gia cua mot khoan thu. Cac thang da chot giu don gia cu trong
-     * phai_nop.
+     * phai_nop. Ghi nhat ky don gia cu va moi trong cung giao dich.
      *
      * @param id khoa chinh
      * @param donGia don gia moi
+     * @param nguoiId id tai khoan thao tac, ghi vao nhat ky
      */
-    void capNhatDonGia(int id, BigDecimal donGia);
+    void capNhatDonGia(int id, BigDecimal donGia, int nguoiId);
 
     /**
      * Tim khoan thu theo khoa chinh.

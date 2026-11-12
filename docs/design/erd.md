@@ -3,7 +3,7 @@
 Nguồn sự thật: [`database/schema.sql`](../../database/schema.sql). Khi
 sửa schema phải cập nhật file này trong cùng Pull Request.
 
-## Sơ đồ thực thể – liên kết (Sprint 1 – Sprint 3)
+## Sơ đồ thực thể – liên kết (Sprint 1 – Sprint 4)
 
 ```mermaid
 erDiagram
@@ -22,6 +22,7 @@ erDiagram
     PHIEU_THU ||--|{ PHIEU_THU_CHI_TIET : "gồm"
     KHOAN_PHI ||--o{ PHIEU_THU_CHI_TIET : "theo khoản"
     PHAI_NOP |o--o{ PHIEU_THU_CHI_TIET : "được thu bởi"
+    TAI_KHOAN ||--o{ NHAT_KY : "làm"
 
     TAI_KHOAN {
         int id PK
@@ -137,6 +138,14 @@ erDiagram
         boolean con_hieu_luc "= NOT phiếu đã hủy"
         int phai_nop_da_thu UK "cột sinh"
     }
+    NHAT_KY {
+        int id PK
+        datetime thoi_diem "giờ CSDL, +07:00; có index"
+        int tai_khoan_id FK
+        varchar thao_tac "CHECK theo enum ThaoTac"
+        varchar doi_tuong "vd Hộ A-1203"
+        varchar noi_dung "tối đa 1000 ký tự"
+    }
 ```
 
 `BO_DEM_BIEN_LAI` không nối khóa ngoại với bảng nào: đây là bộ đếm số
@@ -163,6 +172,9 @@ dòng cho mỗi khoản bắt buộc trong một tháng.
 | Phiếu có tiền phải có hình thức thanh toán | `CHECK (tong_tien = 0 OR hinh_thuc IS NOT NULL)` | AC-038, giả định 30 |
 | Phiếu hủy phải đủ người hủy, thời điểm, lý do | `CHECK` trên bốn cột hủy | AC-043, giả định 28 |
 | Không xóa cứng dữ liệu nghiệp vụ | Đổi `trang_thai` (hộ, nhân khẩu) hoặc `da_huy` (phiếu thu) thay vì `DELETE` | NFR truy vết |
+| Nhật ký thao tác chỉ thêm, không sửa, không xóa | Trigger `trg_nky_chan_sua` (BEFORE UPDATE), `trg_nky_chan_xoa` (BEFORE DELETE) trả `SQLSTATE 45000` "Nhật ký không được sửa hoặc xóa" | TS-002 (AC-069) |
+| Nhật ký không lệch với thao tác | Ghi `nhat_ky` trong cùng giao dịch với thao tác; lỗi thì hoàn tác cả hai | TS-002 (AC-068) |
+| Mã thao tác hợp lệ | `CHECK (thao_tac IN (...))` khớp enum `ThaoTac` | TS-002 |
 | Lịch sử biến động không lệch với dữ liệu | Ghi `bien_dong_nhan_khau` trong cùng giao dịch với thêm hộ, thêm nhân khẩu, chuyển đi, ghi tạm trú/tạm vắng; lỗi thì hoàn tác cả hai | US-027 (AC-076 – AC-078) |
 
 Quy tắc cần đọc dữ liệu nhiều dòng (CCCD bắt buộc từ 14 tuổi, các đợt tạm
@@ -208,6 +220,21 @@ danh sách biến động gần đây ở Trang chính và báo cáo cho công a
 
 Lỗi trùng khóa (MySQL 1062) được `TrungKhoaException` đổi thành thông báo
 nghiệp vụ theo tên ràng buộc.
+
+## Nhật ký thao tác (TS-002)
+
+Thiết kế theo giả định 44. Mỗi dòng là một thao tác thay đổi dữ liệu quan
+trọng: người làm (`tai_khoan_id`), thời điểm (giờ CSDL), mã thao tác (enum
+`ThaoTac`), đối tượng ("Hộ A-1203", "Phiếu PT-2026-00012", "Tài khoản
+thuquy1") và nội dung thay đổi (sửa hộ, nhân khẩu chỉ ghi trường thật sự
+đổi, dạng "Diện tích: 75,50 m² → 80,00 m²"). Không ghi mật khẩu, mã băm,
+đăng nhập hay việc tự đổi mật khẩu.
+
+Khác `bien_dong_nhan_khau` (lịch sử cư trú của từng người, theo ngày biến
+động), `nhat_ky` ghi ai đã làm gì trên mọi chức năng, theo thời điểm thao
+tác. Index `idx_nky_thoi_diem` phục vụ lọc theo khoảng ngày. Hai trigger
+chặn mọi `UPDATE` và `DELETE`, kể cả từ MySQL Workbench; `DROP TABLE`
+không qua trigger nên dựng lại CSDL vẫn được.
 
 ## Phiếu thu (US-007, US-010 – US-014)
 

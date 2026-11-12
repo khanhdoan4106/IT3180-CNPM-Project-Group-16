@@ -25,11 +25,13 @@ public interface HoGiaDinhDao {
     int them(HoGiaDinh ho, NhanKhau chuHo, DotCuTru dotTamTru, int nguoiGhi);
 
     /**
-     * Cap nhat thong tin ho (theo id).
+     * Cap nhat thong tin ho (theo id) va ghi nhat ky cac truong thuc su
+     * doi, trong mot giao dich (TS-002).
      *
      * @param ho ho gia dinh da co id
+     * @param nguoiId id tai khoan thao tac, ghi vao nhat ky
      */
-    void capNhat(HoGiaDinh ho);
+    void capNhat(HoGiaDinh ho, int nguoiId);
 
     /**
      * Danh dau ho va moi thanh vien dang o cua ho la da chuyen di, trong

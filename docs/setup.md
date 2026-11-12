@@ -27,6 +27,14 @@
 > thử trên CSDL khác thì sao chép tệp ra rồi sửa dòng `USE`. Riêng kiểm thử
 > tích hợp (mục 4) tự tạo bảng trong CSDL `*test*` bằng cách bỏ dòng này.
 
+> **Trigger nhật ký:** `schema.sql` tạo hai trigger chặn sửa, xóa bảng
+> `nhat_ky` (TS-002). MySQL 8 bật binary log sẵn, nên tạo trigger cần quyền
+> `SUPER` hoặc biến `log_bin_trust_function_creators = 1`; nếu không, MySQL
+> báo lỗi 1419 "You do not have the SUPER privilege and binary logging is
+> enabled". Chạy `schema.sql` bằng root (như bước 2) thì không gặp lỗi này.
+> `schema.sql` xóa trigger cũ (`DROP TRIGGER IF EXISTS`) trước khi tạo, nên
+> chạy lại được nhiều lần.
+
 ### Chạy lại `seed.sql`
 
 `seed.sql` chạy lại bao nhiêu lần cũng được: không sinh dòng trùng và không
@@ -53,6 +61,7 @@ mới đổi cấu trúc bảng đã có, CSDL cũ phải dựng lại từ đ�
 |---|---|---|---|
 | `v0.1.0` (Sprint 1) | `v0.2.0` (Sprint 2) | Thêm cột `tai_khoan.so_dien_thoai` | Có |
 | `v0.2.0` (Sprint 2) | `v0.3.0` (Sprint 3) | Không. Chỉ thêm bảng mới `bo_dem_bien_lai`, `phieu_thu`, `phieu_thu_chi_tiet` | Không bắt buộc: chạy lại `schema.sql` là đủ để chạy ứng dụng, dữ liệu cũ giữ nguyên |
+| `v0.3.0` (Sprint 3) | `v0.4.0` (Sprint 4, chưa phát hành) | Không. Chỉ thêm bảng mới `nhat_ky` và hai trigger `trg_nky_chan_sua`, `trg_nky_chan_xoa` (TS-002) | Không bắt buộc: chạy lại `schema.sql` bằng root, dữ liệu cũ giữ nguyên; nhật ký bắt đầu từ lúc nâng cấp |
 
 Nâng từ `v0.2.0` giữ được dữ liệu, nhưng **dữ liệu mẫu cũ không được đổi**: tên
 không dấu ("Nguyen Thi Lan"), quỹ mẫu có ngày cố định (Quỹ biển đảo hết hạn
@@ -99,6 +108,18 @@ bảng của CSDL đó.
 CREATE DATABASE bluemoon_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 GRANT ALL ON bluemoon_test.* TO 'bluemoon'@'localhost';
 ```
+
+Mỗi test chạy lại `schema.sql`, kể cả tạo trigger nhật ký, bằng user đã cấu
+hình (`config/db.properties` hoặc `BLUEMOON_DB_USER`). User `bluemoon` không
+có quyền `SUPER`, nên nếu MySQL bật binary log (mặc định của MySQL 8) thì
+root chạy thêm một lần (giữ qua các lần khởi động lại MySQL):
+
+```sql
+SET PERSIST log_bin_trust_function_creators = 1;
+```
+
+Không muốn đổi biến này thì chạy kiểm thử tích hợp bằng root (đặt
+`BLUEMOON_DB_USER`, `BLUEMOON_DB_PASSWORD`), như CI.
 
 Rồi đặt biến môi trường và chạy `mvn verify -Pmysql` (PowerShell):
 
@@ -175,4 +196,5 @@ phiếu chỉ hủy được phiếu do mình lập.
 | `'mvn' is not recognized` | Chạy bằng bảng Maven trong IntelliJ |
 | Không thấy cửa sổ ứng dụng | Cửa sổ nằm sau IntelliJ, dùng Alt+Tab |
 | `CREATE USER` báo user đã tồn tại | Bỏ qua, chạy tiếp `GRANT` |
+| Lỗi 1419 "You do not have the SUPER privilege and binary logging is enabled" khi chạy `schema.sql` hoặc `mvn verify -Pmysql` | Chạy `schema.sql` bằng root, hoặc cho kiểm thử tích hợp: [mục 4](#4-chạy-test) |
 | Sửa `config/db.properties` khi ứng dụng đang chạy (kể cả vừa tạo file sau khi thấy báo thiếu cấu hình) mà vẫn báo lỗi cũ | Tắt và mở lại ứng dụng: cấu hình chỉ được đọc một lần khi khởi động |

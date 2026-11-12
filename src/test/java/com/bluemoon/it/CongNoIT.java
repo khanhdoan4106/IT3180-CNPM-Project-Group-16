@@ -58,7 +58,7 @@ class CongNoIT {
         phiDichVu = khoanPhiDao.them(new KhoanPhi(0,
                 KhoanPhiService.PHI_DICH_VU, LoaiKhoanPhi.BAT_BUOC,
                 CachTinhPhi.THEO_DIEN_TICH, new BigDecimal("5000"),
-                LocalDate.of(2026, 1, 1), null, TrangThaiKhoanPhi.DANG_THU));
+                LocalDate.of(2026, 1, 1), null, TrangThaiKhoanPhi.DANG_THU), 1);
         themHo("A0601", LocalDate.of(2026, 1, 1), "001182004567");
     }
 
@@ -99,7 +99,7 @@ class CongNoIT {
         int quanLy = khoanPhiDao.them(new KhoanPhi(0,
                 KhoanPhiService.PHI_QUAN_LY, LoaiKhoanPhi.BAT_BUOC,
                 CachTinhPhi.THEO_DIEN_TICH, new BigDecimal("7000"),
-                LocalDate.of(2026, 1, 1), null, TrangThaiKhoanPhi.DANG_THU));
+                LocalDate.of(2026, 1, 1), null, TrangThaiKhoanPhi.DANG_THU), 1);
         assertThrows(NghiepVuException.class,
                 () -> khoanPhi.suaDonGia(admin, quanLy, "99999999999999"));
         assertThrows(NghiepVuException.class, () -> khoanPhi.taoKhoanTuNguyen(

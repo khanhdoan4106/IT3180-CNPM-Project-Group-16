@@ -3,6 +3,7 @@ package com.bluemoon.dao;
 import com.bluemoon.config.Database;
 import com.bluemoon.model.DotCuTru;
 import com.bluemoon.model.LoaiDotCuTru;
+import com.bluemoon.model.ThaoTac;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -24,7 +25,7 @@ public class DotCuTruDaoImpl implements DotCuTruDao {
             "INSERT INTO tam_tru_tam_vang (nhan_khau_id, loai, tu_ngay, "
                     + "den_ngay, ly_do) VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_KHOA_NHAN_KHAU =
-            "SELECT ho_id FROM nhan_khau WHERE id = ? FOR UPDATE";
+            "SELECT ho_id, ho_ten FROM nhan_khau WHERE id = ? FOR UPDATE";
     private static final String SQL_CHONG_NGAY =
             "SELECT 1 FROM tam_tru_tam_vang WHERE nhan_khau_id = ? "
                     + "AND tu_ngay <= ? AND ? <= den_ngay LIMIT 1";
@@ -41,12 +42,17 @@ public class DotCuTruDaoImpl implements DotCuTruDao {
         try (Connection conn = Database.getConnection()) {
             conn.setAutoCommit(false);
             try {
-                int hoId = khoaNhanKhau(conn, dot.getNhanKhauId());
+                NguoiCuaDot nguoi = khoaNhanKhau(conn, dot.getNhanKhauId());
                 if (chongNgay(conn, dot)) {
                     throw new TrungKhoaException(CHONG_NGAY, null);
                 }
                 int id = them(conn, dot);
-                BienDongDaoImpl.ghiDot(conn, hoId, dot, nguoiGhi);
+                BienDongDaoImpl.ghiDot(conn, nguoi.hoId(), dot, nguoiGhi);
+                NhatKyDaoImpl.ghi(conn, nguoiGhi,
+                        ThaoTac.GHI_TAM_TRU_TAM_VANG,
+                        NoiDungNhatKy.nhanKhau(nguoi.hoTen(),
+                                HoGiaDinhDaoImpl.maCanHo(conn, nguoi.hoId())),
+                        NoiDungNhatKy.dot(dot));
                 conn.commit();
                 return id;
             } catch (SQLException | RuntimeException e) {
@@ -95,8 +101,12 @@ public class DotCuTruDaoImpl implements DotCuTruDao {
         return doc(SQL_THEO_HO, hoId, "Loi lay tam tru/tam vang cua ho");
     }
 
-    /** Khoa dong nhan khau, tra ve ho cua nguoi do. */
-    private static int khoaNhanKhau(Connection conn, int nhanKhauId)
+    /** Ho va ho ten cua nhan khau co dot. */
+    private record NguoiCuaDot(int hoId, String hoTen) {
+    }
+
+    /** Khoa dong nhan khau, tra ve ho va ho ten cua nguoi do. */
+    private static NguoiCuaDot khoaNhanKhau(Connection conn, int nhanKhauId)
             throws SQLException {
         try (PreparedStatement ps =
                 conn.prepareStatement(SQL_KHOA_NHAN_KHAU)) {
@@ -105,7 +115,7 @@ public class DotCuTruDaoImpl implements DotCuTruDao {
                 if (!rs.next()) {
                     throw new SQLException("Khong tim thay nhan khau");
                 }
-                return rs.getInt(1);
+                return new NguoiCuaDot(rs.getInt(1), rs.getString(2));
             }
         }
     }

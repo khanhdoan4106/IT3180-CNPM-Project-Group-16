@@ -33,11 +33,13 @@ public interface NhanKhauDao {
     int themKemDot(NhanKhau nk, DotCuTru dot, int nguoiGhi);
 
     /**
-     * Cap nhat thong tin nhan khau (theo id). Khong doi ho.
+     * Cap nhat thong tin nhan khau (theo id), khong doi ho, va ghi nhat ky
+     * cac truong thuc su doi trong cung giao dich (TS-002).
      *
      * @param nk nhan khau da co id
+     * @param nguoiId id tai khoan thao tac, ghi vao nhat ky
      */
-    void capNhat(NhanKhau nk);
+    void capNhat(NhanKhau nk, int nguoiId);
 
     /**
      * Doi trang thai cu tru cua mot nhan khau. Chuyen tu dang o sang da

@@ -90,12 +90,12 @@ class PhieuThuIT {
                             ten.equals(KhoanPhiService.PHI_DICH_VU) ? "5000"
                                     : "7000"),
                     LocalDate.of(2026, 1, 1), null,
-                    TrangThaiKhoanPhi.DANG_THU));
+                    TrangThaiKhoanPhi.DANG_THU), 1);
         }
         quy = khoanPhiDao.them(new KhoanPhi(0, "Quỹ vì người nghèo 2026",
                 LoaiKhoanPhi.TU_NGUYEN, CachTinhPhi.KHONG_CO_DINH, null,
                 LocalDate.of(2026, 10, 1), LocalDate.of(2026, 12, 31),
-                TrangThaiKhoanPhi.DANG_THU));
+                TrangThaiKhoanPhi.DANG_THU), 1);
         hoId = hoDao.them(new HoGiaDinh(0, "A0601", LoaiCanHo.CAN_HO, 6,
                 new BigDecimal("75.50"), null, LocalDate.of(2026, 1, 1),
                 TrangThaiHo.DANG_O),

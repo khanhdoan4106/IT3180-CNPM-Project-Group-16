@@ -82,7 +82,7 @@ class MuiGioIT {
         khoanPhiDao.them(new KhoanPhi(0, "Phí dịch vụ",
                 LoaiKhoanPhi.BAT_BUOC, CachTinhPhi.THEO_DIEN_TICH,
                 new BigDecimal("5000"), LocalDate.of(2026, 1, 1), null,
-                TrangThaiKhoanPhi.DANG_THU));
+                TrangThaiKhoanPhi.DANG_THU), 1);
         hoId = new HoGiaDinhDaoImpl().them(new HoGiaDinh(0, "A0601",
                 LoaiCanHo.CAN_HO, 6, new BigDecimal("75.50"), null,
                 LocalDate.of(2026, 1, 1), TrangThaiHo.DANG_O),

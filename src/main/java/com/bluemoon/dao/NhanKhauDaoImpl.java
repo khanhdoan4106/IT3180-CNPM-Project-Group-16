@@ -7,6 +7,7 @@ import com.bluemoon.model.LoaiBienDong;
 import com.bluemoon.model.LoaiCuTru;
 import com.bluemoon.model.NhanKhau;
 import com.bluemoon.model.QuanHeChuHo;
+import com.bluemoon.model.ThaoTac;
 import com.bluemoon.model.TrangThaiNhanKhau;
 import java.sql.Connection;
 import java.sql.Date;
@@ -37,8 +38,10 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
                     + "WHERE id = ?";
     private static final String SQL_DOI_TRANG_THAI =
             "UPDATE nhan_khau SET trang_thai = ? WHERE id = ?";
-    private static final String SQL_KHOA = "SELECT ho_id, trang_thai "
-            + "FROM nhan_khau WHERE id = ? FOR UPDATE";
+    private static final String SQL_KHOA = "SELECT ho_id, ho_ten, "
+            + "trang_thai FROM nhan_khau WHERE id = ? FOR UPDATE";
+    private static final String SQL_KHOA_ID =
+            "SELECT " + COT + " FROM nhan_khau WHERE id = ? FOR UPDATE";
     private static final String SQL_KHOA_HAI = "SELECT id, ho_id, ho_ten, "
             + "trang_thai, quan_he FROM nhan_khau WHERE id IN (?, ?) "
             + "FOR UPDATE";
@@ -66,6 +69,7 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
             try {
                 int id = them(conn, nk);
                 ghiChuyenDen(conn, nk, id, nguoiGhi);
+                ghiNhatKyThem(conn, nk, nguoiGhi, nk.getLoaiCuTru().getNhan());
                 conn.commit();
                 return id;
             } catch (SQLException | RuntimeException e) {
@@ -84,6 +88,15 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
                 nguoiGhi);
     }
 
+    private static void ghiNhatKyThem(Connection conn, NhanKhau nk,
+            int nguoiGhi, String cuTru) throws SQLException {
+        NhatKyDaoImpl.ghi(conn, nguoiGhi, ThaoTac.THEM_NHAN_KHAU,
+                NoiDungNhatKy.nhanKhau(nk.getHoTen(),
+                        HoGiaDinhDaoImpl.maCanHo(conn, nk.getHoId())),
+                "Quan hệ với chủ hộ: " + nk.getQuanHe().getNhan() + "; "
+                        + cuTru);
+    }
+
     @Override
     public int themKemDot(NhanKhau nk, DotCuTru dot, int nguoiGhi) {
         try (Connection conn = Database.getConnection()) {
@@ -94,6 +107,7 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
                 DotCuTru dau = dot.voiNhanKhauId(id);
                 DotCuTruDaoImpl.them(conn, dau);
                 BienDongDaoImpl.ghiDot(conn, nk.getHoId(), dau, nguoiGhi);
+                ghiNhatKyThem(conn, nk, nguoiGhi, NoiDungNhatKy.dot(dau));
                 conn.commit();
                 return id;
             } catch (SQLException | RuntimeException e) {
@@ -126,16 +140,64 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
         }
     }
 
+    /**
+     * Sua trong mot giao dich: khoa dong nhan khau, doc gia tri cu, cap nhat
+     * roi ghi nhat ky cac truong thuc su doi (khong doi gi thi khong ghi).
+     */
     @Override
-    public void capNhat(NhanKhau nk) {
-        try (Connection conn = Database.getConnection();
-                PreparedStatement ps = conn.prepareStatement(SQL_SUA)) {
-            ganThongTin(ps, nk);
-            ps.setInt(7, nk.getId());
-            ps.executeUpdate();
+    public void capNhat(NhanKhau nk, int nguoiId) {
+        try (Connection conn = Database.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                NhanKhau cu;
+                try (PreparedStatement ps =
+                        conn.prepareStatement(SQL_KHOA_ID)) {
+                    ps.setInt(1, nk.getId());
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (!rs.next()) {
+                            throw new XungDotException(
+                                    XungDotException.Loai.KHONG_TIM_THAY,
+                                    "nhan khau " + nk.getId());
+                        }
+                        cu = docDong(rs);
+                    }
+                }
+                try (PreparedStatement ps = conn.prepareStatement(SQL_SUA)) {
+                    ganThongTin(ps, nk);
+                    ps.setInt(7, nk.getId());
+                    ps.executeUpdate();
+                }
+                NoiDungNhatKy.ThayDoi doi = thayDoi(cu, nk);
+                if (!doi.rong()) {
+                    NhatKyDaoImpl.ghi(conn, nguoiId, ThaoTac.SUA_NHAN_KHAU,
+                            NoiDungNhatKy.nhanKhau(nk.getHoTen(),
+                                    HoGiaDinhDaoImpl.maCanHo(conn,
+                                            cu.getHoId())),
+                            doi.toString());
+                }
+                conn.commit();
+            } catch (SQLException | RuntimeException e) {
+                conn.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
             throw TrungKhoaException.boc("Loi cap nhat nhan khau", e);
         }
+    }
+
+    private static NoiDungNhatKy.ThayDoi thayDoi(NhanKhau cu, NhanKhau moi) {
+        return new NoiDungNhatKy.ThayDoi()
+                .them("Họ tên", cu.getHoTen(), moi.getHoTen())
+                .them("Ngày sinh", NoiDungNhatKy.ngay(cu.getNgaySinh()),
+                        NoiDungNhatKy.ngay(moi.getNgaySinh()))
+                .them("Giới tính", cu.getGioiTinh().getNhan(),
+                        moi.getGioiTinh().getNhan())
+                .them("Số CCCD", NoiDungNhatKy.chu(cu.getSoCccd()),
+                        NoiDungNhatKy.chu(moi.getSoCccd()))
+                .them("Quan hệ với chủ hộ", cu.getQuanHe().getNhan(),
+                        moi.getQuanHe().getNhan())
+                .them("Nơi thường trú", NoiDungNhatKy.chu(cu.getNoiThuongTru()),
+                        NoiDungNhatKy.chu(moi.getNoiThuongTru()));
     }
 
     @Override
@@ -148,12 +210,14 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
                             conn.prepareStatement(SQL_DOI_TRANG_THAI)) {
                 khoa.setInt(1, id);
                 int hoId;
+                String hoTen;
                 boolean dangO;
                 try (ResultSet rs = khoa.executeQuery()) {
                     if (!rs.next()) {
                         throw new SQLException("Khong tim thay nhan khau");
                     }
                     hoId = rs.getInt("ho_id");
+                    hoTen = rs.getString("ho_ten");
                     dangO = "DANG_O".equals(rs.getString("trang_thai"));
                 }
                 ps.setString(1, trangThai.name());
@@ -162,6 +226,11 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
                 if (dangO && trangThai == TrangThaiNhanKhau.DA_CHUYEN_DI) {
                     BienDongDaoImpl.ghi(conn, hoId, id,
                             LoaiBienDong.CHUYEN_DI, null, "Rời hộ", nguoiGhi);
+                    NhatKyDaoImpl.ghi(conn, nguoiGhi,
+                            ThaoTac.NHAN_KHAU_CHUYEN_DI,
+                            NoiDungNhatKy.nhanKhau(hoTen,
+                                    HoGiaDinhDaoImpl.maCanHo(conn, hoId)),
+                            "Rời hộ");
                 }
                 conn.commit();
             } catch (SQLException | RuntimeException e) {
@@ -275,11 +344,15 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
                 khoa.setInt(2, chuHoMoiId);
                 int hoId = 0;
                 String tenCu = "";
+                String tenMoi = "";
                 try (ResultSet rs = khoa.executeQuery()) {
                     while (rs.next()) {
                         hoId = rs.getInt("ho_id");
                         boolean dangO = TrangThaiNhanKhau.DANG_O.name()
                                 .equals(rs.getString("trang_thai"));
+                        if (rs.getInt("id") != chuHoCuId) {
+                            tenMoi = rs.getString("ho_ten");
+                        }
                         if (rs.getInt("id") == chuHoCuId) {
                             tenCu = rs.getString("ho_ten");
                             // Duoi khoa: chu ho cu van la chu ho dang o.
@@ -311,6 +384,13 @@ public class NhanKhauDaoImpl implements NhanKhauDao {
                             LoaiBienDong.CHUYEN_DI, null,
                             "Chủ hộ cũ rời hộ", nguoiGhi);
                 }
+                NhatKyDaoImpl.ghi(conn, nguoiGhi, ThaoTac.DOI_CHU_HO,
+                        HoGiaDinhDaoImpl.doiTuong(
+                                HoGiaDinhDaoImpl.maCanHo(conn, hoId)),
+                        "Chủ hộ: " + tenCu + " → " + tenMoi + "; " + tenCu
+                                + (cuChuyenDi ? " rời hộ"
+                                        : " ở lại, quan hệ với chủ hộ: "
+                                                + quanHeCu.getNhan()));
                 conn.commit();
             } catch (SQLException | RuntimeException e) {
                 conn.rollback();
