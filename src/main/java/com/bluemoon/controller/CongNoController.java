@@ -6,12 +6,15 @@ import com.bluemoon.dao.DaoException;
 import com.bluemoon.dao.DongHoCsdl;
 import com.bluemoon.dao.HoGiaDinhDaoImpl;
 import com.bluemoon.dao.KhoanPhiDaoImpl;
+import com.bluemoon.dao.NoDongDaoImpl;
 import com.bluemoon.dao.PhieuThuDaoImpl;
+import com.bluemoon.model.HoNoDong;
 import com.bluemoon.model.KetQuaTinhCongNo;
 import com.bluemoon.model.PhaiNop;
 import com.bluemoon.model.ThongBaoPhi;
 import com.bluemoon.service.CongNoService;
 import com.bluemoon.service.NghiepVuException;
+import com.bluemoon.service.NoDongService;
 import com.bluemoon.service.SoTien;
 import com.bluemoon.service.ThongBaoPhiService;
 import com.bluemoon.util.PhienLamViec;
@@ -25,6 +28,7 @@ import java.util.function.Function;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -32,6 +36,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -39,10 +46,16 @@ import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
 
 /**
- * Man hinh chot cong no (US-009) va sua khoan phai nop (US-008). Chi
- * chuyen su kien cho service, khong chua nghiep vu.
+ * Man hinh cong no: tab "Chot cong no" (US-009, sua khoan phai nop US-008,
+ * in thong bao US-015) va tab "Ho no dong" (US-017). Chi chuyen su kien
+ * cho service, khong chua nghiep vu.
  */
 public class CongNoController {
+
+    /** fx:id cua TabPane cua man hinh. */
+    public static final String TAB_PANE = "congNoTabs";
+    /** fx:id cua tab "Ho no dong". */
+    public static final String TAB_NO_DONG = "noDongTab";
 
     /** So thang gan nhat hien trong o chon thang. */
     private static final int SO_THANG = 12;
@@ -52,6 +65,33 @@ public class CongNoController {
             new HoGiaDinhDaoImpl(), new DongHoCsdl());
     private final ThongBaoPhiService thongBaoService = new ThongBaoPhiService(
             new PhieuThuDaoImpl(), new CongNoDaoImpl());
+    private final NoDongService noDongService =
+            new NoDongService(new NoDongDaoImpl());
+
+    @FXML
+    private Tab noDongTab;
+    @FXML
+    private RadioButton noDongRadio;
+    @FXML
+    private RadioButton conNoRadio;
+    @FXML
+    private TableView<HoNoDong> bangNo;
+    @FXML
+    private TableColumn<HoNoDong, String> cotNoCanHo;
+    @FXML
+    private TableColumn<HoNoDong, String> cotNoChuHo;
+    @FXML
+    private TableColumn<HoNoDong, String> cotNoSoThang;
+    @FXML
+    private TableColumn<HoNoDong, String> cotNoTuThang;
+    @FXML
+    private TableColumn<HoNoDong, String> cotNoTong;
+    @FXML
+    private Label khongCoNoLabel;
+    @FXML
+    private Label tongNoLabel;
+    @FXML
+    private Label thongBaoNoLabel;
 
     @FXML
     private ComboBox<YearMonth> thangCombo;
@@ -126,6 +166,88 @@ public class CongNoController {
                 boQuaLabel.textProperty().isNotEmpty());
         thangCombo.valueProperty().addListener((o, cu, moi) -> hienThang());
         hienThang();
+        khoiTaoNoDong();
+    }
+
+    /**
+     * Tab "Ho no dong": cot bang, tai khi mo tab va khi doi lua chon loc
+     * (khong luong nen, khong phan trang).
+     */
+    private void khoiTaoNoDong() {
+        ganCotNo(cotNoCanHo, CongNoController::canHo);
+        ganCotNo(cotNoChuHo, h -> h.chuHo() == null ? "" : h.chuHo());
+        ganCotNo(cotNoSoThang, h -> h.soThangNo() + " tháng");
+        ganCotNo(cotNoTuThang, h -> "Tháng " + h.noTuThang().getMonthValue()
+                + "/" + h.noTuThang().getYear());
+        ganCotNo(cotNoTong, h -> SoTien.hienThi(h.tongNo()));
+        noDongRadio.selectedProperty().addListener((o, cu, moi) -> {
+            if (noDongTab.isSelected()) {
+                hienNoDong();
+            }
+        });
+        noDongTab.setOnSelectionChanged(e -> {
+            if (noDongTab.isSelected()) {
+                hienNoDong();
+            }
+        });
+    }
+
+    /** Tai danh sach ho con no theo lua chon loc (AC-048, AC-049). */
+    private void hienNoDong() {
+        boolean chiNoDong = noDongRadio.isSelected();
+        thongBaoNoLabel.setText("");
+        khongCoNoLabel.setText(chiNoDong ? "Không có hộ nào nợ từ "
+                + NoDongService.NGUONG_NO_DONG + " tháng trở lên"
+                : "Không có hộ nào còn nợ");
+        try {
+            List<HoNoDong> ds = noDongService.hoNo(PhienLamViec.hienTai(),
+                    chiNoDong);
+            bangNo.setItems(FXCollections.observableArrayList(ds));
+            tongNoLabel.setText(ds.isEmpty() ? "" : dongTongNo(ds));
+        } catch (NghiepVuException e) {
+            baoLoiNo(e.getMessage());
+        } catch (CauHinhException | DaoException e) {
+            baoLoiNo(LoiCsdl.thongBao(e));
+        }
+    }
+
+    /** Cot Can ho: ho da chuyen di co ghi chu. */
+    static String canHo(HoNoDong h) {
+        return h.daChuyenDi() ? h.maCanHo() + " (đã chuyển đi)"
+                : h.maCanHo();
+    }
+
+    /** Dong tong duoi bang: "x hộ, tổng nợ y đ". */
+    static String dongTongNo(List<HoNoDong> ds) {
+        return ds.size() + " hộ, tổng nợ " + SoTien.hienThi(ds.stream()
+                .map(HoNoDong::tongNo).reduce(BigDecimal.ZERO,
+                        BigDecimal::add));
+    }
+
+    /**
+     * Chon tab "Ho no dong" cua man Cong no vua tai (the "Ho con no" o
+     * Trang chinh). Chon tab se tai danh sach.
+     *
+     * @param manHinh goc cua cong-no.fxml
+     */
+    public static void chonTabNoDong(Parent manHinh) {
+        TabPane tp = (TabPane) manHinh.lookup("#" + TAB_PANE);
+        tp.getTabs().stream().filter(t -> TAB_NO_DONG.equals(t.getId()))
+                .findFirst().ifPresent(t -> tp.getSelectionModel().select(t));
+    }
+
+    private void baoLoiNo(String noiDung) {
+        bangNo.getItems().clear();
+        tongNoLabel.setText("");
+        thongBaoNoLabel.getStyleClass().remove("loi");
+        thongBaoNoLabel.getStyleClass().add("loi");
+        thongBaoNoLabel.setText(noiDung);
+    }
+
+    private static void ganCotNo(TableColumn<HoNoDong, String> cot,
+            Function<HoNoDong, String> lay) {
+        cot.setCellValueFactory(
+                o -> new SimpleStringProperty(lay.apply(o.getValue())));
     }
 
     /** Hien khoan da chot cua thang, hoac goi y xem truoc neu chua chot. */

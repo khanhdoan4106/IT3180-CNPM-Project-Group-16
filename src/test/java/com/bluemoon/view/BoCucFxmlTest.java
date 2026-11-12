@@ -67,7 +67,12 @@ class BoCucFxmlTest {
                     + " 31/12/2026"),
             Map.entry("tongThuLabel", "999.999.999.999 đ"),
             Map.entry("phu1Label", "Tổng phải thu: 999.999.999.999 đ"),
-            Map.entry("phu2Label", "Hộ ghi không đóng (0 đ): 1234 hộ"));
+            Map.entry("phu2Label", "Hộ ghi không đóng (0 đ): 1234 hộ"),
+            Map.entry("soHoNoLabel", "12345"),
+            Map.entry("noDongLabel", "1234 hộ nợ từ 3 tháng trở lên"),
+            Map.entry("tongNoLabel", "1234 hộ, tổng nợ 999.999.999.999 đ"),
+            Map.entry("khongCoNoLabel",
+                    "Không có hộ nào nợ từ 3 tháng trở lên"));
 
     /**
      * Khung controller chi hien luc chay (ket qua thong ke, khoang thu cua
