@@ -90,3 +90,6 @@ jobs:
           if (@(Get-ChildItem $thu -Filter '*.tmp').Count -ne 0) { throw 'còn tệp dở' }
           if (@(Get-ChildItem $thu -Filter 'bluemoon-*.sql').Count -ne 1) { throw 'bản sao lưu cũ bị xóa khi lỗi' }
           Get-Content $log -Encoding utf8
+          # Actions kết thúc bước pwsh bằng $LASTEXITCODE, vẫn là mã lỗi của
+          # lần sao lưu sai mật khẩu (cố ý) ở trên.
+          exit 0
