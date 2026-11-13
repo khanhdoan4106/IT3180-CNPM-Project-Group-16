@@ -76,7 +76,7 @@ jobs:
 
           pwsh -NoProfile scripts/sao-luu.ps1 -CoSoDuLieu bluemoon_ci_nguon -ThuMucDich $thu -TepTuyChon "$env:RUNNER_TEMP/dung.cnf"
           if ($LASTEXITCODE -ne 0) { throw "sao-luu.ps1 trả mã $LASTEXITCODE" }
-          if ((Get-Content $log -Encoding utf8)[-1] -notmatch '\| THÀNH CÔNG \| bluemoon-\d{8}-\d{6}\.sql \|') { throw 'log thiếu dòng THÀNH CÔNG' }
+          if (@(Get-Content $log -Encoding utf8)[-1] -notmatch '\| THÀNH CÔNG \| bluemoon-\d{8}-\d{6}\.sql \|') { throw 'log thiếu dòng THÀNH CÔNG' }
           $ban = @(Get-ChildItem $thu -Filter 'bluemoon-*.sql')
           if ($ban.Count -ne 1) { throw "cần 1 tệp sao lưu, có $($ban.Count)" }
 
@@ -86,7 +86,7 @@ jobs:
           # Mật khẩu sai: mã khác 0, dòng LỖI, không còn tệp dở, giữ bản cũ.
           pwsh -NoProfile scripts/sao-luu.ps1 -CoSoDuLieu bluemoon_ci_nguon -ThuMucDich $thu -TepTuyChon "$env:RUNNER_TEMP/sai.cnf" -SoBanGiu 1
           if ($LASTEXITCODE -eq 0) { throw 'sao-luu.ps1 với mật khẩu sai phải trả mã khác 0' }
-          if ((Get-Content $log -Encoding utf8)[-1] -notmatch '\| LỖI \|.*1045') { throw 'log thiếu dòng LỖI' }
+          if (@(Get-Content $log -Encoding utf8)[-1] -notmatch '\| LỖI \|.*1045') { throw 'log thiếu dòng LỖI' }
           if (@(Get-ChildItem $thu -Filter '*.tmp').Count -ne 0) { throw 'còn tệp dở' }
           if (@(Get-ChildItem $thu -Filter 'bluemoon-*.sql').Count -ne 1) { throw 'bản sao lưu cũ bị xóa khi lỗi' }
           Get-Content $log -Encoding utf8
