@@ -8,6 +8,8 @@ import com.bluemoon.service.BaoCaoNhanKhauService;
 import com.bluemoon.service.NghiepVuException;
 import com.bluemoon.util.NgayUtil;
 import com.bluemoon.util.PhienLamViec;
+import com.bluemoon.xuat.TamVangExcel;
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Function;
@@ -25,10 +27,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
 /**
  * Hop thoai danh sach nhan khau tam vang de cung cap cho cong an phuong
- * (US-004): chon ngay, xem, in. Xuat tep Excel/PDF (AC-014) o Sprint 4.
+ * (US-004): chon ngay, xem, in, xuat Excel (AC-014, gia dinh 42). Can PDF
+ * thi in qua may in PDF tu man xem truoc.
  */
 final class DanhSachTamVang {
 
@@ -38,9 +42,10 @@ final class DanhSachTamVang {
     private final TableView<TamVang> bang = new TableView<>();
     private final Label thongBao = new Label();
     private final Button inButton = new Button("In danh sách");
+    private final Button xuatButton = new Button("Xuất Excel");
     private List<TamVang> dangXem = List.of();
 
-    private DanhSachTamVang() {
+    DanhSachTamVang() {
         NgayUtil.ganDinhDang(ngayPicker);
         bang.getColumns().setAll(List.of(
                 cot("Họ và tên", 170, TamVang::hoTen),
@@ -57,6 +62,10 @@ final class DanhSachTamVang {
         inButton.setDisable(true);
         inButton.setMinWidth(Region.USE_PREF_SIZE);
         inButton.setOnAction(e -> in());
+        // Danh sach rong thi khong co gi de xuat: nut bi vo hieu.
+        xuatButton.setDisable(true);
+        xuatButton.setMinWidth(Region.USE_PREF_SIZE);
+        xuatButton.setOnAction(e -> xuatExcel());
     }
 
     /** Mo hop thoai. */
@@ -65,6 +74,17 @@ final class DanhSachTamVang {
     }
 
     private void hien() {
+        Dialog<Void> d = new Dialog<>();
+        d.setTitle("Danh sách nhân khẩu tạm vắng");
+        d.getDialogPane().setContent(noiDung());
+        d.getDialogPane().getButtonTypes().setAll(HopThoai.DONG);
+        d.setResizable(true);
+        xem();
+        d.showAndWait();
+    }
+
+    /** Noi dung hop thoai: thanh chon ngay va nut, bang, thong bao. */
+    VBox noiDung() {
         Button xem = new Button("Xem");
         xem.setMinWidth(Region.USE_PREF_SIZE);
         xem.setDefaultButton(true);
@@ -73,15 +93,10 @@ final class DanhSachTamVang {
         HBox.setHgrow(dem, Priority.ALWAYS);
         Label nhanNgay = new Label("Tạm vắng vào ngày");
         nhanNgay.setMinWidth(Region.USE_PREF_SIZE);
-        HBox thanh = new HBox(10, nhanNgay, ngayPicker, xem, dem, inButton);
+        HBox thanh = new HBox(10, nhanNgay, ngayPicker, xem, dem, inButton,
+                xuatButton);
         thanh.setAlignment(Pos.CENTER_LEFT);
-        Dialog<Void> d = new Dialog<>();
-        d.setTitle("Danh sách nhân khẩu tạm vắng");
-        d.getDialogPane().setContent(new VBox(10, thanh, bang, thongBao));
-        d.getDialogPane().getButtonTypes().setAll(HopThoai.DONG);
-        d.setResizable(true);
-        xem();
-        d.showAndWait();
+        return new VBox(10, thanh, bang, thongBao);
     }
 
     private void xem() {
@@ -97,6 +112,7 @@ final class DanhSachTamVang {
             bang.setItems(FXCollections.observableArrayList(dangXem));
             thongBao.setText(dangXem.size() + " người tạm vắng");
             inButton.setDisable(false);
+            xuatButton.setDisable(dangXem.isEmpty());
         } catch (NghiepVuException e) {
             baoLoi(e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -111,10 +127,40 @@ final class DanhSachTamVang {
                 () -> MauIn.danhSachTamVang(ds, ngay));
     }
 
+    /** AC-014: xuat danh sach dang xem ra tep .xlsx. */
+    private void xuatExcel() {
+        List<TamVang> ds = dangXem;
+        LocalDate ngay = NgayUtil.doc(ngayPicker);
+        if (ds.isEmpty() || ngay == null) {
+            return;
+        }
+        FileChooser chon = new FileChooser();
+        chon.setTitle("Lưu danh sách tạm vắng");
+        chon.setInitialFileName(TamVangExcel.tenTep(ngay));
+        chon.getExtensionFilters().add(new FileChooser.ExtensionFilter(
+                "Tệp Excel (*.xlsx)", "*.xlsx"));
+        File tep = chon.showSaveDialog(xuatButton.getScene().getWindow());
+        if (tep == null) {
+            return;
+        }
+        try {
+            service.xuatTamVang(PhienLamViec.hienTai(), ds, ngay,
+                    tep.toPath());
+            thongBao.getStyleClass().remove("loi");
+            thongBao.setText("Đã xuất " + ds.size() + " người ra "
+                    + tep.getName());
+        } catch (NghiepVuException e) {
+            thongBao.getStyleClass().remove("loi");
+            thongBao.getStyleClass().add("loi");
+            thongBao.setText(e.getMessage());
+        }
+    }
+
     private void baoLoi(String noiDung) {
         dangXem = List.of();
         bang.getItems().clear();
         inButton.setDisable(true);
+        xuatButton.setDisable(true);
         thongBao.getStyleClass().add("loi");
         thongBao.setText(noiDung);
     }

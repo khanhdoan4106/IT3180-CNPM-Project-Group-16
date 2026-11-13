@@ -27,6 +27,19 @@ View (FXML + CSS) -> Controller -> Service -> DAO -> MySQL
 - Luôn viết test cho service trước khi sửa/refactor.
 - SQL luôn dùng `PreparedStatement`, không nối chuỗi từ dữ liệu người dùng.
 - Không xóa cứng dữ liệu nghiệp vụ; đổi trạng thái để giữ lịch sử.
+- Xuất tệp (gói `xuat`): dựng tệp `.xlsx` bằng Apache POI từ dữ liệu, tách
+  khỏi giao diện nên test được không cần JavaFX (`BaoCaoThuExcel`,
+  `TamVangExcel`); `TepExcel.ghiAnToan` ghi ra tệp tạm cùng thư mục rồi
+  đổi tên, lỗi giữa chừng không để lại tệp hỏng. Tiền là ô số `#,##0`,
+  ngày là ô ngày `dd/mm/yyyy` (giả định 42). Xuất tệp không ghi nhật ký.
+- POI ghi log qua `log4j-api`; không có cài đặt log4j thì log4j in dòng
+  "ERROR Log4j API could not find a logging provider" ra console (đã thử:
+  bỏ phụ thuộc dưới đây thì dòng này hiện khi chạy test). Dự án thêm
+  `log4j-to-jul` (phạm vi runtime, cùng bản `log4j-api` 2.24.3 mà POI
+  5.5.1 dùng) để chuyển log sang `java.util.logging` có sẵn trong JDK:
+  một phụ thuộc nhỏ, không cần tệp cấu hình, log gỡ lỗi của POI không
+  hiện ở mức mặc định. Không chọn `log4j-core` (nặng, cần cấu hình) hay
+  đặt thuộc tính hệ thống (phải nhớ đặt ở cả ứng dụng lẫn test).
 
 ## Phân quyền
 
@@ -55,7 +68,8 @@ nhập, không đọc dữ liệu).
 | In thông báo phí | Có | Có | US-015 |
 | Tổng thu tháng ở Trang chính, thống kê theo khoản | Có | Có | US-016, US-019 |
 | Hộ nợ đọng (màn Công nợ, thẻ "Hộ còn nợ") | Có | Có | US-017 |
-| Xuất Excel | Có | Có | US-018 |
+| Xuất báo cáo thu ra Excel | Có | Có | US-018 |
+| Xuất danh sách tạm vắng ra Excel | Có | Không | AC-014, như báo cáo nhân khẩu |
 | Đăng ký và quản lý tài khoản | Có | Không | US-020, AC-061 |
 | Tài khoản của tôi | Có | Có | US-023 |
 | Xem nhật ký thao tác | Có | Không | TS-002, AC-069 |
@@ -77,12 +91,13 @@ hộ, các khoản chưa đóng, các quỹ tự nguyện đang mở.
 | Khung ứng dụng, menu theo vai trò | US-022 | `TrangChinhController`, `trang-chinh.fxml` | `PhanQuyen` | – | `TrangChinhMenuTest` |
 | Tổng thu tháng, biểu đồ 6 tháng ở Trang chính | US-016 | `TrangChinhController`, `BieuDoThuPhi`, `trang-chinh.fxml` | `ThongKeService`, `ThangTrucY` | `ThongKeDao` | `ThongKeServiceTest`, `ThangTrucYTest`, `DongTyLeTest`, `BieuDoThuPhiTest`, `ThongKeIT` |
 | Thống kê theo khoản | US-019 | `ThongKeController`, `thong-ke.fxml` | `ThongKeService` | `ThongKeDao`, `KhoanPhiDao` | `ThongKeServiceTest`, `ThongKeIT`, `BoCucFxmlTest` |
+| Báo cáo thu tháng ra Excel | US-018 | `ThongKeController` (phần "Báo cáo thu theo tháng"), `thong-ke.fxml` | `BaoCaoThuService`, `BaoCaoThuExcel`, `TepExcel` | `BaoCaoThuDao` | `BaoCaoThuServiceTest`, `BaoCaoThuExcelTest`, `TepExcelTest`, `BaoCaoThuIT`, `BoCucFxmlTest` |
 | Khoản thu | US-005, US-006 | `KhoanThuController`, `khoan-thu.fxml` | `KhoanPhiService` | `KhoanPhiDao` | `KhoanPhiServiceTest` |
 | Chốt, sửa công nợ | US-009, US-008 | `CongNoController`, `cong-no.fxml` (tab "Chốt công nợ") | `CongNoService` | `CongNoDao` | `CongNoServiceTest`, `CongNoIT` |
 | Hộ nợ đọng, thẻ "Hộ còn nợ" | US-017 | `CongNoController`, `cong-no.fxml` (tab "Hộ nợ đọng"), `TrangChinhController` | `NoDongService` | `NoDongDao` | `NoDongServiceTest`, `TheHoConNoTest`, `NoDongIT`, `BoCucFxmlTest` |
 | Tra cứu, thu phí, đóng góp, biên lai, hủy phiếu | US-007, US-010 – US-014 | `ThuPhiController`, `thu-phi.fxml`, `TomTatPhieuHomNay`, `HopThoai`, `MauIn`, `InAn` | `ThuPhiService` | `PhieuThuDao`, `KhoanPhiDao` | `ThuPhiServiceTest`, `SoTienTest`, `MauInTest`, `TomTatPhieuHomNayTest`, `HopThoaiHuyPhieuTest`, `DangBiKhoaExceptionTest`, `DongHoCsdlTest`, `PhieuThuIT`, `DongHoCsdlIT` |
 | Thông báo phí hằng tháng | US-015 | `CongNoController` (nút "In thông báo phí"), `MauIn` | `ThongBaoPhiService` | `PhieuThuDao`, `CongNoDao` | `ThongBaoPhiServiceTest`, `MauInTest`, `PhieuThuIT` |
-| Danh sách nhân khẩu tạm vắng | US-004 | `NhanKhauController`, `DanhSachTamVang`, `MauIn` | `BaoCaoNhanKhauService` | `BaoCaoNhanKhauDao` | `BaoCaoNhanKhauServiceTest`, `MauInTest`, `PhieuThuIT` |
+| Danh sách nhân khẩu tạm vắng (xem, in, xuất Excel) | US-004 | `NhanKhauController`, `DanhSachTamVang`, `MauIn` | `BaoCaoNhanKhauService`, `TamVangExcel`, `TepExcel` | `BaoCaoNhanKhauDao` | `BaoCaoNhanKhauServiceTest`, `TamVangExcelTest`, `DanhSachTamVangTest`, `MauInTest`, `PhieuThuIT` |
 | Báo lỗi không lường trước | – | `App`, `LoiKhongMongDoi`, `LoiCsdl` | – | – | `LoiKhongMongDoiTest`, `LoiCsdlTest` |
 | Dữ liệu mẫu | US-001 – US-003, US-005, US-006, US-027 | – | – | `database/seed.sql` | `SeedIT` |
 | Bố cục các màn hình | NFR-008 | 9 tệp FXML, `giao-dien.css` | – | – | `BoCucFxmlTest` |

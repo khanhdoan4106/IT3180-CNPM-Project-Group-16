@@ -10,7 +10,7 @@ còn phải kiểm tay. Quy tắc chung khi hoàn thành một story nằm ở
 | Loại | Lớp / thư mục | Kiểm cái gì | Cần gì để chạy |
 |---|---|---|---|
 | Test đơn vị (Service) | `src/test/java/com/bluemoon/service` | Quy tắc nghiệp vụ, kiểm tra dữ liệu, phân quyền (`PhanQuyen`), thông báo lỗi | Không cần MySQL: Service nhận DAO qua constructor, test dùng DAO giả trong bộ nhớ (`KhoGia`, `KhoThuPhiGia`, `KhoPhieuThuGia`) |
-| Test đơn vị (tiện ích, DAO không cần CSDL) | `util`, `dao`, `config`, `controller` | Băm mật khẩu, đọc ngày, đổi mã lỗi MySQL thành lỗi nghiệp vụ (`DangBiKhoaException`, `TrungKhoaException`), đồng hồ `DongHoCsdl` với `Clock.fixed`, chọn thông báo lỗi (`LoiCsdl`, `LoiKhongMongDoi`), số tiền bằng chữ | Không |
+| Test đơn vị (tiện ích, DAO không cần CSDL) | `util`, `dao`, `config`, `controller`, `xuat` | Ghi tệp Excel rồi đọc lại bằng POI (ô số, ô ngày, cột, tổng), ghi tệp tạm rồi đổi tên, băm mật khẩu, đọc ngày, đổi mã lỗi MySQL thành lỗi nghiệp vụ (`DangBiKhoaException`, `TrungKhoaException`), đồng hồ `DongHoCsdl` với `Clock.fixed`, chọn thông báo lỗi (`LoiCsdl`, `LoiKhongMongDoi`), số tiền bằng chữ | Không |
 | Test bố cục giao diện | `BoCucFxmlTest`, `MauInTest`, `HopThoaiHuyPhieuTest` | Nạp từng FXML ở cửa sổ 1120×645 bằng JavaFX chạy không màn hình (Monocle), kiểm không nút hay nhãn nào bị cắt thành "…", chữ gợi ý nằm trọn trong ô, mọi nút nằm trong vùng thấy được hoặc cuộn được, dùng đúng phông Be Vietnam Pro; số tiền lớn nhất vẫn vừa cột biên lai; hộp thoại hủy phiếu có đúng nút | Không cần màn hình, chạy được trên CI |
 | Test hành vi giao diện | `PhimEnterTest`, `TrangChinhMenuTest`, `MauPhuTest`, `BieuDoThuPhiTest`, `TheHoConNoTest` | Tải FXML thật trên cửa sổ ảo (Monocle), gửi sự kiện Enter vào từng ô và xem nút nào chạy; bấm logo về Trang chính, nút menu đang chọn có nền `#1d4ed8` do JavaFX vẽ, mục "Thống kê" nằm giữa Thu phí và Tài khoản; màu chữ phụ, tiêu đề cột và tương phản WCAG AA; biểu đồ thu phí vẽ thật đúng quy tắc biểu đồ (tên trục, trục Y từ 0, cột tháng hiện tại khác màu, số trên đầu cột); thẻ "Hộ còn nợ" mở màn Công nợ ở tab "Hộ nợ đọng" | Không cần màn hình, chạy được trên CI |
 | Test tài liệu | `TruyVetTaiLieuTest`, `UiMdTest`, `TestingMdTest` | Mã RAW trích trong chú thích khớp bảng truy vết, `ui.md` giữ đủ quy tắc biểu đồ và bảng màu, mọi `Lớp#phương_thức` trong bảng AC → test ở đây còn tồn tại | Không |
@@ -33,6 +33,7 @@ chứng minh trên MySQL thật, vì DAO giả không tái hiện được.
 | `NhatKyIT` | Mỗi nhóm thao tác (hộ, nhân khẩu, tạm trú/tạm vắng, khoản thu, công nợ, phiếu thu, tài khoản) ghi đúng một dòng nhật ký với người làm, thao tác, đối tượng, nội dung đúng; sửa hộ, nhân khẩu chỉ ghi trường thật sự đổi; không ghi mã băm, không ghi tự đổi mật khẩu; thao tác xung đột hoặc trùng khóa không để lại dòng; ghi nhật ký lỗi thì thao tác hoàn tác; MySQL từ chối `UPDATE`, `DELETE` trên `nhat_ky`; chạy lại `schema.sql` không mất nhật ký; thời điểm theo giờ Việt Nam dù máy chủ chạy UTC; lọc theo khoảng ngày, loại thao tác, mới nhất ở trên |
 | `ThongKeIT` | Tổng thu tháng không tính phiếu đã hủy; ranh giới tháng (23:59:59 ngày cuối tháng, 00:00:00 ngày đầu tháng sau); nợ tháng trước đóng tháng này tính tháng này; 6 tháng có tháng trống là 0; khoản bắt buộc theo tháng chốt (khoản sửa về 0 đ không tính phải đóng) và tỷ lệ thu tháng hiện tại; khoản tự nguyện đếm hộ đã đóng và hộ ghi 0 đ; chưa có giao dịch thì 0 đ |
 | `NoDongIT` | Hộ nợ đọng: khoản đã thu không tính, khoản trong phiếu đã hủy tính lại là nợ, khoản sửa về 0 đ và đóng góp tự nguyện không tính, hai khoản cùng tháng chỉ tính một tháng, hộ đã chuyển đi vẫn có (kèm chủ hộ cũ), tổng nợ, thứ tự (số tháng, tổng nợ, mã căn hộ), tóm tắt cho Trang chính |
+| `BaoCaoThuIT` | Báo cáo thu tháng: phiếu đã hủy không có (khoản chỉ có trong phiếu hủy không thành cột), ranh giới tháng (23:59:59 cuối tháng, 00:00:00 đầu tháng sau), chủ hộ, số biên lai, phiếu thu hai tháng phí dịch vụ cộng vào một cột, tháng chưa có phiếu bị từ chối, tệp ghi từ CSDL thật đọc lại được |
 | `SeedIT` | Dựng CSDL từ `schema.sql`, chạy `seed.sql` ba lần: số dòng không đổi, tên có dấu (so trong Java, không dựa `=` của MySQL), hai quỹ mẫu đang mở, ba trường hợp tạm trú/tạm vắng |
 
 Mỗi lớp `*IT` bỏ qua (không lỗi) nếu chưa đặt biến môi trường hoặc tên CSDL
@@ -47,7 +48,7 @@ không có chữ `test`, để không xóa nhầm CSDL `bluemoon` đang dùng.
 | IntelliJ | Maven → bluemoon → Lifecycle → `test` |
 | Dòng lệnh | `mvn test` hoặc `mvn verify` (cần Maven 3.9+ trong PATH) |
 
-Kết quả mong đợi: `BUILD SUCCESS`, 326 test. `mvn verify` không có
+Kết quả mong đợi: `BUILD SUCCESS`, 347 test. `mvn verify` không có
 `-Pmysql` không chạy lớp `*IT`.
 
 Chạy riêng test bố cục sau khi sửa FXML hoặc CSS:
@@ -72,7 +73,7 @@ mvn test -Dtest=BoCucFxmlTest
    Nếu user không phải `bluemoon`, đặt thêm `BLUEMOON_DB_USER` và
    `BLUEMOON_DB_PASSWORD`.
 
-Kết quả mong đợi: 326 test đơn vị và 53 kiểm thử tích hợp đều đạt (MySQL
+Kết quả mong đợi: 347 test đơn vị và 57 kiểm thử tích hợp đều đạt (MySQL
 8.0). Hai test cấu hình (`DatabaseConfigTest`) tự bỏ qua khi đã đặt
 `BLUEMOON_DB_*`, nên log hiện "Skipped: 2" ở lần chạy này.
 
@@ -85,7 +86,7 @@ hai xanh:
 | Job | Làm gì |
 |---|---|
 | `build` | JDK 21, `mvn -B verify`: test đơn vị và test bố cục |
-| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 53 kiểm thử tích hợp |
+| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 57 kiểm thử tích hợp |
 
 ## 3. Số test hiện tại
 
@@ -96,7 +97,8 @@ hai xanh:
 | `v0.3.0` (Sprint 3 và các sửa #28 – #35) | 269 | 30 |
 | Sprint 4, sau TS-002 | 279 | 40 |
 | Sprint 4, sau US-016, US-019 | 318 | 47 |
-| Sprint 4, sau US-017 (chưa phát hành) | 326 | 53 |
+| Sprint 4, sau US-017 | 326 | 53 |
+| Sprint 4, sau US-018 và AC-014 (chưa phát hành) | 347 | 57 |
 
 ## 4. Ánh xạ AC → test tự động
 
@@ -206,12 +208,14 @@ Khác ở Sprint 3, không gắn một AC riêng: chặn thu trùng và deadlock
 | AC-047 tháng chưa có giao dịch thì 0 | `ThongKeServiceTest#thangKhongCoGiaoDichLaKhong`, `ThangTrucYTest#toanKhongVanCoThangMacDinh`, `BieuDoThuPhiTest#toanKhongVanVeTruc`, `ThongKeIT#phieuDaHuyKhongTinh` | ✓ |
 | AC-048 lọc hộ nợ từ 3 tháng trở lên | `NoDongServiceTest#nguongBaThang`, `#tatCaHoConNoTuMotThang`, `#caHaiVaiTroDeuXemDuocChuaDangNhapBiTuChoi`, `NoDongIT#locNoTuBaThangDungThuTu`, `#nhieuKhoanTrongHaiThangChuaPhaiNoDong`, `#khoanDaThuKhongTinhPhieuHuyTinhLai`, `#khoanKhongDongVaTuNguyenKhongTinhTomTat`, `#hoDaChuyenDiVanCo`, `TheHoConNoTest#bamTheMoCongNoOTabHoNoDong`, `#dongPhuCuaThe`, `BoCucFxmlTest#khongCoChuBiCat` cho tab "Hộ nợ đọng" của `cong-no.fxml` | ◐ tab tự tải khi mở và khi đổi lựa chọn kiểm tay |
 | AC-049 mã phòng, chủ hộ, số tháng nợ, tổng nợ | `NoDongIT#soThangTongNoVaChuHoDung`, `#hoDaChuyenDiVanCo`, `TheHoConNoTest#chuCuaBangNoDong`, `NoDongServiceTest#tomTatDemHoConNoVaHoNoDong` | ✓ |
+| AC-014 xuất danh sách tạm vắng ra tệp | `TamVangExcelTest#duTruongNhuBanIn`, `BaoCaoNhanKhauServiceTest#xuatTamVangRaTepExcel`, `#xuatTamVangKiemQuyenVaDuLieu`, `DanhSachTamVangTest#nutXuatExcelCanhNutInVaVoHieuKhiChuaCoDanhSach`, `TepExcelTest#loiGiuaChungKhongDeLaiTepDich` | ◐ mở tệp bằng Excel thật kiểm tay |
+| AC-050 xuất Excel theo mẫu sổ thu | `BaoCaoThuExcelTest#thuTuCotVaTieuDeDamCoDinh`, `#oTienLaSoVaPhieuNhieuThangCongMotCot`, `#oTrongKhacOKhong`, `#oNgayLaNgay`, `#dongTongCongCongTungCotTien`, `#tenSheetTieuDeVaNgayLap`, `BaoCaoThuServiceTest#xuatRaTepDocLaiDuoc`, `#caHaiVaiTroDuocXuatChuaDangNhapBiTuChoi`, `#loiGhiTepThanhThongBaoNghiepVu`, `BaoCaoThuIT#phieuTrongThangDungRanhGioiKhongCoPhieuHuy`, `#chuHoSoBienLaiVaCongCungKhoan`, `#xuatTepTuCsdl`, `TepExcelTest#ghiXongThiCoTepDichVaKhongConTepTam`, `#loiGiuaChungGiuNguyenTepCu`, `#tepDangMoBaoDongTep`, `BoCucFxmlTest#khongCoChuBiCat` cho `thong-ke.fxml` | ◐ mở tệp bằng Excel thật, hộp chọn tệp kiểm tay |
+| AC-051 tháng không có dữ liệu | `BaoCaoThuServiceTest#thangKhongCoPhieuBiTuChoiTruocKhiTaoTep`, `BaoCaoThuIT#thangKhongCoPhieuBiTuChoi` | ✓ |
 | AC-052 tổng thu một khoản theo đợt | `ThongKeServiceTest#khoanBatBuocTheoThangDaChot`, `#khoanBatBuocCanThangDaChot`, `#khoanTuNguyenKhongCanThang`, `#cacKhoanBatBuocTruoc`, `ThongKeIT#khoanBatBuocTheoThangChot`, `#tuNguyenDemDungHoDongVaHoGhiKhong`, `BoCucFxmlTest#khongCoChuBiCat` cho `thong-ke.fxml` | ◐ màn Thống kê xem bằng mắt |
 | AC-053 khoản chưa có giao dịch thì 0 | `ThongKeIT#chuaCoGiaoDichLaKhong` | ✓ |
 
 ### Chưa làm (Sprint 4)
 
-AC-014 (xuất tệp danh sách tạm vắng), AC-050, AC-051 (báo cáo Excel),
 AC-066, AC-067 (sao lưu). Test sẽ thêm cùng story; bảng này cập
 nhật khi Sprint 4 hoàn thành.
 
@@ -231,6 +235,7 @@ Làm trước mỗi lần demo hoặc phát hành, theo thứ tự:
 | Hai máy cùng dùng một CSDL | Mở hai bản ứng dụng, thao tác một hộ ở cả hai | AC-071 |
 | Trang chính và màn Thống kê với dữ liệu thật | Đăng nhập bằng dữ liệu mẫu; xem thẻ "Đã thu tháng này", biểu đồ 6 tháng (cột tháng này đậm, số trên đầu cột), lập một phiếu rồi bấm logo thấy số đổi; mở Thống kê, xem một khoản bắt buộc và một quỹ | AC-046, AC-052 |
 | Hộ nợ đọng | Bấm thẻ "Hộ còn nợ" ở Trang chính: mở Công nợ ở tab "Hộ nợ đọng", menu Công nợ đang chọn; đổi qua lại "Nợ từ 3 tháng trở lên" và "Tất cả hộ còn nợ", số hộ và dòng tổng khớp thẻ ở Trang chính | AC-048, AC-049 |
+| Mở tệp Excel đã xuất | Xuất báo cáo thu một tháng có phiếu và danh sách tạm vắng, mở bằng Excel thật: chữ có dấu đúng, cột tiền cộng được (chọn cột thấy Sum), cột ngày lọc được theo ngày, dòng tiêu đề đứng yên khi cuộn; mở tệp trong Excel rồi xuất đè lên: báo "Tệp đang được mở trong chương trình khác…", tệp cũ còn nguyên; chọn tháng chưa có phiếu: báo ngay, không mở hộp chọn tệp | AC-014, AC-050, AC-051 |
 | Giao diện so với Figma | Mở từng màn ở 1120×645 và đối chiếu thiết kế ([ui.md](design/ui.md)) | NFR |
 
 ## 6. Viết test mới

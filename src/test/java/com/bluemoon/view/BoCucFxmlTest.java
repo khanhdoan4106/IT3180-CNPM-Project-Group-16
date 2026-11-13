@@ -72,7 +72,9 @@ class BoCucFxmlTest {
             Map.entry("noDongLabel", "1234 hộ nợ từ 3 tháng trở lên"),
             Map.entry("tongNoLabel", "1234 hộ, tổng nợ 999.999.999.999 đ"),
             Map.entry("khongCoNoLabel",
-                    "Không có hộ nào nợ từ 3 tháng trở lên"));
+                    "Không có hộ nào nợ từ 3 tháng trở lên"),
+            Map.entry("baoCaoLabel", "Tháng 12/2026 chưa có phiếu thu nào,"
+                    + " không có dữ liệu để xuất."));
 
     /**
      * Khung controller chi hien luc chay (ket qua thong ke, khoang thu cua

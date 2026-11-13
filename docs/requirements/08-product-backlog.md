@@ -17,15 +17,15 @@
 |---|---|---|---|
 | Sprint 1 | 24 | `v0.1.0` | Hoàn thành |
 | Sprint 2 | 32 | `v0.2.0` | Hoàn thành, trừ AC-026 của US-008 (làm cùng phiếu thu ở Sprint 3) |
-| Sprint 3 | 28 | `v0.3.0` (đã phát hành) | Hoàn thành, trừ AC-014 của US-004 (xuất tệp, làm cùng Sprint 4) |
+| Sprint 3 | 28 | `v0.3.0` (đã phát hành) | Hoàn thành; AC-014 của US-004 (xuất tệp) hoàn thành ở Sprint 4 |
 | Sprint 4 | 28 | `v1.0.0` | Đang làm |
 | **Tổng** | **112** | | |
 
 US-026 và US-027 đưa vào Sprint 2 (giả định 20, 26). US-008 đã làm AC-025
 ở Sprint 2; AC-026 (không sửa khoản đã có phiếu thu) cần bảng phiếu thu nên
 hoàn tất cùng US-011, US-014 ở Sprint 3. US-004 in được danh sách tạm vắng
-ở Sprint 3; AC-014 (xuất tệp Excel/PDF) làm cùng US-018 ở Sprint 4 (giả định
-27). Kết quả rà soát: Sprint 2
+ở Sprint 3; AC-014 (xuất tệp) làm cùng US-018 ở Sprint 4: chỉ xuất `.xlsx`,
+cần PDF thì in qua máy in PDF (giả định 27, 42). Kết quả rà soát: Sprint 2
 [docs/review/sprint-2-ra-soat.md](../review/sprint-2-ra-soat.md), Sprint 3
 [docs/review/sprint-3-ra-soat.md](../review/sprint-3-ra-soat.md), tổng thể sau
 Sprint 3 [docs/review/ra-soat-tong-the.md](../review/ra-soat-tong-the.md).
@@ -40,7 +40,7 @@ AC → test tự động: [docs/testing.md](../testing.md).
 | US-001 | Thêm thông tin hộ gia đình và diện tích căn hộ khi cư dân mới chuyển đến | Must | Sprint 1 | Hoàn thành | 3 |
 | US-002 | Lưu thông tin nhân khẩu và quan hệ với chủ hộ | Must | Sprint 1 | Hoàn thành | 5 |
 | US-003 | Ghi nhận tạm trú, tạm vắng kèm ngày bắt đầu và kết thúc | Must | Sprint 1 | Hoàn thành | 5 |
-| US-004 | Xuất danh sách nhân khẩu tạm vắng | Should | Sprint 3 | Hoàn thành phần xem và in; AC-014 ở Sprint 4 | 3 |
+| US-004 | Xuất danh sách nhân khẩu tạm vắng | Should | Sprint 3 | Hoàn thành (AC-014 xuất Excel ở Sprint 4) | 3 |
 | US-026 | Đổi chủ hộ (chủ hộ mất, chuyển đi, tách hộ) | Should | Sprint 2 | Hoàn thành | 3 |
 | US-027 | Lịch sử biến động nhân khẩu trong hộ | Should | Sprint 2 | Hoàn thành | 5 |
 
@@ -77,7 +77,7 @@ AC → test tự động: [docs/testing.md](../testing.md).
 |---|---|---|---|---|---|
 | US-016 | Xem tổng tiền đã thu trong tháng ngay trên màn hình chính | Should | Sprint 4 | Hoàn thành | 5 |
 | US-017 | Lọc danh sách hộ nợ phí quá 3 tháng | Should | Sprint 4 | Hoàn thành | 3 |
-| US-018 | Xuất báo cáo thu tiền ra Excel theo mẫu thủ công cũ | Could | Sprint 4 | Đang làm | 5 |
+| US-018 | Xuất báo cáo thu tiền ra Excel theo mẫu thủ công cũ | Could | Sprint 4 | Hoàn thành | 5 |
 | US-019 | Xem tổng thu của từng khoản/quỹ theo đợt | Should | Sprint 4 | Hoàn thành | 3 |
 
 ## EPIC-05: Tài khoản, bảo mật và nền tảng hệ thống
