@@ -25,22 +25,37 @@
     src: url("../fonts/BeVietnamPro-Bold.ttf");
 }
 
-/* Bang mau tam thoi - thay bang palette chot tren Figma (docs/design). */
+/* Bang mau phuong an A (docs/design/ui.md). Moi cap chu/nen dat WCAG AA
+   >= 4,5:1 (MauPhuTest do tu tep nay). -mau-loi la #b91c1c: #dc2626 cu chi
+   dat 4,1:1 tren nen #f1f5f9. Khong viet thang ma mau chu vao luat khac. */
 .root {
     -mau-chinh: #2563eb;
     -mau-chinh-dam: #1d4ed8;
     -mau-nen: #f1f5f9;
     -mau-chu: #0f172a;
-    -mau-loi: #dc2626;
+    -mau-loi: #b91c1c;
     -mau-phu: #526077;
-    -mau-phu-nhat: #94a3b8;
-    -mau-thanh-cong: #15803d;
+    -mau-thanh-cong: #166534;
     -mau-vien: #cbd5e1;
     -mau-dai: #eff6ff;
     -mau-nhan: #e2e8f0;
+    -mau-chon: #dbeafe;
+    -mau-xen-ke: #f8fafc;
+    -mau-nen-loi: #fef2f2;
     -fx-font-family: "Be Vietnam Pro";
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
     -fx-text-fill: -mau-chu;
+    /* Bien JavaFX: vong tieu diem, dong chon, chu tren nen sang. */
+    -fx-accent: -mau-chinh;
+    -fx-focus-color: -mau-chinh;
+    -fx-faint-focus-color: rgba(37, 99, 235, 0.25);
+    -fx-selection-bar: -mau-chon;
+    -fx-selection-bar-non-focused: -mau-chon;
+    -fx-dark-text-color: -mau-chu;
+    -fx-mid-text-color: -mau-chu;
+    -fx-text-base-color: -mau-chu;
+    -fx-text-background-color: -mau-chu;
+    -fx-prompt-text-fill: -mau-phu;
 }
 
 .nen {
@@ -54,10 +69,22 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 16, 0, 0, 4);
 }
 
+/* Thang chu (ui.md, muc Chu): goc 16; tieu de 32 / 24 / 20; nhan bang 15;
+   khong chu nao duoi 14 px tren man hinh (BoCucFxmlTest kiem). */
 .tieu-de {
-    -fx-font-size: 28px;
+    -fx-font-size: 32px;
     -fx-font-weight: bold;
     -fx-text-fill: -mau-chinh;
+}
+
+.tieu-de-trang {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.tieu-de-form {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
 }
 
 .phu-de {
@@ -68,20 +95,433 @@
     -fx-text-fill: -mau-loi;
 }
 
-.nut-chinh {
-    -fx-background-color: -mau-chinh;
-    -fx-text-fill: white;
-    -fx-background-radius: 8;
-    -fx-padding: 8 16 8 16;
+.thanh-cong {
+    -fx-text-fill: -mau-thanh-cong;
 }
 
-.nut-chinh:hover {
+/* ---------- Nut (Figma "Thanh phan / Nut": Chinh, Phu, Vien do) ----------
+   Moi nut cao >= 44 nhu Figma. Nut khong co lop rieng la nut phu: nen
+   trang, vien -mau-vien, chu dam, bo goc 8. Nut chinh (.nut-chinh, nut mac
+   dinh cua hop thoai): nen -mau-chinh, chu trang. Tieu diem: vien -mau-chinh 2 px ve bang lop nen nen nut khong
+   doi kich thuoc. */
+.button {
+    -fx-background-color: -mau-vien, white;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 8, 7;
+    -fx-text-fill: -mau-chu;
+    -fx-font-weight: bold;
+    -fx-padding: 10 18 10 18;
+    -fx-min-height: 44px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: -mau-vien, -mau-dai;
+}
+
+.button:armed {
+    -fx-background-color: -mau-vien, -mau-chon;
+}
+
+.button:focused {
+    -fx-background-color: -mau-chinh, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 8, 6;
+}
+
+.button:focused:hover {
+    -fx-background-color: -mau-chinh, -mau-dai;
+}
+
+.button:default,
+.nut-chinh {
+    -fx-background-color: -mau-chinh;
+    -fx-background-insets: 0;
+    -fx-background-radius: 8;
+    -fx-text-fill: white;
+    -fx-padding: 10 22 10 22;
+    -fx-min-height: 44px;
+}
+
+.button:default:hover,
+.button:default:armed,
+.nut-chinh:hover,
+.nut-chinh:armed {
     -fx-background-color: -mau-chinh-dam;
 }
 
+/* Nut chinh co tieu diem: vong ngoai -mau-chinh-dam cach nut 2 px. */
+.button:default:focused,
+.nut-chinh:focused {
+    -fx-background-color: -mau-chinh-dam, white, -mau-chinh;
+    -fx-background-insets: -4, -2, 0;
+    -fx-background-radius: 12, 10, 8;
+}
+
+.nut-phu {
+    -fx-background-color: -mau-vien, white;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 8, 7;
+    -fx-text-fill: -mau-chu;
+}
+
+.nut-phu:focused {
+    -fx-background-color: -mau-chinh, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 8, 6;
+}
+
+/* Nut nguy hiem (Huy phieu, Danh dau chuyen di): vien va chu do. */
+.nut-nguy-hiem,
+.button:default.nut-nguy-hiem {
+    -fx-background-color: -mau-loi, white;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 8, 7;
+    -fx-text-fill: -mau-loi;
+    -fx-padding: 10 18 10 18;
+    -fx-min-height: 44px;
+}
+
+.nut-nguy-hiem:hover,
+.button:default.nut-nguy-hiem:hover {
+    -fx-background-color: -mau-loi, -mau-nen-loi;
+}
+
+.nut-nguy-hiem:focused,
+.button:default.nut-nguy-hiem:focused {
+    -fx-background-color: -mau-chinh, white, -mau-loi, white;
+    -fx-background-insets: -4, -2, 0, 1;
+    -fx-background-radius: 12, 10, 8, 7;
+}
+
+.button:disabled,
+.menu-button:disabled {
+    -fx-opacity: 0.5;
+}
+
+/* Nut co danh sach (In thong bao phi): cung kieu nut phu. */
+.menu-button {
+    -fx-background-color: -mau-vien, white;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 8, 7;
+    -fx-min-height: 44px;
+    -fx-cursor: hand;
+}
+
+.menu-button > .label {
+    -fx-text-fill: -mau-chu;
+    -fx-font-weight: bold;
+    -fx-padding: 6 4 6 14;
+}
+
+.menu-button > .arrow-button {
+    -fx-padding: 0 14 0 6;
+}
+
+.menu-button > .arrow-button > .arrow {
+    -fx-background-color: -mau-chu;
+}
+
+.menu-button:hover {
+    -fx-background-color: -mau-vien, -mau-dai;
+}
+
+.menu-button:focused,
+.menu-button:showing {
+    -fx-background-color: -mau-chinh, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 8, 6;
+}
+
+.context-menu {
+    -fx-background-color: -mau-vien, white;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 8, 7;
+    -fx-padding: 4;
+}
+
+.menu-item {
+    -fx-padding: 8 14 8 14;
+}
+
+.menu-item > .label {
+    -fx-text-fill: -mau-chu;
+}
+
+.menu-item:focused {
+    -fx-background-color: -mau-chon;
+    -fx-background-radius: 6;
+}
+
+/* ---------- O nhap, danh sach chon, o ngay (Figma "O nhap") ----------
+   Vien -mau-vien 1 px, bo goc 8, cao >= 40. Co tieu diem: vien -mau-chinh
+   2 px (khong dua vao vong tieu diem mac dinh cua JavaFX). */
+.text-field,
+.password-field,
+.text-area,
+.combo-box-base {
+    -fx-background-color: -mau-vien, white;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 8, 7;
+    -fx-text-fill: -mau-chu;
+    -fx-min-height: 40px;
+}
+
+.text-field,
+.password-field {
+    -fx-padding: 8 12 8 12;
+}
+
+.text-field:focused,
+.password-field:focused,
+.text-area:focused,
+.combo-box-base:focused,
+.combo-box-base:showing,
+.combo-box-base:editable:contains-focus {
+    -fx-background-color: -mau-chinh, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 8, 6;
+}
+
+/* O nhap ben trong o ngay / danh sach chon soan duoc: khung ngoai ve vien. */
+.combo-box-base > .text-field,
+.combo-box-base > .text-field:focused {
+    -fx-background-color: transparent;
+    -fx-min-height: 0;
+}
+
+.combo-box-base > .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 12 0 8;
+}
+
+.combo-box-base > .arrow-button > .arrow {
+    -fx-background-color: -mau-phu;
+}
+
+/* O hien gia tri cua danh sach chon: khong to nhu dong dang chon. */
+.combo-box > .list-cell,
+.combo-box > .list-cell:filled:selected {
+    -fx-background-color: transparent;
+    -fx-padding: 8 4 8 12;
+    -fx-text-fill: -mau-chu;
+}
+
+.text-field:disabled,
+.combo-box-base:disabled {
+    -fx-opacity: 0.6;
+}
+
+/* O chon, nut chon: dau chon mau chinh; co tieu diem thi vien -mau-chinh. */
+.check-box,
+.radio-button {
+    -fx-min-height: 36px;
+    -fx-label-padding: 0 0 0 8;
+}
+
+.check-box > .box,
+.radio-button > .radio {
+    -fx-background-color: -mau-phu, white;
+    -fx-background-insets: 0, 2;
+}
+
+.check-box:selected > .box,
+.radio-button:selected > .radio {
+    -fx-background-color: -mau-chinh, white;
+}
+
+.check-box:selected > .box > .mark,
+.radio-button:selected > .radio > .dot {
+    -fx-background-color: -mau-chinh;
+}
+
+.check-box:focused > .box,
+.radio-button:focused > .radio {
+    -fx-background-color: -mau-chinh-dam, white, -mau-chinh, white;
+    -fx-background-insets: -3, -1, 0, 2;
+}
+
+/* ---------- Bang (Figma "Hang phieu thu", "Hang khoan phai nop") ----------
+   Hang cao 40, nen trang xen ke -mau-xen-ke, vien duoi -mau-vien; dong chon
+   nen -mau-chon co vach -mau-chinh ben trai, chu -mau-chu; tieu de cot nen
+   -mau-nen, chu phu 15. Bang co tieu diem: vien -mau-chinh 2 px. */
+.table-view,
+.list-view {
+    -fx-background-color: -mau-vien, white;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 6, 5;
+    -fx-padding: 1;
+}
+
+.table-view:focused,
+.list-view:focused {
+    -fx-background-color: -mau-chinh, white;
+    -fx-background-insets: 0, 2;
+    -fx-padding: 2;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -mau-nen;
+    -fx-background-radius: 5 5 0 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: -mau-vien, -mau-nen;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-size: 40px;
+}
+
+/* Tieu de cot bang dung mau chu phu (tuong phan AA tren nen). */
+.table-view .column-header .label {
+    -fx-text-fill: -mau-phu;
+    -fx-font-size: 15px;
+    -fx-padding: 0 10 0 10;
+}
+
+.table-row-cell {
+    -fx-cell-size: 40px;
+    -fx-background-color: -mau-vien, white;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-text-fill: -mau-chu;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: -mau-vien, -mau-xen-ke;
+}
+
+.table-row-cell:filled:selected,
+.table-row-cell:filled:focused:selected {
+    -fx-background: -mau-chon;
+    -fx-background-color: -mau-chinh, -mau-chon;
+    -fx-background-insets: 0, 0 0 1 4;
+}
+
+.table-row-cell:filled:selected .table-cell {
+    -fx-text-fill: -mau-chu;
+}
+
+/* Dong trong (bang it du lieu) de trang, khong ke vien. */
+.table-row-cell:empty,
+.table-row-cell:empty:odd {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+}
+
+.table-cell {
+    -fx-padding: 0 10 0 10;
+    -fx-alignment: center-left;
+    -fx-border-color: transparent;
+    -fx-text-fill: -mau-chu;
+}
+
+.table-view .placeholder .label {
+    -fx-text-fill: -mau-phu;
+}
+
+.list-cell {
+    -fx-padding: 8 12 8 12;
+    -fx-text-fill: -mau-chu;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: -mau-chon;
+    -fx-text-fill: -mau-chu;
+}
+
+/* ---------- Tab (Figma "The (tab)") ----------
+   Tab dang chon: chu mau chinh dam, gach duoi 3 px; tab thuong: chu phu. */
+.tab-pane > .tab-header-area {
+    -fx-padding: 0;
+}
+
+.tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-color: -mau-vien, -mau-nen;
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 8 16 8 16;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab .tab-label {
+    -fx-text-fill: -mau-phu;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:hover .tab-label {
+    -fx-text-fill: -mau-chu;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected {
+    -fx-background-color: -mau-chinh, -mau-nen;
+    -fx-background-insets: 0, 0 0 3 0;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected .tab-label {
+    -fx-text-fill: -mau-chinh;
+    -fx-font-weight: bold;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: transparent;
+}
+
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: -mau-chinh;
+    -fx-border-width: 2;
+    -fx-border-radius: 6;
+    -fx-border-insets: -4 -8 -4 -8;
+}
+
+/* ---------- Hop thoai (Dialog, Alert) ----------
+   KieuHopThoai gan tep CSS nay cho moi cua so moi. Nen trang, phan dau nen
+   -mau-nen chu 20 dam; nut mac dinh la nut chinh, nut con lai la nut phu. */
+.dialog-pane {
+    -fx-background-color: white;
+    -fx-padding: 0;
+}
+
+.dialog-pane > .header-panel {
+    -fx-background-color: -mau-vien, -mau-nen;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 16 24 16 24;
+}
+
+.dialog-pane > .header-panel .label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane > .content {
+    -fx-padding: 20 24 12 24;
+}
+
+.dialog-pane > .button-bar > .container {
+    -fx-padding: 12 24 20 24;
+}
+
+.dialog-pane > .button-bar {
+    -fx-button-min-width: 96px;
+}
+
+.scroll-bar > .thumb {
+    -fx-background-color: -mau-vien;
+    -fx-background-radius: 6;
+}
+
+.tooltip {
+    -fx-font-size: 15px;
+    -fx-background-color: -mau-chu;
+    -fx-text-fill: white;
+}
+
+/* ---------- Thanh menu ---------- */
 .thanh-dau {
     -fx-background-color: -mau-chinh;
-    -fx-padding: 12 20 12 20;
+    -fx-padding: 10 20 10 20;
     -fx-alignment: center-left;
 }
 
@@ -89,44 +529,25 @@
     -fx-background-color: transparent;
     -fx-cursor: hand;
     -fx-text-fill: white;
-    -fx-font-size: 18px;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
+    -fx-padding: 8 8 8 0;
 }
 
 .thanh-dau .chao {
     -fx-text-fill: white;
 }
 
-.thanh-cong {
-    -fx-text-fill: -mau-thanh-cong;
-}
-
-.tieu-de-trang {
-    -fx-font-size: 22px;
-    -fx-font-weight: bold;
-}
-
-.tieu-de-form {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-}
-
-.nut-phu {
-    -fx-background-color: transparent;
-    -fx-border-color: -mau-loi;
-    -fx-text-fill: -mau-loi;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-}
-
 .thanh-dau .nut-menu {
     -fx-background-color: transparent;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-padding: 8 12 8 12;
 }
 
 .thanh-dau .nut-menu:hover {
     -fx-background-color: -mau-chinh-dam;
+    -fx-background-radius: 8;
 }
 
 /* Nut menu cua man hinh dang mo (ThanhMenu); ve trang chu thi bo chon. */
@@ -135,9 +556,12 @@
     -fx-background-radius: 8;
 }
 
-/* Tieu de cot bang dung mau chu phu (tuong phan AA tren nen). */
-.table-view .column-header .label {
-    -fx-text-fill: -mau-phu;
+/* Tieu diem tren thanh menu xanh: vien trang. */
+.thanh-dau .logo:focused,
+.thanh-dau .nut-menu:focused {
+    -fx-background-color: white, -mau-chinh-dam;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 8, 6;
 }
 
 /* US-003: han tam tru da qua ma chua gia han. */
@@ -152,10 +576,12 @@
     -fx-background-color: transparent;
 }
 
-/* Trang in (US-004, US-013, US-015): nen trang, chu den de in ro. */
+/* Trang in (US-004, US-013, US-015): nen trang, chu den de in ro. Giay in
+   giu chu 14 (khong theo cho goc 16 cua man hinh) de mau in khong doi. */
 .trang-in {
     -fx-background-color: white;
     -fx-padding: 36 40 36 40;
+    -fx-font-size: 14px;
 }
 
 .trang-in .label {
@@ -176,7 +602,7 @@
 }
 
 .trang-in .in-nho {
-    -fx-font-size: 12px;
+    -fx-font-size: 14px;
 }
 
 .trang-in .in-o {
@@ -201,33 +627,34 @@
 
 /* Hop thoai xem truoc khi in. */
 .nen-xem-truoc {
-    -fx-background-color: #e2e8f0;
+    -fx-background-color: -mau-nhan;
 }
 
 .giay-xem-truoc {
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 2);
 }
 
-/* Man Thu phi: tong tien noi bat, dong phieu da huy mo di. */
+/* Man Thu phi: tong tien noi bat; phieu da huy chu phu (Figma "Hang phieu
+   thu / Da huy"), cot trang thai do. */
 .tong-thu {
-    -fx-font-size: 18px;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
 }
 
 .table-row-cell.phieu-da-huy .table-cell {
-    -fx-text-fill: -mau-phu-nhat;
+    -fx-text-fill: -mau-phu;
 }
 
 /* Man Thu phi theo Figma (frame "Thu phi - Thu tien"). */
 .dai-thong-tin {
     -fx-background-color: -mau-dai;
     -fx-background-radius: 6;
-    -fx-padding: 6 14 6 14;
+    -fx-padding: 8 14 8 14;
     -fx-alignment: center-left;
 }
 
 .dai-thong-tin .label {
-    -fx-text-fill: -mau-chinh;
+    -fx-text-fill: -mau-chinh-dam;
 }
 
 .dai-tieu-de {
@@ -236,14 +663,20 @@
 }
 
 .lien-ket {
-    -fx-text-fill: -mau-chinh;
+    -fx-text-fill: -mau-chinh-dam;
     -fx-underline: false;
     -fx-border-color: transparent;
-    -fx-padding: 0;
+    -fx-padding: 4 2 4 2;
 }
 
 .lien-ket:hover {
     -fx-underline: true;
+}
+
+.lien-ket:focused {
+    -fx-border-color: -mau-chinh;
+    -fx-border-width: 2;
+    -fx-border-radius: 4;
 }
 
 .khung-bang {
@@ -260,6 +693,7 @@
 
 .hang-tieu-de .label {
     -fx-text-fill: -mau-phu;
+    -fx-font-size: 15px;
 }
 
 .khung-bang .scroll-pane {
@@ -293,17 +727,8 @@
     -fx-text-fill: -mau-loi;
 }
 
-.bang-phieu .table-row-cell:filled:selected {
-    -fx-background: -mau-dai;
-    -fx-background-color: -mau-dai;
-}
-
-.bang-phieu .table-row-cell:filled:selected .table-cell {
-    -fx-text-fill: -mau-chu;
-}
-
 .bang-phieu .table-row-cell.phieu-da-huy:filled:selected .table-cell {
-    -fx-text-fill: -mau-phu-nhat;
+    -fx-text-fill: -mau-phu;
 }
 
 .bang-phieu .table-row-cell.phieu-da-huy .table-cell.trang-thai-huy {
@@ -327,7 +752,7 @@
 }
 
 .so-lon {
-    -fx-font-size: 30px;
+    -fx-font-size: 34px;
     -fx-font-weight: bold;
 }
 
@@ -338,7 +763,7 @@
 }
 
 .bieu-do-thu .chart-horizontal-grid-lines {
-    -fx-stroke: #e2e8f0;
+    -fx-stroke: -mau-nhan;
 }
 
 .bieu-do-thu .chart-horizontal-zero-line,
@@ -348,7 +773,7 @@
 
 .bieu-do-thu .axis {
     -fx-tick-label-fill: -mau-phu;
-    -fx-tick-label-font: 13px "Be Vietnam Pro";
+    -fx-tick-label-font: 14px "Be Vietnam Pro";
 }
 
 .bieu-do-thu .axis-label {
@@ -368,5 +793,5 @@
 .bieu-do-thu .nhan-cot {
     -fx-fill: -mau-chu;
     -fx-font-family: "Be Vietnam Pro";
-    -fx-font-size: 13px;
+    -fx-font-size: 14px;
 }

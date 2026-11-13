@@ -21,11 +21,14 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBoxBase;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,14 +53,15 @@ class BoCucFxmlTest {
     private static final double CAO = 645;
 
     /** Chu do controller dat luc chay, lay ban dai nhat co the gap. */
-    private static final Map<String, String> CHU_DONG = Map.ofEntries(
+    static final Map<String, String> CHU_DONG = Map.ofEntries(
             Map.entry("chaoLabel",
                     "Xin chào, Nguyễn Thị Thu Hương (Quản trị viên)"),
             Map.entry("khoaButton", "Mở khóa"),
             Map.entry("soDongNhatKyLabel", "12345 thao tác"),
             Map.entry("tieuDeLabel", "Tổng quan tháng 12/2026"),
             Map.entry("daThuLabel", "999.999.999.999 đ"),
-            Map.entry("tyLeLabel", "Tháng 12 không có khoản phải thu"),
+            Map.entry("tyLeLabel", "Chưa đọc được số liệu. Bấm BlueMoon để thử lại."),
+            Map.entry("noDongLabel", "Chưa đọc được số liệu. Bấm BlueMoon để thử lại."),
             Map.entry("chuThichLabel", "Cột đậm: tháng 12 chưa kết thúc,"
                     + " số liệu tính đến hôm nay."),
             Map.entry("nhacChotLabel", "Tháng 12/2026 chưa chốt công nợ."
@@ -69,7 +73,7 @@ class BoCucFxmlTest {
             Map.entry("phu1Label", "Tổng phải thu: 999.999.999.999 đ"),
             Map.entry("phu2Label", "Hộ ghi không đóng (0 đ): 1234 hộ"),
             Map.entry("soHoNoLabel", "12345"),
-            Map.entry("noDongLabel", "1234 hộ nợ từ 3 tháng trở lên"),
+
             Map.entry("tongNoLabel", "1234 hộ, tổng nợ 999.999.999.999 đ"),
             Map.entry("khongCoNoLabel",
                     "Không có hộ nào nợ từ 3 tháng trở lên"),
@@ -81,7 +85,7 @@ class BoCucFxmlTest {
      * quy, nhac chot, bien dong gan day): hien het de kiem ca truong hop
      * nhieu chu nhat.
      */
-    private static final Set<String> HIEN_LUC_CHAY = Set.of("ketQuaBox",
+    static final Set<String> HIEN_LUC_CHAY = Set.of("ketQuaBox",
             "khoangBox", "nhacChotBox", "bienDongBox");
 
     /**
@@ -92,6 +96,15 @@ class BoCucFxmlTest {
     private static final Set<String> DUOC_RUT_GON = Set.of("chaoLabel");
 
     private static final String PHONG = PhongChu.HO_PHONG;
+
+    /** TS-004 (AC-072, NFR-008): không chữ nào dưới 14 px. */
+    private static final double CHU_NHO_NHAT = 14;
+    /** Ô nhập, nút cao tối thiểu. */
+    private static final double O_CAO = 36;
+    /** Nút chính cao tối thiểu. */
+    private static final double NUT_CHINH_CAO = 40;
+    /** Khoảng cách tối thiểu giữa hai nút cạnh nhau. */
+    private static final double KHE_NUT = 8;
 
     @BeforeAll
     static void khoiDongJavaFx() throws Exception {
@@ -242,9 +255,67 @@ class BoCucFxmlTest {
                         + Math.round(vung));
             }
         }
+        kiemDeDoc(node, tienTo, loi);
         if (node instanceof Parent p) {
             for (Node con : p.getChildrenUnmodifiable()) {
                 thuThapLoi(con, tienTo, loi);
+            }
+        }
+    }
+
+    /**
+     * TS-004: chữ ≥ 14 px, nút/ô nhập đủ cao, nút cách nhau ≥ 8 px, không
+     * còn chữ tiếng Anh mặc định của JavaFX (bảng thiếu placeholder).
+     */
+    private static void kiemDeDoc(Node node, String tienTo,
+            List<String> loi) {
+        if (node instanceof Labeled l && "No content in table".equals(
+                l.getText())) {
+            loi.add(tienTo + "bảng thiếu chữ báo trống tiếng Việt"
+                    + " (placeholder)");
+        }
+        if (node instanceof Text t && t.getText() != null
+                && !t.getText().isBlank()
+                && t.getFont().getSize() < CHU_NHO_NHAT - 0.01) {
+            loi.add(tienTo + "chữ \"" + t.getText() + "\" cỡ "
+                    + t.getFont().getSize() + " < " + CHU_NHO_NHAT);
+        }
+        if (node instanceof Button b) {
+            boolean chinh = b.isDefaultButton()
+                    || b.getStyleClass().contains("nut-chinh");
+            double can = chinh ? NUT_CHINH_CAO : O_CAO;
+            if (b.getHeight() + 0.5 < can) {
+                loi.add(tienTo + moTa(b) + " cao "
+                        + Math.round(b.getHeight()) + " < " + (int) can);
+            }
+        }
+        if ((node instanceof TextField || node instanceof ComboBoxBase)
+                && !(node.getParent() instanceof ComboBoxBase)
+                && node.getLayoutBounds().getHeight() + 0.5 < O_CAO) {
+            loi.add(tienTo + node.getClass().getSimpleName() + " "
+                    + node.getId() + " cao "
+                    + Math.round(node.getLayoutBounds().getHeight()) + " < "
+                    + (int) O_CAO);
+        }
+        if (node instanceof HBox || node instanceof FlowPane) {
+            Button truoc = null;
+            for (Node con : ((Parent) node).getChildrenUnmodifiable()) {
+                if (!(con instanceof Button b) || !b.isVisible()
+                        || !b.isManaged()) {
+                    truoc = null;
+                    continue;
+                }
+                if (truoc != null && Math.abs(truoc.getLayoutY()
+                        - b.getLayoutY()) < 1) {
+                    double khe = b.getBoundsInParent().getMinX()
+                            - truoc.getBoundsInParent().getMaxX();
+                    if (khe + 0.5 < KHE_NUT) {
+                        loi.add(tienTo + moTa(truoc) + " và " + moTa(b)
+                                + " cách " + Math.round(khe) + " < "
+                                + (int) KHE_NUT);
+                    }
+                }
+                truoc = b;
             }
         }
     }

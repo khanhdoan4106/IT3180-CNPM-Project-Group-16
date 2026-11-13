@@ -40,7 +40,7 @@
                     <TableColumn fx:id="cotThoiGian" text="Thời gian"
                                  prefWidth="190"/>
                     <TableColumn fx:id="cotTrangThai" text="Trạng thái"
-                                 prefWidth="100"/>
+                                 prefWidth="120" minWidth="120"/>
                 </columns>
                 <placeholder>
                     <Label text="Chưa có khoản thu nào"/>

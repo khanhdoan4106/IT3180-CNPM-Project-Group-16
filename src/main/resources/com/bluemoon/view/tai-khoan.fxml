@@ -103,6 +103,9 @@
                                 <TableColumn fx:id="cotTrangThai"
                                              text="Trạng thái"/>
                             </columns>
+                            <placeholder>
+                                <Label text="Chưa có tài khoản nào"/>
+                            </placeholder>
                         </TableView>
                         <HBox spacing="10">
                             <Label text="Không xóa tài khoản, chỉ khóa để giữ lịch sử thu." wrapText="true"
@@ -121,34 +124,30 @@
                         <properties enterChay="dangKyButton"/>
                         <Label text="Đăng ký tài khoản"
                                styleClass="tieu-de-form"/>
-                        <GridPane hgap="10" vgap="10">
+                        <!-- Nhan dat tren o (Figma "O nhap") de o nhap du rong khi chu
+                             16 px; khung trai khong co duoc. -->
+                        <GridPane hgap="10" vgap="6">
                             <columnConstraints>
-                                <ColumnConstraints minWidth="-Infinity"/>
                                 <ColumnConstraints hgrow="ALWAYS"/>
                             </columnConstraints>
                             <Label text="Tên đăng nhập *" GridPane.rowIndex="0"/>
                             <TextField fx:id="tenDangNhapField"
                                        promptText="vd thuquy01"
-                                       GridPane.rowIndex="0"
-                                       GridPane.columnIndex="1"/>
-                            <Label text="Họ tên *" GridPane.rowIndex="1"/>
+                                       GridPane.rowIndex="1"/>
+                            <Label text="Họ tên *" GridPane.rowIndex="2"/>
                             <TextField fx:id="hoTenField"
-                                       GridPane.rowIndex="1"
-                                       GridPane.columnIndex="1"/>
-                            <Label text="Mật khẩu *" GridPane.rowIndex="2"/>
+                                       GridPane.rowIndex="3"/>
+                            <Label text="Mật khẩu *" GridPane.rowIndex="4"/>
                             <PasswordField fx:id="matKhauField"
                                            promptText="ít nhất 8 ký tự"
-                                           GridPane.rowIndex="2"
-                                           GridPane.columnIndex="1"/>
+                                           GridPane.rowIndex="5"/>
                             <Label text="Nhập lại mật khẩu *"
-                                   GridPane.rowIndex="3"/>
+                                   GridPane.rowIndex="6"/>
                             <PasswordField fx:id="nhapLaiField"
-                                           GridPane.rowIndex="3"
-                                           GridPane.columnIndex="1"/>
-                            <Label text="Vai trò *" GridPane.rowIndex="4"/>
+                                           GridPane.rowIndex="7"/>
+                            <Label text="Vai trò *" GridPane.rowIndex="8"/>
                             <ComboBox fx:id="vaiTroCombo" maxWidth="Infinity"
-                                      GridPane.rowIndex="4"
-                                      GridPane.columnIndex="1"/>
+                                      GridPane.rowIndex="9"/>
                         </GridPane>
                         <HBox spacing="10">
                             <Button minWidth="-Infinity" fx:id="dangKyButton"

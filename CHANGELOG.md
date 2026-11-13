@@ -67,6 +67,29 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
   (`mysql_config_editor`) hoặc tệp tùy chọn ngoài repo. Hướng dẫn sao lưu,
   khôi phục thử và khôi phục thật: `setup.md` mục 7.
 
+### Đổi
+
+- **Giao diện dễ dùng cho người lớn tuổi (TS-004, AC-072, NFR-008):**
+  chữ gốc 16 px (trước 14), không chữ nào trên màn hình dưới 14 px; nút cao
+  44, ô nhập 40, dòng bảng 40; mọi cặp chữ/nền đạt tương phản ≥ 4,5:1 (màu
+  lỗi đổi `#DC2626` → `#B91C1C`, thành công `#15803D` → `#166534`, phiếu đã
+  hủy dùng chữ phụ); ô, nút, bảng đang có tiêu điểm có viền màu chính. Nút
+  chính/phụ/nguy hiểm, ô nhập, danh sách chọn, bảng (tiêu đề, dòng chọn,
+  dòng xen kẽ, dòng trống), tab và hộp thoại cùng một kiểu theo Figma trên
+  mọi màn, không còn kiểu JavaFX mặc định
+  ([ui.md](docs/design/ui.md#thành-phần)). Form Hộ gia đình, Nhân khẩu,
+  Đăng ký tài khoản và vài cột bảng sắp lại để chữ 16 px không bị cắt ở
+  1120×645.
+- **Thu một hộ trong 4 thao tác (AC-072):** mở màn Thu phí là gõ được mã
+  phòng ngay; tra cứu xong tiêu điểm sang "Tiền mặt"; thu xong (hoặc mã sai)
+  tiêu điểm về ô mã phòng, mã cũ bôi đen để gõ hộ tiếp theo. Bảng các bước:
+  [ui.md](docs/design/ui.md#thu-phí-us-007-us-010--us-014).
+- Chữ hiển thị: nút là động từ ("Xem lịch sử thu", "Xem lịch sử biến
+  động", "Xem danh sách tạm vắng"), thông báo khi chưa chọn dòng nói rõ
+  phải bấm chọn gì, Thu phí hướng dẫn "Gõ mã phòng rồi nhấn Enter (hoặc
+  bấm Tra cứu)". Bảng các chữ đã đổi:
+  [ts-004-giao-dien.md](docs/review/ts-004-giao-dien.md#chữ-hiển-thị).
+
 ### Thư viện
 
 - Thêm Apache POI `poi-ooxml` 5.5.1 (ghi `.xlsx`, giả định 42) và
@@ -85,6 +108,12 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
   [doc-co-khoa-trong-giao-dich.md](docs/review/doc-co-khoa-trong-giao-dich.md).
 - Tab "Nhật ký thao tác": "Rê chuột lên một ô…" đổi thành "Di chuột lên một
   ô…".
+- **Trang chính: chữ trắng trên nền trắng.** Tiêu đề tháng, nội dung nhắc
+  chốt, số lớn của hai thẻ và tiêu đề hai khung không thấy được vì vùng cuộn
+  đặt nền trong suốt và JavaFX suy màu chữ mặc định ra trắng. Nay màu chữ
+  mặc định luôn là `-mau-chu`.
+- Bảng tài khoản trống hiện "No content in table" (chữ mặc định của
+  JavaFX); nay là "Chưa có tài khoản nào".
 
 ### Cơ sở dữ liệu
 
@@ -96,13 +125,17 @@ root, dữ liệu cũ giữ nguyên. Khi MySQL bật binary log, tạo trigger c
 
 ### Kiểm thử
 
-350 test đơn vị và 62 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
+359 test đơn vị và 62 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
 `NhatKyServiceTest`, `ThaoTacTest`, `NoiDungNhatKyTest`, `ThongKeIT`,
 `ThongKeServiceTest`, `ThangTrucYTest`, `BieuDoThuPhiTest`, `DongTyLeTest`,
 `NoDongIT`, `NoDongServiceTest`, `TheHoConNoTest`, `BaoCaoThuIT`,
 `BaoCaoThuServiceTest`, `BaoCaoThuExcelTest`, `TamVangExcelTest`,
 `TepExcelTest`, `DanhSachTamVangTest`, `ScriptSaoLuuTest`, `SaoLuuIT`,
-`SuaSoTienDocKhoaIT`).
+`SuaSoTienDocKhoaIT`, `ThuMotHoNamBuocTest`, `DeDocTest`, `ChupManHinhTest`).
+`ThuMotHoNamBuocTest` thu một hộ trên màn Thu phí thật bằng phím và chuột
+giả lập, đếm thao tác và kiểm tiêu điểm sau mỗi bước; `BoCucFxmlTest` kiểm
+thêm cỡ chữ ≥ 14 px, độ cao nút và ô, khoảng cách giữa nút; `ChupManHinhTest`
+chụp PNG các màn cho báo cáo rà soát (chỉ chạy khi có `-DchupAnh`).
 Script sao lưu có thêm kiểm thử bằng `mysqldump` giả
 (`src/test/scripts/kiem-thu-sao-luu.ps1`) và CI chạy thật sao lưu, khôi phục
 thử, sao lưu với mật khẩu sai trên MySQL của job `build-mysql`.

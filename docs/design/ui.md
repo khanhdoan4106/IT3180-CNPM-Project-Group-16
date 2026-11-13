@@ -24,7 +24,9 @@ File gồm bộ thành phần dùng chung (nút, ô nhập, mục menu, thẻ s�
   báo bằng `<properties enterChay="…"/>` trên khung trong FXML. Chỉ màn đăng
   nhập (một khung duy nhất) dùng nút mặc định của cả màn.
 - Hộp thoại (sửa khoản thu, xác nhận chốt) mở đè lên màn hình hiện tại, nền
-  phía sau làm tối; dùng `Dialog<T>` của JavaFX.
+  phía sau làm tối; dùng `Dialog<T>` của JavaFX. `KieuHopThoai` gắn
+  `giao-dien.css` cho mọi cửa sổ mới mở nên hộp thoại cùng kiểu với màn
+  hình (xem [Thành phần](#thành-phần)).
 - Thiết kế: lỗi nhập liệu hiện ngay dưới ô sai, không dồn vào hộp cảnh báo
   chung. Hiện tại: mỗi màn có một nhãn thông báo chung (đỏ khi lỗi); hiện
   dưới từng ô là việc của Sprint 4.
@@ -47,10 +49,10 @@ File gồm bộ thành phần dùng chung (nút, ô nhập, mục menu, thẻ s�
 | Lịch sử thu của hộ, chi tiết phiếu (hộp thoại) | – | US-014, AC-043 | Đã có code (Sprint 3), chưa có trên Figma |
 | Xem trước khi in: biên lai, thông báo phí, danh sách tạm vắng | 640×560 | US-013, US-015, US-004 | Đã có code (Sprint 3) |
 
-Màn hình Hộ gia đình, Nhân khẩu đã có code ở Sprint 1, sẽ đưa về cùng bộ
-thành phần khi rà soát giao diện (Sprint 4). Sprint 2 thêm vào hai màn này:
-nút "Lịch sử biến động" (US-027), nút "Đặt làm chủ hộ" (US-026) và cảnh báo
-nợ khi đánh dấu hộ chuyển đi. Sprint 3 thêm nút "Danh sách tạm vắng" ở màn
+Màn hình Hộ gia đình, Nhân khẩu đã có code ở Sprint 1, đưa về cùng bộ
+thành phần ở TS-004. Sprint 2 thêm vào hai màn này:
+nút "Xem lịch sử biến động" (US-027), nút "Đặt làm chủ hộ" (US-026) và cảnh báo
+nợ khi đánh dấu hộ chuyển đi. Sprint 3 thêm nút "Xem danh sách tạm vắng" ở màn
 Nhân khẩu (US-004), cột "Đã đóng" và nút "In thông báo phí" ở màn Chốt công
 nợ (US-015, AC-026).
 
@@ -63,16 +65,17 @@ Phần thiết kế chưa làm hết được ghi rõ để khỏi nhầm với 
 |---|---|---|
 | Màn chức năng 1120×645, Trang chính 1440×1024 | Màn chức năng nằm trong khung Trang chính (cửa sổ phóng to); đăng nhập 1120×645 | Giữ; bố cục kiểm ở 1120×645 (`BoCucFxmlTest`) |
 | Lỗi nhập liệu hiện dưới từng ô | Một nhãn thông báo chung mỗi màn | Sprint 4 |
-| Phông Be Vietnam Pro, chữ nội dung 16 px | Đã nhúng Be Vietnam Pro (Sprint 2); cỡ chữ gốc 14 px | Cỡ chữ: Sprint 4 |
-| Ba phương án màu (A, B, C) bằng bộ biến `-mau-*` | Một bộ biến (11 biến) theo phương án A; màn Thu phí dùng toàn biến | Chọn phương án ở Sprint Review; thêm B, C nếu cần ở Sprint 4 |
+| Phông Be Vietnam Pro, chữ nội dung 16 px | Đã nhúng Be Vietnam Pro (Sprint 2); chữ gốc 16 px, không chữ nào trên màn hình dưới 14 px (TS-004). Nhãn, nút dùng Bold thay Medium/SemiBold vì JavaFX tách Medium, SemiBold thành họ phông riêng | Đã làm |
+| Ba phương án màu (A, B, C) bằng bộ biến `-mau-*` | Một bộ biến theo phương án A, riêng "lỗi" và "thành công" lấy màu đậm của phương án C để đạt 4,5:1 trên nền (TS-004) | Chọn phương án ở Sprint Review; thêm B, C nếu cần |
+| Bộ thành phần (nút, ô nhập, tab, bảng, hộp thoại) | Cùng một kiểu trên mọi màn theo [Thành phần](#thành-phần); không còn kiểu JavaFX mặc định (TS-004) | Đã làm |
 | Khoản thu: bộ lọc Tất cả / Bắt buộc / Tự nguyện | Chưa có | Sprint 4 |
 | Sửa khoản thu của hộ: hiện giá trị cũ và tổng mới | Hộp thoại một ô "Số tiền" kèm giá trị cũ ở tiêu đề, khóa ô khi đã có phiếu thu (AC-026); chưa có "tổng mới" | Sprint 4 |
 | Nút hộp thoại | Tiếng Việt: "Đồng ý", "Hủy", "Đóng"; hộp thoại Hủy phiếu dùng "Hủy phiếu" và "Đóng" (`HopThoai`) | Đã làm |
-| Thu phí (Thu tiền, Phiếu thu hôm nay, Hủy phiếu) | Theo Figma; menu có trạng thái "đang chọn" và logo BlueMoon về Trang chính (#34); "Tiền mặt" không chọn sẵn (AC-038) khớp Figma đã sửa. Còn khác: tab, bảng và nút dùng kiểu JavaFX mặc định | Rà soát nhìn ở Sprint 4 |
+| Thu phí (Thu tiền, Phiếu thu hôm nay, Hủy phiếu) | Theo Figma; menu có trạng thái "đang chọn" và logo BlueMoon về Trang chính (#34); "Tiền mặt" không chọn sẵn (AC-038) khớp Figma đã sửa; tab, bảng, nút theo bộ thành phần (TS-004); thu một hộ 4 thao tác (AC-072) | Đã làm |
 | Thanh menu chung | Figma đã có mục "Tài khoản của tôi" trong khung chung và mục Công nợ, khớp menu trong code; mục "Thống kê" giữa Thu phí và Tài khoản (Sprint 4) | Đã làm |
 | Trang chính (frame "Trang chính – 1440x1024") | Có tiêu đề tháng, thẻ "Đã thu tháng này" và "Hộ còn nợ" (bấm để mở tab "Hộ nợ đọng"), biểu đồ 6 tháng theo quy tắc biểu đồ (`BieuDoThuPhi`), nhắc chốt, biến động gần đây bên phải biểu đồ; nội dung cuộn được khi cửa sổ thấp. Chưa có: thẻ "Hộ đang ở", "Nhân khẩu", khung "Khoản thu mới cập nhật" và dải "Thao tác nhanh" | Xét ở TS-004 |
 | Thống kê theo khoản | Chọn khoản; khoản bắt buộc chọn tháng đã chốt (mặc định tháng gần nhất), quỹ tự nguyện hiện "Thu từ … đến …" chỉ đọc; kết quả: tổng đã thu chữ lớn, số phụ. Chưa có frame trên Figma, dựng theo kiểu các màn 1120×645 | Vẽ frame ở TS-004 nếu cần |
-| Hộ gia đình, Nhân khẩu | Chưa theo bộ thành phần Figma | Sprint 4 |
+| Hộ gia đình, Nhân khẩu | Theo bộ thành phần (TS-004); form bên phải rộng 430, cột nhãn 156/140 px cho chữ 16 px; hàng nút dưới xuống dòng khi chật. Chưa có frame riêng trên Figma | Đã làm |
 | In ấn (biên lai, thông báo, danh sách tạm vắng) | Xem trước 640×560 rồi chọn máy in; danh sách tạm vắng in khổ ngang và xuất Excel (AC-014); báo cáo thu tháng xuất Excel ở màn Thống kê (US-018); cần PDF thì in qua máy in PDF | Đã làm |
 
 ## Phương án màu
@@ -89,8 +92,8 @@ code tương ứng biến `-mau-*` của `css/giao-dien.css`.
 | chữ | `#0F172A` | `#134E4A` | `#020617` |
 | chữ phụ | `#526077` | `#475569` | `#334155` |
 | viền | `#CBD5E1` | `#99D5CC` | `#64748B` |
-| lỗi | `#DC2626` | `#DC2626` | `#B91C1C` |
-| thành công | `#15803D` | `#15803D` | `#166534` |
+| lỗi | `#B91C1C` | `#DC2626` | `#B91C1C` |
+| thành công | `#166534` | `#15803D` | `#166534` |
 
 Chữ phụ của phương án A là `#526077` (biến `-mau-phu`): tương phản 5,8:1 trên
 nền `#F1F5F9` và 6,4:1 trên trắng, đạt WCAG AA (≥ 4,5:1). Màu cũ `#64748B` chỉ
@@ -98,27 +101,64 @@ nền `#F1F5F9` và 6,4:1 trên trắng, đạt WCAG AA (≥ 4,5:1). Màu cũ `#
 nhãn phụ, tiêu đề cột bảng); không viết thẳng mã màu xám vào CSS
 (`MauPhuTest` kiểm màu, tương phản và màu JavaFX thực vẽ).
 
+TS-004 đổi hai màu của phương án A (Figma cần sửa theo): lỗi `#DC2626` →
+`#B91C1C` vì `#DC2626` chỉ đạt 4,1:1 trên nền `#F1F5F9` (thông báo lỗi nằm
+trên nền màn hình); thành công `#15803D` → `#166534` vì `#15803D` chỉ đạt
+4,1:1 trên nhãn tóm tắt `#E2E8F0` ("Đã thu hôm nay"). Mọi cặp chữ/nền đang
+dùng đạt ≥ 4,5:1, `DeDocTest#moiCapChuNenDatAa` đo từ tệp CSS: chữ chính,
+chữ phụ, chữ trắng trên nút chính và thanh menu, chữ đỏ báo lỗi, chữ xanh
+thành công, chữ trên nền thẻ (trắng), dòng chọn, dòng xen kẽ, dải thông
+tin.
+
 Phương án C ưu tiên NFR-008 (người lớn tuổi dùng được): chữ gần đen trên nền
 trắng, viền đậm. Nhóm chọn một phương án ở Sprint Review. Code hiện chỉ có
 bộ biến của phương án A (`-mau-chinh`, `-mau-chinh-dam`, `-mau-nen`,
-`-mau-chu`, `-mau-loi`, `-mau-phu`, `-mau-phu-nhat`, `-mau-thanh-cong`,
-`-mau-vien`, `-mau-dai`, `-mau-nhan`); màu "bề mặt" (trắng) viết thẳng
-trong CSS.
+`-mau-chu`, `-mau-loi`, `-mau-phu`, `-mau-thanh-cong`, `-mau-vien`,
+`-mau-dai`, `-mau-nhan`, và từ TS-004: `-mau-chon` nền dòng chọn,
+`-mau-xen-ke` dòng xen kẽ, `-mau-nen-loi` nền nút nguy hiểm khi rê chuột);
+màu "bề mặt" (trắng) viết thẳng trong CSS. Biến `-mau-phu-nhat` (`#94A3B8`,
+2,6:1 trên trắng) đã bỏ: phiếu đã hủy dùng chữ phụ như Figma.
 
 ## Chữ
 
 Phông Be Vietnam Pro (thiết kế cho tiếng Việt, dấu rõ ở cỡ nhỏ), nhúng vào
-CSS bằng `@font-face`. Chữ nội dung 16 px để người lớn tuổi dễ đọc
-(NFR-008).
+CSS bằng `@font-face`. Chữ gốc 16 px để người lớn tuổi dễ đọc (NFR-008,
+TS-004); không chữ nào trên màn hình dưới 14 px, kể cả tiêu đề cột bảng,
+nhãn trục và số trên cột biểu đồ, dòng phụ, thông báo lỗi
+(`BoCucFxmlTest` đo mọi chữ của từng màn). Trang in giữ chữ 14 px để mẫu in
+không đổi.
 
-| Kiểu | Cỡ / độ đậm | Dùng cho |
+| Kiểu | Cỡ / độ đậm | Lớp CSS | Dùng cho |
+|---|---|---|---|
+| Tên ứng dụng | 32 / Bold | `.tieu-de` | "BlueMoon" ở màn Đăng nhập |
+| Tiêu đề trang | 24 / Bold | `.tieu-de-trang` | Tiêu đề màn hình, Trang chính |
+| Tiêu đề khung | 20 / Bold | `.tieu-de-form`, phần đầu hộp thoại | Tiêu đề khung, form, hộp thoại |
+| Số lớn | 34 / Bold | `.so-lon` | Thẻ số liệu |
+| Nội dung | 16 / Regular | gốc | Dữ liệu trong bảng, ô nhập, nhãn |
+| Nhãn bảng | 15 / Bold | tiêu đề cột | Cột đầu bảng, hàng tiêu đề khung quỹ |
+| Chú thích | 14–16 / Regular | `.phu-de`, trục biểu đồ 14 | Ghi chú, gợi ý dưới ô |
+| Nút | 16 / Bold | `.button` | Chữ trên nút |
+
+Figma dùng Medium (nhãn) và SemiBold (nút); JavaFX coi hai độ đậm này là họ
+phông riêng nên code dùng Bold cùng họ "Be Vietnam Pro".
+
+## Thành phần
+
+Mọi màn dùng chung các kiểu dưới đây (`css/giao-dien.css`), theo khung
+"Thành phần" trên Figma; không còn kiểu mặc định của JavaFX. Chỉ đổi lớp
+kiểu trong FXML, không đổi nội dung màn hình.
+
+| Thành phần | Kiểu | Lớp |
 |---|---|---|
-| Tiêu đề | 28 / Bold | Tiêu đề trang |
-| Tiêu đề nhỏ | 20 / SemiBold | Tiêu đề khung, hộp thoại |
-| Nội dung | 16 / Regular | Dữ liệu trong bảng, ô nhập |
-| Nhãn | 15 / Medium | Nhãn ô nhập, cột đầu bảng |
-| Chú thích | 14 / Regular | Ghi chú, gợi ý dưới ô |
-| Nút | 16 / SemiBold | Chữ trên nút |
+| Nút chính | Nền `-mau-chinh`, chữ trắng đậm, bo 8, cao ≥ 44; rê chuột nền `-mau-chinh-dam`. Nút mặc định của hộp thoại ("Đồng ý", "In biên lai") cùng kiểu | `.nut-chinh`, `:default` |
+| Nút phụ | Nền trắng, viền `-mau-vien`, chữ `-mau-chu` đậm, bo 8, cao ≥ 44; mọi nút không có lớp riêng là nút phụ | `.button`, `.nut-phu` |
+| Nút nguy hiểm | Nền trắng, viền và chữ `-mau-loi` (Figma "Viền đỏ"): "Hủy phiếu", "Đánh dấu chuyển đi" | `.nut-nguy-hiem` |
+| Ô nhập, danh sách chọn, ô ngày | Nền trắng, viền 1 px `-mau-vien`, bo 8, cao ≥ 40, chữ 16; chữ gợi ý `-mau-phu` | `.text-field`, `.combo-box-base` |
+| Tiêu điểm | Ô nhập, danh sách chọn, bảng: viền 2 px `-mau-chinh`. Nút phụ: viền 2 px `-mau-chinh`; nút chính, nút nguy hiểm: vòng ngoài cách nút 2 px. Ô chọn, nút chọn: vòng `-mau-chinh-dam`. Trên thanh menu xanh: viền trắng. Vẽ bằng lớp nền nên ô không đổi kích thước khi có tiêu điểm | `:focused` |
+| Bảng | Viền `-mau-vien`, bo 6; hàng tiêu đề nền `-mau-nen`, chữ phụ 15 đậm, cao 40; dòng cao 40, xen kẽ trắng / `-mau-xen-ke`, kẻ dưới `-mau-vien`; dòng chọn nền `-mau-chon` có vạch `-mau-chinh` bên trái, chữ giữ `-mau-chu`; dòng trống trắng; bảng trống có chữ báo tiếng Việt (placeholder) | `.table-view` |
+| Tab | Không khung; tab đang chọn chữ `-mau-chinh` đậm, gạch dưới 3 px; tab thường chữ phụ; dải tab kẻ dưới `-mau-vien` | `.tab-pane` |
+| Hộp thoại | Nền trắng; phần đầu nền `-mau-nen` chữ 20 đậm; nút như trên, nút mặc định là nút chính | `.dialog-pane` |
+| Khoảng cách | Hai nút cạnh nhau cách ≥ 8 px (FXML dùng 10) | `BoCucFxmlTest` |
 
 ## Quy tắc biểu đồ
 
@@ -216,15 +256,27 @@ Tab "Hộ nợ đọng" của màn Công nợ, cạnh tab "Chốt công nợ".
 
 ### Thu phí (US-007, US-010 – US-014)
 
-Mục tiêu: thu xong một hộ trong tối đa 5 bước (AC-072): nhập mã phòng và
-nhấn Enter (hoặc bấm Tra cứu) → (bỏ chọn khoản không thu, nhập đóng góp, nếu
-cần) → chọn hình thức → Thu tất cả → Đồng ý trên hộp xác nhận. Đó là 4 thao
-tác, 5 nếu bấm nút Tra cứu thay vì Enter; hộp xác nhận đã tính. In biên lai
-là phần sau khi đã lập phiếu: thêm "In biên lai" → "In…" → hộp thoại máy in.
+Mục tiêu: thu xong một hộ trong tối đa 5 bước (AC-072). Bước là một thao
+tác chủ động của người dùng; gõ mã rồi Enter tính là 1. Luồng chuẩn
+(`ThuMotHoNamBuocTest` chạy đúng luồng này trên màn thật):
+
+| Bước | Người dùng làm | Màn hình | Tiêu điểm sau bước | Thao tác |
+|---|---|---|---|---|
+| – | Mở màn Thu phí | Dải thông tin "Gõ mã phòng rồi nhấn Enter (hoặc bấm Tra cứu)" | Ô mã phòng | 0 |
+| 1 | Gõ mã phòng, nhấn Enter | Thông tin hộ, khoản bắt buộc chưa đóng đã chọn sẵn hết, tổng thu, nút "Thu tất cả" | Nút chọn "Tiền mặt" (phòng có hộ đã chuyển đi còn nợ: danh sách chọn hộ) | 1 |
+| 2 | Xem khoản (bỏ chọn khoản không thu, nhập đóng góp nếu cần) | Tổng thu cộng ngay | – | 0 (xem) |
+| 3 | Chọn "Tiền mặt" hoặc "Chuyển khoản" | – | Nút vừa chọn | 1 |
+| 4 | Bấm "Thu tất cả" (hoặc "Thu các khoản đã chọn") | Hộp xác nhận "Lập phiếu thu cho căn hộ …?" | Nút "Đồng ý" | 1 |
+| 5 | Bấm "Đồng ý" | Phiếu được lập; hộp "Đã thu tiền" với "In biên lai" / "Để sau" | Nút "In biên lai" | 1 |
+
+Tổng 4 thao tác (5 nếu bấm nút Tra cứu thay cho Enter). In biên lai là phần
+sau khi đã lập phiếu, không tính: "In biên lai" → "In…" → hộp thoại máy in.
+Đóng hộp "Đã thu tiền" thì tiêu điểm về ô mã phòng, mã cũ được bôi đen để
+gõ ngay hộ tiếp theo; mã sai cũng bôi đen để gõ đè.
 
 | Thành phần | Kiểu | Ràng buộc | Nguồn |
 |---|---|---|---|
-| Mã phòng | Ô nhập + nút Tra cứu (Enter cũng tra cứu) | Không phân biệt hoa thường; không có thì báo "Không tìm thấy phòng" | AC-030, AC-031 |
+| Mã phòng | Ô nhập + nút Tra cứu (Enter cũng tra cứu); có tiêu điểm khi mở màn | Không phân biệt hoa thường; không có thì báo "Không tìm thấy phòng" | AC-030, AC-031 |
 | Chọn hộ | Danh sách chọn, chỉ hiện khi mã phòng có hộ đã chuyển đi còn nợ | Hộ đang ở đứng đầu | Giả định 21 |
 | Thông tin hộ | Dải nền xanh nhạt | Bên trái "Căn hộ A0601 · Chủ hộ … · Đang ở" (hoặc "Đã chuyển đi"), bên phải "Còn nợ … đ" | AC-030 |
 | Khoản phải nộp chưa đóng | Tiêu đề "Khoản phải nộp chưa đóng (n)", hai liên kết "Chọn tất cả" / "Bỏ chọn tất cả" bên phải tiêu đề, bảng có ô chọn (Thu, Tháng, Khoản, Số tiền căn phải) | Chọn sẵn tất cả; số tiền là số hiện tại, không sửa ở đây | AC-033, AC-034 |

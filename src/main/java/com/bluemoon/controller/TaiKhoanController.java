@@ -380,7 +380,7 @@ public class TaiKhoanController {
     private TaiKhoan dangChon() {
         TaiKhoan t = bangTaiKhoan.getSelectionModel().getSelectedItem();
         if (t == null) {
-            baoLoi("Chưa chọn tài khoản");
+            baoLoi("Bấm chọn một tài khoản trong bảng trước");
         }
         return t;
     }
