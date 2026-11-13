@@ -99,6 +99,7 @@ hộ, các khoản chưa đóng, các quỹ tự nguyện đang mở.
 | Thông báo phí hằng tháng | US-015 | `CongNoController` (nút "In thông báo phí"), `MauIn` | `ThongBaoPhiService` | `PhieuThuDao`, `CongNoDao` | `ThongBaoPhiServiceTest`, `MauInTest`, `PhieuThuIT` |
 | Danh sách nhân khẩu tạm vắng (xem, in, xuất Excel) | US-004 | `NhanKhauController`, `DanhSachTamVang`, `MauIn` | `BaoCaoNhanKhauService`, `TamVangExcel`, `TepExcel` | `BaoCaoNhanKhauDao` | `BaoCaoNhanKhauServiceTest`, `TamVangExcelTest`, `DanhSachTamVangTest`, `MauInTest`, `PhieuThuIT` |
 | Báo lỗi không lường trước | – | `App`, `LoiKhongMongDoi`, `LoiCsdl` | – | – | `LoiKhongMongDoiTest`, `LoiCsdlTest` |
+| Sao lưu, khôi phục thử | TS-001 | – (chạy ngoài ứng dụng) | – | `scripts/sao-luu.ps1`, `khoi-phuc-thu.ps1`, `dang-ky-lich-sao-luu.ps1`, `mysql-chung.ps1` gọi `mysqldump`, `mysql` | `ScriptSaoLuuTest`, `SaoLuuIT`, `src/test/scripts/kiem-thu-sao-luu.ps1` |
 | Dữ liệu mẫu | US-001 – US-003, US-005, US-006, US-027 | – | – | `database/seed.sql` | `SeedIT` |
 | Bố cục các màn hình | NFR-008 | 9 tệp FXML, `giao-dien.css` | – | – | `BoCucFxmlTest` |
 
@@ -197,6 +198,36 @@ Lý do: phiếu lập 23:30 ngày 31/12 từng bị lưu sang năm sau và ràng
 | Bộ đếm biên lai khóa dòng | Cố ý để số biên lai liên tục (giả định 31). |
 | Phân trang | Quy mô vài trăm hộ. Thống kê Sprint 4 phải tổng hợp bằng SQL, không tải hết dữ liệu lên bộ nhớ. |
 | Phiên làm việc | Mỗi máy một người dùng, đã đọc lại tài khoản trước mỗi màn hình. Tự đăng xuất khi không thao tác để sau. |
+
+## Sao lưu
+
+TS-001, giả định 43. Sao lưu chạy **ngoài ứng dụng**, trên máy đặt MySQL:
+Task Scheduler gọi `scripts/sao-luu.ps1` mỗi ngày; ứng dụng Java không
+biết gì về sao lưu và không cần quyền gì thêm. Hướng dẫn dùng:
+[setup.md](../setup.md), mục 7.
+
+- `mysqldump --single-transaction --routines --triggers
+  --set-gtid-purged=OFF --default-character-set=utf8mb4 <CSDL>`: mọi bảng
+  là InnoDB nên `--single-transaction` cho ảnh nhất quán mà không khóa bảng
+  (máy đang thu tiền vẫn ghi được). Không dùng `--databases` để tệp không
+  có `USE`, khôi phục được vào CSDL tên khác (khôi phục thử, kiểm thử).
+- Mật khẩu chỉ ở login-path (`mysql_config_editor`) hoặc tệp tùy chọn
+  `[client]` ngoài repo, truyền bằng `--login-path`/`--defaults-extra-file`;
+  không có tham số mật khẩu, không ghi vào log.
+- Script đọc stdout của `mysqldump` thành byte và ghi thẳng ra tệp (không
+  qua đường ống PowerShell vốn đổi mã hóa), ghi tệp `.tmp` rồi đổi tên; chỉ
+  thành công khi mã thoát 0 và tệp kết thúc bằng `-- Dump completed`. Chỉ
+  lần thành công mới xóa bản cũ (giữ N bản mới nhất theo mẫu tên). Mỗi lần
+  chạy một dòng `sao-luu.log`; lỗi thoát mã 1 để Task Scheduler ghi lần
+  chạy lỗi.
+- Tệp tạo lại hai trigger của `nhat_ky` và cột sinh (`phai_nop_da_thu`,
+  `chu_ho_cua`, `cccd_dang_o`, `ma_dang_o`) vẫn là cột sinh, nên ràng buộc
+  chống thu trùng và nhật ký chỉ thêm còn nguyên sau khôi phục (`SaoLuuIT`).
+- `khoi-phuc-thu.ps1` nạp tệp vào `bluemoon_khoi_phuc_thu`, so số dòng từng
+  bảng, tổng tiền phiếu thu và trigger với CSDL nguồn; từ chối ghi vào
+  `bluemoon` nếu không có `-GhiDe` kèm xác nhận.
+- Script lưu UTF-8 có BOM để Windows PowerShell 5.1 đọc đúng tiếng Việt
+  (`ScriptSaoLuuTest`).
 
 ## Giao diện
 

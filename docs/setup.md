@@ -196,5 +196,164 @@ phiếu chỉ hủy được phiếu do mình lập.
 | `'mvn' is not recognized` | Chạy bằng bảng Maven trong IntelliJ |
 | Không thấy cửa sổ ứng dụng | Cửa sổ nằm sau IntelliJ, dùng Alt+Tab |
 | `CREATE USER` báo user đã tồn tại | Bỏ qua, chạy tiếp `GRANT` |
-| Lỗi 1419 "You do not have the SUPER privilege and binary logging is enabled" khi chạy `schema.sql` hoặc `mvn verify -Pmysql` | Chạy `schema.sql` bằng root, hoặc cho kiểm thử tích hợp: [mục 4](#4-chạy-test) |
+| Lỗi 1419 "You do not have the SUPER privilege and binary logging is enabled" khi chạy `schema.sql`, `mvn verify -Pmysql` hoặc khôi phục sao lưu | Chạy `schema.sql` bằng root, hoặc cho kiểm thử tích hợp: [mục 4](#4-chạy-test); khôi phục sao lưu: [mục 7](#7-sao-lưu-và-khôi-phục) |
 | Sửa `config/db.properties` khi ứng dụng đang chạy (kể cả vừa tạo file sau khi thấy báo thiếu cấu hình) mà vẫn báo lỗi cũ | Tắt và mở lại ứng dụng: cấu hình chỉ được đọc một lần khi khởi động |
+
+## 7. Sao lưu và khôi phục
+
+TS-001, giả định 43. Làm trên **máy đặt MySQL**. Ba script trong `scripts/`:
+
+| Script | Làm gì |
+|---|---|
+| `sao-luu.ps1` | `mysqldump` CSDL `bluemoon` ra `bluemoon-yyyyMMdd-HHmmss.sql`, ghi một dòng vào `sao-luu.log`, giữ 30 bản mới nhất |
+| `dang-ky-lich-sao-luu.ps1` | Đăng ký tác vụ Task Scheduler "BlueMoon – Sao lưu hằng ngày" chạy `sao-luu.ps1` lúc 22:00 mỗi ngày; `-Xoa` để gỡ |
+| `khoi-phuc-thu.ps1` | Nạp một tệp sao lưu vào CSDL thử `bluemoon_khoi_phuc_thu`, so số dòng từng bảng và tổng tiền phiếu thu với `bluemoon`, kiểm tra trigger nhật ký |
+
+Chạy script bằng `powershell -ExecutionPolicy Bypass -File …` như các lệnh
+dưới đây: cách này chỉ bỏ qua chính sách thực thi cho lần chạy đó, **không
+đổi chính sách của máy** (không cần `Set-ExecutionPolicy`). Script chạy được
+trên Windows PowerShell 5.1 có sẵn trong Windows và PowerShell 7 (`pwsh`).
+Mở PowerShell ở thư mục repo.
+
+### Bước 1. Tài khoản MySQL và login-path
+
+Script **không nhận mật khẩu qua tham số** và không ghi mật khẩu ra log.
+Nên dùng một tài khoản MySQL riêng chỉ có quyền đủ để sao lưu (root chạy
+trong MySQL Workbench):
+
+```sql
+CREATE USER 'bluemoon_sao_luu'@'localhost' IDENTIFIED BY 'mat_khau_cua_ban';
+GRANT SELECT, SHOW VIEW, TRIGGER, LOCK TABLES ON bluemoon.* TO 'bluemoon_sao_luu'@'localhost';
+GRANT PROCESS ON *.* TO 'bluemoon_sao_luu'@'localhost';
+```
+
+Lưu mật khẩu vào login-path `bluemoon-sao-luu` bằng `mysql_config_editor`.
+Mật khẩu được hỏi, không gõ trên dòng lệnh, và lưu ở dạng mã hóa trong
+`%APPDATA%\MySQL\.mylogin.cnf` của tài khoản Windows đang dùng:
+
+```powershell
+& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql_config_editor.exe" set --login-path=bluemoon-sao-luu --host=localhost --user=bluemoon_sao_luu --password
+```
+
+Login-path gắn với tài khoản Windows: tạo bằng chính tài khoản sẽ chạy tác
+vụ lịch. Không dùng được `mysql_config_editor` thì tạo tệp tùy chọn **ngoài
+repo** (vd `D:\bi-mat\bluemoon-sao-luu.cnf`, chỉ tài khoản của bạn đọc được)
+và truyền `-TepTuyChon <đường dẫn>` cho mọi script; script từ chối tệp nằm
+trong repo:
+
+```ini
+[client]
+host=localhost
+user=bluemoon_sao_luu
+password=mat_khau_cua_ban
+```
+
+### Bước 2. Chạy thử một lần
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\sao-luu.ps1
+```
+
+Mặc định ghi vào `%USERPROFILE%\BlueMoon\sao-luu`. Tham số: `-ThuMucDich`
+(thư mục khác), `-SoBanGiu` (số bản giữ lại, mặc định 30), `-CoSoDuLieu`
+(mặc định `bluemoon`), `-MysqlDump` (khi `mysqldump` không có trong PATH hay
+`C:\Program Files\MySQL\MySQL Server 8.0\bin`), `-LoginPath` (mặc định
+`bluemoon-sao-luu`), `-TepTuyChon`.
+
+Mỗi lần chạy thêm một dòng vào `sao-luu.log` trong thư mục đích: thời điểm,
+kết quả, tên tệp, dung lượng, thời gian chạy, ghi chú hoặc lỗi.
+
+```text
+2026-11-13 22:00:01 | THÀNH CÔNG | bluemoon-20261113-220001.sql | 1,2 MB | 0,9 s | xóa 1 bản cũ, giữ 30 bản
+2026-11-14 22:00:01 | LỖI | bluemoon-20261114-220001.sql |  | 0,4 s | mysqldump trả mã 2: … Access denied …
+```
+
+Cách script giữ an toàn bản sao lưu:
+
+- `mysqldump --single-transaction` đọc một ảnh nhất quán mà không khóa
+  bảng, nên sao lưu được khi ứng dụng đang mở; kèm `--routines --triggers`
+  (hai trigger của `nhat_ky`), `--set-gtid-purged=OFF` và
+  `--default-character-set=utf8mb4`. Không dùng `--databases`, nên tệp
+  không có `CREATE DATABASE`/`USE` và khôi phục được vào CSDL tên khác.
+- Ghi ra tệp `.tmp` rồi mới đổi tên; chỉ coi là thành công khi `mysqldump`
+  trả mã 0 **và** tệp kết thúc bằng dòng `-- Dump completed`. Lỗi thì xóa
+  tệp dở, ghi dòng `LỖI` và thoát mã 1.
+- Chỉ khi lần này thành công mới xóa bản cũ, giữ đúng `-SoBanGiu` bản mới
+  nhất có tên dạng `bluemoon-yyyyMMdd-HHmmss.sql`; tệp khác trong thư mục
+  không bị đụng tới.
+
+**Nên chép thư mục sao lưu sang ổ khác hoặc máy khác** (ổ USB, ổ mạng, thư
+mục đồng bộ đám mây): bản sao lưu nằm cùng ổ đĩa với MySQL thì hỏng ổ là mất
+cả hai. Có thể đặt `-ThuMucDich` thẳng vào một ổ khác.
+
+### Bước 3. Đăng ký lịch hằng ngày
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\dang-ky-lich-sao-luu.ps1
+```
+
+Tác vụ chạy lúc 22:00 (`-Gio 21:30` để đổi giờ) bằng tài khoản Windows đang
+đăng nhập; máy tắt hoặc ngủ đúng giờ thì tác vụ chạy ngay khi máy bật lại.
+Mặc định chỉ chạy khi tài khoản đang đăng nhập; thêm `-ChayKhiChuaDangNhap`
+để chạy cả khi chưa đăng nhập (không lưu mật khẩu Windows). Các tham số
+`-ThuMucDich`, `-SoBanGiu`, `-TepTuyChon`… được chuyển nguyên cho
+`sao-luu.ps1`. Chạy lại script để đổi giờ hay tham số; gỡ bằng
+`dang-ky-lich-sao-luu.ps1 -Xoa` (tệp sao lưu và log giữ nguyên).
+
+Kiểm tra:
+
+- `sao-luu.log`: mỗi ngày một dòng `THÀNH CÔNG`.
+- Task Scheduler (`taskschd.msc`) → Task Scheduler Library → "BlueMoon – Sao
+  lưu hằng ngày": cột Last Run Result là `0x0` khi thành công, `0x1` khi
+  lỗi; tab History liệt kê từng lần chạy (bấm "Enable All Tasks History" ở
+  khung bên phải nếu đang tắt). Chạy thử ngay: chuột phải → Run, hoặc
+  `Start-ScheduledTask -TaskName 'BlueMoon – Sao lưu hằng ngày'`.
+
+### Bước 4. Khôi phục thử
+
+Làm định kỳ (vd mỗi tháng) để chắc bản sao lưu dùng được (AC-067). Chạy
+ngay sau một lần sao lưu, lúc không ai dùng ứng dụng, để CSDL nguồn chưa
+đổi so với tệp:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\sao-luu.ps1
+powershell -ExecutionPolicy Bypass -File scripts\khoi-phuc-thu.ps1 -TepSaoLuu "$env:USERPROFILE\BlueMoon\sao-luu\bluemoon-20261113-220001.sql"
+```
+
+Script tạo lại CSDL `bluemoon_khoi_phuc_thu`, nạp tệp, rồi in bảng số dòng
+từng bảng của `bluemoon` và bản khôi phục, tổng tiền phiếu thu chưa hủy, và
+hai trigger `trg_nky_chan_sua`, `trg_nky_chan_xoa`. Dòng cuối là `KẾT QUẢ:
+KHỚP` (mã thoát 0) hoặc `KẾT QUẢ: LỆCH` kèm phần lệch (mã thoát 1). Tài
+khoản dùng để khôi phục cần quyền tạo CSDL và trigger: dùng login-path hay
+tệp tùy chọn của root (`-LoginPath`, `-TepTuyChon`), không phải tài khoản
+chỉ sao lưu ở bước 1. Xem xong thì xóa CSDL thử:
+`DROP DATABASE bluemoon_khoi_phuc_thu;`.
+
+### Khôi phục thật
+
+Khi CSDL `bluemoon` hỏng hoặc mất dữ liệu:
+
+1. **Dừng ứng dụng BlueMoon ở mọi máy** (tắt hẳn cửa sổ ứng dụng), để không
+   máy nào ghi vào CSDL trong lúc khôi phục.
+2. Chọn bản sao lưu: xem `sao-luu.log`, lấy bản `THÀNH CÔNG` gần nhất trước
+   khi xảy ra sự cố. Nên khôi phục thử bản đó trước (bước 4).
+3. Chạy bằng tài khoản root:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File scripts\khoi-phuc-thu.ps1 -TepSaoLuu "<tệp .sql>" -CsdlDich bluemoon -GhiDe -TepTuyChon "<tệp tùy chọn của root>"
+   ```
+   Script hỏi gõ lại `bluemoon` để xác nhận, rồi xóa và tạo lại CSDL
+   `bluemoon` từ tệp; thiếu `-GhiDe` thì từ chối. Quyền `GRANT ALL ON
+   bluemoon.*` của user ứng dụng vẫn còn sau khi xóa CSDL.
+4. Mở lại ứng dụng ở một máy, kiểm tra vài hộ và phiếu thu gần nhất. Dữ liệu
+   nhập sau thời điểm sao lưu không có trong bản khôi phục, phải nhập lại.
+
+Không dùng script thì nạp tay: tạo CSDL `bluemoon` với `CHARACTER SET
+utf8mb4 COLLATE utf8mb4_unicode_ci`, rồi trong `cmd`:
+`mysql -u root -p --default-character-set=utf8mb4 bluemoon < bluemoon-….sql`.
+
+> **Quyền tạo trigger khi khôi phục:** tệp sao lưu tạo lại hai trigger của
+> `nhat_ky`. MySQL 8 bật binary log sẵn, nên tài khoản không có `SUPER` gặp
+> lỗi 1419 "You do not have the SUPER privilege and binary logging is
+> enabled". Khôi phục bằng root, hoặc root chạy một lần
+> `SET PERSIST log_bin_trust_function_creators = 1;` (như mục 4). Sao lưu
+> thì không cần quyền này, chỉ cần `TRIGGER` để đọc trigger.

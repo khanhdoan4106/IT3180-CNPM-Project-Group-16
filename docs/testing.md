@@ -14,6 +14,7 @@ còn phải kiểm tay. Quy tắc chung khi hoàn thành một story nằm ở
 | Test bố cục giao diện | `BoCucFxmlTest`, `MauInTest`, `HopThoaiHuyPhieuTest` | Nạp từng FXML ở cửa sổ 1120×645 bằng JavaFX chạy không màn hình (Monocle), kiểm không nút hay nhãn nào bị cắt thành "…", chữ gợi ý nằm trọn trong ô, mọi nút nằm trong vùng thấy được hoặc cuộn được, dùng đúng phông Be Vietnam Pro; số tiền lớn nhất vẫn vừa cột biên lai; hộp thoại hủy phiếu có đúng nút | Không cần màn hình, chạy được trên CI |
 | Test hành vi giao diện | `PhimEnterTest`, `TrangChinhMenuTest`, `MauPhuTest`, `BieuDoThuPhiTest`, `TheHoConNoTest` | Tải FXML thật trên cửa sổ ảo (Monocle), gửi sự kiện Enter vào từng ô và xem nút nào chạy; bấm logo về Trang chính, nút menu đang chọn có nền `#1d4ed8` do JavaFX vẽ, mục "Thống kê" nằm giữa Thu phí và Tài khoản; màu chữ phụ, tiêu đề cột và tương phản WCAG AA; biểu đồ thu phí vẽ thật đúng quy tắc biểu đồ (tên trục, trục Y từ 0, cột tháng hiện tại khác màu, số trên đầu cột); thẻ "Hộ còn nợ" mở màn Công nợ ở tab "Hộ nợ đọng" | Không cần màn hình, chạy được trên CI |
 | Test tài liệu | `TruyVetTaiLieuTest`, `UiMdTest`, `TestingMdTest` | Mã RAW trích trong chú thích khớp bảng truy vết, `ui.md` giữ đủ quy tắc biểu đồ và bảng màu, mọi `Lớp#phương_thức` trong bảng AC → test ở đây còn tồn tại | Không |
+| Kiểm thử script sao lưu | `src/test/scripts/kiem-thu-sao-luu.ps1`, `ScriptSaoLuuTest` | `sao-luu.ps1` với `mysqldump` giả: lỗi giữa chừng, tệp bị cắt dù mã 0, chỉ xóa bản cũ khi thành công, không đụng tệp khác mẫu tên, dòng log; tùy chọn `mysqldump` theo giả định 43, script lưu UTF-8 có BOM, không có tham số mật khẩu | PowerShell 5.1 hoặc `pwsh`, không cần MySQL; CI chạy ở job `build` |
 | Kiểm thử tích hợp (`*IT`) | `src/test/java/com/bluemoon/it` | Phần chỉ MySQL thật mới chứng minh được: khóa dòng, deadlock, ràng buộc CSDL, giao dịch hoàn tác, giờ máy chủ, dữ liệu mẫu | MySQL 8, CSDL riêng có chữ `test` trong tên, profile `-Pmysql` |
 | Kiểm tay | Theo bảng ở mục 5 | In thật qua máy in, hộp thoại máy in, nhìn bằng mắt, hai máy cùng dùng | Máy có giao diện |
 
@@ -35,6 +36,7 @@ chứng minh trên MySQL thật, vì DAO giả không tái hiện được.
 | `ThongKeIT` | Tổng thu tháng không tính phiếu đã hủy; ranh giới tháng (23:59:59 ngày cuối tháng, 00:00:00 ngày đầu tháng sau); nợ tháng trước đóng tháng này tính tháng này; 6 tháng có tháng trống là 0; khoản bắt buộc theo tháng chốt (khoản sửa về 0 đ không tính phải đóng) và tỷ lệ thu tháng hiện tại; khoản tự nguyện đếm hộ đã đóng và hộ ghi 0 đ; chưa có giao dịch thì 0 đ |
 | `NoDongIT` | Hộ nợ đọng: khoản đã thu không tính, khoản trong phiếu đã hủy tính lại là nợ, khoản sửa về 0 đ và đóng góp tự nguyện không tính, hai khoản cùng tháng chỉ tính một tháng, hộ đã chuyển đi vẫn có (kèm chủ hộ cũ), tổng nợ, thứ tự (số tháng, tổng nợ, mã căn hộ), tóm tắt cho Trang chính |
 | `BaoCaoThuIT` | Báo cáo thu tháng: phiếu đã hủy không có (khoản chỉ có trong phiếu hủy không thành cột), ranh giới tháng (23:59:59 cuối tháng, 00:00:00 đầu tháng sau), chủ hộ, số biên lai, phiếu thu hai tháng phí dịch vụ cộng vào một cột, tháng chưa có phiếu bị từ chối, tệp ghi từ CSDL thật đọc lại được |
+| `SaoLuuIT` | Chạy `mysqldump` với đúng các tùy chọn đọc từ `scripts/sao-luu.ps1` trên dữ liệu đủ mọi bảng (hộ, nhân khẩu, tạm vắng, biến động, khoản thu, công nợ, phiếu thu đã hủy và chưa hủy, nhật ký), nạp vào CSDL mới tên khác bằng `mysql`: số dòng mọi bảng, tổng tiền phiếu thu, tên có dấu, cột sinh (`phai_nop_da_thu`, `chu_ho_cua`, `cccd_dang_o`, `ma_dang_o`) vẫn đúng và vẫn là cột sinh, `UNIQUE` trên cột sinh vẫn chặn, trigger vẫn chặn `UPDATE`/`DELETE` trên `nhat_ky`; tự bỏ qua kèm thông báo nếu máy không có `mysqldump`/`mysql` |
 | `SeedIT` | Dựng CSDL từ `schema.sql`, chạy `seed.sql` ba lần: số dòng không đổi, tên có dấu (so trong Java, không dựa `=` của MySQL), hai quỹ mẫu đang mở, ba trường hợp tạm trú/tạm vắng |
 
 Mỗi lớp `*IT` bỏ qua (không lỗi) nếu chưa đặt biến môi trường hoặc tên CSDL
@@ -49,7 +51,7 @@ không có chữ `test`, để không xóa nhầm CSDL `bluemoon` đang dùng.
 | IntelliJ | Maven → bluemoon → Lifecycle → `test` |
 | Dòng lệnh | `mvn test` hoặc `mvn verify` (cần Maven 3.9+ trong PATH) |
 
-Kết quả mong đợi: `BUILD SUCCESS`, 347 test. `mvn verify` không có
+Kết quả mong đợi: `BUILD SUCCESS`, 350 test. `mvn verify` không có
 `-Pmysql` không chạy lớp `*IT`.
 
 Chạy riêng test bố cục sau khi sửa FXML hoặc CSS:
@@ -74,7 +76,7 @@ mvn test -Dtest=BoCucFxmlTest
    Nếu user không phải `bluemoon`, đặt thêm `BLUEMOON_DB_USER` và
    `BLUEMOON_DB_PASSWORD`.
 
-Kết quả mong đợi: 347 test đơn vị và 59 kiểm thử tích hợp đều đạt (MySQL
+Kết quả mong đợi: 350 test đơn vị và 62 kiểm thử tích hợp đều đạt (MySQL
 8.0). Hai test cấu hình (`DatabaseConfigTest`) tự bỏ qua khi đã đặt
 `BLUEMOON_DB_*`, nên log hiện "Skipped: 2" ở lần chạy này.
 
@@ -86,8 +88,8 @@ hai xanh:
 
 | Job | Làm gì |
 |---|---|
-| `build` | JDK 21, `mvn -B verify`: test đơn vị và test bố cục |
-| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 59 kiểm thử tích hợp |
+| `build` | JDK 21, `mvn -B verify`: test đơn vị và test bố cục; `pwsh src/test/scripts/kiem-thu-sao-luu.ps1` |
+| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 62 kiểm thử tích hợp; rồi chạy thật `scripts/sao-luu.ps1` trên CSDL dựng từ `schema.sql`, `seed.sql` và hai phiếu thu mẫu (một phiếu đã hủy; tệp tùy chọn tạo trong `RUNNER_TEMP`), `scripts/khoi-phuc-thu.ps1` trên tệp vừa tạo (phải `KHỚP`, rồi sửa nguồn thêm 100.000 đ cho cùng chữ số đầu và phải báo lệch tổng tiền, mã 1), và một lần sao lưu với mật khẩu sai (mã thoát khác 0, dòng `LỖI`, không còn tệp dở, giữ bản cũ) |
 
 ## 3. Số test hiện tại
 
@@ -100,7 +102,8 @@ hai xanh:
 | Sprint 4, sau US-016, US-019 | 318 | 47 |
 | Sprint 4, sau US-017 | 326 | 53 |
 | Sprint 4, sau US-018 và AC-014 | 347 | 57 |
-| Sprint 4, sau sửa đọc có khóa trong `suaSoTien` (chưa phát hành) | 347 | 59 |
+| Sprint 4, sau TS-001 (chưa phát hành) | 350 | 60 |
+| Sprint 4, sau sửa đọc có khóa trong `suaSoTien` (chưa phát hành) | 350 | 62 |
 
 ## 4. Ánh xạ AC → test tự động
 
@@ -109,7 +112,6 @@ Mỗi AC đã làm đều có ít nhất một test; cột "Kiểm tay" ghi ph�
 `src/test/java/com/bluemoon/service`, `*IT` ở `.../it`.
 
 Ký hiệu: ✓ có test tự động đủ; ◐ có test nhưng một phần còn kiểm tay.
-AC của Sprint 4 chưa làm liệt kê ở cuối mục.
 
 ### Sprint 1
 
@@ -215,11 +217,8 @@ Khác ở Sprint 3, không gắn một AC riêng: chặn thu trùng và deadlock
 | AC-051 tháng không có dữ liệu | `BaoCaoThuServiceTest#thangKhongCoPhieuBiTuChoiTruocKhiTaoTep`, `BaoCaoThuIT#thangKhongCoPhieuBiTuChoi` | ✓ |
 | AC-052 tổng thu một khoản theo đợt | `ThongKeServiceTest#khoanBatBuocTheoThangDaChot`, `#khoanBatBuocCanThangDaChot`, `#khoanTuNguyenKhongCanThang`, `#cacKhoanBatBuocTruoc`, `ThongKeIT#khoanBatBuocTheoThangChot`, `#tuNguyenDemDungHoDongVaHoGhiKhong`, `BoCucFxmlTest#khongCoChuBiCat` cho `thong-ke.fxml` | ◐ màn Thống kê xem bằng mắt |
 | AC-053 khoản chưa có giao dịch thì 0 | `ThongKeIT#chuaCoGiaoDichLaKhong` | ✓ |
-
-### Chưa làm (Sprint 4)
-
-AC-066, AC-067 (sao lưu). Test sẽ thêm cùng story; bảng này cập
-nhật khi Sprint 4 hoàn thành.
+| AC-066 sao lưu theo lịch, ghi nhận thời điểm | `ScriptSaoLuuTest#tuyChonMysqldumpTheoGiaDinh43`, `#moiScriptCoBomUtf8DeWindowsPowerShellDocDungTiengViet`, `#khongScriptNaoNhanMatKhauQuaThamSo`, `SaoLuuIT#khoiPhucVaoCsdlMoiDuSoDongMoiBangVaTongTien` (tệp kết thúc bằng `-- Dump completed`, không có `CREATE DATABASE`/`USE`); `src/test/scripts/kiem-thu-sao-luu.ps1` (log, tệp dở, giữ N bản); CI chạy `sao-luu.ps1` thật, cả với mật khẩu sai | ◐ đăng ký lịch trên Windows và lần chạy đầu kiểm tay |
+| AC-067 khôi phục thử đủ dữ liệu | `SaoLuuIT#khoiPhucVaoCsdlMoiDuSoDongMoiBangVaTongTien`, `#cotSinhVanDungVaVanLaCotSinhSauKhoiPhuc`, `#triggerNhatKyVanChanSuaXoaSauKhoiPhuc`; CI chạy `khoi-phuc-thu.ps1` trên tệp vừa sao lưu, kể cả trường hợp tổng tiền lệch | ✓ |
 
 ## 5. Việc còn kiểm tay
 
@@ -238,6 +237,7 @@ Làm trước mỗi lần demo hoặc phát hành, theo thứ tự:
 | Trang chính và màn Thống kê với dữ liệu thật | Đăng nhập bằng dữ liệu mẫu; xem thẻ "Đã thu tháng này", biểu đồ 6 tháng (cột tháng này đậm, số trên đầu cột), lập một phiếu rồi bấm logo thấy số đổi; mở Thống kê, xem một khoản bắt buộc và một quỹ | AC-046, AC-052 |
 | Hộ nợ đọng | Bấm thẻ "Hộ còn nợ" ở Trang chính: mở Công nợ ở tab "Hộ nợ đọng", menu Công nợ đang chọn; đổi qua lại "Nợ từ 3 tháng trở lên" và "Tất cả hộ còn nợ", số hộ và dòng tổng khớp thẻ ở Trang chính | AC-048, AC-049 |
 | Mở tệp Excel đã xuất | Xuất báo cáo thu một tháng có phiếu và danh sách tạm vắng, mở bằng Excel thật: chữ có dấu đúng, cột tiền cộng được (chọn cột thấy Sum), cột ngày lọc được theo ngày, dòng tiêu đề đứng yên khi cuộn; mở tệp trong Excel rồi xuất đè lên: báo "Tệp đang được mở trong chương trình khác…", tệp cũ còn nguyên; chọn tháng chưa có phiếu: báo ngay, không mở hộp chọn tệp | AC-014, AC-050, AC-051 |
+| Lịch sao lưu trên Windows | Trên máy đặt MySQL: tạo login-path, chạy thử `sao-luu.ps1`, chạy `dang-ky-lich-sao-luu.ps1`, bấm Run trên tác vụ trong Task Scheduler; xem Last Run Result `0x0`, tab History, dòng `THÀNH CÔNG` mới trong `sao-luu.log`; hôm sau xem lần chạy 22:00 đầu tiên (hoặc lần chạy bù khi bật máy); rồi `khoi-phuc-thu.ps1` trên tệp đó ra `KẾT QUẢ: KHỚP` ([setup.md](setup.md), mục 7) | AC-066, AC-067 |
 | Giao diện so với Figma | Mở từng màn ở 1120×645 và đối chiếu thiết kế ([ui.md](design/ui.md)) | NFR |
 
 ## 6. Viết test mới

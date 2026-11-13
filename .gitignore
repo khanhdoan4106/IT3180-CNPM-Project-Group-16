@@ -17,3 +17,9 @@ config/db.properties
 *.log
 # Cấu hình công cụ cục bộ
 .claude/
+# Sao lưu (TS-001): tệp sao lưu và tệp tùy chọn MySQL chứa mật khẩu nếu lỡ
+# đặt trong repo. Không chặn database/*.sql.
+bluemoon-[0-9]*-[0-9]*.sql
+*.sql.tmp
+sao-luu/
+*.cnf

@@ -73,10 +73,18 @@ bằng DAO giả, không cần MySQL. Chi tiết: [docs/design](docs/design).
 
 Hướng dẫn từng bước và lỗi thường gặp: [docs/setup.md](docs/setup.md).
 
+Sao lưu CSDL hằng ngày (TS-001): trên máy đặt MySQL, tạo login-path
+`bluemoon-sao-luu` bằng `mysql_config_editor`, rồi chạy
+`powershell -ExecutionPolicy Bypass -File scripts\dang-ky-lich-sao-luu.ps1`
+để Task Scheduler chạy `scripts/sao-luu.ps1` lúc 22:00 mỗi ngày. Khôi phục
+thử bằng `scripts/khoi-phuc-thu.ps1`. Chi tiết:
+[docs/setup.md, mục 7](docs/setup.md#7-sao-lưu-và-khôi-phục).
+
 Chạy test: IntelliJ → Maven → Lifecycle → `test` (hoặc `mvn verify`), không
 cần MySQL. Kiểm thử tích hợp trên MySQL thật: `mvn verify -Pmysql`. CI có hai
-job cho mỗi Pull Request: `build` (`mvn verify`) và `build-mysql` (MySQL 8.0,
-`mvn verify -Pmysql`) ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
+job cho mỗi Pull Request: `build` (`mvn verify`, kiểm thử script sao lưu) và
+`build-mysql` (MySQL 8.0, `mvn verify -Pmysql`, chạy thật script sao lưu và
+khôi phục thử) ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
 Chiến lược kiểm thử và bảng AC → test: [docs/testing.md](docs/testing.md).
 
 ## Cấu trúc thư mục
@@ -95,6 +103,7 @@ Chiến lược kiểm thử và bảng AC → test: [docs/testing.md](docs/test
 │   ├── view/                     FXML: dang-nhap, trang-chinh, ho-gia-dinh, nhan-khau, tai-khoan, khoan-thu, cong-no, thu-phi
 │   └── css/giao-dien.css         màu và kiểu chữ dùng chung
 ├── src/test/java/com/bluemoon/   JUnit 5; service test dùng DAO giả (KhoGia), *IT chạy trên MySQL thật (-Pmysql)
+├── scripts/                      PowerShell: sao lưu (sao-luu.ps1), đăng ký lịch, khôi phục thử
 ├── database/
 │   ├── schema.sql                tạo CSDL và bảng
 │   └── seed.sql                  dữ liệu mẫu, tài khoản admin
