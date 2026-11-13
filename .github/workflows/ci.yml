@@ -18,6 +18,10 @@ jobs:
           cache: maven
       - name: Build và chạy test
         run: mvn -B verify
+      # TS-001: sao-luu.ps1 với mysqldump giả (lỗi giữa chừng, tệp bị cắt,
+      # chỉ xóa bản cũ khi thành công), không cần MySQL.
+      - name: Kiểm thử script sao lưu (mysqldump giả)
+        run: pwsh -NoProfile src/test/scripts/kiem-thu-sao-luu.ps1
 
   # Kiểm thử tích hợp trên MySQL thật (lớp *IT: khóa dòng, deadlock, ràng
   # buộc CSDL). CSDL có chữ "test" trong tên vì mỗi test xóa và tạo lại bảng.
@@ -49,3 +53,40 @@ jobs:
           cache: maven
       - name: Build, test và kiểm thử tích hợp MySQL
         run: mvn -B verify -Pmysql
+      # TS-001, AC-066, AC-067: chạy script thật trên MySQL của job. Tệp tùy
+      # chọn chứa mật khẩu tạo trong RUNNER_TEMP, không nằm trong repo.
+      - name: Chuẩn bị CSDL nguồn và tệp tùy chọn cho script sao lưu
+        run: |
+          mysqldump --version
+          for ten in dung:bluemoon_ci sai:mat_khau_sai; do
+            printf '[client]\nhost=127.0.0.1\nport=3306\nuser=root\npassword=%s\n' "${ten#*:}" > "$RUNNER_TEMP/${ten%%:*}.cnf"
+            chmod 600 "$RUNNER_TEMP/${ten%%:*}.cnf"
+          done
+          mysql --defaults-extra-file="$RUNNER_TEMP/dung.cnf" -e "CREATE DATABASE bluemoon_ci_nguon CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+          for tep in schema seed; do
+            sed -e '/^CREATE DATABASE/,/;$/d' -e 's/^USE bluemoon;/USE bluemoon_ci_nguon;/' "database/$tep.sql" \
+              | mysql --defaults-extra-file="$RUNNER_TEMP/dung.cnf" --default-character-set=utf8mb4
+          done
+      - name: Sao lưu, khôi phục thử, sao lưu lỗi bằng script
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $thu = Join-Path $env:RUNNER_TEMP 'sao-luu'
+          $log = Join-Path $thu 'sao-luu.log'
+
+          pwsh -NoProfile scripts/sao-luu.ps1 -CoSoDuLieu bluemoon_ci_nguon -ThuMucDich $thu -TepTuyChon "$env:RUNNER_TEMP/dung.cnf"
+          if ($LASTEXITCODE -ne 0) { throw "sao-luu.ps1 trả mã $LASTEXITCODE" }
+          if ((Get-Content $log -Encoding utf8)[-1] -notmatch '\| THÀNH CÔNG \| bluemoon-\d{8}-\d{6}\.sql \|') { throw 'log thiếu dòng THÀNH CÔNG' }
+          $ban = @(Get-ChildItem $thu -Filter 'bluemoon-*.sql')
+          if ($ban.Count -ne 1) { throw "cần 1 tệp sao lưu, có $($ban.Count)" }
+
+          pwsh -NoProfile scripts/khoi-phuc-thu.ps1 -TepSaoLuu $ban[0].FullName -CsdlNguon bluemoon_ci_nguon -TepTuyChon "$env:RUNNER_TEMP/dung.cnf"
+          if ($LASTEXITCODE -ne 0) { throw "khoi-phuc-thu.ps1 trả mã $LASTEXITCODE" }
+
+          # Mật khẩu sai: mã khác 0, dòng LỖI, không còn tệp dở, giữ bản cũ.
+          pwsh -NoProfile scripts/sao-luu.ps1 -CoSoDuLieu bluemoon_ci_nguon -ThuMucDich $thu -TepTuyChon "$env:RUNNER_TEMP/sai.cnf" -SoBanGiu 1
+          if ($LASTEXITCODE -eq 0) { throw 'sao-luu.ps1 với mật khẩu sai phải trả mã khác 0' }
+          if ((Get-Content $log -Encoding utf8)[-1] -notmatch '\| LỖI \|.*1045') { throw 'log thiếu dòng LỖI' }
+          if (@(Get-ChildItem $thu -Filter '*.tmp').Count -ne 0) { throw 'còn tệp dở' }
+          if (@(Get-ChildItem $thu -Filter 'bluemoon-*.sql').Count -ne 1) { throw 'bản sao lưu cũ bị xóa khi lỗi' }
+          Get-Content $log -Encoding utf8
