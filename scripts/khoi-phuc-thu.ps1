@@ -67,6 +67,9 @@ if (-not (Test-KetThucDayDu $TepSaoLuu)) {
 }
 
 # Chạy SQL qua stdin, trả về các dòng kết quả (cột cách nhau bằng tab).
+# PowerShell bóc mảng một phần tử thành chuỗi khi hàm trả về, nên nơi gọi
+# luôn bọc @(Invoke-Sql ...) trước khi lấy [i]; không thì [0] là ký tự đầu
+# (vd tổng tiền "1250000.00" thành "1").
 function Invoke-Sql {
     param([string]$Sql, [string]$Csdl)
     $doiSo = @($dangNhap) + @('--default-character-set=utf8mb4', '-N', '-B')
@@ -80,20 +83,20 @@ function Invoke-Sql {
 
 function Test-CoCsdl {
     param([string]$Ten)
-    $r = Invoke-Sql "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$Ten';"
+    $r = @(Invoke-Sql "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$Ten';")
     return ($r[0] -eq '1')
 }
 
 function Get-SoDong {
     param([string]$Csdl)
-    $bang = Invoke-Sql ("SELECT table_name FROM information_schema.tables " +
-        "WHERE table_schema = '$Csdl' AND table_type = 'BASE TABLE' ORDER BY table_name;")
+    $bang = @(Invoke-Sql ("SELECT table_name FROM information_schema.tables " +
+        "WHERE table_schema = '$Csdl' AND table_type = 'BASE TABLE' ORDER BY table_name;"))
     $kq = [ordered]@{}
     if ($bang.Count -eq 0) { return $kq }
     $sql = ($bang | ForEach-Object {
         "SELECT '$_', COUNT(*) FROM ``$Csdl``.``$_``"
     }) -join ' UNION ALL '
-    foreach ($dong in (Invoke-Sql "$sql;")) {
+    foreach ($dong in @(Invoke-Sql "$sql;")) {
         $cot = $dong -split "`t"
         $kq[$cot[0]] = [long]$cot[1]
     }
@@ -102,10 +105,10 @@ function Get-SoDong {
 
 function Get-TongTienPhieuThu {
     param([string]$Csdl)
-    $co = Invoke-Sql ("SELECT COUNT(*) FROM information_schema.tables " +
-        "WHERE table_schema = '$Csdl' AND table_name = 'phieu_thu';")
+    $co = @(Invoke-Sql ("SELECT COUNT(*) FROM information_schema.tables " +
+        "WHERE table_schema = '$Csdl' AND table_name = 'phieu_thu';"))
     if ($co[0] -ne '1') { return $null }
-    return (Invoke-Sql "SELECT COALESCE(SUM(tong_tien), 0) FROM ``$Csdl``.phieu_thu WHERE da_huy = FALSE;")[0]
+    return @(Invoke-Sql "SELECT COALESCE(SUM(tong_tien), 0) FROM ``$Csdl``.phieu_thu WHERE da_huy = FALSE;")[0]
 }
 
 function Get-Trigger {
@@ -189,15 +192,15 @@ try {
             'Bảng' = 'Tổng tiền phiếu thu chưa hủy'; 'Nguồn' = $tienNguon
             'Khôi phục' = $tienDich; 'Khớp' = if ($tienNguon -eq $tienDich) { 'có' } else { 'LỆCH' }
         }
-        $trgNguon = (Get-Trigger $CsdlNguon) -join ', '
-        $trgDich = (Get-Trigger $CsdlDich) -join ', '
+        $trgNguon = @(Get-Trigger $CsdlNguon) -join ', '
+        $trgDich = @(Get-Trigger $CsdlDich) -join ', '
         if ($trgNguon -ne $trgDich) {
             $lech += "trigger (nguồn: $trgNguon; khôi phục: $trgDich)"
         }
     }
     $dong | Format-Table -AutoSize | Out-String -Width 200 | Write-Output
 
-    $trgDich = Get-Trigger $CsdlDich
+    $trgDich = @(Get-Trigger $CsdlDich)
     foreach ($t in $TriggerNhatKy) {
         if ($trgDich -contains "nhat_ky.$t") {
             Write-Output "Trigger nhat_ky.${t}: có"

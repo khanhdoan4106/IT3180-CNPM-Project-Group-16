@@ -67,6 +67,17 @@ jobs:
             sed -e '/^CREATE DATABASE/,/;$/d' -e 's/^USE bluemoon;/USE bluemoon_ci_nguon;/' "database/$tep.sql" \
               | mysql --defaults-extra-file="$RUNNER_TEMP/dung.cnf" --default-character-set=utf8mb4
           done
+          # Seed chưa có phiếu thu: thêm một phiếu 1.250.000 đ và một phiếu đã
+          # hủy để bước khôi phục thử so được tổng tiền khác 0.
+          mysql --defaults-extra-file="$RUNNER_TEMP/dung.cnf" bluemoon_ci_nguon -e "
+            INSERT INTO phieu_thu (nam, so, ho_id, tong_tien, hinh_thuc, nguoi_thu, thoi_diem)
+              VALUES (2026, 1, (SELECT MIN(id) FROM ho_gia_dinh), 1250000, 'TIEN_MAT',
+                      (SELECT MIN(id) FROM tai_khoan), '2026-11-10 09:00:00');
+            INSERT INTO phieu_thu (nam, so, ho_id, tong_tien, hinh_thuc, nguoi_thu, thoi_diem,
+                                   da_huy, nguoi_huy, thoi_diem_huy, ly_do_huy)
+              VALUES (2026, 2, (SELECT MIN(id) FROM ho_gia_dinh), 300000, 'CHUYEN_KHOAN',
+                      (SELECT MIN(id) FROM tai_khoan), '2026-11-10 10:00:00',
+                      TRUE, (SELECT MIN(id) FROM tai_khoan), '2026-11-10 10:05:00', 'Thu nhầm');"
       - name: Sao lưu, khôi phục thử, sao lưu lỗi bằng script
         shell: pwsh
         run: |
@@ -82,6 +93,14 @@ jobs:
 
           pwsh -NoProfile scripts/khoi-phuc-thu.ps1 -TepSaoLuu $ban[0].FullName -CsdlNguon bluemoon_ci_nguon -TepTuyChon "$env:RUNNER_TEMP/dung.cnf"
           if ($LASTEXITCODE -ne 0) { throw "khoi-phuc-thu.ps1 trả mã $LASTEXITCODE" }
+
+          # Nguồn đổi sau sao lưu (cùng chữ số đầu: 1.250.000 -> 1.350.000):
+          # khoi-phuc-thu.ps1 phải báo lệch tổng tiền và trả mã 1.
+          mysql --defaults-extra-file="$env:RUNNER_TEMP/dung.cnf" bluemoon_ci_nguon -e "UPDATE phieu_thu SET tong_tien = tong_tien + 100000 WHERE nam = 2026 AND so = 1"
+          $ra = pwsh -NoProfile scripts/khoi-phuc-thu.ps1 -TepSaoLuu $ban[0].FullName -CsdlNguon bluemoon_ci_nguon -TepTuyChon "$env:RUNNER_TEMP/dung.cnf"
+          if ($LASTEXITCODE -ne 1) { throw "khoi-phuc-thu.ps1 phải trả mã 1 khi tổng tiền lệch, trả $LASTEXITCODE" }
+          if (-not ($ra -match 'LỆCH - .*tổng tiền phiếu thu')) { throw 'khoi-phuc-thu.ps1 không báo lệch tổng tiền' }
+          mysql --defaults-extra-file="$env:RUNNER_TEMP/dung.cnf" bluemoon_ci_nguon -e "UPDATE phieu_thu SET tong_tien = tong_tien - 100000 WHERE nam = 2026 AND so = 1"
 
           # Mật khẩu sai: mã khác 0, dòng LỖI, không còn tệp dở, giữ bản cũ.
           pwsh -NoProfile scripts/sao-luu.ps1 -CoSoDuLieu bluemoon_ci_nguon -ThuMucDich $thu -TepTuyChon "$env:RUNNER_TEMP/sai.cnf" -SoBanGiu 1

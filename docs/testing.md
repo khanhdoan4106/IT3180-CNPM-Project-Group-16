@@ -88,7 +88,7 @@ hai xanh:
 | Job | Làm gì |
 |---|---|
 | `build` | JDK 21, `mvn -B verify`: test đơn vị và test bố cục; `pwsh src/test/scripts/kiem-thu-sao-luu.ps1` |
-| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 60 kiểm thử tích hợp; rồi chạy thật `scripts/sao-luu.ps1` trên CSDL dựng từ `schema.sql` và `seed.sql` (tệp tùy chọn tạo trong `RUNNER_TEMP`), `scripts/khoi-phuc-thu.ps1` trên tệp vừa tạo, và một lần sao lưu với mật khẩu sai (mã thoát khác 0, dòng `LỖI`, không còn tệp dở, giữ bản cũ) |
+| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 60 kiểm thử tích hợp; rồi chạy thật `scripts/sao-luu.ps1` trên CSDL dựng từ `schema.sql`, `seed.sql` và hai phiếu thu mẫu (một phiếu đã hủy; tệp tùy chọn tạo trong `RUNNER_TEMP`), `scripts/khoi-phuc-thu.ps1` trên tệp vừa tạo (phải `KHỚP`, rồi sửa nguồn thêm 100.000 đ cho cùng chữ số đầu và phải báo lệch tổng tiền, mã 1), và một lần sao lưu với mật khẩu sai (mã thoát khác 0, dòng `LỖI`, không còn tệp dở, giữ bản cũ) |
 
 ## 3. Số test hiện tại
 
@@ -216,7 +216,7 @@ Khác ở Sprint 3, không gắn một AC riêng: chặn thu trùng và deadlock
 | AC-052 tổng thu một khoản theo đợt | `ThongKeServiceTest#khoanBatBuocTheoThangDaChot`, `#khoanBatBuocCanThangDaChot`, `#khoanTuNguyenKhongCanThang`, `#cacKhoanBatBuocTruoc`, `ThongKeIT#khoanBatBuocTheoThangChot`, `#tuNguyenDemDungHoDongVaHoGhiKhong`, `BoCucFxmlTest#khongCoChuBiCat` cho `thong-ke.fxml` | ◐ màn Thống kê xem bằng mắt |
 | AC-053 khoản chưa có giao dịch thì 0 | `ThongKeIT#chuaCoGiaoDichLaKhong` | ✓ |
 | AC-066 sao lưu theo lịch, ghi nhận thời điểm | `ScriptSaoLuuTest#tuyChonMysqldumpTheoGiaDinh43`, `#moiScriptCoBomUtf8DeWindowsPowerShellDocDungTiengViet`, `#khongScriptNaoNhanMatKhauQuaThamSo`, `SaoLuuIT#khoiPhucVaoCsdlMoiDuSoDongMoiBangVaTongTien` (tệp kết thúc bằng `-- Dump completed`, không có `CREATE DATABASE`/`USE`); `src/test/scripts/kiem-thu-sao-luu.ps1` (log, tệp dở, giữ N bản); CI chạy `sao-luu.ps1` thật, cả với mật khẩu sai | ◐ đăng ký lịch trên Windows và lần chạy đầu kiểm tay |
-| AC-067 khôi phục thử đủ dữ liệu | `SaoLuuIT#khoiPhucVaoCsdlMoiDuSoDongMoiBangVaTongTien`, `#cotSinhVanDungVaVanLaCotSinhSauKhoiPhuc`, `#triggerNhatKyVanChanSuaXoaSauKhoiPhuc`; CI chạy `khoi-phuc-thu.ps1` trên tệp vừa sao lưu | ✓ |
+| AC-067 khôi phục thử đủ dữ liệu | `SaoLuuIT#khoiPhucVaoCsdlMoiDuSoDongMoiBangVaTongTien`, `#cotSinhVanDungVaVanLaCotSinhSauKhoiPhuc`, `#triggerNhatKyVanChanSuaXoaSauKhoiPhuc`; CI chạy `khoi-phuc-thu.ps1` trên tệp vừa sao lưu, kể cả trường hợp tổng tiền lệch | ✓ |
 
 ## 5. Việc còn kiểm tay
 

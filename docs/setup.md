@@ -207,7 +207,7 @@ TS-001, giả định 43. Làm trên **máy đặt MySQL**. Ba script trong `scr
 |---|---|
 | `sao-luu.ps1` | `mysqldump` CSDL `bluemoon` ra `bluemoon-yyyyMMdd-HHmmss.sql`, ghi một dòng vào `sao-luu.log`, giữ 30 bản mới nhất |
 | `dang-ky-lich-sao-luu.ps1` | Đăng ký tác vụ Task Scheduler "BlueMoon – Sao lưu hằng ngày" chạy `sao-luu.ps1` lúc 22:00 mỗi ngày; `-Xoa` để gỡ |
-| `khoi-phuc-thu.ps1` | Nạp một tệp sao lưu vào CSDL thử `bluemoon_khoi_phuc_thu`, so số dòng từng bảng với `bluemoon` và kiểm tra trigger nhật ký |
+| `khoi-phuc-thu.ps1` | Nạp một tệp sao lưu vào CSDL thử `bluemoon_khoi_phuc_thu`, so số dòng từng bảng và tổng tiền phiếu thu với `bluemoon`, kiểm tra trigger nhật ký |
 
 Chạy script bằng `powershell -ExecutionPolicy Bypass -File …` như các lệnh
 dưới đây: cách này chỉ bỏ qua chính sách thực thi cho lần chạy đó, **không
