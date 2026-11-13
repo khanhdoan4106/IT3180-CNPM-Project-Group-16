@@ -54,8 +54,8 @@ class BoCucFxmlTest {
 
     /** Chu do controller dat luc chay, lay ban dai nhat co the gap. */
     static final Map<String, String> CHU_DONG = Map.ofEntries(
-            Map.entry("chaoLabel",
-                    "Xin chào, Nguyễn Thị Thu Hương (Quản trị viên)"),
+            Map.entry("tenNguoiDungLabel", "Nguyễn Thị Thu Hương"),
+            Map.entry("vaiTroLabel", "Quản trị viên"),
             Map.entry("khoaButton", "Mở khóa"),
             Map.entry("soDongNhatKyLabel", "12345 thao tác"),
             Map.entry("tieuDeLabel", "Tổng quan tháng 12/2026"),
@@ -89,11 +89,15 @@ class BoCucFxmlTest {
             "khoangBox", "nhacChotBox", "bienDongBox");
 
     /**
-     * Nhan duoc phep rut gon "...". Loi chao tren thanh menu chua ten nguoi
-     * dung, dai bao nhieu cung duoc: khi qua dai thi rut gon va controller
-     * gan Tooltip hien du noi dung (TrangChinhController).
+     * Nhan duoc phep rut gon "...". Hien khong co: ten nguoi dung tren thanh
+     * menu dai hon ten mau thi rut gon kem Tooltip (TrangChinhController),
+     * nhung ten mau "Nguyễn Thị Thu Hương" phai hien du (TS-004).
      */
-    private static final Set<String> DUOC_RUT_GON = Set.of("chaoLabel");
+    private static final Set<String> DUOC_RUT_GON = Set.of();
+
+    /** Kich thuoc cua so dang kiem (doi o test thanh menu). */
+    private static double rongKiem = RONG;
+    private static double caoKiem = CAO;
 
     private static final String PHONG = PhongChu.HO_PHONG;
 
@@ -142,7 +146,69 @@ class BoCucFxmlTest {
                 + String.join("\n  ", loi));
     }
 
+    /**
+     * TS-004: thanh menu o 1120, 1366, 1440 px hien du ten "Nguyễn Thị Thu
+     * Hương" va vai tro "Quản trị viên" (hai dong truoc nut Dang xuat), moi
+     * muc menu va nut Dang xuat nam trong cua so.
+     */
+    @ParameterizedTest
+    @ValueSource(ints = {1120, 1366, 1440})
+    void thanhMenuHienDuTenVaVaiTro(int rong) throws Exception {
+        List<String> loi = trenLuongFx(() -> kiemTra("trang-chinh.fxml",
+                rong, CAO));
+        assertTrue(loi.isEmpty(), "trang-chinh.fxml ở " + rong + "×"
+                + (int) CAO + ":\n  " + String.join("\n  ", loi));
+    }
+
+    /**
+     * TS-004: nhãn thông báo rỗng của tab "Chốt công nợ" (trạng thái, hộ bị
+     * bỏ qua, tóm tắt) không giữ chỗ: bảng nằm ngay dưới dòng mô tả, không
+     * còn khoảng trống ~100 px.
+     */
+    @org.junit.jupiter.api.Test
+    void congNoNhanRongKhongGiuCho() throws Exception {
+        double[] kq = trenLuongFx(() -> {
+            FXMLLoader loader = new FXMLLoader(BoCucFxmlTest.class
+                    .getResource(THU_MUC_VIEW + "cong-no.fxml"));
+            Parent goc;
+            try (InputStream vao = new ByteArrayInputStream(
+                    boController("cong-no.fxml").getBytes(
+                            StandardCharsets.UTF_8))) {
+                goc = loader.load(vao);
+            }
+            Scene scene = new Scene(goc, RONG, CAO);
+            scene.getStylesheets().add(
+                    BoCucFxmlTest.class.getResource(CSS).toExternalForm());
+            dungBoCuc(goc);
+            Node bang = (Node) loader.getNamespace().get("bangKhoan");
+            Node thang = (Node) loader.getNamespace().get("thangCombo");
+            Labeled tomTat = (Labeled) loader.getNamespace()
+                    .get("tomTatLabel");
+            double rong = bang.localToScene(bang.getLayoutBounds())
+                    .getMinY() - thang.localToScene(thang.getLayoutBounds())
+                    .getMaxY();
+            // Co chu thi hien va giu cho tro lai.
+            tomTat.setText("Số hộ: 120 · Tổng phải thu: 120.000.000 đ");
+            dungBoCuc(goc);
+            double coChu = bang.localToScene(bang.getLayoutBounds())
+                    .getMinY() - thang.localToScene(thang.getLayoutBounds())
+                    .getMaxY();
+            return new double[] {rong, coChu, tomTat.isVisible() ? 1 : 0};
+        });
+        assertTrue(kq[0] <= 30, "khoảng trống giữa hàng tiêu đề và bảng: "
+                + kq[0] + " px");
+        assertTrue(kq[1] > kq[0] + 15 && kq[2] == 1,
+                "nhãn có chữ phải hiện lại: " + kq[1]);
+    }
+
     private static List<String> kiemTra(String tenFile) throws IOException {
+        return kiemTra(tenFile, RONG, CAO);
+    }
+
+    private static List<String> kiemTra(String tenFile, double rong,
+            double cao) throws IOException {
+        rongKiem = rong;
+        caoKiem = cao;
         FXMLLoader loader = new FXMLLoader(
                 BoCucFxmlTest.class.getResource(THU_MUC_VIEW + tenFile));
         Parent goc;
@@ -161,7 +227,7 @@ class BoCucFxmlTest {
                 n.setManaged(true);
             }
         });
-        Scene scene = new Scene(goc, RONG, CAO);
+        Scene scene = new Scene(goc, rong, cao);
         scene.getStylesheets().add(
                 BoCucFxmlTest.class.getResource(CSS).toExternalForm());
 
@@ -220,7 +286,9 @@ class BoCucFxmlTest {
         if (node instanceof Labeled l && l.getText() != null
                 && !l.getText().isEmpty()) {
             String hienThi = chuHienThi(l);
-            if (!PHONG.equals(l.getFont().getFamily())) {
+            // Medium la ho rieng "Be Vietnam Pro Medium" (muc menu, ten).
+            String ho = l.getFont().getFamily();
+            if (!PHONG.equals(ho) && !ho.equals(PHONG + " Medium")) {
                 loi.add(tienTo + moTa(l) + " dùng phông \""
                         + l.getFont().getFamily() + "\" thay vì " + PHONG);
             }
@@ -235,7 +303,7 @@ class BoCucFxmlTest {
             }
             if (l instanceof Button b && !toiDuoc(b)) {
                 loi.add(tienTo + moTa(b) + " nằm ngoài cửa sổ "
-                        + (int) RONG + "×" + (int) CAO
+                        + (int) rongKiem + "×" + (int) caoKiem
                         + " và không trong ScrollPane");
             }
         }
@@ -333,8 +401,8 @@ class BoCucFxmlTest {
         Bounds khung = b.localToScene(b.getLayoutBounds());
         double sai = 0.5;
         return khung.getMinX() >= -sai && khung.getMinY() >= -sai
-                && khung.getMaxX() <= RONG + sai
-                && khung.getMaxY() <= CAO + sai;
+                && khung.getMaxX() <= rongKiem + sai
+                && khung.getMaxY() <= caoKiem + sai;
     }
 
     /** Chu skin dang ve (da cat neu khong du cho), null neu chua co skin. */

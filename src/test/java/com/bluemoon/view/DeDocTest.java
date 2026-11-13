@@ -97,7 +97,7 @@ class DeDocTest {
             {"-mau-phu", "-mau-nhan"}, {"-mau-phu", "-mau-chon"},
             {"-mau-phu", "-mau-xen-ke"},
             {"white", "-mau-chinh"}, {"white", "-mau-chinh-dam"},
-            {"white", "-mau-chu"},
+            {"white", "-mau-chu"}, {"-mau-dai", "-mau-chinh"},
             {"-mau-loi", "white"}, {"-mau-loi", "-mau-nen"},
             {"-mau-loi", "-mau-nen-loi"}, {"-mau-loi", "-mau-nhan"},
             {"-mau-loi", "-mau-chon"},

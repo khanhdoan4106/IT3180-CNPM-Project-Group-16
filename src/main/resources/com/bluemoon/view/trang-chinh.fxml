@@ -15,7 +15,9 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.bluemoon.controller.TrangChinhController">
     <top>
-        <HBox styleClass="thanh-dau" spacing="12">
+        <!-- Muc menu cach nhau 8 px (nut cach nut >= 8); ten va vai tro hai
+             dong can phai truoc nut Dang xuat (TS-004). -->
+        <HBox styleClass="thanh-dau" spacing="8">
             <!-- Bam logo ve Trang chinh (khong co muc "Trang chu" rieng). -->
             <Button fx:id="logoButton" text="BlueMoon" styleClass="logo"
                     minWidth="-Infinity" onAction="#onVeTrangChu">
@@ -23,6 +25,9 @@
                 <tooltip>
                     <Tooltip text="Về trang chủ"/>
                 </tooltip>
+                <HBox.margin>
+                    <Insets right="8"/>
+                </HBox.margin>
             </Button>
             <Button minWidth="-Infinity" fx:id="hoGiaDinhButton" text="Hộ gia đình"
                     styleClass="nut-menu" onAction="#onMoHoGiaDinh"/>
@@ -39,8 +44,17 @@
             <Button minWidth="-Infinity" fx:id="taiKhoanButton" text="Tài khoản" styleClass="nut-menu"
                     onAction="#onMoTaiKhoan"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="chaoLabel" styleClass="chao"/>
-            <Button minWidth="-Infinity" text="Đăng xuất" onAction="#onDangXuat"/>
+            <!-- Ten qua dai thi rut gon "...", tooltip hien du (controller). -->
+            <VBox fx:id="nguoiDungBox" styleClass="nguoi-dung" minWidth="0"
+                  alignment="CENTER_RIGHT">
+                <Label fx:id="tenNguoiDungLabel" styleClass="ten-nguoi-dung"/>
+                <Label fx:id="vaiTroLabel" styleClass="vai-tro"/>
+                <HBox.margin>
+                    <Insets left="4" right="8"/>
+                </HBox.margin>
+            </VBox>
+            <Button minWidth="-Infinity" text="Đăng xuất" styleClass="nut-dang-xuat"
+                    onAction="#onDangXuat"/>
         </HBox>
     </top>
     <center>
@@ -91,7 +105,7 @@
                                    wrapText="true"/>
                         </VBox>
                         <VBox fx:id="bienDongBox" styleClass="the"
-                              spacing="10" prefWidth="460" minWidth="380"
+                              spacing="10" prefWidth="560" minWidth="560"
                               visible="false" managed="false">
                             <Label text="Biến động nhân khẩu gần đây"
                                    styleClass="tieu-de-form"/>

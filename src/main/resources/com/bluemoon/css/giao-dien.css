@@ -521,7 +521,7 @@
 /* ---------- Thanh menu ---------- */
 .thanh-dau {
     -fx-background-color: -mau-chinh;
-    -fx-padding: 10 20 10 20;
+    -fx-padding: 10 12 10 12;
     -fx-alignment: center-left;
 }
 
@@ -534,15 +534,34 @@
     -fx-padding: 8 8 8 0;
 }
 
-.thanh-dau .chao {
+/* Nguoi dung (Figma "Nguoi dung"): ten 15 Medium trang, vai tro 14 duoi ten,
+   can phai. Vai tro dung -mau-dai thay trang mo 85% cua Figma (4,1:1) de
+   dat 4,7:1 tren -mau-chinh. */
+.thanh-dau .ten-nguoi-dung {
+    -fx-font-family: "Be Vietnam Pro Medium";
+    -fx-font-size: 15px;
     -fx-text-fill: white;
 }
 
+.thanh-dau .vai-tro {
+    -fx-font-size: 14px;
+    -fx-text-fill: -mau-dai;
+}
+
+/* Muc menu (Figma "Muc menu"): 15 Medium trang. */
 .thanh-dau .nut-menu {
     -fx-background-color: transparent;
     -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-padding: 8 12 8 12;
+    -fx-font-family: "Be Vietnam Pro Medium";
+    -fx-font-weight: normal;
+    -fx-font-size: 15px;
+    -fx-padding: 8 8 8 8;
+}
+
+/* Nut Dang xuat tren thanh menu: dem ngang hep hon de man 1120 px van du
+   cho ten nguoi dung. */
+.thanh-dau .nut-dang-xuat {
+    -fx-padding: 10 14 10 14;
 }
 
 .thanh-dau .nut-menu:hover {

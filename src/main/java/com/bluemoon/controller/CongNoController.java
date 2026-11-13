@@ -162,8 +162,6 @@ public class CongNoController {
             }
         });
         thangCombo.setValue(hienTai);
-        boQuaLabel.managedProperty().bind(
-                boQuaLabel.textProperty().isNotEmpty());
         thangCombo.valueProperty().addListener((o, cu, moi) -> hienThang());
         hienThang();
         khoiTaoNoDong();

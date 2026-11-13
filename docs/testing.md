@@ -51,7 +51,7 @@ không có chữ `test`, để không xóa nhầm CSDL `bluemoon` đang dùng.
 | IntelliJ | Maven → bluemoon → Lifecycle → `test` |
 | Dòng lệnh | `mvn test` hoặc `mvn verify` (cần Maven 3.9+ trong PATH) |
 
-Kết quả mong đợi: `BUILD SUCCESS`, 359 test (1 bỏ qua: `ChupManHinhTest`
+Kết quả mong đợi: `BUILD SUCCESS`, 366 test (1 bỏ qua: `ChupManHinhTest`
 chỉ chạy khi có `-DchupAnh`). `mvn verify` không có
 `-Pmysql` không chạy lớp `*IT`.
 
@@ -65,7 +65,7 @@ Chụp ảnh các màn hình (PNG, Monocle, không điều khiển màn hình) c
 rà soát giao diện; chỉ chạy khi có `-DchupAnh`:
 
 ```
-mvn test -Dtest=ChupManHinhTest,ThuMotHoNamBuocTest -DchupAnh=docs/review/ts-004 -DchupTienTo=sau
+mvn test -Dtest=ChupManHinhTest,ThuMotHoNamBuocTest,TrangChinhSoLieuTest -DchupAnh=docs/review/ts-004 -DchupTienTo=sau
 ```
 
 ### Kiểm thử tích hợp (cần MySQL)
@@ -112,7 +112,7 @@ hai xanh:
 | Sprint 4, sau US-018 và AC-014 | 347 | 57 |
 | Sprint 4, sau TS-001 (chưa phát hành) | 350 | 60 |
 | Sprint 4, sau sửa đọc có khóa trong `suaSoTien` (chưa phát hành) | 350 | 62 |
-| Sprint 4, sau TS-004 (chưa phát hành) | 359 | 62 |
+| Sprint 4, sau TS-004 (chưa phát hành) | 366 | 62 |
 
 ## 4. Ánh xạ AC → test tự động
 
@@ -201,7 +201,7 @@ Ký hiệu: ✓ có test tự động đủ; ◐ có test nhưng một phần c�
 | AC-043 phiếu hủy giữ vết kèm người hủy | `ThuPhiServiceTest#phieuHomNayGomCaPhieuHuy`, `#huyCanLyDoVaKhongHuyHaiLan`, `#thuQuyKhongHuyPhieuNguoiKhacQuanTriThiDuoc`, `TomTatPhieuHomNayTest` | ✓ |
 | AC-044 thông báo liệt kê khoản | `ThongBaoPhiServiceTest#thongBaoLietKeKhoanThangVaNoCu`, `#thangChuaChotChuaInDuoc` | ✓ |
 | AC-045 không có khoản thì báo | `ThongBaoPhiServiceTest#hoKhongCoKhoanCanDongThiBao` | ✓ |
-| AC-072 tối đa 5 bước, chữ rõ | `ThuMotHoNamBuocTest#thuMotHoTrongBonThaoTacTieuDiemDungCho` (4 thao tác, tiêu điểm đúng chỗ sau mỗi bước, xem [bảng các bước](#các-bước-thu-một-hộ-ac-072)), `#maSaiThiTieuDiemVanOOMaPhong`, `DeDocTest#moiCapChuNenDatAa`, `#chuGoc16ChuLoiVaChuNutChinhDungMau`, `#oNhapNutDongBangDuCao`, `#oDangCoTieuDiemCoVienMauChinh`, `#javaFxDocHetMoiLuatCss`, `BoCucFxmlTest#khongCoChuBiCat` (mọi màn: chữ không cắt, ≥ 14 px, nút và ô đủ cao, nút cách ≥ 8 px) | ◐ người chưa dùng thử thu một hộ kiểm tay (mục 5) |
+| AC-072 tối đa 5 bước, chữ rõ | `ThuMotHoNamBuocTest#thuMotHoTrongBonThaoTacTieuDiemDungCho` (4 thao tác, tiêu điểm đúng chỗ sau mỗi bước, xem [bảng các bước](#các-bước-thu-một-hộ-ac-072)), `#maSaiThiTieuDiemVanOOMaPhong`, `DeDocTest#moiCapChuNenDatAa`, `#chuGoc16ChuLoiVaChuNutChinhDungMau`, `#oNhapNutDongBangDuCao`, `#oDangCoTieuDiemCoVienMauChinh`, `#javaFxDocHetMoiLuatCss`, `BoCucFxmlTest#khongCoChuBiCat` (mọi màn: chữ không cắt, ≥ 14 px, nút và ô đủ cao, nút cách ≥ 8 px), `#thanhMenuHienDuTenVaVaiTro` (1120, 1366, 1440 px), `#congNoNhanRongKhongGiuCho`, `NguoiDungThanhMenuTest#tenDaiRutGonKemTooltipDayDu`, `TrangChinhSoLieuTest#soLieuBinhThuongKhongChongChu` (Trang chính có số liệu ở 1440×1024 và 1120×645: nhãn tháng, số trên cột, tên trục không chồng nhau, không chữ bị cắt) | ◐ người chưa dùng thử thu một hộ kiểm tay (mục 5) |
 
 #### Các bước thu một hộ (AC-072)
 

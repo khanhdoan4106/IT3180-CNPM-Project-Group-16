@@ -16,6 +16,12 @@ File gồm bộ thành phần dùng chung (nút, ô nhập, mục menu, thẻ s�
   `BoCucFxmlTest` (xem [Trạng thái so với thiết kế](#trạng-thái-so-với-thiết-kế)).
 - Menu chỉ hiện mục mà vai trò được dùng (xem
   [Phân quyền](architecture.md#phân-quyền)).
+- Góc phải thanh menu (Figma "Người dùng"): tên người dùng (15 px Medium)
+  và vai trò (14 px, `-mau-dai`) hai dòng căn phải trước nút Đăng xuất,
+  không có "Xin chào". Tên dài quá chỗ trống thì rút gọn "…", tooltip hiện
+  đủ "Tên – Vai trò". Mục menu 15 px Medium, đệm ngang 8, cách nhau 8 px để
+  ở 1120 px vẫn đủ chỗ cho "Nguyễn Thị Thu Hương" (`BoCucFxmlTest` kiểm ở
+  1120, 1366, 1440 px).
 - Bấm logo "BlueMoon" (con trỏ bàn tay, gợi ý "Về trang chủ") để hiện lại
   Trang chính; không có mục "Trang chủ" riêng. Nút menu của màn đang mở có
   nền đậm (`-mau-chinh-dam`); ở Trang chính không nút nào được chọn.
@@ -27,6 +33,9 @@ File gồm bộ thành phần dùng chung (nút, ô nhập, mục menu, thẻ s�
   phía sau làm tối; dùng `Dialog<T>` của JavaFX. `KieuHopThoai` gắn
   `giao-dien.css` cho mọi cửa sổ mới mở nên hộp thoại cùng kiểu với màn
   hình (xem [Thành phần](#thành-phần)).
+- Nhãn thông báo chỉ hiện khi có chữ: `visible` và `managed` gắn với chữ
+  (`visible="${!x.text.empty}"` trong FXML, hoặc `setVisible`/`setManaged`
+  cùng lúc trong controller), để nhãn rỗng không giữ chỗ trống.
 - Thiết kế: lỗi nhập liệu hiện ngay dưới ô sai, không dồn vào hộp cảnh báo
   chung. Hiện tại: mỗi màn có một nhãn thông báo chung (đỏ khi lỗi); hiện
   dưới từng ô là việc của Sprint 4.
@@ -191,6 +200,7 @@ Figma (khung "Đặc tả màn hình").
 | Dòng phụ của thẻ | Nhãn phụ | "72% tổng phải thu" (làm tròn xuống); tháng chưa chốt: "Tháng 11 chưa chốt công nợ" | giả định 24 |
 | Hộ còn nợ | Thẻ số liệu, bấm được (con trỏ bàn tay) | Số hộ còn ít nhất một tháng nợ; dòng phụ "8 hộ nợ từ 3 tháng trở lên", không có thì "Không hộ nào nợ từ 3 tháng"; bấm thẻ mở Công nợ ở tab "Hộ nợ đọng" | US-017, giả định 25 |
 | Thu phí 6 tháng gần nhất | Biểu đồ cột | Theo [Quy tắc biểu đồ](#quy-tắc-biểu-đồ); đơn vị "Triệu đồng", dưới 1 triệu thì "Nghìn đồng"; trải hai năm thì nhãn "T12/25" | US-016 |
+| Biến động nhân khẩu gần đây | Bảng gọn, chỉ Quản trị viên | Ngày, Căn hộ, Họ tên, Biến động; ghi chú và người ghi ở tooltip của dòng; khung rộng 560 px | US-027 |
 | Làm mới | – | Đọc lại số liệu khi đăng nhập và khi bấm logo, không hẹn giờ | – |
 
 ### Thống kê theo khoản (US-019)

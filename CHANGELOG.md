@@ -80,6 +80,13 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
   ([ui.md](docs/design/ui.md#thành-phần)). Form Hộ gia đình, Nhân khẩu,
   Đăng ký tài khoản và vài cột bảng sắp lại để chữ 16 px không bị cắt ở
   1120×645.
+- **Thanh menu theo Figma:** tên người dùng và vai trò hai dòng căn phải
+  trước nút Đăng xuất, bỏ "Xin chào,"; tên dài quá thì rút gọn kèm tooltip
+  "Tên – Vai trò". Mục menu 15 px Medium như Figma để ở 1120 px vẫn đủ chỗ.
+  Trước đây lời chào bị cắt ngay ở 1440 px.
+- Trang chính: bảng "Biến động nhân khẩu gần đây" gọn 4 cột (Ngày, Căn hộ,
+  Họ tên, Biến động), ghi chú và người ghi ở tooltip của dòng; trước đây 6
+  cột trong khung hẹp bị cắt chữ.
 - **Thu một hộ trong 4 thao tác (AC-072):** mở màn Thu phí là gõ được mã
   phòng ngay; tra cứu xong tiêu điểm sang "Tiền mặt"; thu xong (hoặc mã sai)
   tiêu điểm về ô mã phòng, mã cũ bôi đen để gõ hộ tiếp theo. Bảng các bước:
@@ -114,6 +121,9 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
   mặc định luôn là `-mau-chu`.
 - Bảng tài khoản trống hiện "No content in table" (chữ mặc định của
   JavaFX); nay là "Chưa có tài khoản nào".
+- Công nợ, tab "Chốt công nợ": khoảng trống ~100 px giữa tiêu đề và bảng do
+  ba nhãn thông báo rỗng vẫn giữ chỗ; nay nhãn chỉ hiện và giữ chỗ khi có
+  chữ.
 
 ### Cơ sở dữ liệu
 
@@ -125,13 +135,14 @@ root, dữ liệu cũ giữ nguyên. Khi MySQL bật binary log, tạo trigger c
 
 ### Kiểm thử
 
-359 test đơn vị và 62 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
+366 test đơn vị và 62 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
 `NhatKyServiceTest`, `ThaoTacTest`, `NoiDungNhatKyTest`, `ThongKeIT`,
 `ThongKeServiceTest`, `ThangTrucYTest`, `BieuDoThuPhiTest`, `DongTyLeTest`,
 `NoDongIT`, `NoDongServiceTest`, `TheHoConNoTest`, `BaoCaoThuIT`,
 `BaoCaoThuServiceTest`, `BaoCaoThuExcelTest`, `TamVangExcelTest`,
 `TepExcelTest`, `DanhSachTamVangTest`, `ScriptSaoLuuTest`, `SaoLuuIT`,
-`SuaSoTienDocKhoaIT`, `ThuMotHoNamBuocTest`, `DeDocTest`, `ChupManHinhTest`).
+`SuaSoTienDocKhoaIT`, `ThuMotHoNamBuocTest`, `DeDocTest`, `ChupManHinhTest`,
+`NguoiDungThanhMenuTest`, `TrangChinhSoLieuTest`).
 `ThuMotHoNamBuocTest` thu một hộ trên màn Thu phí thật bằng phím và chuột
 giả lập, đếm thao tác và kiểm tiêu điểm sau mỗi bước; `BoCucFxmlTest` kiểm
 thêm cỡ chữ ≥ 14 px, độ cao nút và ô, khoảng cách giữa nút; `ChupManHinhTest`

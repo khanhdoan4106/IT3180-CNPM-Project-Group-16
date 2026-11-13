@@ -14,8 +14,11 @@ hình: `ChupManHinhTest` tải từng FXML như `BoCucFxmlTest` (không CSDL, ch
 mvn test -Dtest=ChupManHinhTest,ThuMotHoNamBuocTest -DchupAnh=docs/review/ts-004 -DchupTienTo=sau
 ```
 
-Vì không có CSDL, bảng trong ảnh trống (trừ ảnh Thu phí sau khi tra cứu,
-chụp từ `ThuMotHoNamBuocTest` với dữ liệu giả).
+Vì không có CSDL, bảng trong ảnh trống, trừ ảnh Thu phí sau khi tra cứu
+(`ThuMotHoNamBuocTest`, dữ liệu giả) và Trang chính có số liệu
+(`TrangChinhSoLieuTest`, mục [Trang chính có số liệu](#trang-chính-có-số-liệu)).
+Thanh menu trong mọi ảnh dùng tên "Nguyễn Thị Thu Hương", vai trò "Quản trị
+viên".
 
 ## Tóm tắt
 
@@ -41,14 +44,41 @@ này ra màu trắng. Nhãn có lớp màu riêng (`.phu-de`) không bị. Nay `
 | Màn | Vấn đề (trước) | Đã sửa |
 |---|---|---|
 | Đăng nhập | Chữ 14, ô nhập thấp, viền mặc định | Chữ 16, ô 40 px bo 8, nút chính 44 px |
-| Trang chính | Chữ trắng trên nền trắng (tiêu đề, số liệu, tiêu đề khung); nút "Đăng xuất" kiểu mặc định | Hiện đúng chữ; "Đăng xuất" là nút phụ; nút menu có viền trắng khi có tiêu điểm |
+| Trang chính | Chữ trắng trên nền trắng (tiêu đề, số liệu, tiêu đề khung); nút "Đăng xuất" kiểu mặc định; lời chào "Xin chào, Nguyễn Thị Thu Hương (Quản trị…" bị cắt ngay ở 1440 px; bảng "Biến động nhân khẩu gần đây" 6 cột trong khung hẹp, chữ 16 px bị cắt hết | Hiện đúng chữ; "Đăng xuất" là nút phụ; nút menu có viền trắng khi có tiêu điểm; người dùng theo Figma (xem [Thanh menu](#thanh-menu)); bảng biến động gọn 4 cột (Ngày, Căn hộ, Họ tên, Biến động), ghi chú và người ghi hiện khi rê chuột lên dòng, khung rộng 560 px |
 | Hộ gia đình | Cột bảng hẹp, khi chữ 16 thì cắt tiêu đề ("Mã căn…", "T…"); form phải chật | Cột rộng theo tiêu đề (bảng cuộn ngang khi cần); form 430 px, cột nhãn 156 px, ô ngày/danh sách chọn co được; hàng "Xem lịch sử biến động" / "Đánh dấu chuyển đi" xuống dòng khi chật; "Đánh dấu chuyển đi" là nút nguy hiểm |
 | Nhân khẩu | Như Hộ gia đình; ô chọn hộ tô xanh như dòng đang chọn | Như Hộ gia đình (cột nhãn 140 px); ô chọn hộ nền trắng |
 | Khoản thu | Cột "Trạng thái" bị cắt khi chữ 16 | Cột có độ rộng tối thiểu 120 |
-| Công nợ | Tab, bảng, nút "In thông báo phí" kiểu mặc định | Tab gạch chân, bảng theo bộ thành phần, nút có danh sách cùng kiểu nút phụ |
+| Công nợ | Tab, bảng, nút "In thông báo phí" kiểu mặc định; tab "Chốt công nợ" trống ~100 px giữa tiêu đề và bảng (ba nhãn thông báo rỗng vẫn giữ chỗ) | Tab gạch chân, bảng theo bộ thành phần, nút có danh sách cùng kiểu nút phụ; nhãn trạng thái, hộ bị bỏ qua, tóm tắt chỉ hiện và giữ chỗ khi có chữ (`visible`/`managed` gắn với chữ trong FXML) |
 | Thu phí | Tab, bảng, nút kiểu mặc định; tên quỹ dài đè cột "Đã đóng" khi chữ 16; tiêu điểm không theo luồng thu | Theo bộ thành phần; tên quỹ xuống dòng; tiêu điểm theo luồng AC-072; chữ hướng dẫn "Gõ mã phòng rồi nhấn Enter (hoặc bấm Tra cứu)" |
 | Thống kê | Danh sách chọn kiểu mặc định | Theo bộ thành phần |
 | Tài khoản | Bảng tài khoản trống hiện "No content in table"; form Đăng ký: chữ 16 làm ô nhập còn 47 px | Chữ báo trống tiếng Việt; form Đăng ký đặt nhãn trên ô (kiểu "Ô nhập" của Figma) |
+
+### Thanh menu
+
+Theo Figma "Người dùng": hai dòng căn phải trước nút Đăng xuất, tên (15 px
+Medium, trắng) trên, vai trò (14 px) dưới, bỏ "Xin chào,". Vai trò dùng
+`-mau-dai` (`#EFF6FF`, 4,7:1 trên nền menu) thay màu trắng mờ 85% của Figma
+(4,1:1). Tên dài hơn chỗ trống thì rút gọn "…", tooltip trên cả hai dòng
+hiện "Tên – Vai trò". Để ở 1120 px vẫn đủ chỗ cho "Nguyễn Thị Thu Hương",
+mục menu dùng cỡ của Figma (15 px Medium), đệm ngang 8, cách nhau 8 (giữ quy
+tắc nút cách nút ≥ 8 thay vì 4 px của Figma); nút Đăng xuất đệm ngang 14.
+Ở 1120 px còn dư khoảng 3 px. Kiểm ở 1120, 1366, 1440 px:
+`BoCucFxmlTest#thanhMenuHienDuTenVaVaiTro`; tên dài rút gọn kèm tooltip:
+`NguoiDungThanhMenuTest`.
+
+### Trang chính có số liệu
+
+Số liệu giả tháng 12/2026: thu 6 tháng T7…T12 từ 186 đến 214 triệu, tháng 12
+chưa kết thúc (cột đậm), 3 biến động gần đây. `TrangChinhSoLieuTest` dựng
+màn ở 1440×1024 và 1120×645 rồi kiểm: nhãn T7…T12, số trên đầu cột, số trên
+trục Y, tên hai trục "Triệu đồng" và "Tháng (năm 2026)" không chồng nhau,
+không ra ngoài biểu đồ, không dưới 14 px; số không đè lên cột; cột T12 đậm;
+không nhãn, tiêu đề cột, ô bảng nào bị cắt "…". Ở 1120×645 trang cuộn, phần
+dưới biểu đồ nằm dưới mép cửa sổ (ảnh chụp đúng phần thấy được).
+
+| 1440×1024 | 1120×645 |
+|---|---|
+| ![](ts-004/sau-trang-chinh-so-lieu-1440x1024.png) | ![](ts-004/sau-trang-chinh-so-lieu-1120x645.png) |
 
 ### Ảnh trước / sau
 
