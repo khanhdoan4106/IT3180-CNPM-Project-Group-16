@@ -26,6 +26,12 @@ public class DotCuTruDaoImpl implements DotCuTruDao {
                     + "den_ngay, ly_do) VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_KHOA_NHAN_KHAU =
             "SELECT ho_id, ho_ten FROM nhan_khau WHERE id = ? FOR UPDATE";
+    /**
+     * Doc thuong, chi dung duoc vi la cau doc thuong dau tien cua giao dich
+     * va chay sau SQL_KHOA_NHAN_KHAU: moi giao dich them dot cho nhan khau
+     * nay deu khoa dong do truoc. Khong them cau doc thuong truoc khoa (xem
+     * docs/review/doc-co-khoa-trong-giao-dich.md).
+     */
     private static final String SQL_CHONG_NGAY =
             "SELECT 1 FROM tam_tru_tam_vang WHERE nhan_khau_id = ? "
                     + "AND tu_ngay <= ? AND ? <= den_ngay LIMIT 1";

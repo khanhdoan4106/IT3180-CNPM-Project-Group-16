@@ -64,6 +64,13 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
 
 ### Sửa
 
+- **Không sửa được số tiền của khoản vừa được thu ở máy khác (AC-026):**
+  khi một máy đang sửa số tiền phải nộp và máy khác lập phiếu thu đúng khoản
+  đó cùng lúc, trước đây việc sửa vẫn có thể thành công, làm phiếu thu lệch
+  số tiền phải nộp. Nay kiểm tra "đã thu" đọc bản mới nhất dưới khóa
+  (`FOR SHARE`) và từ chối sửa. Rà mọi giao dịch DAO theo quy tắc "quyết định
+  dưới khóa thì đọc có khóa":
+  [doc-co-khoa-trong-giao-dich.md](docs/review/doc-co-khoa-trong-giao-dich.md).
 - Tab "Nhật ký thao tác": "Rê chuột lên một ô…" đổi thành "Di chuột lên một
   ô…".
 
@@ -77,12 +84,12 @@ root, dữ liệu cũ giữ nguyên. Khi MySQL bật binary log, tạo trigger c
 
 ### Kiểm thử
 
-347 test đơn vị và 57 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
+347 test đơn vị và 59 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
 `NhatKyServiceTest`, `ThaoTacTest`, `NoiDungNhatKyTest`, `ThongKeIT`,
 `ThongKeServiceTest`, `ThangTrucYTest`, `BieuDoThuPhiTest`, `DongTyLeTest`,
 `NoDongIT`, `NoDongServiceTest`, `TheHoConNoTest`, `BaoCaoThuIT`,
 `BaoCaoThuServiceTest`, `BaoCaoThuExcelTest`, `TamVangExcelTest`,
-`TepExcelTest`, `DanhSachTamVangTest`).
+`TepExcelTest`, `DanhSachTamVangTest`, `SuaSoTienDocKhoaIT`).
 
 ## [v0.3.0] – 12/11/2026 – Sprint 3
 

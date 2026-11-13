@@ -132,6 +132,40 @@ ký; ghi nhật ký lỗi thì thao tác cũng hoàn tác.
 - Xem: `NhatKyService.theoKhoang` (chỉ Quản trị viên, từ ngày ≤ đến ngày,
   lọc theo loại), mới nhất ở trên, không phân trang (quy mô vài trăm hộ).
 
+## Giao dịch và khóa
+
+Mọi thao tác ghi nhiều bảng chạy trong một giao dịch (`setAutoCommit(false)`)
+trên một kết nối, ở mức cô lập mặc định của InnoDB, `REPEATABLE READ`.
+
+- **Thứ tự khóa** khi thu tiền và sửa công nợ: dòng `ho_gia_dinh`, rồi các
+  dòng `phai_nop`, cuối cùng dòng `bo_dem_bien_lai` của năm
+  (`PhieuThuDaoImpl`, `CongNoDaoImpl.suaSoTien`). Mọi giao dịch ghi trên một
+  hộ khóa theo cùng thứ tự nên không tạo vòng chờ; MySQL vẫn hủy (1213, 1205)
+  thì ra `DangBiKhoaException`.
+- **Quyết định dưới khóa thì đọc có khóa.** Câu `SELECT` thường đầu tiên của
+  giao dịch chụp snapshot; mọi `SELECT` thường sau đó đọc snapshot này, kể cả
+  khi giao dịch vừa chờ khóa xong và máy khác đã commit trong lúc chờ. Vì
+  vậy, câu đọc dùng để quyết định (khoản đã thu chưa, còn là chủ hộ không, đợt
+  có chồng ngày không) phải là đọc có khóa (`FOR UPDATE`, `FOR SHARE`), hoặc
+  là câu đọc thường **đầu tiên** của giao dịch, chạy sau khi đã giữ khóa mà
+  mọi giao dịch ghi dữ liệu đó cũng phải lấy. `CongNoDaoImpl.suaSoTien` từng
+  vi phạm quy tắc này: nó đọc `ho_id` bằng câu thường trước khi khóa, nên
+  sửa được số tiền của khoản vừa được thu ở máy khác (AC-026, kiểm bằng
+  `SuaSoTienDocKhoaIT`); nay kiểm tra "đã thu" bằng `FOR SHARE`.
+- **Cẩn thận với `FOR SHARE`/`FOR UPDATE` khi không có dòng khớp:** InnoDB
+  khóa cả khoảng trống trong chỉ mục (gap lock), chặn `INSERT` của giao dịch
+  khác vào khoảng đó. Hai giao dịch cùng giữ khóa khoảng trống rồi cùng chèn
+  vào khoảng đó thì deadlock. Vì vậy lập phiếu (`PhieuThuDaoImpl.lapPhieu`)
+  và ghi đợt tạm trú (`DotCuTruDaoImpl.them`) giữ câu kiểm tra là đọc thường,
+  đúng nhờ không có câu đọc thường nào trước khóa; thêm câu đọc thường trước
+  khóa trong hai giao dịch này sẽ làm lỗi cùng loại quay lại.
+- Câu đọc chỉ để ghi nội dung nhật ký (mã căn hộ, tên khoản) dùng đọc thường.
+- Trùng dữ liệu (thu trùng, mã căn hộ, CCCD, chủ hộ, tên khoản) được chặn
+  bằng ràng buộc `UNIQUE` trên cột sinh hoặc cột thường, độc lập với cách đọc.
+
+Kết quả rà từng giao dịch:
+[doc-co-khoa-trong-giao-dich.md](../review/doc-co-khoa-trong-giao-dich.md).
+
 ## Kết nối CSDL
 
 `Database` đọc `config/db.properties` rồi biến môi trường

@@ -78,6 +78,15 @@ public class PhieuThuDaoImpl implements PhieuThuDao {
             "SELECT id FROM ho_gia_dinh WHERE id = ? FOR UPDATE";
     private static final String SQL_KHOA_PHAI_NOP =
             "SELECT ho_id, so_tien FROM phai_nop WHERE id = ? FOR UPDATE";
+    /**
+     * SQL_DA_THU va SQL_CO_DONG_GOP la doc thuong, chi dung duoc vi trong
+     * lapPhieu khong co cau doc thuong
+     * nao truoc khoaHo: snapshot chup sau khi da giu khoa ho, ma moi giao
+     * dich lap phieu cho ho deu lay khoa nay. Khong them cau doc thuong
+     * truoc khoaHo (xem docs/review/doc-co-khoa-trong-giao-dich.md). Khong
+     * dung FOR SHARE: khoa khoang trong tren chi muc UNIQUE gay deadlock khi
+     * hai ho cung thu.
+     */
     private static final String SQL_DA_THU =
             "SELECT 1 FROM phieu_thu_chi_tiet WHERE phai_nop_da_thu = ?";
     private static final String SQL_CO_DONG_GOP = "SELECT 1 FROM "

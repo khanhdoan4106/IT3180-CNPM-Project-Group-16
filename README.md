@@ -126,7 +126,7 @@ Request → thành viên khác review → merge vào `main` → cuối Sprint gh
 | Yêu cầu | [Wish list](docs/requirements/01-wish-list.md), [As-is](docs/requirements/02-as-is-scenario.md), [Visionary](docs/requirements/03-visionary-scenario.md), [NFR](docs/requirements/04-nfr.md), [Raw log](docs/requirements/05-raw-log.md), [Epic/Feature](docs/requirements/06-epic-feature-list.md), [User Story](docs/requirements/07-user-stories.md), [Backlog](docs/requirements/08-product-backlog.md), [Traceability](docs/requirements/09-traceability-matrix.md), [Definition of Done](docs/requirements/10-definition-of-done.md), [Giả định](docs/requirements/11-chot-va-gia-dinh.md), [Thuật ngữ](docs/thuat-ngu.md) |
 | Thiết kế | [Kiến trúc](docs/design/architecture.md), [ERD](docs/design/erd.md), [Sơ đồ lớp](docs/design/class-diagram.md), [Use case](docs/design/use-case.md), [Giao diện](docs/design/ui.md), [Quy ước mã](docs/design/coding-convention.md); mục lục: [docs/design](docs/design) |
 | Vận hành | [Cài đặt](docs/setup.md), [Quy trình làm việc](docs/workflow.md), [Kiểm thử](docs/testing.md), [Nhật ký thay đổi](CHANGELOG.md) |
-| Rà soát | [Rà soát Sprint 2](docs/review/sprint-2-ra-soat.md), [Rà soát Sprint 3](docs/review/sprint-3-ra-soat.md), [Rà soát tổng thể](docs/review/ra-soat-tong-the.md) |
+| Rà soát | [Rà soát Sprint 2](docs/review/sprint-2-ra-soat.md), [Rà soát Sprint 3](docs/review/sprint-3-ra-soat.md), [Rà soát tổng thể](docs/review/ra-soat-tong-the.md), [Đọc có khóa trong giao dịch](docs/review/doc-co-khoa-trong-giao-dich.md) |
 | Họp nhóm | [Biên bản họp](docs/meeting-notes) |
 
 ## Thành viên
