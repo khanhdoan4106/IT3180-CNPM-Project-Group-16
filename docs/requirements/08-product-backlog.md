@@ -90,7 +90,7 @@ AC → test tự động: [docs/testing.md](../testing.md).
 | US-021 | Đăng nhập bằng tên đăng nhập và mật khẩu | Must | Sprint 1 | Hoàn thành | 3 |
 | US-022 | Phân quyền Quản trị viên và Thủ quỹ | Should | Sprint 2 | Hoàn thành | 5 |
 | US-023 | Đổi mật khẩu và cập nhật thông tin cá nhân | Should | Sprint 2 | Hoàn thành | 3 |
-| TS-001 | Sao lưu dữ liệu MySQL định kỳ (hàng ngày/tuần) để tránh mất dữ liệu. | Should | Sprint 4 | Đang làm | 5 |
+| TS-001 | Sao lưu dữ liệu MySQL định kỳ (hàng ngày/tuần) để tránh mất dữ liệu. | Should | Sprint 4 | Hoàn thành | 5 |
 | TS-002 | Ghi nhật ký mọi thao tác thay đổi dữ liệu quan trọng. | Should | Sprint 4 | Hoàn thành | 5 |
 | TS-003 | Thiết lập ứng dụng Java máy tính để bàn kết nối CSDL MySQL tập trung. | Must | Sprint 1 | Hoàn thành | 5 |
 | TS-004 | Rà soát giao diện dễ dùng cho người lớn tuổi (chữ rõ, ít bước thao tác). | Could | Sprint 4 | Đang làm | 2 |

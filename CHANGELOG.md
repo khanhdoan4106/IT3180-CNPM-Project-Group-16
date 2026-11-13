@@ -54,6 +54,18 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
   danh sách", cùng các trường như bản in.
 - Ghi tệp an toàn: ghi tệp tạm rồi đổi tên, lỗi giữa chừng không để lại
   tệp hỏng; tệp đang mở trong Excel thì nhắc đóng tệp rồi thử lại.
+- **Sao lưu dữ liệu (TS-001, AC-066, AC-067, giả định 43):** script
+  `scripts/sao-luu.ps1` sao lưu CSDL bằng `mysqldump --single-transaction`
+  (kèm trigger, không khóa bảng) ra tệp `bluemoon-yyyyMMdd-HHmmss.sql`, ghi
+  mỗi lần chạy một dòng `sao-luu.log` (thời điểm, THÀNH CÔNG/LỖI, tệp, dung
+  lượng, thời gian), giữ 30 bản mới nhất và chỉ xóa bản cũ khi lần này
+  thành công; tệp dở hoặc bị cắt bị xóa, lỗi thì Task Scheduler ghi lần chạy
+  lỗi. `scripts/dang-ky-lich-sao-luu.ps1` đăng ký tác vụ "BlueMoon – Sao lưu
+  hằng ngày" lúc 22:00, chạy bù khi máy bật lại. `scripts/khoi-phuc-thu.ps1`
+  khôi phục vào CSDL thử và so số dòng từng bảng, tổng tiền phiếu thu,
+  trigger nhật ký với CSDL gốc. Mật khẩu MySQL chỉ ở login-path
+  (`mysql_config_editor`) hoặc tệp tùy chọn ngoài repo. Hướng dẫn sao lưu,
+  khôi phục thử và khôi phục thật: `setup.md` mục 7.
 
 ### Thư viện
 
@@ -77,12 +89,15 @@ root, dữ liệu cũ giữ nguyên. Khi MySQL bật binary log, tạo trigger c
 
 ### Kiểm thử
 
-347 test đơn vị và 57 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
+350 test đơn vị và 60 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
 `NhatKyServiceTest`, `ThaoTacTest`, `NoiDungNhatKyTest`, `ThongKeIT`,
 `ThongKeServiceTest`, `ThangTrucYTest`, `BieuDoThuPhiTest`, `DongTyLeTest`,
 `NoDongIT`, `NoDongServiceTest`, `TheHoConNoTest`, `BaoCaoThuIT`,
 `BaoCaoThuServiceTest`, `BaoCaoThuExcelTest`, `TamVangExcelTest`,
-`TepExcelTest`, `DanhSachTamVangTest`).
+`TepExcelTest`, `DanhSachTamVangTest`, `ScriptSaoLuuTest`, `SaoLuuIT`).
+Script sao lưu có thêm kiểm thử bằng `mysqldump` giả
+(`src/test/scripts/kiem-thu-sao-luu.ps1`) và CI chạy thật sao lưu, khôi phục
+thử, sao lưu với mật khẩu sai trên MySQL của job `build-mysql`.
 
 ## [v0.3.0] – 12/11/2026 – Sprint 3
 
