@@ -27,6 +27,7 @@ chứng minh trên MySQL thật, vì DAO giả không tái hiện được.
 | Lớp | Nội dung |
 |---|---|
 | `CongNoIT` | Chốt công nợ, đơn giá và số tiền điền sẵn đọc từ CSDL, số quá lớn bị chặn trước khi tới MySQL |
+| `SuaSoTienDocKhoaIT` | Máy B bắt đầu sửa số tiền một khoản (câu đọc đầu giao dịch đã chụp snapshot), máy A lập phiếu thu khoản đó và commit, rồi B mới khóa và kiểm tra: B không sửa được, số tiền và nhật ký giữ nguyên. Điều phối bằng điểm chèn `CongNoDaoImpl.sauKhiDocHo`, chạy tuần tự, không `sleep`; không có phiếu thì vẫn sửa được |
 | `PhieuThuIT` | Thu tất cả rồi hủy khôi phục công nợ, hai máy cùng thu một khoản chỉ một phiếu thành công, sửa và thu song song không deadlock, đếm lần in, thông báo phí, danh sách tạm vắng, hộ đã chuyển đi không ghi đóng góp |
 | `GiaoDichHoGiaDinhIT` | Lỗi giữa giao dịch thì không ghi hộ lẫn lịch sử; đổi chủ hộ từ chối người vừa chuyển đi ở máy khác |
 | `DongHoCsdlIT` | Giờ đọc từ MySQL gần giờ máy, múi giờ Việt Nam |
@@ -75,7 +76,7 @@ mvn test -Dtest=BoCucFxmlTest
    Nếu user không phải `bluemoon`, đặt thêm `BLUEMOON_DB_USER` và
    `BLUEMOON_DB_PASSWORD`.
 
-Kết quả mong đợi: 350 test đơn vị và 60 kiểm thử tích hợp đều đạt (MySQL
+Kết quả mong đợi: 350 test đơn vị và 62 kiểm thử tích hợp đều đạt (MySQL
 8.0). Hai test cấu hình (`DatabaseConfigTest`) tự bỏ qua khi đã đặt
 `BLUEMOON_DB_*`, nên log hiện "Skipped: 2" ở lần chạy này.
 
@@ -88,7 +89,7 @@ hai xanh:
 | Job | Làm gì |
 |---|---|
 | `build` | JDK 21, `mvn -B verify`: test đơn vị và test bố cục; `pwsh src/test/scripts/kiem-thu-sao-luu.ps1` |
-| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 60 kiểm thử tích hợp; rồi chạy thật `scripts/sao-luu.ps1` trên CSDL dựng từ `schema.sql`, `seed.sql` và hai phiếu thu mẫu (một phiếu đã hủy; tệp tùy chọn tạo trong `RUNNER_TEMP`), `scripts/khoi-phuc-thu.ps1` trên tệp vừa tạo (phải `KHỚP`, rồi sửa nguồn thêm 100.000 đ cho cùng chữ số đầu và phải báo lệch tổng tiền, mã 1), và một lần sao lưu với mật khẩu sai (mã thoát khác 0, dòng `LỖI`, không còn tệp dở, giữ bản cũ) |
+| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 62 kiểm thử tích hợp; rồi chạy thật `scripts/sao-luu.ps1` trên CSDL dựng từ `schema.sql`, `seed.sql` và hai phiếu thu mẫu (một phiếu đã hủy; tệp tùy chọn tạo trong `RUNNER_TEMP`), `scripts/khoi-phuc-thu.ps1` trên tệp vừa tạo (phải `KHỚP`, rồi sửa nguồn thêm 100.000 đ cho cùng chữ số đầu và phải báo lệch tổng tiền, mã 1), và một lần sao lưu với mật khẩu sai (mã thoát khác 0, dòng `LỖI`, không còn tệp dở, giữ bản cũ) |
 
 ## 3. Số test hiện tại
 
@@ -102,6 +103,7 @@ hai xanh:
 | Sprint 4, sau US-017 | 326 | 53 |
 | Sprint 4, sau US-018 và AC-014 | 347 | 57 |
 | Sprint 4, sau TS-001 (chưa phát hành) | 350 | 60 |
+| Sprint 4, sau sửa đọc có khóa trong `suaSoTien` (chưa phát hành) | 350 | 62 |
 
 ## 4. Ánh xạ AC → test tự động
 
@@ -147,7 +149,7 @@ Ký hiệu: ✓ có test tự động đủ; ◐ có test nhưng một phần c�
 | AC-020 trùng tên trong cùng đợt | `KhoanPhiServiceTest#tuChoiTrungTenTrongCungDot`, `#trungTenDoMayKhacLuuCungLuc` | ✓ |
 | AC-021 không nhập số tiền cố định vẫn lưu | `KhoanPhiServiceTest#taoKhoanTuNguyenKhongCoDinh` | ✓ |
 | AC-025 sửa khoản chưa thu | `CongNoServiceTest#suaSoTienGiuSoGocVaNguoiSua`, `CongNoIT#soTienPhaiNopDienSanTuCsdlLuuLaiDuoc` | ✓ |
-| AC-026 khoản đã thu thì từ chối sửa | `CongNoServiceTest#tuChoiSuaKhoanDaCoPhieuThu`, `ThuPhiServiceTest#khoanDaThuKhongSuaDuocChoDenKhiHuyPhieu`, `PhieuThuIT#nhieuLuongVuaSuaVuaThuCungMotKhoanKhongDeadlock` | ✓ |
+| AC-026 khoản đã thu thì từ chối sửa | `CongNoServiceTest#tuChoiSuaKhoanDaCoPhieuThu`, `ThuPhiServiceTest#khoanDaThuKhongSuaDuocChoDenKhiHuyPhieu`, `PhieuThuIT#nhieuLuongVuaSuaVuaThuCungMotKhoanKhongDeadlock`, `SuaSoTienDocKhoaIT#phieuLapGiuaChungThiKhongSuaDuocKhoanDaThu`, `#khongCoPhieuGiuaChungThiVanSuaDuoc` | ✓ |
 | AC-027 chốt công nợ tháng | `CongNoServiceTest#chiTinhKhoanCoHieuLucTrongThang`, `#boQuaHoDaChuyenDiVaKhoanTuNguyen`, `#khongTinhHoChuyenDenSauThangChot`, `CongNoIT#chotThangCuKhongGhiNoHoChuyenDenSau` | ✓ |
 | AC-028 chốt lại không tạo trùng | `CongNoServiceTest#chotLuuVaChotLaiKhongTaoTrung`, `#chotLaiBoSungHoMoiVaGiuKhoanDaSua` | ✓ |
 | AC-029 hộ chưa có diện tích | `CongNoServiceTest#hoChuaCoDienTichBiBoQuaVaCanhBao` | ✓ |
@@ -246,6 +248,10 @@ Làm trước mỗi lần demo hoặc phát hành, theo thứ tự:
   câu tiếng Việt không dấu mô tả hành vi, ví dụ `khongHuyPhieuNgayTruoc`.
 - Thời điểm: dùng `Clock.fixed` thay cho giờ máy, không dùng ngày thật.
 - Test `*IT`: kế thừa cách bỏ qua của `CsdlThu`, dựng bảng từ `schema.sql`.
+- Lỗi chỉ xảy ra khi hai máy xen nhau đúng lúc: tái hiện bằng một điểm chèn
+  `protected` rỗng trong DAO (vd `CongNoDaoImpl.sauKhiDocHo`), test ghi đè
+  để chạy thao tác của máy kia trên kết nối khác đúng thời điểm đó, thay vì
+  nhiều luồng và `sleep` (xem `SuaSoTienDocKhoaIT`).
 - So sánh tên có dấu trong dữ liệu: so trong Java hoặc bằng `HEX()`, không
   dựa vào `=` của MySQL, vì collation `utf8mb4_unicode_ci` không phân biệt
   hoa thường và dấu (giả định 40).

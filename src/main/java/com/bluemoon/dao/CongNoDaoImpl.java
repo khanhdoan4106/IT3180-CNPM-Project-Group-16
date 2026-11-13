@@ -72,6 +72,12 @@ public class CongNoDaoImpl implements CongNoDao {
     private static final String SQL_SUA = "UPDATE phai_nop SET so_tien = ?, "
             + "nguoi_sua = ?, ngay_sua = NOW(), ghi_chu = ? WHERE id = ?";
     private static final String SQL_DA_THU = DA_THU + "?";
+    /**
+     * Kiem tra "da thu" trong giao dich sua, sau khi da khoa ho va khoan:
+     * doc co khoa (FOR SHARE) nen thay ban moi nhat da commit, khong doc
+     * snapshot REPEATABLE READ cu chup tu cau doc thuong dau giao dich.
+     */
+    private static final String SQL_DA_THU_KHOA = SQL_DA_THU + " FOR SHARE";
 
     @Override
     public int chot(YearMonth thang, int nguoiChot, List<PhaiNop> khoan) {
@@ -188,7 +194,13 @@ public class CongNoDaoImpl implements CongNoDao {
     /**
      * Sua trong mot giao dich, khoa theo cung thu tu voi lap phieu thu
      * (ho_gia_dinh, roi phai_nop) nen khong deadlock voi viec thu; chi sau
-     * khi giu khoa moi kiem tra khoan da thu chua.
+     * khi giu khoa moi kiem tra khoan da thu chua, bang doc co khoa.
+     *
+     * <p>Cau {@code hoCuaKhoan} la doc thuong nen da chup snapshot truoc khi
+     * cho khoa. Neu kiem tra "da thu" cung la doc thuong, no doc snapshot do
+     * va khong thay phieu may khac vua commit trong luc cho khoa, roi sua so
+     * tien cua khoan da thu (AC-026). Vi vay kiem tra dung
+     * {@link #SQL_DA_THU_KHOA}.
      */
     @Override
     public boolean suaSoTien(int id, BigDecimal soTien, int nguoiSua,
@@ -197,9 +209,11 @@ public class CongNoDaoImpl implements CongNoDao {
             conn.setAutoCommit(false);
             try {
                 int hoId = hoCuaKhoan(conn, id);
+                sauKhiDocHo(id);
                 khoa(conn, SQL_KHOA_HO, hoId);
                 BigDecimal cu = (BigDecimal) khoa(conn, SQL_KHOA_KHOAN, id);
-                try (PreparedStatement ps = conn.prepareStatement(SQL_DA_THU)) {
+                try (PreparedStatement ps =
+                        conn.prepareStatement(SQL_DA_THU_KHOA)) {
                     ps.setInt(1, id);
                     try (ResultSet rs = ps.executeQuery()) {
                         if (rs.next()) {
@@ -229,6 +243,17 @@ public class CongNoDaoImpl implements CongNoDao {
         } catch (SQLException e) {
             throw DangBiKhoaException.boc("Loi sua khoan phai nop", e);
         }
+    }
+
+    /**
+     * Diem chen cho kiem thu: chay trong {@link #suaSoTien} ngay sau cau doc
+     * thuong dau tien (da chup snapshot), truoc khi khoa. Ung dung khong ghi
+     * de; SuaSoTienDocKhoaIT ghi de de lap phieu o ket noi khac dung luc nay.
+     *
+     * @param phaiNopId khoan dang sua
+     */
+    protected void sauKhiDocHo(int phaiNopId) {
+        // Mac dinh khong lam gi.
     }
 
     private static int hoCuaKhoan(Connection conn, int id)
