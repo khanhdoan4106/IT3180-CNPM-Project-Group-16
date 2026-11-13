@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -59,8 +60,22 @@ public class ThuPhiController {
     private static final DateTimeFormatter NGAY_GIO =
             DateTimeFormatter.ofPattern("HH:mm dd/MM/uuuu");
 
-    private final ThuPhiService service = new ThuPhiService(
-            new PhieuThuDaoImpl(), new KhoanPhiDaoImpl(), new DongHoCsdl());
+    private final ThuPhiService service;
+
+    /** Controller dung CSDL that (FXMLLoader goi). */
+    public ThuPhiController() {
+        this(new ThuPhiService(new PhieuThuDaoImpl(), new KhoanPhiDaoImpl(),
+                new DongHoCsdl()));
+    }
+
+    /**
+     * Controller voi service chi dinh (test luong thu dung DAO gia).
+     *
+     * @param service dich vu thu phi
+     */
+    public ThuPhiController(ThuPhiService service) {
+        this.service = service;
+    }
 
     @FXML
     private ToggleGroup hinhThucGroup;
@@ -153,6 +168,12 @@ public class ThuPhiController {
                 taiPhieuHomNay();
             }
         });
+        // AC-072 buoc 1: mo man la go ma phong ngay, khong can bam vao o.
+        maField.sceneProperty().addListener((o, cu, moi) -> {
+            if (moi != null) {
+                Platform.runLater(maField::requestFocus);
+            }
+        });
     }
 
     // ---------------- Thu tien ----------------
@@ -174,12 +195,25 @@ public class ThuPhiController {
             }
             hoCombo.setValue(null);
             hoCombo.setValue(ds.get(0));
+            // AC-072: khoan bat buoc da chon san, buoc tiep theo la chon
+            // hinh thuc (hoac chon ho khi phong co ho da chuyen di con no).
+            if (hoDangThu != null) {
+                (nhieuHo ? hoCombo : tienMatRadio).requestFocus();
+            }
         } catch (NghiepVuException e) {
             xoaHo();
             baoLoi(thongBaoLabel, e.getMessage());
+            chonLaiMa();
         } catch (CauHinhException | DaoException e) {
             baoLoi(thongBaoLabel, LoiCsdl.thongBao(e));
+            chonLaiMa();
         }
+    }
+
+    /** Dua tieu diem ve o ma phong, boi den ma cu de go de len. */
+    private void chonLaiMa() {
+        maField.requestFocus();
+        maField.selectAll();
     }
 
     /** Hien khoan chua dong va quy dang mo cua ho. */
@@ -354,6 +388,8 @@ public class ThuPhiController {
             if (!p.khongThuTien() && hoiInNgay(p)) {
                 inBienLai(p.id(), thongBaoLabel);
             }
+            // Xong mot ho: san sang go ma phong ho tiep theo.
+            chonLaiMa();
         } catch (NghiepVuException e) {
             baoLoi(thongBaoLabel, e.getMessage());
         } catch (CauHinhException | DaoException e) {
@@ -402,7 +438,7 @@ public class ThuPhiController {
 
     private void xoaHo() {
         hoDangThu = null;
-        hoLabel.setText("Nhập mã phòng rồi bấm Tra cứu");
+        hoLabel.setText("Gõ mã phòng rồi nhấn Enter (hoặc bấm Tra cứu)");
         noLabel.setText("");
         khoanTieuDe.setText("Khoản phải nộp chưa đóng (0)");
         quyTieuDe.setText("Đóng góp tự nguyện (0 quỹ đang mở)");
@@ -441,7 +477,7 @@ public class ThuPhiController {
     private PhieuThu phieuDangChon() {
         PhieuThu p = bangPhieu.getSelectionModel().getSelectedItem();
         if (p == null) {
-            baoLoi(thongBaoPhieuLabel, "Chọn một phiếu trong bảng");
+            baoLoi(thongBaoPhieuLabel, "Bấm chọn một phiếu trong bảng trước");
         }
         return p;
     }
@@ -552,7 +588,7 @@ public class ThuPhiController {
         ButtonType huy = new ButtonType("Hủy phiếu",
                 ButtonBar.ButtonData.OK_DONE);
         HopThoai.datNutChinhVaDong(d, huy);
-        d.getDialogPane().lookupButton(huy).getStyleClass().add("nut-phu");
+        d.getDialogPane().lookupButton(huy).getStyleClass().add("nut-nguy-hiem");
         Label nhan = new Label("Lý do hủy (bắt buộc)");
         nhan.getStyleClass().add("tieu-de-form");
         TextField lyDo = new TextField();

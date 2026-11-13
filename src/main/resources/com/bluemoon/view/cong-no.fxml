@@ -44,9 +44,16 @@
                                 <ComboBox fx:id="thangCombo" prefWidth="160"/>
                                 <Button minWidth="-Infinity" text="Xem trước" onAction="#onXemTruoc"/>
                             </HBox>
-                            <Label fx:id="trangThaiLabel" wrapText="true"/>
-                            <Label fx:id="boQuaLabel" styleClass="loi" wrapText="true"/>
-                            <Label fx:id="tomTatLabel"/>
+                            <!-- Nhan thong bao chi hien va giu cho khi co chu (TS-004). -->
+                            <Label fx:id="trangThaiLabel" wrapText="true"
+                                   visible="${!trangThaiLabel.text.empty}"
+                                   managed="${!trangThaiLabel.text.empty}"/>
+                            <Label fx:id="boQuaLabel" styleClass="loi" wrapText="true"
+                                   visible="${!boQuaLabel.text.empty}"
+                                   managed="${!boQuaLabel.text.empty}"/>
+                            <Label fx:id="tomTatLabel"
+                                   visible="${!tomTatLabel.text.empty}"
+                                   managed="${!tomTatLabel.text.empty}"/>
                             <BorderPane.margin>
                                 <Insets bottom="10"/>
                             </BorderPane.margin>

@@ -13,6 +13,7 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -44,20 +45,20 @@
     <center>
         <TableView fx:id="bangHo">
             <columns>
-                <TableColumn fx:id="cotMa" text="Mã căn hộ" prefWidth="100"/>
+                <TableColumn fx:id="cotMa" text="Mã căn hộ" prefWidth="120"/>
                 <TableColumn fx:id="cotLoai" text="Loại" prefWidth="90"/>
-                <TableColumn fx:id="cotTang" text="Tầng" prefWidth="60"/>
+                <TableColumn fx:id="cotTang" text="Tầng" prefWidth="70"/>
                 <TableColumn fx:id="cotDienTich" text="Diện tích (m²)"
-                             prefWidth="110"/>
+                             prefWidth="145"/>
                 <TableColumn fx:id="cotChuHo" text="Chủ hộ" prefWidth="200"/>
                 <TableColumn fx:id="cotSoThanhVien" text="Thành viên"
-                             prefWidth="90"/>
-                <TableColumn fx:id="cotSdt" text="Điện thoại"
                              prefWidth="120"/>
+                <TableColumn fx:id="cotSdt" text="Điện thoại"
+                             prefWidth="125"/>
                 <TableColumn fx:id="cotNgay" text="Ngày chuyển đến"
-                             prefWidth="130"/>
+                             prefWidth="170"/>
                 <TableColumn fx:id="cotTrangThai" text="Trạng thái"
-                             prefWidth="110"/>
+                             prefWidth="120"/>
             </columns>
             <placeholder>
                 <Label text="Chưa có hộ gia đình nào"/>
@@ -68,11 +69,11 @@
         <!-- Cua so thap (1120x645) khong du cao cho ca form: cuon duoc de
              toi cac nut. Khung trang dat tren ScrollPane de bong khong bi
              cat. -->
-        <!-- Cot nhan moi GridPane trong form rong co dinh 136px (nhan dai
-             nhat "Ngày chuyển đến *" voi Be Vietnam Pro ~128px) de o nhap
+        <!-- Cot nhan moi GridPane trong form rong co dinh 156px (nhan dai
+             nhat "Ngày chuyển đến *" voi Be Vietnam Pro 16px ~146px) de o nhap
              cac nhom thang hang. Doi nhan thi do lai. -->
         <ScrollPane styleClass="the,cuon-form" fitToWidth="true"
-                    hbarPolicy="NEVER" prefWidth="380">
+                    hbarPolicy="NEVER" prefWidth="430">
             <BorderPane.margin>
                 <Insets left="20"/>
             </BorderPane.margin>
@@ -83,14 +84,14 @@
                        styleClass="tieu-de-form"/>
                 <GridPane hgap="10" vgap="10">
                     <columnConstraints>
-                        <ColumnConstraints minWidth="136" prefWidth="136" maxWidth="136"/>
+                        <ColumnConstraints minWidth="156" prefWidth="156" maxWidth="156"/>
                         <ColumnConstraints hgrow="ALWAYS"/>
                     </columnConstraints>
                     <Label text="Mã căn hộ *" GridPane.rowIndex="0"/>
                     <TextField fx:id="maField" promptText="vd A0601"
                                GridPane.rowIndex="0" GridPane.columnIndex="1"/>
                     <Label text="Loại căn hộ *" GridPane.rowIndex="1"/>
-                    <ComboBox fx:id="loaiCombo" maxWidth="Infinity"
+                    <ComboBox fx:id="loaiCombo" minWidth="120" maxWidth="Infinity"
                               GridPane.rowIndex="1" GridPane.columnIndex="1"/>
                     <Label text="Tầng *" GridPane.rowIndex="2"/>
                     <TextField fx:id="tangField" promptText="1 - 30"
@@ -102,7 +103,7 @@
                     <TextField fx:id="sdtField" promptText="10 chữ số"
                                GridPane.rowIndex="4" GridPane.columnIndex="1"/>
                     <Label text="Ngày chuyển đến *" GridPane.rowIndex="5"/>
-                    <DatePicker fx:id="ngayPicker" maxWidth="Infinity"
+                    <DatePicker fx:id="ngayPicker" minWidth="120" maxWidth="Infinity"
                                 GridPane.rowIndex="5" GridPane.columnIndex="1"/>
                 </GridPane>
                 <!-- Them moi: nhap chu ho (US-002). Sua: chi hien chuHoLabel. -->
@@ -110,18 +111,18 @@
                     <Label text="Chủ hộ" styleClass="tieu-de-form"/>
                     <GridPane hgap="10" vgap="10">
                         <columnConstraints>
-                            <ColumnConstraints minWidth="136" prefWidth="136" maxWidth="136"/>
+                            <ColumnConstraints minWidth="156" prefWidth="156" maxWidth="156"/>
                             <ColumnConstraints hgrow="ALWAYS"/>
                         </columnConstraints>
                         <Label text="Họ tên *" GridPane.rowIndex="0"/>
                         <TextField fx:id="chuHoField" GridPane.rowIndex="0"
                                    GridPane.columnIndex="1"/>
                         <Label text="Ngày sinh *" GridPane.rowIndex="1"/>
-                        <DatePicker fx:id="ngaySinhChuHoPicker"
+                        <DatePicker fx:id="ngaySinhChuHoPicker" minWidth="120"
                                     maxWidth="Infinity" GridPane.rowIndex="1"
                                     GridPane.columnIndex="1"/>
                         <Label text="Giới tính *" GridPane.rowIndex="2"/>
-                        <ComboBox fx:id="gioiTinhChuHoCombo" maxWidth="Infinity"
+                        <ComboBox fx:id="gioiTinhChuHoCombo" minWidth="120" maxWidth="Infinity"
                                   GridPane.rowIndex="2"
                                   GridPane.columnIndex="1"/>
                         <Label text="Số CCCD" GridPane.rowIndex="3"/>
@@ -134,14 +135,14 @@
                             </tooltip>
                         </TextField>
                         <Label text="Cư trú *" GridPane.rowIndex="4"/>
-                        <ComboBox fx:id="loaiCuTruChuHoCombo"
+                        <ComboBox fx:id="loaiCuTruChuHoCombo" minWidth="120"
                                   maxWidth="Infinity" GridPane.rowIndex="4"
                                   GridPane.columnIndex="1"/>
                     </GridPane>
                     <!-- US-003: chu ho tam tru (ho thue nha), kem dot dau. -->
                     <GridPane fx:id="tamTruChuHoGrid" hgap="10" vgap="10">
                         <columnConstraints>
-                            <ColumnConstraints minWidth="136" prefWidth="136" maxWidth="136"/>
+                            <ColumnConstraints minWidth="156" prefWidth="156" maxWidth="156"/>
                             <ColumnConstraints hgrow="ALWAYS"/>
                         </columnConstraints>
                         <Label text="Nơi thường trú *" GridPane.rowIndex="0"/>
@@ -149,30 +150,31 @@
                                    GridPane.rowIndex="0"
                                    GridPane.columnIndex="1"/>
                         <Label text="Tạm trú từ *" GridPane.rowIndex="1"/>
-                        <DatePicker fx:id="tamTruTuChuHoPicker"
+                        <DatePicker fx:id="tamTruTuChuHoPicker" minWidth="120"
                                     maxWidth="Infinity" GridPane.rowIndex="1"
                                     GridPane.columnIndex="1"/>
                         <Label text="Tạm trú đến *" GridPane.rowIndex="2"/>
-                        <DatePicker fx:id="tamTruDenChuHoPicker"
+                        <DatePicker fx:id="tamTruDenChuHoPicker" minWidth="120"
                                     maxWidth="Infinity" GridPane.rowIndex="2"
                                     GridPane.columnIndex="1"/>
                     </GridPane>
                 </VBox>
                 <Label fx:id="chuHoLabel" wrapText="true" styleClass="phu-de"/>
                 <Label fx:id="thongBaoLabel" wrapText="true"/>
-                <!-- Hai hang: khung 380px khong du cho 4 nut tren mot hang. -->
+                <!-- Hai hang: khung form khong du cho 4 nut tren mot hang;
+                     hang duoi xuong dong khi chu 16 px khong du cho. -->
                 <HBox spacing="10">
                     <Button minWidth="-Infinity" fx:id="luuButton" text="Lưu"
                             styleClass="nut-chinh" onAction="#onLuu"/>
                     <Button minWidth="-Infinity" text="Nhập mới" onAction="#onNhapMoi"/>
                 </HBox>
-                <HBox spacing="10">
-                    <Button minWidth="-Infinity" fx:id="lichSuButton" text="Lịch sử biến động"
+                <FlowPane hgap="10" vgap="10" prefWrapLength="300">
+                    <Button minWidth="-Infinity" fx:id="lichSuButton" text="Xem lịch sử biến động"
                             disable="true" onAction="#onLichSu"/>
                     <Button minWidth="-Infinity" fx:id="chuyenDiButton" text="Đánh dấu chuyển đi"
-                            styleClass="nut-phu" disable="true"
+                            styleClass="nut-nguy-hiem" disable="true"
                             onAction="#onChuyenDi"/>
-                </HBox>
+                </FlowPane>
             </VBox>
         </ScrollPane>
     </right>

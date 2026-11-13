@@ -11,8 +11,8 @@ còn phải kiểm tay. Quy tắc chung khi hoàn thành một story nằm ở
 |---|---|---|---|
 | Test đơn vị (Service) | `src/test/java/com/bluemoon/service` | Quy tắc nghiệp vụ, kiểm tra dữ liệu, phân quyền (`PhanQuyen`), thông báo lỗi | Không cần MySQL: Service nhận DAO qua constructor, test dùng DAO giả trong bộ nhớ (`KhoGia`, `KhoThuPhiGia`, `KhoPhieuThuGia`) |
 | Test đơn vị (tiện ích, DAO không cần CSDL) | `util`, `dao`, `config`, `controller`, `xuat` | Ghi tệp Excel rồi đọc lại bằng POI (ô số, ô ngày, cột, tổng), ghi tệp tạm rồi đổi tên, băm mật khẩu, đọc ngày, đổi mã lỗi MySQL thành lỗi nghiệp vụ (`DangBiKhoaException`, `TrungKhoaException`), đồng hồ `DongHoCsdl` với `Clock.fixed`, chọn thông báo lỗi (`LoiCsdl`, `LoiKhongMongDoi`), số tiền bằng chữ | Không |
-| Test bố cục giao diện | `BoCucFxmlTest`, `MauInTest`, `HopThoaiHuyPhieuTest` | Nạp từng FXML ở cửa sổ 1120×645 bằng JavaFX chạy không màn hình (Monocle), kiểm không nút hay nhãn nào bị cắt thành "…", chữ gợi ý nằm trọn trong ô, mọi nút nằm trong vùng thấy được hoặc cuộn được, dùng đúng phông Be Vietnam Pro; số tiền lớn nhất vẫn vừa cột biên lai; hộp thoại hủy phiếu có đúng nút | Không cần màn hình, chạy được trên CI |
-| Test hành vi giao diện | `PhimEnterTest`, `TrangChinhMenuTest`, `MauPhuTest`, `BieuDoThuPhiTest`, `TheHoConNoTest` | Tải FXML thật trên cửa sổ ảo (Monocle), gửi sự kiện Enter vào từng ô và xem nút nào chạy; bấm logo về Trang chính, nút menu đang chọn có nền `#1d4ed8` do JavaFX vẽ, mục "Thống kê" nằm giữa Thu phí và Tài khoản; màu chữ phụ, tiêu đề cột và tương phản WCAG AA; biểu đồ thu phí vẽ thật đúng quy tắc biểu đồ (tên trục, trục Y từ 0, cột tháng hiện tại khác màu, số trên đầu cột); thẻ "Hộ còn nợ" mở màn Công nợ ở tab "Hộ nợ đọng" | Không cần màn hình, chạy được trên CI |
+| Test bố cục giao diện | `BoCucFxmlTest`, `MauInTest`, `HopThoaiHuyPhieuTest` | Nạp từng FXML ở cửa sổ 1120×645 bằng JavaFX chạy không màn hình (Monocle), kiểm không nút hay nhãn nào bị cắt thành "…", chữ gợi ý nằm trọn trong ô, mọi nút nằm trong vùng thấy được hoặc cuộn được, dùng đúng phông Be Vietnam Pro; không chữ nào dưới 14 px, nút và ô nhập cao ≥ 36 (nút chính ≥ 40), hai nút cạnh nhau cách ≥ 8 px, bảng không còn chữ "No content in table" (TS-004); số tiền lớn nhất vẫn vừa cột biên lai; hộp thoại hủy phiếu có đúng nút | Không cần màn hình, chạy được trên CI |
+| Test hành vi giao diện | `PhimEnterTest`, `TrangChinhMenuTest`, `MauPhuTest`, `DeDocTest`, `ThuMotHoNamBuocTest`, `BieuDoThuPhiTest`, `TheHoConNoTest` | Tải FXML thật trên cửa sổ ảo (Monocle), gửi sự kiện Enter vào từng ô và xem nút nào chạy; thu một hộ trên màn Thu phí thật bằng phím và chuột giả lập, đếm thao tác và xem tiêu điểm sau mỗi bước (AC-072); tương phản mọi cặp chữ/nền đo từ CSS, chữ gốc 16 px, độ cao ô/nút/dòng bảng, viền tiêu điểm màu chính, CSS được JavaFX đọc hết; bấm logo về Trang chính, nút menu đang chọn có nền `#1d4ed8` do JavaFX vẽ, mục "Thống kê" nằm giữa Thu phí và Tài khoản; màu chữ phụ, tiêu đề cột và tương phản WCAG AA; biểu đồ thu phí vẽ thật đúng quy tắc biểu đồ (tên trục, trục Y từ 0, cột tháng hiện tại khác màu, số trên đầu cột); thẻ "Hộ còn nợ" mở màn Công nợ ở tab "Hộ nợ đọng" | Không cần màn hình, chạy được trên CI |
 | Test tài liệu | `TruyVetTaiLieuTest`, `UiMdTest`, `TestingMdTest` | Mã RAW trích trong chú thích khớp bảng truy vết, `ui.md` giữ đủ quy tắc biểu đồ và bảng màu, mọi `Lớp#phương_thức` trong bảng AC → test ở đây còn tồn tại | Không |
 | Kiểm thử script sao lưu | `src/test/scripts/kiem-thu-sao-luu.ps1`, `ScriptSaoLuuTest` | `sao-luu.ps1` với `mysqldump` giả: lỗi giữa chừng, tệp bị cắt dù mã 0, chỉ xóa bản cũ khi thành công, không đụng tệp khác mẫu tên, dòng log; tùy chọn `mysqldump` theo giả định 43, script lưu UTF-8 có BOM, không có tham số mật khẩu | PowerShell 5.1 hoặc `pwsh`, không cần MySQL; CI chạy ở job `build` |
 | Kiểm thử tích hợp (`*IT`) | `src/test/java/com/bluemoon/it` | Phần chỉ MySQL thật mới chứng minh được: khóa dòng, deadlock, ràng buộc CSDL, giao dịch hoàn tác, giờ máy chủ, dữ liệu mẫu | MySQL 8, CSDL riêng có chữ `test` trong tên, profile `-Pmysql` |
@@ -51,13 +51,21 @@ không có chữ `test`, để không xóa nhầm CSDL `bluemoon` đang dùng.
 | IntelliJ | Maven → bluemoon → Lifecycle → `test` |
 | Dòng lệnh | `mvn test` hoặc `mvn verify` (cần Maven 3.9+ trong PATH) |
 
-Kết quả mong đợi: `BUILD SUCCESS`, 350 test. `mvn verify` không có
+Kết quả mong đợi: `BUILD SUCCESS`, 366 test (1 bỏ qua: `ChupManHinhTest`
+chỉ chạy khi có `-DchupAnh`). `mvn verify` không có
 `-Pmysql` không chạy lớp `*IT`.
 
 Chạy riêng test bố cục sau khi sửa FXML hoặc CSS:
 
 ```
 mvn test -Dtest=BoCucFxmlTest
+```
+
+Chụp ảnh các màn hình (PNG, Monocle, không điều khiển màn hình) cho báo cáo
+rà soát giao diện; chỉ chạy khi có `-DchupAnh`:
+
+```
+mvn test -Dtest=ChupManHinhTest,ThuMotHoNamBuocTest,TrangChinhSoLieuTest -DchupAnh=docs/review/ts-004 -DchupTienTo=sau
 ```
 
 ### Kiểm thử tích hợp (cần MySQL)
@@ -104,6 +112,7 @@ hai xanh:
 | Sprint 4, sau US-018 và AC-014 | 347 | 57 |
 | Sprint 4, sau TS-001 (chưa phát hành) | 350 | 60 |
 | Sprint 4, sau sửa đọc có khóa trong `suaSoTien` (chưa phát hành) | 350 | 62 |
+| Sprint 4, sau TS-004 (chưa phát hành) | 366 | 62 |
 
 ## 4. Ánh xạ AC → test tự động
 
@@ -192,7 +201,28 @@ Ký hiệu: ✓ có test tự động đủ; ◐ có test nhưng một phần c�
 | AC-043 phiếu hủy giữ vết kèm người hủy | `ThuPhiServiceTest#phieuHomNayGomCaPhieuHuy`, `#huyCanLyDoVaKhongHuyHaiLan`, `#thuQuyKhongHuyPhieuNguoiKhacQuanTriThiDuoc`, `TomTatPhieuHomNayTest` | ✓ |
 | AC-044 thông báo liệt kê khoản | `ThongBaoPhiServiceTest#thongBaoLietKeKhoanThangVaNoCu`, `#thangChuaChotChuaInDuoc` | ✓ |
 | AC-045 không có khoản thì báo | `ThongBaoPhiServiceTest#hoKhongCoKhoanCanDongThiBao` | ✓ |
-| AC-072 tối đa 5 bước, chữ rõ | `BoCucFxmlTest#khongCoChuBiCat` cho `thu-phi.fxml` (chữ không bị cắt) | ◐ số bước thao tác kiểm tay: lập phiếu 4–5 thao tác |
+| AC-072 tối đa 5 bước, chữ rõ | `ThuMotHoNamBuocTest#thuMotHoTrongBonThaoTacTieuDiemDungCho` (4 thao tác, tiêu điểm đúng chỗ sau mỗi bước, xem [bảng các bước](#các-bước-thu-một-hộ-ac-072)), `#maSaiThiTieuDiemVanOOMaPhong`, `DeDocTest#moiCapChuNenDatAa`, `#chuGoc16ChuLoiVaChuNutChinhDungMau`, `#oNhapNutDongBangDuCao`, `#oDangCoTieuDiemCoVienMauChinh`, `#javaFxDocHetMoiLuatCss`, `BoCucFxmlTest#khongCoChuBiCat` (mọi màn: chữ không cắt, ≥ 14 px, nút và ô đủ cao, nút cách ≥ 8 px), `#thanhMenuHienDuTenVaVaiTro` (1120, 1366, 1440 px), `#congNoNhanRongKhongGiuCho`, `NguoiDungThanhMenuTest#tenDaiRutGonKemTooltipDayDu`, `TrangChinhSoLieuTest#soLieuBinhThuongKhongChongChu` (Trang chính có số liệu ở 1440×1024 và 1120×645: nhãn tháng, số trên cột, tên trục không chồng nhau, không chữ bị cắt) | ◐ người chưa dùng thử thu một hộ kiểm tay (mục 5) |
+
+#### Các bước thu một hộ (AC-072)
+
+Bước là một thao tác chủ động của người dùng; gõ mã rồi Enter tính là 1.
+`ThuMotHoNamBuocTest` tải `thu-phi.fxml` thật cùng controller, dữ liệu giả
+(`ThuPhiGia`: hộ A0601 nợ 3 khoản), gõ phím vào ô đang có tiêu điểm và bấm
+chuột vào nút như người dùng; hộp xác nhận và hộp "Đã thu tiền" là hộp
+thoại thật.
+
+| Bước | Thao tác | Kiểm sau bước | Đếm |
+|---|---|---|---|
+| Mở màn | – | Tiêu điểm ở ô mã phòng | 0 |
+| 1 | Gõ "a0601", nhấn Enter | 3 khoản chọn sẵn, nút "Thu tất cả" bấm được; tiêu điểm ở "Tiền mặt" | 1 |
+| 2 | Xem khoản | – | 0 |
+| 3 | Bấm "Tiền mặt" | Đã chọn, tiêu điểm ở "Tiền mặt" | 1 |
+| 4 | Bấm "Thu tất cả" | Hộp xác nhận mở, tiêu điểm ở "Đồng ý" (nút mặc định); chưa có phiếu | 1 |
+| 5 | Bấm "Đồng ý" | Có 1 phiếu, tổng 1.283.500 đ, tiền mặt; hộp có "In biên lai" và "Để sau" | 1 |
+| Sau (không tính) | Bấm "Để sau" | Tiêu điểm về ô mã phòng, "a0601" bôi đen | – |
+
+Tổng 4 thao tác ≤ 5. Mã sai: thông báo đỏ, tiêu điểm vẫn ở ô mã phòng và mã
+được bôi đen để gõ đè.
 
 Khác ở Sprint 3, không gắn một AC riêng: chặn thu trùng và deadlock
 (`PhieuThuIT#csdlChanThuTrungMotKhoanPhaiNop`, `#haiMayCungThuMotKhoanChiMotPhieuThanhCong`,
@@ -229,7 +259,7 @@ Làm trước mỗi lần demo hoặc phát hành, theo thứ tự:
 | Dữ liệu mẫu cho demo | Dựng lại CSDL rồi xem Nhân khẩu và Thu phí theo kịch bản ở [setup.md](setup.md), mục 5 | `seed.sql` |
 | In biên lai, thông báo phí, danh sách tạm vắng | Chọn "Microsoft Print to PDF" nếu không có máy in; xem khung "BẢN IN LẠI", số tiền bằng chữ, chữ ký, danh sách tạm vắng in khổ ngang | AC-039, AC-040, AC-012 |
 | Hộp thoại máy in và xem trước | Xem bằng mắt, hộp thoại hệ điều hành không tự động được | US-013, US-015, US-004 |
-| Số bước thu tiền cho một hộ | Một người chưa dùng thử thao tác từ nhập mã phòng đến phiếu thu, đếm bước | AC-072 |
+| Số bước thu tiền cho một hộ | Một người chưa dùng ứng dụng (tốt nhất là người lớn tuổi) thử thu một hộ từ lúc mở màn Thu phí đến khi có phiếu, chỉ được nghe "thu phí căn A0601 bằng tiền mặt". Người kiểm đếm số thao tác, ghi chỗ người thử dừng lại, hỏi, hoặc bấm nhầm, ghi vào bảng dưới | AC-072 |
 | Tốc độ tra cứu | Tra cứu một hộ, kết quả trong dưới 3 giây | AC-032 |
 | Menu theo vai trò | Đăng nhập từng vai trò, đối chiếu menu với bảng phân quyền ở [architecture.md](design/architecture.md); Thủ quỹ không thấy tab "Quản lý tài khoản" và "Nhật ký thao tác" trong màn Tài khoản | AC-060, AC-061, AC-069 |
 | Hộp thoại lỗi không lường trước | Khó tái hiện có chủ ý; phần chọn thông báo đã có `LoiKhongMongDoiTest`, hộp thoại hiện ra thì xem bằng mắt | `LoiKhongMongDoi` |
@@ -238,7 +268,13 @@ Làm trước mỗi lần demo hoặc phát hành, theo thứ tự:
 | Hộ nợ đọng | Bấm thẻ "Hộ còn nợ" ở Trang chính: mở Công nợ ở tab "Hộ nợ đọng", menu Công nợ đang chọn; đổi qua lại "Nợ từ 3 tháng trở lên" và "Tất cả hộ còn nợ", số hộ và dòng tổng khớp thẻ ở Trang chính | AC-048, AC-049 |
 | Mở tệp Excel đã xuất | Xuất báo cáo thu một tháng có phiếu và danh sách tạm vắng, mở bằng Excel thật: chữ có dấu đúng, cột tiền cộng được (chọn cột thấy Sum), cột ngày lọc được theo ngày, dòng tiêu đề đứng yên khi cuộn; mở tệp trong Excel rồi xuất đè lên: báo "Tệp đang được mở trong chương trình khác…", tệp cũ còn nguyên; chọn tháng chưa có phiếu: báo ngay, không mở hộp chọn tệp | AC-014, AC-050, AC-051 |
 | Lịch sao lưu trên Windows | Trên máy đặt MySQL: tạo login-path, chạy thử `sao-luu.ps1`, chạy `dang-ky-lich-sao-luu.ps1`, bấm Run trên tác vụ trong Task Scheduler; xem Last Run Result `0x0`, tab History, dòng `THÀNH CÔNG` mới trong `sao-luu.log`; hôm sau xem lần chạy 22:00 đầu tiên (hoặc lần chạy bù khi bật máy); rồi `khoi-phuc-thu.ps1` trên tệp đó ra `KẾT QUẢ: KHỚP` ([setup.md](setup.md), mục 7) | AC-066, AC-067 |
-| Giao diện so với Figma | Mở từng màn ở 1120×645 và đối chiếu thiết kế ([ui.md](design/ui.md)) | NFR |
+| Giao diện so với Figma | Mở từng màn ở 1120×645 và đối chiếu thiết kế ([ui.md](design/ui.md)); ảnh chụp trước/sau TS-004 ở [ts-004-giao-dien.md](review/ts-004-giao-dien.md) | NFR |
+
+Kết quả thử thu một hộ với người chưa dùng (AC-072), ghi mỗi lần thử:
+
+| Ngày | Người thử | Số thao tác | Chỗ lúng túng | Xử lý |
+|---|---|---|---|---|
+| (chưa thử) | | | | |
 
 ## 6. Viết test mới
 

@@ -2,6 +2,7 @@ package com.bluemoon;
 
 import com.bluemoon.controller.LoiKhongMongDoi;
 import com.bluemoon.util.DieuHuong;
+import com.bluemoon.util.KieuHopThoai;
 import com.bluemoon.util.PhongChu;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -17,6 +18,7 @@ public class App extends Application {
     public void start(Stage stage) {
         LoiKhongMongDoi.caiDat();
         PhongChu.nap();
+        KieuHopThoai.caiDat();
         stage.setTitle(TIEU_DE);
         DieuHuong.khoiTao(stage);
         DieuHuong.hienDangNhap();

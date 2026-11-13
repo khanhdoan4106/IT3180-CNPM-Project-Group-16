@@ -12,6 +12,7 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -35,7 +36,7 @@
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="soThanhVienLabel" styleClass="phu-de"/>
                 <Button minWidth="-Infinity" fx:id="tamVangButton"
-                        text="Danh sách tạm vắng"
+                        text="Xem danh sách tạm vắng"
                         onAction="#onDanhSachTamVang"/>
             </HBox>
             <BorderPane.margin>
@@ -50,21 +51,21 @@
                     <TableColumn fx:id="cotHoTen" text="Họ tên"
                                  prefWidth="180"/>
                     <TableColumn fx:id="cotNgaySinh" text="Ngày sinh"
-                                 prefWidth="95"/>
-                    <TableColumn fx:id="cotGioiTinh" text="Giới tính"
-                                 prefWidth="75"/>
-                    <TableColumn fx:id="cotCccd" text="Số CCCD"
                                  prefWidth="115"/>
-                    <TableColumn fx:id="cotQuanHe" text="Quan hệ"
-                                 prefWidth="85"/>
-                    <TableColumn fx:id="cotCuTru" text="Cư trú"
-                                 prefWidth="85"/>
-                    <TableColumn fx:id="cotHanTamTru" text="Hạn tạm trú"
-                                 prefWidth="100"/>
-                    <TableColumn fx:id="cotTamVang" text="Tạm vắng đến"
+                    <TableColumn fx:id="cotGioiTinh" text="Giới tính"
                                  prefWidth="105"/>
-                    <TableColumn fx:id="cotTrangThai" text="Trạng thái"
+                    <TableColumn fx:id="cotCccd" text="Số CCCD"
+                                 prefWidth="125"/>
+                    <TableColumn fx:id="cotQuanHe" text="Quan hệ"
                                  prefWidth="100"/>
+                    <TableColumn fx:id="cotCuTru" text="Cư trú"
+                                 prefWidth="95"/>
+                    <TableColumn fx:id="cotHanTamTru" text="Hạn tạm trú"
+                                 prefWidth="125"/>
+                    <TableColumn fx:id="cotTamVang" text="Tạm vắng đến"
+                                 prefWidth="140"/>
+                    <TableColumn fx:id="cotTrangThai" text="Trạng thái"
+                                 prefWidth="120"/>
                 </columns>
                 <placeholder>
                     <Label text="Chọn một hộ để xem thành viên"/>
@@ -81,9 +82,9 @@
                             <TableColumn fx:id="cotDotLoai" text="Loại"
                                          prefWidth="85"/>
                             <TableColumn fx:id="cotDotTu" text="Từ ngày"
-                                         prefWidth="95"/>
+                                         prefWidth="110"/>
                             <TableColumn fx:id="cotDotDen" text="Đến ngày"
-                                         prefWidth="95"/>
+                                         prefWidth="115"/>
                             <TableColumn fx:id="cotDotLyDo" text="Lý do"
                                          prefWidth="180"/>
                         </columns>
@@ -100,17 +101,17 @@
                                 <ColumnConstraints hgrow="ALWAYS"/>
                             </columnConstraints>
                             <Label text="Loại *" GridPane.rowIndex="0"/>
-                            <ComboBox fx:id="loaiDotCombo"
+                            <ComboBox fx:id="loaiDotCombo" minWidth="120"
                                       maxWidth="Infinity"
                                       GridPane.rowIndex="0"
                                       GridPane.columnIndex="1"/>
                             <Label text="Từ ngày *" GridPane.rowIndex="1"/>
-                            <DatePicker fx:id="dotTuPicker"
+                            <DatePicker fx:id="dotTuPicker" minWidth="120"
                                         maxWidth="Infinity"
                                         GridPane.rowIndex="1"
                                         GridPane.columnIndex="1"/>
                             <Label text="Đến ngày *" GridPane.rowIndex="2"/>
-                            <DatePicker fx:id="dotDenPicker"
+                            <DatePicker fx:id="dotDenPicker" minWidth="120"
                                         maxWidth="Infinity"
                                         GridPane.rowIndex="2"
                                         GridPane.columnIndex="1"/>
@@ -135,7 +136,7 @@
              nhat "Nơi thường trú *" voi Be Vietnam Pro ~108px) de o nhap
              cac nhom thang hang. Doi nhan thi do lai. -->
         <ScrollPane styleClass="the,cuon-form" fitToWidth="true"
-                    hbarPolicy="NEVER" prefWidth="380">
+                    hbarPolicy="NEVER" prefWidth="430">
             <BorderPane.margin>
                 <Insets left="20"/>
             </BorderPane.margin>
@@ -146,17 +147,17 @@
                        styleClass="tieu-de-form"/>
                 <GridPane hgap="10" vgap="10">
                     <columnConstraints>
-                        <ColumnConstraints minWidth="116" prefWidth="116" maxWidth="116"/>
+                        <ColumnConstraints minWidth="140" prefWidth="140" maxWidth="140"/>
                         <ColumnConstraints hgrow="ALWAYS"/>
                     </columnConstraints>
                     <Label text="Họ tên *" GridPane.rowIndex="0"/>
                     <TextField fx:id="hoTenField" GridPane.rowIndex="0"
                                GridPane.columnIndex="1"/>
                     <Label text="Ngày sinh *" GridPane.rowIndex="1"/>
-                    <DatePicker fx:id="ngaySinhPicker" maxWidth="Infinity"
+                    <DatePicker fx:id="ngaySinhPicker" minWidth="120" maxWidth="Infinity"
                                 GridPane.rowIndex="1" GridPane.columnIndex="1"/>
                     <Label text="Giới tính *" GridPane.rowIndex="2"/>
-                    <ComboBox fx:id="gioiTinhCombo" maxWidth="Infinity"
+                    <ComboBox fx:id="gioiTinhCombo" minWidth="120" maxWidth="Infinity"
                               GridPane.rowIndex="2" GridPane.columnIndex="1"/>
                     <Label text="Số CCCD" GridPane.rowIndex="3"/>
                     <TextField fx:id="cccdField"
@@ -167,16 +168,16 @@
                         </tooltip>
                     </TextField>
                     <Label text="Quan hệ *" GridPane.rowIndex="4"/>
-                    <ComboBox fx:id="quanHeCombo" maxWidth="Infinity"
+                    <ComboBox fx:id="quanHeCombo" minWidth="120" maxWidth="Infinity"
                               GridPane.rowIndex="4" GridPane.columnIndex="1"/>
                     <Label text="Cư trú *" GridPane.rowIndex="5"/>
-                    <ComboBox fx:id="loaiCuTruCombo" maxWidth="Infinity"
+                    <ComboBox fx:id="loaiCuTruCombo" minWidth="120" maxWidth="Infinity"
                               GridPane.rowIndex="5" GridPane.columnIndex="1"/>
                 </GridPane>
                 <!-- Chi hien voi nguoi tam tru; ngay tam tru chi khi them moi. -->
                 <GridPane fx:id="tamTruGrid" hgap="10" vgap="10">
                     <columnConstraints>
-                        <ColumnConstraints minWidth="116" prefWidth="116" maxWidth="116"/>
+                        <ColumnConstraints minWidth="140" prefWidth="140" maxWidth="140"/>
                         <ColumnConstraints hgrow="ALWAYS"/>
                     </columnConstraints>
                     <Label text="Nơi thường trú *" GridPane.rowIndex="0"/>
@@ -184,27 +185,28 @@
                                GridPane.columnIndex="1"/>
                     <Label fx:id="tamTruTuLabel" text="Tạm trú từ *"
                            GridPane.rowIndex="1"/>
-                    <DatePicker fx:id="tamTruTuPicker" maxWidth="Infinity"
+                    <DatePicker fx:id="tamTruTuPicker" minWidth="120" maxWidth="Infinity"
                                 GridPane.rowIndex="1" GridPane.columnIndex="1"/>
                     <Label fx:id="tamTruDenLabel" text="Tạm trú đến *"
                            GridPane.rowIndex="2"/>
-                    <DatePicker fx:id="tamTruDenPicker" maxWidth="Infinity"
+                    <DatePicker fx:id="tamTruDenPicker" minWidth="120" maxWidth="Infinity"
                                 GridPane.rowIndex="2" GridPane.columnIndex="1"/>
                 </GridPane>
                 <Label fx:id="thongBaoLabel" wrapText="true"/>
-                <!-- Hai hang: khung 380px khong du cho 4 nut tren mot hang. -->
+                <!-- Hai hang: khung form khong du cho 4 nut tren mot hang;
+                     hang duoi xuong dong khi chu 16 px khong du cho. -->
                 <HBox spacing="10">
                     <Button minWidth="-Infinity" fx:id="luuButton" text="Lưu"
                             styleClass="nut-chinh" onAction="#onLuu"/>
                     <Button minWidth="-Infinity" text="Nhập mới" onAction="#onNhapMoi"/>
                 </HBox>
-                <HBox spacing="10">
+                <FlowPane hgap="10" vgap="10" prefWrapLength="300">
                     <Button minWidth="-Infinity" fx:id="chuHoButton" text="Đặt làm chủ hộ"
                             disable="true" onAction="#onDatChuHo"/>
                     <Button minWidth="-Infinity" fx:id="chuyenDiButton" text="Đánh dấu chuyển đi"
-                            styleClass="nut-phu" disable="true"
+                            styleClass="nut-nguy-hiem" disable="true"
                             onAction="#onChuyenDi"/>
-                </HBox>
+                </FlowPane>
             </VBox>
         </ScrollPane>
     </right>

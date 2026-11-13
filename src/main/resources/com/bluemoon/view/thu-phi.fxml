@@ -52,13 +52,13 @@
                                           visible="false" managed="false"/>
                                 <Region HBox.hgrow="ALWAYS"/>
                                 <Button fx:id="lichSuButton" minWidth="-Infinity"
-                                        text="Lịch sử thu của hộ"
+                                        text="Xem lịch sử thu"
                                         disable="true" onAction="#onLichSu"/>
                             </HBox>
                             <HBox styleClass="dai-thong-tin">
                                 <Label fx:id="hoLabel" HBox.hgrow="ALWAYS"
                                        maxWidth="Infinity"
-                                       text="Nhập mã phòng rồi bấm Tra cứu"/>
+                                       text="Gõ mã phòng rồi nhấn Enter (hoặc bấm Tra cứu)"/>
                                 <Label fx:id="noLabel" minWidth="-Infinity"/>
                             </HBox>
                         </VBox>
@@ -114,14 +114,14 @@
                                        text="Để trống nếu chưa thu. Nhập 0 nếu hộ không đóng."/>
                                 <VBox styleClass="khung-bang"
                                       VBox.vgrow="ALWAYS">
-                                    <GridPane styleClass="hang-tieu-de">
+                                    <GridPane styleClass="hang-tieu-de" hgap="8">
                                         <padding>
                                             <Insets top="8" right="10"
                                                     bottom="8" left="10"/>
                                         </padding>
                                         <columnConstraints>
-                                            <ColumnConstraints prefWidth="195"
-                                                               minWidth="195"/>
+                                            <ColumnConstraints prefWidth="185"
+                                                               minWidth="185" maxWidth="185"/>
                                             <ColumnConstraints prefWidth="90"
                                                                minWidth="90"/>
                                             <ColumnConstraints prefWidth="105"
@@ -134,14 +134,14 @@
                                     <ScrollPane fitToWidth="true"
                                                 styleClass="cuon-form"
                                                 VBox.vgrow="ALWAYS">
-                                        <GridPane fx:id="quyGrid" vgap="0">
+                                        <GridPane fx:id="quyGrid" vgap="0" hgap="8">
                                             <padding>
                                                 <Insets top="0" right="10"
                                                         bottom="0" left="10"/>
                                             </padding>
                                             <columnConstraints>
-                                                <ColumnConstraints prefWidth="195"
-                                                                   minWidth="195"/>
+                                                <ColumnConstraints prefWidth="185"
+                                                                   minWidth="185" maxWidth="185"/>
                                                 <ColumnConstraints prefWidth="90"
                                                                    minWidth="90"/>
                                                 <ColumnConstraints prefWidth="105"
@@ -232,7 +232,7 @@
                                 <Button minWidth="-Infinity" text="In biên lai"
                                         onAction="#onInBienLai"/>
                                 <Button minWidth="-Infinity" text="Hủy phiếu"
-                                        styleClass="nut-phu"
+                                        styleClass="nut-nguy-hiem"
                                         onAction="#onHuyPhieu"/>
                             </HBox>
                             <Label fx:id="thongBaoPhieuLabel" wrapText="true"/>

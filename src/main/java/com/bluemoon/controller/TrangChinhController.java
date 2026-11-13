@@ -56,7 +56,9 @@ public class TrangChinhController {
     private final DongHoCsdl dongHo = new DongHoCsdl();
 
     @FXML
-    private Label chaoLabel;
+    private Label tenNguoiDungLabel;
+    @FXML
+    private Label vaiTroLabel;
     @FXML
     private StackPane noiDung;
     @FXML
@@ -94,6 +96,31 @@ public class TrangChinhController {
     @FXML
     private Label noDongLabel;
 
+    /**
+     * Ten va vai tro nguoi dung tren thanh menu (Figma "Nguoi dung"): hai
+     * dong can phai, khong "Xin chao". Ten qua dai thi rut gon "...", tooltip
+     * tren ca hai dong hien du "Ten – Vai tro".
+     *
+     * @param ten nhan ten
+     * @param vaiTro nhan vai tro
+     * @param tk tai khoan dang nhap, null thi de trong
+     */
+    static void hienNguoiDung(Label ten, Label vaiTro, TaiKhoan tk) {
+        if (tk == null) {
+            ten.setText("");
+            vaiTro.setText("");
+            ten.setTooltip(null);
+            vaiTro.setTooltip(null);
+            return;
+        }
+        ten.setText(tk.getHoTen());
+        vaiTro.setText(tk.getVaiTro().getNhan());
+        Tooltip du = new Tooltip(tk.getHoTen() + " – "
+                + tk.getVaiTro().getNhan());
+        ten.setTooltip(du);
+        vaiTro.setTooltip(du);
+    }
+
     /** Nut menu cua man hinh dang mo (nen dam), khong nut nao o Trang chinh. */
     private ThanhMenu menu;
     /** Noi dung Trang chinh luc moi vao, de hien lai khi bam logo. */
@@ -102,13 +129,7 @@ public class TrangChinhController {
     @FXML
     private void initialize() {
         TaiKhoan tk = PhienLamViec.hienTai();
-        if (tk != null) {
-            chaoLabel.setText("Xin chào, " + tk.getHoTen() + " ("
-                    + tk.getVaiTro().getNhan() + ")");
-            // Ten dai co the bi rut gon "..." tren thanh menu: hien du
-            // noi dung khi re chuot.
-            chaoLabel.setTooltip(new Tooltip(chaoLabel.getText()));
-        }
+        hienNguoiDung(tenNguoiDungLabel, vaiTroLabel, tk);
         // AC-060: Thu quy khong dung ho gia dinh, nhan khau. Muc Tai khoan
         // ai cung thay (US-023); tab quan ly chi Quan tri vien thay.
         boolean quanTri = tk != null && tk.getVaiTro() == VaiTro.QUAN_TRI;
@@ -148,7 +169,7 @@ public class TrangChinhController {
         try {
             List<BienDong> ds = new BienDongService(new BienDongDaoImpl())
                     .ganDay(PhienLamViec.hienTai());
-            TableView<BienDong> bang = BangLichSu.taoBang(ds, true);
+            TableView<BienDong> bang = BangLichSu.taoBangGon(ds);
             bang.setPrefHeight(200);
             // Giu tieu de (phan tu dau), bo bang cu khi lam moi.
             if (bienDongBox.getChildren().size() > 1) {
@@ -186,7 +207,7 @@ public class TrangChinhController {
                     + " chưa kết thúc, số liệu tính đến hôm nay.");
         } catch (NghiepVuException | CauHinhException | DaoException e) {
             daThuLabel.setText("–");
-            tyLeLabel.setText("Chưa đọc được số liệu thu phí");
+            tyLeLabel.setText("Chưa đọc được số liệu. Bấm BlueMoon để thử lại.");
         }
         try {
             TomTatNo no = new NoDongService(new NoDongDaoImpl()).tomTat(tk);
@@ -194,7 +215,7 @@ public class TrangChinhController {
             noDongLabel.setText(dongNoDong(no));
         } catch (NghiepVuException | CauHinhException | DaoException e) {
             soHoNoLabel.setText("–");
-            noDongLabel.setText("Chưa đọc được số liệu nợ");
+            noDongLabel.setText("Chưa đọc được số liệu. Bấm BlueMoon để thử lại.");
         }
     }
 
