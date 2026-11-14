@@ -84,7 +84,7 @@ mvn test -Dtest=ChupManHinhTest,ThuMotHoNamBuocTest,TrangChinhSoLieuTest -DchupA
    Nếu user không phải `bluemoon`, đặt thêm `BLUEMOON_DB_USER` và
    `BLUEMOON_DB_PASSWORD`.
 
-Kết quả mong đợi: 350 test đơn vị và 62 kiểm thử tích hợp đều đạt (MySQL
+Kết quả mong đợi: 366 test đơn vị và 62 kiểm thử tích hợp đều đạt (MySQL
 8.0). Hai test cấu hình (`DatabaseConfigTest`) tự bỏ qua khi đã đặt
 `BLUEMOON_DB_*`, nên log hiện "Skipped: 2" ở lần chạy này.
 
@@ -112,7 +112,7 @@ hai xanh:
 | Sprint 4, sau US-018 và AC-014 | 347 | 57 |
 | Sprint 4, sau TS-001 (chưa phát hành) | 350 | 60 |
 | Sprint 4, sau sửa đọc có khóa trong `suaSoTien` (chưa phát hành) | 350 | 62 |
-| Sprint 4, sau TS-004 (chưa phát hành) | 366 | 62 |
+| `v1.0.0` (Sprint 4, sau TS-004) | 366 | 62 |
 
 ## 4. Ánh xạ AC → test tự động
 

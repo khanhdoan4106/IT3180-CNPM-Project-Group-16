@@ -18,7 +18,7 @@
 | Sprint 1 | 24 | `v0.1.0` | Hoàn thành |
 | Sprint 2 | 32 | `v0.2.0` | Hoàn thành, trừ AC-026 của US-008 (làm cùng phiếu thu ở Sprint 3) |
 | Sprint 3 | 28 | `v0.3.0` (đã phát hành) | Hoàn thành; AC-014 của US-004 (xuất tệp) hoàn thành ở Sprint 4 |
-| Sprint 4 | 28 | `v1.0.0` | Đang làm |
+| Sprint 4 | 28 | `v1.0.0` (đã phát hành) | Hoàn thành |
 | **Tổng** | **112** | | |
 
 US-026 và US-027 đưa vào Sprint 2 (giả định 20, 26). US-008 đã làm AC-025

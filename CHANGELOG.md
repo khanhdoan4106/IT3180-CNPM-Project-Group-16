@@ -8,6 +8,12 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
 
 ## [Chưa phát hành]
 
+## [v1.0.0] – 14/11/2026 – Sprint 4
+
+Bản phát hành đầu tiên đủ phạm vi v1.0: thống kê, báo cáo Excel, hộ nợ
+đọng, nhật ký thao tác, sao lưu và rà soát giao diện. Rà soát trước phát
+hành: [truoc-phat-hanh-v1.0.0.md](docs/review/truoc-phat-hanh-v1.0.0.md).
+
 ### Thêm
 
 - **Nhật ký thao tác (TS-002, AC-068, AC-069):** mọi thao tác thay đổi dữ
@@ -319,7 +325,8 @@ biến động. **Phải dựng lại CSDL** khi nâng từ `v0.1.0`.
 
 97 test JUnit 5; CI chạy `mvn verify` cho mỗi Pull Request.
 
-[Chưa phát hành]: https://github.com/khanhdoan4106/IT3180-CNPM-Project-Group-16/compare/v0.3.0...main
+[Chưa phát hành]: https://github.com/khanhdoan4106/IT3180-CNPM-Project-Group-16/compare/v1.0.0...main
+[v1.0.0]: https://github.com/khanhdoan4106/IT3180-CNPM-Project-Group-16/releases/tag/v1.0.0
 [v0.3.0]: https://github.com/khanhdoan4106/IT3180-CNPM-Project-Group-16/releases/tag/v0.3.0
 [v0.2.0]: https://github.com/khanhdoan4106/IT3180-CNPM-Project-Group-16/releases/tag/v0.2.0
 [v0.1.0]: https://github.com/khanhdoan4106/IT3180-CNPM-Project-Group-16/releases/tag/v0.1.0

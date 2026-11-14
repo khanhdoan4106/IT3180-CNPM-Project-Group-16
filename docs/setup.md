@@ -61,7 +61,7 @@ mới đổi cấu trúc bảng đã có, CSDL cũ phải dựng lại từ đ�
 |---|---|---|---|
 | `v0.1.0` (Sprint 1) | `v0.2.0` (Sprint 2) | Thêm cột `tai_khoan.so_dien_thoai` | Có |
 | `v0.2.0` (Sprint 2) | `v0.3.0` (Sprint 3) | Không. Chỉ thêm bảng mới `bo_dem_bien_lai`, `phieu_thu`, `phieu_thu_chi_tiet` | Không bắt buộc: chạy lại `schema.sql` là đủ để chạy ứng dụng, dữ liệu cũ giữ nguyên |
-| `v0.3.0` (Sprint 3) | `v0.4.0` (Sprint 4, chưa phát hành) | Không. Chỉ thêm bảng mới `nhat_ky` và hai trigger `trg_nky_chan_sua`, `trg_nky_chan_xoa` (TS-002) | Không bắt buộc: chạy lại `schema.sql` bằng root, dữ liệu cũ giữ nguyên; nhật ký bắt đầu từ lúc nâng cấp |
+| `v0.3.0` (Sprint 3) | `v1.0.0` (Sprint 4) | Không. Chỉ thêm bảng mới `nhat_ky` và hai trigger `trg_nky_chan_sua`, `trg_nky_chan_xoa` (TS-002) | Không bắt buộc: chạy lại `schema.sql` bằng root, dữ liệu cũ giữ nguyên; nhật ký bắt đầu từ lúc nâng cấp |
 
 Nâng từ `v0.2.0` giữ được dữ liệu, nhưng **dữ liệu mẫu cũ không được đổi**: tên
 không dấu ("Nguyen Thi Lan"), quỹ mẫu có ngày cố định (Quỹ biển đảo hết hạn
