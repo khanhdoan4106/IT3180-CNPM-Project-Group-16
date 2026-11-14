@@ -161,6 +161,59 @@ Màn Khoản thu: có Phí dịch vụ (5.000 đ/m²), Phí quản lý (7.000 đ
 người nghèo `<năm>`" (không cố định số tiền) và "Quỹ biển đảo" (50.000 đ mỗi
 hộ), hai quỹ sau đang mở.
 
+### Dữ liệu demo đầy đủ (`seed-demo.sql`)
+
+Muốn các màn có nhiều số liệu (biểu đồ 6 tháng, hộ nợ đọng, thống kê, nhật
+ký), dựng lại CSDL rồi chạy **ba tệp theo thứ tự**, cùng ngày demo:
+
+```
+mysql -u root -p < database/schema.sql
+mysql -u root -p < database/seed.sql
+mysql -u root -p < database/seed-demo.sql
+```
+
+(hoặc mở lần lượt ba tệp trong MySQL Workbench và bấm Execute). Dòng cuối in
+"Đã nạp dữ liệu demo: 40 hộ, 114 nhân khẩu, … phiếu thu". `seed-demo.sql` chỉ
+dùng cho máy demo, chỉ chạy một lần trên CSDL vừa dựng: nếu CSDL đã có đợt
+chốt, phiếu thu hoặc hộ demo thì tệp không thêm gì và báo lý do. Tệp được
+sinh bằng `python scripts/sinh-seed-demo.py` (không sửa tay); mọi người, số
+CCCD, số điện thoại trong đó đều hư cấu.
+
+Sau khi nạp:
+
+- 40 hộ (36 hộ demo: căn hộ khối A, B, C tầng 5 – 28, ki-ốt K02 – K04; một
+  hộ đã chuyển đi), 114 nhân khẩu; 6 tháng gần nhất đã chốt công nợ (tháng
+  này chỉ chốt và thu khi đã qua ngày 2 của tháng), khoảng 180 phiếu thu,
+  80 – 90% hộ đóng đủ mỗi tháng cũ, khoảng một nửa đã đóng tháng này.
+- Tài khoản: `admin` / `Admin@123` (Quản trị viên) và `thuquy` /
+  `Thuquy@123` (Thủ quỹ "Trần Thị Bình", người thu phần lớn phiếu).
+- Quỹ tự nguyện "Quỹ khuyến học" đã thu xong (4 tháng trước đến 2 tháng
+  trước), hai quỹ của `seed.sql` đang mở có vài hộ đóng góp; có hộ ghi 0 đ
+  ("Không đóng").
+- `seed-demo.sql` đặt lại thời điểm ghi của các dòng biến động mẫu trong
+  `seed.sql` về đúng ngày sự kiện, để "Biến động nhân khẩu gần đây" xếp
+  đúng thứ tự.
+
+Hộ tiêu biểu để trình bày:
+
+| Hộ | Dùng để demo |
+|---|---|
+| C1508 (Tạ Thanh Hiền) | Nợ 5 tháng, đứng đầu tab "Hộ nợ đọng"; chủ hộ đang tạm vắng |
+| B0907, A2203 | Nợ 4 và 3 tháng |
+| B1104 (đã chuyển đi) | Cả hộ chuyển đi 3 tháng trước khi còn nợ 3 tháng: vẫn có ở "Hộ nợ đọng" kèm "(đã chuyển đi)" và tra cứu thu phí được |
+| A0601 | Nợ đúng 2 tháng (1.812.000 đ) như kịch bản thu phí dưới đây; Hoàng Văn Nam tạm vắng |
+| B2005 | Phiếu tiền mặt bị hủy ("Chọn nhầm hình thức thanh toán") rồi thu lại bằng chuyển khoản |
+| C0806 | Phiếu tháng trước bị hủy ("Thu nhầm hộ"), hộ còn nợ 2 tháng |
+| A1702 | Một phiếu đóng bù hai tháng (4 khoản) |
+| B1406, C1003 | Đổi chủ hộ: chủ hộ cũ rời hộ (B1406), chủ hộ cũ ở lại làm vợ/chồng (C1003); xem "Lịch sử biến động" |
+| A0908, C2101, C2407 | Có người đang tạm vắng |
+| A1808, B1907 | Người tạm trú đã quá hạn (cột hạn tô đỏ); C1203, A1702, B1301, C2705 tạm trú còn hạn |
+| B1702, C1502, C2205, B1903 | Hộ mới chuyển đến trong 6 tháng (có trong Nhật ký) |
+
+Có `seed-demo.sql` thì kịch bản thu phí dưới đây vẫn chạy được: bước 1 "Chốt
+công nợ" chỉ báo không có khoản mới (đã chốt sẵn), tab "Phiếu thu hôm nay"
+có thể đã có vài phiếu của Thủ quỹ trong ngày.
+
 ### Kịch bản thu phí (Sprint 3)
 
 Sau khi dựng CSDL, đăng nhập `admin`:

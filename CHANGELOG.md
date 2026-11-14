@@ -10,6 +10,13 @@ dạng theo [Keep a Changelog](https://keepachangelog.com/vi/1.1.0/). Mã story
 
 ### Thêm
 
+- **Dữ liệu demo (`database/seed-demo.sql`):** chạy sau `schema.sql` +
+  `seed.sql` trên máy demo: 36 hộ, 105 nhân khẩu hư cấu, tạm trú/tạm
+  vắng, đổi chủ hộ, một hộ đã chuyển đi, 6 tháng chốt công nợ và khoảng
+  180 phiếu thu (có hộ nợ đọng, phiếu đã hủy, đóng góp quỹ), nhật ký
+  tương ứng; tài khoản Thủ quỹ mẫu `thuquy`. Chỉ nạp một lần trên CSDL
+  vừa dựng. Sinh bằng `scripts/sinh-seed-demo.py`; kiểm bằng `SeedDemoIT`
+  (`docs/setup.md`, mục 5).
 - **Nhật ký thao tác (TS-002, AC-068, AC-069):** mọi thao tác thay đổi dữ
   liệu quan trọng (lập/hủy phiếu thu, sửa số tiền phải nộp, tạo khoản thu tự
   nguyện, sửa đơn giá, chốt công nợ, thêm/sửa/chuyển đi hộ và nhân khẩu, đổi
@@ -135,14 +142,14 @@ root, dữ liệu cũ giữ nguyên. Khi MySQL bật binary log, tạo trigger c
 
 ### Kiểm thử
 
-366 test đơn vị và 62 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
+366 test đơn vị và 69 kiểm thử tích hợp trên MySQL 8.0 (thêm `NhatKyIT`,
 `NhatKyServiceTest`, `ThaoTacTest`, `NoiDungNhatKyTest`, `ThongKeIT`,
 `ThongKeServiceTest`, `ThangTrucYTest`, `BieuDoThuPhiTest`, `DongTyLeTest`,
 `NoDongIT`, `NoDongServiceTest`, `TheHoConNoTest`, `BaoCaoThuIT`,
 `BaoCaoThuServiceTest`, `BaoCaoThuExcelTest`, `TamVangExcelTest`,
 `TepExcelTest`, `DanhSachTamVangTest`, `ScriptSaoLuuTest`, `SaoLuuIT`,
 `SuaSoTienDocKhoaIT`, `ThuMotHoNamBuocTest`, `DeDocTest`, `ChupManHinhTest`,
-`NguoiDungThanhMenuTest`, `TrangChinhSoLieuTest`).
+`NguoiDungThanhMenuTest`, `TrangChinhSoLieuTest`, `SeedDemoIT`).
 `ThuMotHoNamBuocTest` thu một hộ trên màn Thu phí thật bằng phím và chuột
 giả lập, đếm thao tác và kiểm tiêu điểm sau mỗi bước; `BoCucFxmlTest` kiểm
 thêm cỡ chữ ≥ 14 px, độ cao nút và ô, khoảng cách giữa nút; `ChupManHinhTest`
