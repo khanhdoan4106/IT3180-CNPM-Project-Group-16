@@ -37,6 +37,7 @@ chứng minh trên MySQL thật, vì DAO giả không tái hiện được.
 | `NoDongIT` | Hộ nợ đọng: khoản đã thu không tính, khoản trong phiếu đã hủy tính lại là nợ, khoản sửa về 0 đ và đóng góp tự nguyện không tính, hai khoản cùng tháng chỉ tính một tháng, hộ đã chuyển đi vẫn có (kèm chủ hộ cũ), tổng nợ, thứ tự (số tháng, tổng nợ, mã căn hộ), tóm tắt cho Trang chính |
 | `BaoCaoThuIT` | Báo cáo thu tháng: phiếu đã hủy không có (khoản chỉ có trong phiếu hủy không thành cột), ranh giới tháng (23:59:59 cuối tháng, 00:00:00 đầu tháng sau), chủ hộ, số biên lai, phiếu thu hai tháng phí dịch vụ cộng vào một cột, tháng chưa có phiếu bị từ chối, tệp ghi từ CSDL thật đọc lại được |
 | `SaoLuuIT` | Chạy `mysqldump` với đúng các tùy chọn đọc từ `scripts/sao-luu.ps1` trên dữ liệu đủ mọi bảng (hộ, nhân khẩu, tạm vắng, biến động, khoản thu, công nợ, phiếu thu đã hủy và chưa hủy, nhật ký), nạp vào CSDL mới tên khác bằng `mysql`: số dòng mọi bảng, tổng tiền phiếu thu, tên có dấu, cột sinh (`phai_nop_da_thu`, `chu_ho_cua`, `cccd_dang_o`, `ma_dang_o`) vẫn đúng và vẫn là cột sinh, `UNIQUE` trên cột sinh vẫn chặn, trigger vẫn chặn `UPDATE`/`DELETE` trên `nhat_ky`; tự bỏ qua kèm thông báo nếu máy không có `mysqldump`/`mysql` |
+| `SeedDemoIT` | Dựng CSDL từ `schema.sql` + `seed.sql` + `seed-demo.sql`: 40 hộ, 114 nhân khẩu, một hộ đã chuyển đi, 6 người tạm trú; mỗi hộ đúng một chủ hộ, con nhỏ hơn bố mẹ ít nhất 18 tuổi; CCCD 12 chữ số, không trùng, có cho mọi người từ 14 tuổi; tổng mỗi phiếu khớp chi tiết, không phiếu ở tương lai hay trước khi chốt tháng của khoản, bộ đếm biên lai khớp; ít nhất 3 hộ nợ từ 3 tháng (có hộ đã chuyển đi); Trang chính đọc được 5 tháng trước có tiền, Nhật ký có dòng; chạy lại tệp không thêm gì |
 | `SeedIT` | Dựng CSDL từ `schema.sql`, chạy `seed.sql` ba lần: số dòng không đổi, tên có dấu (so trong Java, không dựa `=` của MySQL), hai quỹ mẫu đang mở, ba trường hợp tạm trú/tạm vắng |
 
 Mỗi lớp `*IT` bỏ qua (không lỗi) nếu chưa đặt biến môi trường hoặc tên CSDL
@@ -84,7 +85,7 @@ mvn test -Dtest=ChupManHinhTest,ThuMotHoNamBuocTest,TrangChinhSoLieuTest -DchupA
    Nếu user không phải `bluemoon`, đặt thêm `BLUEMOON_DB_USER` và
    `BLUEMOON_DB_PASSWORD`.
 
-Kết quả mong đợi: 350 test đơn vị và 62 kiểm thử tích hợp đều đạt (MySQL
+Kết quả mong đợi: 366 test đơn vị và 69 kiểm thử tích hợp đều đạt (MySQL
 8.0). Hai test cấu hình (`DatabaseConfigTest`) tự bỏ qua khi đã đặt
 `BLUEMOON_DB_*`, nên log hiện "Skipped: 2" ở lần chạy này.
 
@@ -97,7 +98,7 @@ hai xanh:
 | Job | Làm gì |
 |---|---|
 | `build` | JDK 21, `mvn -B verify`: test đơn vị và test bố cục; `pwsh src/test/scripts/kiem-thu-sao-luu.ps1` |
-| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 62 kiểm thử tích hợp; rồi chạy thật `scripts/sao-luu.ps1` trên CSDL dựng từ `schema.sql`, `seed.sql` và hai phiếu thu mẫu (một phiếu đã hủy; tệp tùy chọn tạo trong `RUNNER_TEMP`), `scripts/khoi-phuc-thu.ps1` trên tệp vừa tạo (phải `KHỚP`, rồi sửa nguồn thêm 100.000 đ cho cùng chữ số đầu và phải báo lệch tổng tiền, mã 1), và một lần sao lưu với mật khẩu sai (mã thoát khác 0, dòng `LỖI`, không còn tệp dở, giữ bản cũ) |
+| `build-mysql` | Service `mysql:8.0`, CSDL `bluemoon_test`, `mvn -B verify -Pmysql`: thêm 69 kiểm thử tích hợp; rồi chạy thật `scripts/sao-luu.ps1` trên CSDL dựng từ `schema.sql`, `seed.sql` và hai phiếu thu mẫu (một phiếu đã hủy; tệp tùy chọn tạo trong `RUNNER_TEMP`), `scripts/khoi-phuc-thu.ps1` trên tệp vừa tạo (phải `KHỚP`, rồi sửa nguồn thêm 100.000 đ cho cùng chữ số đầu và phải báo lệch tổng tiền, mã 1), và một lần sao lưu với mật khẩu sai (mã thoát khác 0, dòng `LỖI`, không còn tệp dở, giữ bản cũ) |
 
 ## 3. Số test hiện tại
 
@@ -113,6 +114,7 @@ hai xanh:
 | Sprint 4, sau TS-001 (chưa phát hành) | 350 | 60 |
 | Sprint 4, sau sửa đọc có khóa trong `suaSoTien` (chưa phát hành) | 350 | 62 |
 | Sprint 4, sau TS-004 (chưa phát hành) | 366 | 62 |
+| Sprint 4, sau dữ liệu demo `seed-demo.sql` (chưa phát hành) | 366 | 69 |
 
 ## 4. Ánh xạ AC → test tự động
 

@@ -106,6 +106,50 @@ final class CsdlThu {
         }
     }
 
+    /**
+     * Chay database/seed-demo.sql (bo chu thich va USE) tren CSDL thu. Tep
+     * nay co dau ";" trong chuoi (noi dung nhat ky) nen tach lenh theo dau
+     * ";" nam ngoai chuoi.
+     */
+    static void chaySeedDemo() {
+        try (Connection conn = Database.getConnection();
+                Statement st = conn.createStatement()) {
+            for (String lenh : lenhNgoaiChuoi("seed-demo.sql")) {
+                st.execute(lenh);
+            }
+        } catch (SQLException | IOException e) {
+            throw new IllegalStateException("Khong chay duoc seed-demo.sql", e);
+        }
+    }
+
+    private static List<String> lenhNgoaiChuoi(String tep) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        for (String dong : Files.readAllLines(Path.of("database", tep),
+                StandardCharsets.UTF_8)) {
+            if (!dong.strip().startsWith("--")) {
+                sb.append(dong).append('\n');
+            }
+        }
+        List<String> lenh = new ArrayList<>();
+        StringBuilder hienTai = new StringBuilder();
+        boolean trongChuoi = false;
+        for (char c : sb.toString().toCharArray()) {
+            if (c == '\'') {
+                trongChuoi = !trongChuoi;
+            }
+            if (c == ';' && !trongChuoi) {
+                String t = hienTai.toString().strip();
+                if (!t.isEmpty() && !t.startsWith("USE ")) {
+                    lenh.add(t);
+                }
+                hienTai.setLength(0);
+            } else {
+                hienTai.append(c);
+            }
+        }
+        return lenh;
+    }
+
     private static List<String> cacBang(Statement st) throws SQLException {
         List<String> bang = new ArrayList<>();
         try (ResultSet rs = st.executeQuery("SELECT table_name FROM "
