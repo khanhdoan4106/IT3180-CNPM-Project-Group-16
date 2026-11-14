@@ -25,8 +25,9 @@ một số điểm ghi nhận để nhóm quyết.
   `schema.sql` + `seed.sql`, hai vai trò: **10/10 bước đạt** (mục 5).
 - Năm điểm dễ sai của Sprint 4 (nhật ký trong giao dịch, nợ đọng, xuất
   Excel, sao lưu, phân quyền) đã đọc mã và đối chiếu test: không thấy lỗi
-  (mục 4). Một điểm cần nhóm xác nhận: Thủ quỹ **được** xem Thống kê và xuất
-  Excel theo bảng phân quyền đã chốt, khác yêu cầu rà soát (G1).
+  (mục 4). Thủ quỹ **được** xem Thống kê và xuất Excel theo US-018 và bảng
+  phân quyền đã chốt; yêu cầu rà soát ghi ngược lại là nhầm (G1, đã kết
+  luận).
 
 **Không làm được trong lần này (nói rõ để khỏi tưởng đã kiểm):**
 
@@ -41,6 +42,15 @@ một số điểm ghi nhận để nhóm quyết.
 Môi trường thử: `mysqld` riêng cổng 3399, thư mục dữ liệu trong thư mục tạm
 của phiên; CSDL `bluemoon` và dịch vụ MySQL80 không bị đụng
 (`BLUEMOON_DB_URL/USER/PASSWORD` đều đặt).
+
+## Kết luận sau khi duyệt (14/11/2026)
+
+| Mục | Kết luận | Đã làm trong PR #45 |
+|---|---|---|
+| G1 | Thủ quỹ xem Thống kê và xuất Excel là **đúng** theo US-018 và bảng phân quyền trong `architecture.md`. Yêu cầu "Thủ quỹ không mở được Thống kê" trong lệnh rà soát là nhầm, không phải lỗi | Giữ nguyên code |
+| G2 | Chấp nhận cho v1.0.0, ghi vào hạn chế đã biết. Bản sau tách user ứng dụng chỉ có `SELECT, INSERT, UPDATE, DELETE` và một user quản trị để tạo bảng, trigger | Thêm vào "Hạn chế đã biết" của `docs/releases/v1.0.0.md`; không sửa script CSDL lần này |
+| G3 | Bổ sung bước kiểm tay | Thêm hai dòng "Tổng thu và ngày thu trên màn hình" (AC-035) và "Khởi động ứng dụng thật" (AC-070) vào `testing.md` mục 5 |
+| G4 | Giữ nguyên: không tự tạo biên bản Sprint 1 – 3 | Chỉ có khung Sprint 4 |
 
 ## 1. Chặn phát hành
 
@@ -75,6 +85,8 @@ hoặc khoảng thu của quỹ (45). `ui.md` đã cập nhật ở #44.
 
 ### G1. Thủ quỹ xem được Thống kê và xuất báo cáo thu
 
+**Kết luận:** đúng thiết kế, giữ nguyên (xem "Kết luận sau khi duyệt").
+
 - **Vị trí:** `ThongKeService` (5 chỗ), `BaoCaoThuService`, `NoDongService`
   cho cả `QUAN_TRI` và `THU_QUY`; menu "Thống kê" hiện với cả hai vai trò.
 - **Căn cứ hiện tại:** bảng phân quyền `docs/design/architecture.md` ghi "Có"
@@ -89,6 +101,9 @@ hoặc khoảng thu của quỹ (45). `ui.md` đã cập nhật ở #44.
 
 ### G2. User ứng dụng có `GRANT ALL`, trigger nhật ký chỉ chặn UPDATE/DELETE
 
+**Kết luận:** hạn chế đã biết của v1.0.0, xử lý ở bản sau; không sửa script
+CSDL lần này.
+
 - **Vị trí:** `docs/setup.md` bước 3 (`GRANT ALL ON bluemoon.*`);
   `schema.sql` (`trg_nky_chan_sua`, `trg_nky_chan_xoa`).
 - **Mô tả:** ứng dụng không có mã nào sửa/xóa nhật ký và trigger chặn câu
@@ -99,6 +114,8 @@ hoặc khoảng thu của quỹ (45). `ui.md` đã cập nhật ở #44.
   `SELECT, INSERT, UPDATE, DELETE`, chạy `schema.sql` bằng root.
 
 ### G3. Hai AC ◐ không có bước tương ứng ở `testing.md` mục 5
+
+**Kết luận:** đã thêm hai bước kiểm tay vào `testing.md` mục 5 (PR #45).
 
 AC-035 ("nhãn tổng trên màn hình kiểm tay") và AC-070 ("khởi động ứng dụng
 thật kiểm tay") ghi phần kiểm tay ở bảng AC nhưng không có dòng trong mục 5.
@@ -150,7 +167,8 @@ CSDL dựng từ `schema.sql` + `seed.sql`; đồng hồ là giờ máy chủ CS
    luồng ở mục 5, trên giao diện: kiểm menu theo vai trò, in biên lai ra máy
    in PDF, xuất Excel và mở tệp bằng Excel thật.
 2. Các bước kiểm tay còn lại ở `testing.md` mục 5 (hai máy, lịch sao lưu,
-   một người chưa dùng thử thu một hộ cho AC-072).
-3. Quyết G1 (Thủ quỹ và Thống kê) trước khi tag.
+   một người chưa dùng thử thu một hộ cho AC-072, tổng thu trên màn hình
+   cho AC-035, khởi động ứng dụng thật cho AC-070).
+3. ~~Quyết G1~~: đã kết luận giữ nguyên (đúng thiết kế).
 4. Điền biên bản Sprint 4 Review và Retrospective
    (`docs/meeting-notes/sprint-4-review-retrospective.md`).

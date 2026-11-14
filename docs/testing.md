@@ -261,6 +261,8 @@ Làm trước mỗi lần demo hoặc phát hành, theo thứ tự:
 | Hộp thoại máy in và xem trước | Xem bằng mắt, hộp thoại hệ điều hành không tự động được | US-013, US-015, US-004 |
 | Số bước thu tiền cho một hộ | Một người chưa dùng ứng dụng (tốt nhất là người lớn tuổi) thử thu một hộ từ lúc mở màn Thu phí đến khi có phiếu, chỉ được nghe "thu phí căn A0601 bằng tiền mặt". Người kiểm đếm số thao tác, ghi chỗ người thử dừng lại, hỏi, hoặc bấm nhầm, ghi vào bảng dưới | AC-072 |
 | Tốc độ tra cứu | Tra cứu một hộ, kết quả trong dưới 3 giây | AC-032 |
+| Tổng thu và ngày thu trên màn hình | Ở màn Thu phí tra cứu A0601: nhãn "Tổng thu" bằng tổng cột "Số tiền" của các khoản đang chọn; bỏ chọn một khoản thì tổng giảm đúng số đó; nhập 50.000 vào một quỹ thì tổng tăng 50.000 đ. Thu xong, mở tab "Phiếu thu hôm nay": phiếu vừa lập có "Tổng tiền" bằng số đã thấy và "Thời điểm" là ngày giờ hôm nay | AC-035 |
+| Khởi động ứng dụng thật | Với MySQL đang chạy và `config/db.properties` đúng: chạy `com.bluemoon.Launcher`, màn Đăng nhập hiện, đăng nhập `admin` được, Trang chính có số liệu. Tắt MySQL (hoặc đổi sai mật khẩu trong file) rồi mở lại ứng dụng và đăng nhập: báo "Không kết nối được cơ sở dữ liệu…" như [setup.md](setup.md) mục 6, không treo, không văng ra | AC-070 |
 | Menu theo vai trò | Đăng nhập từng vai trò, đối chiếu menu với bảng phân quyền ở [architecture.md](design/architecture.md); Thủ quỹ không thấy tab "Quản lý tài khoản" và "Nhật ký thao tác" trong màn Tài khoản | AC-060, AC-061, AC-069 |
 | Hộp thoại lỗi không lường trước | Khó tái hiện có chủ ý; phần chọn thông báo đã có `LoiKhongMongDoiTest`, hộp thoại hiện ra thì xem bằng mắt | `LoiKhongMongDoi` |
 | Hai máy cùng dùng một CSDL | Mở hai bản ứng dụng, thao tác một hộ ở cả hai | AC-071 |
